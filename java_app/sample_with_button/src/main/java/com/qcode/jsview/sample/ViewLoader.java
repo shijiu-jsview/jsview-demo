@@ -58,14 +58,17 @@ public class ViewLoader {
 		// 创建JsView并加入到屏幕上
 		FrameLayout view = (FrameLayout)mActivity.findViewById(R.id.JsViewContainer);
 		mJsView = new JsView(mActivity);
+		mJsView.setBackgroundColor(0xFF0F0F0F);
 		view.addView(mJsView, new FrameLayout.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
 		// JsView加载URL
 		mJsView.loadUrl2(
-				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_engine_r618.min.js",
-				"http://192.168.2.179:3000/static/js/bundle.js"); // TODO: 此处改为react主JS对应的地址
+				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_engine_r621.min.js",
+
+				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
+				"http://192.168.2.179:3000/static/js/bundle.js");
 
 		mJsView.requestFocus();
 	}
