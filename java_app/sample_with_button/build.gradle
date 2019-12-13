@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+
+allprojects {
+    repositories {
+        flatDir {
+            dirs "src/libs/"
+        }
+    }
+}
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.qcode.jsview.sample_with_button"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    signingConfigs {
+        release {
+            // Assign in keystore.gradle
+            storeFile file("?"); storePassword "?";
+            keyAlias "?"; keyPassword "?";
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    defaultConfig {
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+    }
+}
+
+dependencies {
+
+    // JsView接口
+    implementation("com.qcode.jsview.view-qcast:jsview.view:1.1.284")
+
+    // 预制引擎，加速第一次启动（可选）
+    implementation(name: "jsview.core-embedded-284", ext:"aar")
+
+    // 内部测试
+//    implementation project(path: ':jsview:jsview.view')
+}
+
+// 内部测试时需要关掉
+project.ext {
+    keystoreDirPath = "$rootProject.projectDir/demo_keystore/"
+}
+apply from: "$rootProject.projectDir/demo_keystore/keystore.gradle"
+
+

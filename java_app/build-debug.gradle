@@ -1,0 +1,20 @@
+task cleanBuildCache(type: Delete) {
+    delete "$rootProject.projectDir/.build-cache"
+}
+clean.dependsOn cleanBuildCache
+
+ext {
+    versionCode = 1
+    versionName = '1.0.0'
+
+    compileSdkVersion = 27
+    buildToolsVersion = '27.0.3'
+    minSdkVersion = 16
+    targetSdkVersion = compileSdkVersion
+
+    crwvFrameworksVersion = '1.59.+'
+
+    gradleStoreDir = "$rootProject.projectDir/../../android/gradle.store"
+    nativeExtractedDir = "$rootProject.projectDir/.build-cache/nativeExtracted"
+    nodeModulesDir = "$rootProject.projectDir/../../node_modules"
+}
