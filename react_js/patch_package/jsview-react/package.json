@@ -1,0 +1,21 @@
+{
+  "name": "jsview-react",
+  "version": "1.0.0",
+  "description": "A React library used to get jsview support",
+  "main": "dist/jsviewreact.min.js",
+  "scripts": {
+    "build": "rollup -c -o dist/jsviewreact.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Donglin.lu <donglin.lu@qcast.cn>",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "7.7.2",
+    "@babel/preset-env": "7.7.1",
+    "@babel/preset-react": "7.7.0",
+    "rollup": "1.27.2",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-uglify": "6.0.3"
+  }
+}

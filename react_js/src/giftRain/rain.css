@@ -1,0 +1,16 @@
+div {position:absolute}
+img {position:absolute}
+
+@keyframes rainDown {
+    from {
+        transform: translate3d(0, -640px, 0);
+    }
+
+    20% {
+        transform: translate3d(0, -580px, 0);
+    }
+
+    to {
+        transform: translate3d(0, 0px, 0);
+    }
+  }
