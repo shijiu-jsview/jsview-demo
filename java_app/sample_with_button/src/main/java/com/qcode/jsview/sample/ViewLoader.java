@@ -63,6 +63,10 @@ public class ViewLoader {
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
+		// 加入Runtime接口
+		JsRuntimeInterface js_interface = new JsRuntimeInterface(mActivity);
+		mJsView.addJavascriptInterface(js_interface, "jRuntime"); // 在JS中以，jRuntime.XXXX()，进行调用其中接口
+
 		// JsView加载URL
 		mJsView.loadUrl2(
 				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_engine_r621.min.js",
