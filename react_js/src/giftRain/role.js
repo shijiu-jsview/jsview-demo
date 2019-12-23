@@ -1,6 +1,7 @@
 import React from 'react';
 import {Fdiv} from "jsview-react"
-
+import AudioGetUrl from "./audio/get.mp3";
+import AudioBoomUrl from "./audio/boom.mp3";
 class Role extends React.Component{
     constructor(props) {
         super(props);
@@ -10,6 +11,10 @@ class Role extends React.Component{
 	    this._ScoreAdd1 = "http://oss.image.qcast.cn/demo_images/red_packet_rain/add1.png";
 	    this._ScoreAdd5 = "http://oss.image.qcast.cn/demo_images/red_packet_rain/add5.png";
 	    this._ScoreMin1 = "http://oss.image.qcast.cn/demo_images/red_packet_rain/min1.png";
+	    this._AudioGetUrl = AudioGetUrl;
+	    console.log("AudioGetUrl:", AudioGetUrl);
+	    this._AudioBoomUrl = AudioBoomUrl;
+	    console.log("AudioBoomUrl:", AudioBoomUrl);
         this.state = {
             x: 300
         }
@@ -21,6 +26,8 @@ class Role extends React.Component{
 	    this._onKeyUp = this._onKeyUp.bind(this);
 	    this._KeyDownTimer = null;
         this._Step = 25;
+	    this._BoomAudio = null;
+	    this._GetAudio = null;
     }
 
     _clearTimer() {
@@ -80,11 +87,19 @@ class Role extends React.Component{
 				        this.kimi = this._KiMiNormalImg;
 				        add_score_image = this._ScoreAdd1;
 				        this.score += 1;
+				        if (this._GetAudio) {
+					        this._BoomAudio.pause();
+					        this._GetAudio.play();
+				        }
 				        break;
 			        case 1:
 				        add_score_visible = "block";
 				        this.kimi = this._KiMiSmileImg;
 				        add_score_image = this._ScoreAdd5;
+				        if (this._GetAudio) {
+					        this._BoomAudio.pause();
+					        this._GetAudio.play();
+				        }
 				        this.score += 5;
 				        break;
 			        case 2:
@@ -96,6 +111,10 @@ class Role extends React.Component{
 				        if (this.score < 0) {
 					        this.score = 0;
                         }
+				        if (this._BoomAudio) {
+					        this._BoomAudio.play();
+					        this._GetAudio.pause();
+				        }
 				        break;
 		        }
             } else {
@@ -160,6 +179,8 @@ class Role extends React.Component{
 	                }}/>:null
                 }
 
+	            <audio src={ this._AudioBoomUrl} autoPlay={false} ref={(ref) => { this._BoomAudio = ref; }} />
+	            <audio src={ this._AudioGetUrl} autoPlay={false} ref={(ref) => { this._GetAudio = ref; }}/>
             </Fdiv>
         )
     }
