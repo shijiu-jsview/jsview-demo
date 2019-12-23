@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 
-
 class RedPacket extends Component {
 	constructor(props) {
 		super(props);
@@ -45,7 +44,7 @@ class RedPacket extends Component {
 		console.log("initRandomItemList total_num:" + total_num);
 		for (let i = 0; i < total_num; i++) {
 			let random_index = Math.floor(Math.random() * 3);
-			let duration = 2 + Math.floor(Math.random() * 2) + "s";
+			let duration = 5 + Math.floor(Math.random() * 2) + "s";
 			let index = ++this._Index;
 			let left = 300+Math.floor(Math.random() * (1280-500));
 			let top = 600;
@@ -117,7 +116,7 @@ class RedPacket extends Component {
 		if (this._IsRunning === false) {
 			return;
 		}
-		let delay = 500;//Math.floor(Math.random()*600);
+		let delay = 2000;//Math.floor(Math.random()*600);
 		this._GameTimerID = setTimeout(()=>{
 			if (this._IsRunning === true) {
 				this.addRandomItemList();
