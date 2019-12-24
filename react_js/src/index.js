@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './giftRain/App';   // 红包雨
+import App from './giftRain/App';   // 红包雨，带音效和背景音乐
 //import App from './simpleMetroWidget/App'; // 简易版本的MetroWidget样例
 //import App from './advanceMetroWidget/App'; // 升级版本的MetroWidget例子(MetroWidget嵌套)
+//import App from './videoDemo/App'; // 视频播放控制demo
 
 if(!!window.JsView) { // 如果使用JsView
 	window.JsView.React.DesignMap = {width:1280, displayRatio:1.0}; // 可选参数，默认值也是1280, 1.0
