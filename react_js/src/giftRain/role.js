@@ -28,6 +28,7 @@ class Role extends React.Component{
         this._Step = 25;
 	    this._BoomAudio = null;
 	    this._GetAudio = null;
+
     }
 
     _clearTimer() {
@@ -178,9 +179,8 @@ class Role extends React.Component{
 		                display: {add_score_visible}
 	                }}/>:null
                 }
-
-	            <audio src={ this._AudioBoomUrl} autoPlay={false} ref={(ref) => { this._BoomAudio = ref; }} />
-	            <audio src={ this._AudioGetUrl} autoPlay={false} ref={(ref) => { this._GetAudio = ref; }}/>
+	            <audio key="AudioGet" src={ this._AudioGetUrl} autoPlay={false} playsInline="true" ref={(ref) => { this._GetAudio = ref; }}/>
+	            <audio key="AudioBoom" src={ this._AudioBoomUrl} autoPlay={false} playsInline="true" ref={(ref) => { this._BoomAudio = ref; }} />
             </Fdiv>
         )
     }
