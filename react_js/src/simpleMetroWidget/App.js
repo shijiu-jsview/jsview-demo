@@ -84,30 +84,11 @@ for (let i = 0; i < 5; i++) {
 class App extends React.Component{
   constructor(props) {
       super(props);
-      this.ChildMap = new Map();
-      this._OnKeyDown = this._OnKeyDown.bind(this);
       this._Router = new Router();
-
-
       this._Measures = this._Measures.bind(this);
       this._RenderItem = this._RenderItem.bind(this);
       this._RenderFocus = this._RenderFocus.bind(this);
       this._RenderBlur = this._RenderBlur.bind(this)
-
-      this.state = {
-          show: true,
-          w: 30,
-          h: 30,
-      }
-  }
-
-  _OnKeyDown(ev) {
-      if (ev.keyCode == 38) {
-          this._Router.focus("scene1");
-      } else if (ev.keyCode == 40) {
-          this._Router.focus("scene2");
-      }
-      return true;
   }
 
   _Measures(item) {
@@ -123,7 +104,6 @@ class App extends React.Component{
   }
 
   _RenderBlur(item, callback) {
-      setTimeout(callback, 1000);
       return (
           <div style={{animation: "blurScale 0.2s",backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF"}}
           onAnimationEnd={callback}>
@@ -154,7 +134,7 @@ class App extends React.Component{
                       renderFocus={ this._RenderFocus }
                       measures={ this._Measures }
                       branchName={ "widget1" }
-          />
+                    />
               </Fdiv>
           </FdivRoot>
       )
