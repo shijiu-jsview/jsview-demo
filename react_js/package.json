@@ -2,6 +2,7 @@
   "name": "reactjs_app",
   "version": "0.1.0",
   "private": true,
+  "homepage":".",
   "dependencies": {
     "md5": "2.2.1",
     "react": "^16.12.0",
