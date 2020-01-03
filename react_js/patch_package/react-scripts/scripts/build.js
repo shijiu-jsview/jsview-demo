@@ -137,6 +137,9 @@ checkBrowsers(paths.appPath, isInteractive)
                const toJsName = "app.jsv." + jsvAppMd5.substr(0, 8) + ".js";
                stats.toJson({ all: false, assets: true })
                     .assets.map(asset => {
+                        if(!asset.name.match(/\.html$|\.js$|\.json$|\.map$/)) {
+                            return;
+                        }
                         if(asset.name.endsWith(fromJsName)) {
                             return;
                         }
