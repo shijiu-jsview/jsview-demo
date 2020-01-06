@@ -1,10 +1,5 @@
 import React, { Component } from "react"
-import {FdivRoot} from "./fdivRoot"
-import {Fdiv} from "./fdiv"
-import {Router} from "./focusableNode"
-import {SWidgetDispatcher, SimpleWidget, HROIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "./SimpleWidget"
-
-// JsvTabWidget comes from JsView React Project
+import {Router, Fdiv, FdivRoot, SWidgetDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "jsview-react"
 
 let directionPair = new Map([
     [EdgeDirection.left, EdgeDirection.right],
@@ -17,8 +12,10 @@ class TabItem extends React.Component{
     render() {
         if (this.props.renderCurItem) {
             if (this.props.ifCur) {
+                console.log("render tab 1", this.props.item)
                 return this.props.renderCurItem(this.props.item);
             } else {
+                console.log("render tab 2", this.props.item)
                 return this.props.renderItem(this.props.item);
             }
         } else {
@@ -95,7 +92,7 @@ class JsvTabWidget extends Component{
                     "h": this.props.bodyStyle.height,
                 },
                 "focusable":true,
-                "itemFocusable": true,
+                "hasSub": true,
                 "tabIndex": i,
             });
         }
@@ -103,6 +100,7 @@ class JsvTabWidget extends Component{
     }
 
     _tabRenderItem(item) {
+        console.log("_tabRenderItem")
         return (
             <TabItem
             item={item}
@@ -159,6 +157,15 @@ class JsvTabWidget extends Component{
             curId: cur_id
         }, () => {
             this._updateTabItem([pre_id, item.tabIndex], this.state.curId);
+            if (pre_id !== cur_id) {
+                this._dispatcherMap.get("body_" + this.state.curId).dispatch({
+                    type: SWidgetDispatcher.Type.slideToItem,
+                    data: {
+                        id : 0,
+                        type: "start"
+                    }
+                })
+            }
         })
     }
 

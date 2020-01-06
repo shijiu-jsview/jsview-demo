@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HROIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
 
 let frameTemplate = [
     {
@@ -9,7 +9,7 @@ let frameTemplate = [
             "h":330
         },
         "focusable":true,
-        "itemFocusable": true,
+        "hasSub": true,
         "id": 0,
     },
     {
@@ -18,7 +18,7 @@ let frameTemplate = [
             "h":330
         },
         "focusable":true,
-        "itemFocusable": true,
+        "hasSub": true,
         "id": 1,
     },
     {
@@ -27,7 +27,7 @@ let frameTemplate = [
             "h":330
         },
         "focusable":true,
-        "itemFocusable": true,
+        "hasSub": true,
         "id": 2,
     },
     {
@@ -36,7 +36,7 @@ let frameTemplate = [
             "h":330
         },
         "focusable":true,
-        "itemFocusable": true,
+        "hasSub": true,
         "id": 3,
     },
 ]
@@ -183,7 +183,7 @@ class App extends React.Component{
     }
 
     _FrameRenderItem(item, onedge, enter_react) {
-        let direction = HROIZONTAL;
+        let direction = HORIZONTAL;
         return (
             <SimpleWidget 
                 width={ 300 } 
@@ -226,7 +226,7 @@ class App extends React.Component{
                     <SimpleWidget 
                         width={ 660 } 
                         height={ 660 } 
-                        direction={ HROIZONTAL } 
+                        direction={ HORIZONTAL } 
                         data={ frameTemplate } 
                         onItemFocus={ this._FrameOnItemFocus }
                         onItemBlur={ this._FrameOnItemBlur }

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HROIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
 
 let homePageData = [
   {
@@ -127,7 +127,7 @@ class App extends React.Component{
                   <SimpleWidget 
                       width={ 1280 } 
                       height={ 480 } 
-                      direction={ HROIZONTAL } 
+                      direction={ HORIZONTAL } 
                       data={ homePageData } 
                       renderBlur={ this._RenderBlur }
                       renderItem={ this._RenderItem }
