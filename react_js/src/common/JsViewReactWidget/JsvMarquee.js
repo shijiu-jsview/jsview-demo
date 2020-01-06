@@ -1,6 +1,9 @@
 import React from 'react';
-import './App.css';
-class Marquee extends React.Component {
+import './JsvMarquee.css';
+
+// JsvMarquee comes from JsView React Project
+
+class JsvMarquee extends React.Component {
 	constructor(props) {
 		super(props);
 		this._textRef = null;
@@ -93,4 +96,4 @@ class Marquee extends React.Component {
 		)
 	}
 }
-export default Marquee;
+export default JsvMarquee;

@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {Router, FdivRoot, Fdiv, SimpleWidget, HROIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
-import Marquee from "./Marquee"
+import JsvMarquee from "../common/JsViewReactWidget/JsvMarquee"
 import {HomePageData,PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT} from "./DataProvader"
 import borderImgPath from './images/nine_patch_focus.png';
 
@@ -61,7 +61,7 @@ class App extends React.Component{
 
 	          </div>
 
-              <Marquee text={item.content.title} style={{
+              <JsvMarquee text={item.content.title} style={{
 	              color: "#ffffff",
 	              fontSize: 20,
 	              left:0,
