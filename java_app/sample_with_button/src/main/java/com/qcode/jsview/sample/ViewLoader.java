@@ -69,10 +69,9 @@ public class ViewLoader {
 
 		// JsView加载URL
 		mJsView.loadUrl2(
-				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r648.jsv.ccc7199d.js",
-
+				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r652.jsv.56441a0d.js",
 				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
-				"http://192.168.2.179:3000/static/js/bundle.js");
+				"http://192.168.0.31:3000/static/js/bundle.js");
 
 		mJsView.requestFocus();
 	}

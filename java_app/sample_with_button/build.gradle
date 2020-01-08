@@ -58,7 +58,7 @@ dependencies {
     implementation("com.qcode.jsview.view-qcast:jsview.view:1.1.299")
 
     // 预制引擎，加速第一次启动（可选）
-    implementation(name: "jsview.core-embedded-313", ext:"aar")
+    implementation(name: "jsview.core-embedded-317", ext:"aar")
 
     // 内部测试
 //    implementation project(path: ':jsview:jsview.view')
