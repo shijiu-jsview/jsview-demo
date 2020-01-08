@@ -55,7 +55,7 @@ android {
 dependencies {
 
     // JsView接口
-    implementation("com.qcode.jsview.view-qcast:jsview.view:1.1.299")
+    implementation("com.qcode.jsview.view-qcast:jsview.view:1.1.317")
 
     // 预制引擎，加速第一次启动（可选）
     implementation(name: "jsview.core-embedded-317", ext:"aar")
