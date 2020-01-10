@@ -7,7 +7,7 @@ import './index.css';
 //import App from './videoDemo/App'; // 视频播放控制demo
 //import App from './showcaseDemo/App'; // 橱窗界面Demo(SimpleWidget的一个使用场景)
 //import App from './tabWidgetSample/App'; // 多TAB主页场景Demo
-import App from './turntableDemo/App'; //
+import App from './turntableDemo/App'; // 轮盘游戏demo
 
 if(!!window.JsView) { // 如果使用JsView
 	// (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，PS:注意"164"的引号
@@ -17,7 +17,7 @@ if(!!window.JsView) { // 如果使用JsView
 	window.JsView.enableStorageNames("value1", "value2");
 
 	// React相关配置
-	window.JsView.React.DesignMap = {width:1280, displayRatio:1.0}; // (可选配置)设置View坐标映射值，默认值也是1280, 1.0
+	window.JsView.React.DesignMap = {width:1280, displayScale:1.0}; // (可选配置)设置View坐标映射值，默认值也是1280, 1.0
 	window.JsView.React.JsSubPath = "/static/js/"; // (可选配置)填写bundle.js相对于react主地址的相对位置，用于image的相对寻址
 	window.JsView.React.Render = function() {
 		ReactDOM.render(<App />, document.getElementById('root'));
