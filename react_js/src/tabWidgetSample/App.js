@@ -22,9 +22,6 @@ class App extends React.Component{
         this._TabRenderItem = this._TabRenderItem.bind(this);
         this._TabOnItemFocus = this._TabOnItemFocus.bind(this);
         this._TabRenderCur = this._TabRenderCur.bind(this);
-
-        this._TabOnEdge = this._TabOnEdge.bind(this);
-        this._ContentOnEdge = this._ContentOnEdge.bind(this);
     }
 
     _Measures(item) {
@@ -99,18 +96,6 @@ class App extends React.Component{
         this.setState({ curTab: item.id })
     }
 
-    _TabOnEdge(rect_info) {
-        if (rect_info.direction === EdgeDirection.bottom) {
-            this._Router.focus("widget1")
-        }
-    }
-
-    _ContentOnEdge(rect_info) {
-        if (rect_info.direction === EdgeDirection.top) {
-            this._Router.focus("tab1")
-        }
-    }
-
     render() {
         return (
             <FdivRoot>
@@ -134,6 +119,7 @@ class App extends React.Component{
                         bodyMeasures={ this._Measures }
                         bodyPadding={{left: 64, right: 64, top: 20, height: 20}}
                         bodyData={ bodyData }
+                        onWidgetMount={ () => { this._Router.focus("tabwidget") }}
                     />
                 </Fdiv>
             </FdivRoot>
