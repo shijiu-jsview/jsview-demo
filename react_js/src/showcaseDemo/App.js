@@ -15,6 +15,7 @@ class App extends React.Component{
       this._RenderItem = this._RenderItem.bind(this);
       this._RenderFocus = this._RenderFocus.bind(this);
       this._RenderBlur = this._RenderBlur.bind(this);
+      this._onWidgetMount = this._onWidgetMount.bind(this);
 
       this.state = {
           show: true,
@@ -147,6 +148,7 @@ class App extends React.Component{
                           renderFocus={ this._RenderFocus }
                           measures={ this._Measures }
                           branchName={ "widget1" }
+                          onWidgetMount={ this._onWidgetMount }
                       />
                   </Fdiv>
               </div>
@@ -154,7 +156,7 @@ class App extends React.Component{
       )
   }
 
-  componentDidMount() {
+  _onWidgetMount() {
       this._Router.focus("widget1")
   }
 }
