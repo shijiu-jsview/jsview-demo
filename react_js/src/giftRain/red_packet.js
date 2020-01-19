@@ -163,7 +163,7 @@ class RedPacket extends Component {
 						)
 					})
 				}
-				<audio key="AudioBg" src={ this._AudioBgUrl} autoPlay={false} playsInline="true" ref={(ref) => { this._BgAudio = ref; }} />
+				<audio key="AudioBg" src={ this._AudioBgUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BgAudio = ref; }} />
 			</div>
 		);
 	}
