@@ -14,10 +14,12 @@ class NinePatch extends React.Component{
     render() {
         let transition = null;
         if (this.props.animTime) {
-            transition = 'width ' + this.props.animTime + 's, height ' + this.props.animTime + 's';
+            transition = `left ${this.props.animTime}s, top ${this.props.animTime}s, width ${this.props.animTime}s, height ${this.props.animTime}s`
         }
+        console.log("test ", transition)
         return (
-            <div style={{transition: transition, top: this.props.top, left: this.props.left, width: this.props.width, height: this.props.height,
+            <div style={{transition: transition,
+                top: this.props.top, left: this.props.left, width: this.props.width, height: this.props.height,
                 borderImage: `url(${this.props.imageUrl}) ${this.props.sliceWidth} fill`,
                 borderImageWidth: this.props.sliceWidth + 'px',
                 borderImageOutset: this.props.borderOutset,
