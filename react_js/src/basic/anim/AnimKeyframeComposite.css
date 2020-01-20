@@ -1,0 +1,17 @@
+@keyframes AnimComposite1 {
+  from {
+    transform: translate3d(50%, 30px, 0) scale3d(1.5, 1.5, 1) rotate3d(1.5, 1, 1, 90deg) skew(30deg, 45deg);
+  }
+  to {
+  }
+}
+
+@keyframes AnimComposite2 {
+  from {
+    transform: translate3d(50%, 30px, 0) scale3d(1.5, 1.5, 1) rotate3d(1.5, 1, 0, 90deg) skew(30deg, 45deg);
+    opacity: 0.1;
+  }
+  to {
+  }
+}
+
