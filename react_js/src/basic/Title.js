@@ -20,7 +20,7 @@ class Title extends React.Component {
                     <div style={{...titleFont, ...rowStyle, left: itemWidth * 1}}>div标签2</div>
                     <div style={{...titleFont, ...rowStyle, left: itemWidth * 2}}>div文本</div>
                     <div style={{...titleFont, ...rowStyle, left: itemWidth * 3}}>动画</div>
-                    <div style={{...titleFont, ...rowStyle, left: itemWidth * 4}}>Video/Audio</div>
+                    {/*<div style={{...titleFont, ...rowStyle, left: itemWidth * 4}}>Video/Audio</div>*/}
                 </div>
             </div>
     }

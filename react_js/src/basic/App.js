@@ -74,8 +74,8 @@ class App extends React.Component {
                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
                                 <AnimGroup style={{ ...rootStyle, left:itemWidth * 3}}
                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                <AVGroup style={{ ...rootStyle, left:itemWidth * 4}}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                                {/*<AVGroup style={{ ...rootStyle, left:itemWidth * 4}}*/}
+                                       {/*itemWidth = {itemWidth} itemHeight = {itemHeight}/>*/}
                             </div>
                         </div>
                     </div>
