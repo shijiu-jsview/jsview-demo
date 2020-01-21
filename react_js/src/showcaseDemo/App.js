@@ -62,14 +62,14 @@ class App extends React.Component{
 
 	          </div>
 
-              <JsvMarquee text={item.content.title} style={{
-	              color: "#ffffff",
-	              fontSize: 20,
-	              left:0,
-	              top: image_height,
-	              width: image_width,
-	              height: PAGE_THEME_ITEM_TEXT_HEIGHT
-	          }}/>
+              <JsvMarquee text={item.content.title}
+                          top={image_height} left={0}
+                          width={image_width} height={PAGE_THEME_ITEM_TEXT_HEIGHT}
+                          fontStyle={{
+                          	color: "#ffffff",
+	                        fontSize: 20,
+	                        lineHeight:PAGE_THEME_ITEM_TEXT_HEIGHT+"px"
+                          }}/>
           </div>
       )
   }
