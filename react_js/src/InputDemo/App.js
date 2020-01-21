@@ -48,7 +48,7 @@ class FullKeyboard extends Component {
     }
 
     _measures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _renderItem(item, onedge) {
@@ -155,17 +155,19 @@ class App extends Component{
         return(
             <FdivRoot>
                 <Fdiv onKeyDown={ this._onKeyDown } style={{backgroundColor: "#000000", width: 1280, height: 720}} router={ this._Router }>
-                <JsvInput
-                    left={ 50 }
-                    top={ 50 }
-                    height={ 40 }
-                    width={ 150 }
-                    dispatcher={ this._dispatcher }
-                    branchName="etext"
-                    onEdge={this._editableTextOnEdge}
-                    onTextChange={ (str) => { console.log("ontextChange " + str) }}
-                    onTextTooLong={ () => {console.log("too long")}}
-                    />
+                    <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000'}}/>
+                    <JsvInput
+                        left={ 50 }
+                        top={ 50 }
+                        height={ 40 }
+                        width={ 150 }
+                        fontStyle={{ color: '#FFFFFF', fontSize: '20px'}}
+                        dispatcher={ this._dispatcher }
+                        branchName="etext"
+                        onEdge={this._editableTextOnEdge}
+                        onTextChange={ (str) => { console.log("ontextChange " + str) }}
+                        onTextOverflow={ () => {console.log("too long")}}
+                        />
                     <div style={{ top: 100}}>
                         <FullKeyboard
                         onClick={ this._keyboardOnClick }

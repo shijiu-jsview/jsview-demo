@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 
-import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+
 import {JsvTabWidget} from "../common/JsViewReactWidget/JsvTabWidget"
 import {bodyData, tabData} from "./Data"
 import focusBg from "./images/focus_bg.png"
@@ -25,7 +26,7 @@ class App extends React.Component{
     }
 
     _Measures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _RenderFocus(item) {
@@ -62,7 +63,7 @@ class App extends React.Component{
     }
 
     _TabMeasures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _TabRenderItem(item) {

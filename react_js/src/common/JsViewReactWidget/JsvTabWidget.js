@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Router, Fdiv, FdivRoot, SWidgetDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "jsview-react"
+import {Router, Fdiv, FdivRoot, SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "jsview-react"
 
 let directionPair = {}
 directionPair[EdgeDirection.left] = EdgeDirection.right;
@@ -23,44 +23,47 @@ class TabItem extends React.Component{
 
 /*
     onEdge {function} 边缘回调
-    tabPosition {EdgeDirection} tab位于body的方向
-    direction {Symbol} 控件的方向
+    flowDirection {Symbol} 控件的方向 (必选)
     initFocusId {int} 初始的焦点
     tabFocusable {boolean} tab是否可获得焦点
 
-    tabData {list} tab的数据
-    tabMeasures {function} tab的measures函数
+    tabData {list} tab的数据 (必选)
+    tabMeasures {function} tab的measures函数 (必选)
     tabOnItemFocus {function} tab的onItemFoucs函数
     tabOnItemBlur {function} tab的onItemBlur函数
-    tabStyle {object} tab的style {width: 宽, height: 高, left: x, top: y}
+    tabStyle {object} tab的style {width: 宽, height: 高, left: x, top: y} (必选)
     tabOnBlur {function} tab的onBlur函数
     tabOnFocus {function} tab的onFocus函数
-    tabRenderItem {function} tab的renderItem函数
+    tabRenderItem {function} tab的renderItem函数 (必选)
     tabRenderCurItem {function} tab的blur状态下焦点描画函数
     tabRenderFocus {function} tab的renderFocus函数
     tabRenderBlur {function} tab的renderBlur函数
-    tabPadding {object} tab的padding
+    tabPadding {object} 同SimpleWidget的padding
 
-    bodyStyle {object} body的style {width: 宽, height: 高, left: x, top: y}
-    bodyData {list} body的数据
+    bodyStyle {object} body的style {width: 宽, height: 高, left: x, top: y} (必选)
+    bodyData {list} body的数据 (必选)
     bodyOnFocus {function} body的onFocus
     bodyOnItemFocus {function} body的onItemFocus
     bodyOnItemBlur {function} body的onItemBlur
     bodyOnBlur {function} body的onBlur
-    bodyRenderItem {function} body的RenderItem
+    bodyRenderItem {function} body的RenderItem (必选)
     bodyRenderFocus {function} body的renderFocus
     bodyRenderBlur {function} body的renderBlur
-    bodyMeasures {function} body的measures
-    bodyPadding {function} body的padding
-    bodySlideStyle {function} body的SlideStyle
+    bodyMeasures {function} body的measures (必选)
+    bodyPadding {function} 同SimpleWidget的padding
+    bodySlideStyle { Symbol } body的SlideStyle
  */
+
+ class TabDispatcher extends BaseDispatcher { }
+ TabDispatcher.Type = {
+
+ }
 
 class JsvTabWidget extends Component{
     constructor(props) {
         super(props);
         this._tabOnEdge = this._tabOnEdge.bind(this);
         this._bodyOnEdge = this._bodyOnEdge.bind(this);
-        this._tabOnItemFocus = this._tabOnItemFocus.bind(this);
         this._generateFrameData = this._generateFrameData.bind(this);
         this._tabOnItemFocus = this._tabOnItemFocus.bind(this);
         this._frameOnItemFocus = this._frameOnItemFocus.bind(this);
@@ -68,6 +71,7 @@ class JsvTabWidget extends Component{
         this._frameMeasures = this._frameMeasures.bind(this);
         this._tabRenderItem = this._tabRenderItem.bind(this);
         this._updateTabItem = this._updateTabItem.bind(this);
+        this._getTabPosition = this._getTabPosition.bind(this);
         this._onFocus = this._onFocus.bind(this);
         this._dispatcherMap = new Map();
         this._dispatcherMap.set("tab", new SWidgetDispatcher());
@@ -97,11 +101,11 @@ class JsvTabWidget extends Component{
         return result;
     }
 
-    _tabRenderItem(item) {
+    _tabRenderItem(item, onedge, queryObj) {
         return (
             <TabItem
             item={item}
-            ifCur={ this.props.tabData.indexOf(item) === this.state.curId}
+            ifCur={ queryObj.id === this.state.curId}
             renderItem = { this.props.tabRenderItem }
             renderCurItem = { this.props.tabRenderCurItem }
             />
@@ -115,8 +119,26 @@ class JsvTabWidget extends Component{
         });
     }
 
+    _getTabPosition() {
+        let tab_position;
+        if (this.props.flowDirection === HORIZONTAL) {
+            if (this.props.tabStyle.top < this.props.bodyStyle.top) {
+                tab_position = EdgeDirection.top
+            } else {
+                tab_position = EdgeDirection.bottom
+            }
+        } else {
+            if (this.props.tabStyle.left < this.props.bodyStyle.left) {
+                tab_position = EdgeDirection.left
+            } else {
+                tab_position = EdgeDirection.right
+            }
+        }
+        return tab_position;
+    }
+
     _tabOnEdge(edge_info) {
-        if (edge_info.direction === directionPair[this.props.tabPosition]) {
+        if (edge_info.direction === directionPair[this._getTabPosition()]) {
             this._dispatcherMap.get("body").dispatch({
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: this.state.curId
@@ -134,7 +156,7 @@ class JsvTabWidget extends Component{
     }
 
     _bodyOnEdge(edge_info) {
-        if (this.props.tabFocusable && edge_info.direction === this.props.tabPosition) {
+        if (this.props.tabFocusable && edge_info.direction === this._getTabPosition()) {
             this._dispatcherMap.get("tab").dispatch({
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: this.state.curId
@@ -147,14 +169,13 @@ class JsvTabWidget extends Component{
         }
     }
 
-    _tabOnItemFocus(item) {
+    _tabOnItemFocus(item, edgeInfo, queryObj) {
         let pre_id = this.state.curId;
-        let cur_id = this.props.tabData.indexOf(item);
         this.setState({
-            curId: cur_id
+            curId: queryObj.id
         }, () => {
-            this._updateTabItem([pre_id, item.tabIndex], this.state.curId);
-            if (pre_id !== cur_id) {
+            this._updateTabItem([pre_id, queryObj.id], this.state.curId);
+            if (pre_id !== this.state.curId) {
                 this._dispatcherMap.get("body_" + this.state.curId).dispatch({
                     type: SWidgetDispatcher.Type.slideToItem,
                     data: {
@@ -228,7 +249,7 @@ class JsvTabWidget extends Component{
                     height={ this.props.tabStyle.height }
                     branchName={ this.props.branchName + "_tab" }
                     dispatcher={ this._dispatcherMap.get("tab") }
-                    direction={ this.props.direction }
+                    direction={ this.props.flowDirection }
                     data={ this.props.tabData }
                     padding={ this.props.tabPadding }
                     onFocus={ this.props.tabOnFocus }
@@ -248,7 +269,7 @@ class JsvTabWidget extends Component{
                     height={ this.props.bodyStyle.height }
                     dispatcher={ this._dispatcherMap.get("body") }
                     branchName={this.props.branchName + "_body"}
-                    direction={ this.props.direction }
+                    direction={ this.props.flowDirection }
                     slideStyle={ SlideStyle.wholePage }
                     onFocus={ this.props.bodyOnFocus }
                     onBlur={ this.props.bodyOnBlur }

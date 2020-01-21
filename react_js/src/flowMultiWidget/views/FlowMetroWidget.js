@@ -21,7 +21,7 @@ class FlowMetroWidget extends React.Component {
 	}
 
 	_Measures(item) {
-		return item;
+		return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
 	}
 	_InitDispatcher() {
 		for(let i = 0;i<this.props.data.length; i++) {
@@ -43,7 +43,7 @@ class FlowMetroWidget extends React.Component {
 	}
 
 	_FrameMeasure(item) {
-		return item;
+		return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
 	}
 
 	_FrameOnItemFocus(item, enter_rect) {

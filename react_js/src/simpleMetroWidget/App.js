@@ -93,7 +93,7 @@ class App extends React.Component{
   }
 
   _Measures(item) {
-      return item;
+      return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
   }
 
   _RenderFocus(item) {

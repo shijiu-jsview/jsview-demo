@@ -1,37 +1,34 @@
 import React from 'react';
-
 /*
-    left { int } 组件的left
-    top { int } 组件的top
-    width { int } 组件的宽
-    height { int } 组件的高
+    style { object } (必须)
     animTime { int } transition动画时长
-    imageUrl { string } 图片url
-    sliceWidth { int } 图片作为边框部分的宽度
-    borderOutset { string } 边框向外扩展的大小 "10px 10px 10px 10px"
+    imageUrl { string } 图片url (必须)
+    imageWidth { int } 图片的宽 (必须)
+    contentWidth { int } 图片延展区域的宽 (必须)
+    borderOutset { int } 边框向外扩展的大小
 */
-class NinePatch extends React.Component{
+class SquareNinePatch extends React.Component{
     render() {
         let transition = null;
         if (this.props.animTime) {
             transition = `left ${this.props.animTime}s, top ${this.props.animTime}s, width ${this.props.animTime}s, height ${this.props.animTime}s`
         }
-        console.log("test ", transition)
+        let slice_w = Math.ceil((this.props.imageWidth - this.props.contentWidth) / 2);
         return (
-            <div style={{transition: transition,
-                top: this.props.top, left: this.props.left, width: this.props.width, height: this.props.height,
-                borderImage: `url(${this.props.imageUrl}) ${this.props.sliceWidth} fill`,
-                borderImageWidth: this.props.sliceWidth + 'px',
-                borderImageOutset: this.props.borderOutset,
+            <div style={{...this.props.style, transition: transition,
+                borderImage: `url(${this.props.imageUrl}) ${slice_w} fill`,
+                borderImageWidth: slice_w + 'px',
+                borderImageOutset: this.props.borderOutset + "px",
             }}/>
         )
     }
 }
-NinePatch.defaultProps = {
+SquareNinePatch.defaultProps = {
     top: 0,
     left: 0,
+    borderOutset: 0,
 }
 
 export{
-    NinePatch as JsvNinePatch
+    SquareNinePatch as JsvSquareNinePatch
 }

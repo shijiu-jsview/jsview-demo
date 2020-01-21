@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
-import {Router, Fdiv, EdgeDirection} from "jsview-react"
+import {Router, BaseDispatcher, Fdiv, EdgeDirection} from "jsview-react"
+
+let defaultCharList = []
+for (let i = 0; i < 36; ++i) {
+    defaultCharList.push(i < 26 ? String.fromCharCode(i + 65) : String.fromCharCode(i - 26 + 48));
+}
 
 class CharacterSizeMeasure extends Component{
     constructor(props) {
         super(props);
-        this._List = this._initData();
         this._SizeMap = {};
-    }
-    _initData() {
-        let result = [];
-        for (let i = 0; i < 36; ++i) {
-            result.push(i < 26 ? String.fromCharCode(i + 65) : String.fromCharCode(i - 26 + 48));
-        }
-        return result;
     }
 
     shouldComponentUpdate() {
@@ -23,10 +20,10 @@ class CharacterSizeMeasure extends Component{
         return(
             <div>
                 {
-                    this._List.map((value) => {
+                    this.props.charList.map((value) => {
                         //精确测量，画20个取平均
                         return(
-                            <div key={value} style={{visibility: "hidden", fontSize: this.props.fontSize}} ref={ (element) => { this._SizeMap[value] = element.clientWidth / 20 } }>
+                            <div key={value} style={{ ...this.props.style, visibility: "hidden" }} ref={ (element) => { this._SizeMap[value] = element.clientWidth / 20 } }>
                                 {value.repeat(20)}
                             </div>
                         )
@@ -68,28 +65,7 @@ class Cursor extends Component{
     }
 }
 
-class InputDispatcher{
-    constructor() {
-        this._Input = null;
-        this._registerInput = this._registerInput.bind(this);
-        this._unregisterInput = this._unregisterInput.bind(this);
-        this.dispatch = this.dispatch.bind(this);
-    }
-
-    _registerInput(input) {
-        this._Input = input;
-    }
-
-    _unregisterInput() {
-        this._Input = null;
-    }
-
-    dispatch(event) {
-        if (event && this._Input) {
-            this._Input._dispathcEvent(event);
-        }
-    }
-}
+class InputDispatcher extends BaseDispatcher{ }
 InputDispatcher.Type = {
     'add': Symbol('add'),
     'delete': Symbol('delete'),
@@ -105,23 +81,29 @@ let edgeMap = {
     39: EdgeDirection.right,
     40: EdgeDirection.bottom
 }
+
 /* 
     left { int } 组件的x
     top { int } 组件的y
     width { int } 组件的宽
     height { int } 组件的高
-    textColor { string } 文字颜色
-    fontSize { string } 文字大小
+    fontStyle { Object } 文字的style
     cursorColor { string } 光标颜色
     cursorWidth { int } 光标宽度
     dispatcher { InputDispatcher } 向组件发送增删事件的对象
     branchName { string } 焦点管理所需的branchName
+    charList { Array } 可输入的字符串列表
 
-    onTextTooLong { function } 文字过长回调，文字最长为3倍的width
+    onTextOverflow { function } 文字过长回调，文字最长为3倍的width
     onEdge { function } 方向键到达边缘回调
         @oarams edge_info 边缘信息{direction: EdgeDirection, rect: {x: value,y: value, widht: value,height: value}}
     onTextChange { function } 文字改动回调 
         @params string 当前文字
+    
+    dispatch支持事件:
+        add
+        delete
+        clear
 */
 class Input extends Component{
     constructor(props) {
@@ -134,7 +116,7 @@ class Input extends Component{
         this._dispathcEvent = this._dispathcEvent.bind(this);
         this._calculateSlide = this._calculateSlide.bind(this);
         if (this.props.dispatcher) {
-            this.props.dispatcher._registerInput(this);
+            this.props.dispatcher.registerComponent(this);
         }
 
         this.state = {
@@ -174,8 +156,8 @@ class Input extends Component{
                             }
                         })
                     } else {
-                        if (this.props.onTextTooLong) {
-                            this.props.onTextTooLong();
+                        if (this.props.onTextOverflow) {
+                            this.props.onTextOverflow();
                         }
                     }
                 }
@@ -291,10 +273,10 @@ class Input extends Component{
         let cursor_left = this._calculateCursorPosition(this.state.fullString, this.state.curIndex) + this.state.textLeft;
         return(
             <div style={{left: this.props.left, top: this.props.top}}>
-                <CharacterSizeMeasure fontSize={ this.props.fontSize } onMeasureDone={(map) => {console.log("char map ", map); this._CharSizeMap = map; }}/>
+                <CharacterSizeMeasure charList={ this.props.charList } style={{ ...this.props.fontStyle }} onMeasureDone={(map) => {console.log("char map ", map); this._CharSizeMap = map; }}/>
                 <Fdiv onFocus={ this._onFocus } routner={ this._Router } branchName={ this.props.branchName } onKeyDown={ this._onKeyDown }>
                     <div style={{clipPath: "inset(0px 0px 0px 0px)", width: this.props.width + this.props.cursorWidth, height: this.props.height,}}>
-                        <div style={{ color: this.props.textColor, left: this.state.textLeft, width: this.props.width * 3, height: this.props.height, lineHeight: this.props.height + 'px', fontSize: this.props.fontSize}}>
+                        <div style={{ left: this.state.textLeft, width: this.props.width * 3, height: this.props.height, lineHeight: this.props.height + 'px', ...this.props.fontStyle }}>
                             { text }
                         </div>
                         <Cursor left={cursor_left} height={ this.props.height } color={ this.props.cursorColor } width={this.props.cursorWidth}/>
@@ -305,7 +287,7 @@ class Input extends Component{
     }
 
     componentWillUnmount() {
-        this.props.dispatcher._unregisterInput(this);
+        this.props.dispatcher.unregisterComponent(this);
     }
 }
 Input.defaultProps = {
@@ -313,9 +295,8 @@ Input.defaultProps = {
     top: 0,
     cursorColor: '#FFFFFF',
     cursorWidth: 1,
-    textColor: '#FFFFFF',
-    fontSize: '20px',
     defaultText: '请输入',
+    charList: defaultCharList,
 }
 export {
     Input as JsvInput,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import "./App.css"
-import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-js-react/src/text_index"
-import {JsvNinePatch} from '../common/JsViewReactWidget/JsvNinePatch'
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+import {JsvSquareNinePatch} from '../common/JsViewReactWidget/JsvNinePatch'
 
 import borderImgPath from './border.png';
 let data = [
@@ -55,7 +55,7 @@ class App extends Component {
     }
 
     _Measures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _RenderFocus(item) {
@@ -85,10 +85,10 @@ class App extends Component {
         )
     }
 
-    _onItemFocus(item) {
-        console.log("haha", item)
-        let x = 50 + item.xPos + -5 + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
-        let y = 50 + item.yPos + -5 + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
+    _onItemFocus(item, edgeInfo, queryObj) {
+        let position = queryObj.queryPosition(queryObj.id)
+        let x = 50 + position.xPos + -5 + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
+        let y = 50 + position.yPos + -5 + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
         this.setState({
             focusFrameX: x,
             focusFrameY: y,
@@ -117,15 +117,13 @@ class App extends Component {
                     padding={{left: 50, right: 50, top: 50, height: 50}}
                     branchName={ "widget1" }/>
                 </Fdiv>
-                <JsvNinePatch
-                        top={ this.state.focusFrameY }
-                        left={ this.state.focusFrameX }
-                        width={ this.state.focusFrameW }
-                        height={ this.state.focusFrameH }
-                        imageUrl={ borderImgPath }
-                        sliceWidth={ 30 }
-                        borderOutset={ "10px 10px 10px 10px"}
-                        animTime={ 0.2 }
+                <JsvSquareNinePatch
+                    style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH}}
+                    imageUrl={ borderImgPath }
+                    imageWidth={ 81 }
+                    contentWidth={ 21 }
+                    borderOutset={ 10 }
+                    animTime={ 0.2 }
                     />
             </FdivRoot>
         )
