@@ -1,13 +1,18 @@
 import React from 'react';
 import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "jsview-react"
-import Marquee from "./Marquee";
+import JsvMarquee from "../../common/JsViewReactWidget/JsvMarquee"
 const Title = ({text, style}) => {
 	return <div key={text} style={style}>{text}</div>
 };
 
 const ItemTitle = ({focus, text, style}) => {
 	if (focus) {
-		return <Marquee text={text} style={style}/>
+        return <JsvMarquee text={text} width={style.width} height={style.height} left={style.left} top={style.top}
+						   fontStyle={{
+                               color: style.color,
+                               fontSize: style.fontSize,
+                               lineHeight:style.height+"px"
+                           }}/>
 	} else {
 		return <div style={style}>{text}</div>
 	}
