@@ -5,17 +5,3 @@ div{
 img{
   position: absolute;
 }
-
-@keyframes circle{
-  from {transform: rotate(0)}
-  to {transform: rotate(720deg)}
-}
-/**/
-@keyframes App-logo-spin {
-  from {
-    transform: rotate3d(0,0,1,0deg);
-  }
-  to {
-    transform: rotate3d(0,0,1,360deg);
-  }
-}
