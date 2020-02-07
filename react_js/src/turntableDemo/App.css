@@ -5,3 +5,75 @@ div{
 img{
   position: absolute;
 }
+@keyframes rotate3240 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3240deg);
+  }
+}
+
+@keyframes rotate3195 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3195deg);
+  }
+}
+
+@keyframes rotate3150 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3150deg);
+  }
+}
+
+@keyframes rotate3105 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3105deg);
+  }
+}
+
+@keyframes rotate3060 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3060deg);
+  }
+}
+@keyframes rotate3015 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,3015deg);
+  }
+}
+@keyframes rotate2970 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,2970deg);
+  }
+}
+@keyframes rotate2925 {
+  from {
+    transform: rotate3d(0,0,1,0deg);
+  }
+  to {
+    transform: rotate3d(0,0,1,2925deg);
+  }
+}
+
+
+
+

@@ -17,9 +17,9 @@ class Turntable extends React.Component{
                 {id: 7, name: '四等奖', level: '7', url:'http://111.32.138.57/cms/loong/prize/2019-10-24/4c9b42ec-90e7-4010-9f03-8c4066c430a2.png'},
                 {id: 8, name: '五等奖', level: '8', url:'http://111.32.138.57/cms/loong/prize/2019-10-30/44b8a4b0-308c-404a-b1ac-d1c3396ecc59.png'},
             ],//大转盘的奖品列表
-            startRadian: 0,
+            currentPrizeIndex:0,
+            animation:null,
             contentVisible:"hidden",
-            canBeClick: true,//判断抽奖有没有结束
             content: '',
         }
 
@@ -28,26 +28,14 @@ class Turntable extends React.Component{
 
     // 处理旋转的关键方法
     rotatePanel(distance) {
-        // 这里用一个很简单的缓动函数来计算每次绘制需要改变的角度，这样可以达到一个转盘从块到慢的渐变的过程
-        let changeRadian = (distance - this.state.startRadian) / 15;
-
-        // 当最后的目标距离与startRadian之间的差距低于0.01时，就默认奖品抽完了，可以继续抽下一个了。
-        if (distance - this.state.startRadian <= 0.01) {
-            this.state.canBeClick = true;
-            this.setState({contentVisible:"visible"});
-            return;
-        }
-
-        let radian = this.state.startRadian + changeRadian;
-        console.log("rotatePanel radian:"+radian);
-        this.setState({startRadian:radian});
-        setTimeout(()=>{
-            this.rotatePanel(distance);
-        }, 16);
+        let radian = distance;
+        let animation_name = "rotate"+radian;
+        let animation = animation_name +" 4s cubic-bezier(0,0.55,0.55,0.78)";
+        this.state.radian = radian;
+        this.setState({animation:animation});
     }
 
     distanceToStop() {
-        // degrees为奖品块的中间角度（最终停留都是以中间角度进行计算的）距离初始的startRadian的距离，distance就是当前奖品跑到指针位置要转动的距离。
         let degrees = 0;
         let distance = 0;
         // 映射出每个奖品的degrees
@@ -58,12 +46,13 @@ class Turntable extends React.Component{
 
         // 随机生成一个索引值，来表示此次抽奖应该中的奖品
         const currentPrizeIndex = Math.floor(Math.random() * this.state.awards.length);
+
         degrees = awardsToDegreesList[currentPrizeIndex];
         distance = 360-degrees;
         this.state.content = "当前奖品应该中的奖品是：" + this.state.awards[currentPrizeIndex].name;
-        console.log(this.state.content+", currentPrizeIndex:"+currentPrizeIndex+", distance:"+distance);
+        console.log(this.state.content+", currentPrizeIndex:"+currentPrizeIndex+", distance:"+(distance+ 360*8));
         // 这里额外加上后面的值，是为了让转盘多转动几圈
-        return distance + 360*10;
+        return distance + 360*8;
     }
 
     getCoordByAngle(angle) {
@@ -83,15 +72,11 @@ class Turntable extends React.Component{
     	console.log("ev", ev);
     	if (ev.keyCode === 13) {
             // 只要抽奖没有结束，就不让再次抽奖
-            if (!this.state.canBeClick)  {
-                return false;
-            }
             this.setState({contentVisible:"hidden"});
-            this.state.canBeClick = false;
-            // 每次点击抽奖，都将初始化角度重置
-            this.state.startRadian = 0;
+
             const distance = this.distanceToStop();
             this.rotatePanel(distance);//调用处理旋转的方法
+
 		}
         return true;
 	}
@@ -100,12 +85,15 @@ class Turntable extends React.Component{
 		return (
 			<Fdiv onKeyDown={this._onKeyDown} branchName={this.props.branchName}>
 				<div style={{
-                    transform: 'rotate3d(0,0,1,'+this.state.startRadian+'deg)',
+                    transform: 'rotate3d(0,0,1,'+this.state.radian+'deg)',
+                    animation: this.state.animation,
                     backgroundImage: `url(${this._BgUrl})`,
                     left:(1280-742)/2,
                     top:0,
                     width: 742,
                     height: 742
+                }} onAnimationEnd={()=>{
+                    this.setState({contentVisible:"visible"});
                 }}>
 				<div style={{position: 'absolute', top: -60, left: -60, width: 742, height: 742}}>,
 						<div style={{transform: 'rotate3d(0,0,1,0deg)', backgroundImage: `url(${ this.state.awards[0].url })`, position: 'absolute', left: this.getCoordByAngle(0).x, top: this.getCoordByAngle(0).y, width: 120, height: 120}}></div>
