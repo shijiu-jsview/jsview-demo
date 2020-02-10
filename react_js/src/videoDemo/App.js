@@ -16,8 +16,9 @@ function throttle(callback, limit) {
 class App extends React.Component{
   constructor(props) {
       super(props);
+      this._autoPlay = false;
       this.state={
-	      play_state:"pause",
+	      play_state:this._autoPlay?"pause":"play",
           focus_id:0,
       }
       this._Router = new Router();
@@ -129,7 +130,7 @@ class App extends React.Component{
 
 	// toggle play
 	togglePlay() {
-		if (this.video.paused) {
+		if (this.video.paused == null || this.video.paused) {
 		    this.setState({play_state:"pause"});
 			this.play();
 		} else {
@@ -350,10 +351,10 @@ class App extends React.Component{
           <FdivRoot>
               <Fdiv style={{top: 0, left: 0}} router={this._Router} >
                   <video  style={{top: 50, left:(1280-800)/2, width:800,height:500}}
-                          loop={false}
-                          autoPlay={false}
+                          loop={true}
+                          autoPlay
                           playsInline
-                          src="http://vfx.mtime.cn/Video/2019/07/25/mp4/190725213246811753.mp4"
+                          src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
                           ref={(c) => {
                               console.log("video:",c);
 	                          this.video = c;
