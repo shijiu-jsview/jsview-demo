@@ -102,9 +102,8 @@ class App extends React.Component{
             <FdivRoot>
                 <Fdiv style={{backgroundColor: "#005500", width: 1280, height: 720}} router={this._Router}>
                     <JsvTabWidget
-                        direction={ HORIZONTAL }
+                        flowDirection={ HORIZONTAL }
                         branchName={ "tabwidget" }
-                        tabPosition={EdgeDirection.top}
 
                         tabStyle={{left: 64, top: 100, width: 1280, height: 50}}
                         tabRenderItem={ this._TabRenderItem }

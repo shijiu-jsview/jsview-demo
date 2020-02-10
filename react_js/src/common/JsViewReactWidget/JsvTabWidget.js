@@ -26,6 +26,7 @@ class TabItem extends React.Component{
     flowDirection {Symbol} 控件的方向 (必选)
     initFocusId {int} 初始的焦点
     tabFocusable {boolean} tab是否可获得焦点
+    onWidgetMount{function} 控件挂载完成回调
 
     tabData {list} tab的数据 (必选)
     tabMeasures {function} tab的measures函数 (必选)
@@ -303,6 +304,7 @@ JsvTabWidget.defaultProps = {
         left: 0,
     },
     initFocusComponent: "body",
+    flowDirection: HORIZONTAL,
     tabFocusable: true,
     initFocusId: 0,
 }
