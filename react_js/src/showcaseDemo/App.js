@@ -15,6 +15,7 @@ class App extends React.Component{
       this._RenderItem = this._RenderItem.bind(this);
       this._RenderFocus = this._RenderFocus.bind(this);
       this._RenderBlur = this._RenderBlur.bind(this);
+      this._onWidgetMount = this._onWidgetMount.bind(this);
 
       this.state = {
           show: true,
@@ -33,7 +34,7 @@ class App extends React.Component{
   }
 
   _Measures(item) {
-      return item;
+      return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
   }
 
   _RenderFocus(item) {
@@ -61,14 +62,14 @@ class App extends React.Component{
 
 	          </div>
 
-              <JsvMarquee text={item.content.title} style={{
-	              color: "#ffffff",
-	              fontSize: 20,
-	              left:0,
-	              top: image_height,
-	              width: image_width,
-	              height: PAGE_THEME_ITEM_TEXT_HEIGHT
-	          }}/>
+              <JsvMarquee text={item.content.title}
+                          top={image_height} left={0}
+                          width={image_width} height={PAGE_THEME_ITEM_TEXT_HEIGHT}
+                          fontStyle={{
+                          	color: "#ffffff",
+	                        fontSize: 20,
+	                        lineHeight:PAGE_THEME_ITEM_TEXT_HEIGHT+"px"
+                          }}/>
           </div>
       )
   }
@@ -147,6 +148,7 @@ class App extends React.Component{
                           renderFocus={ this._RenderFocus }
                           measures={ this._Measures }
                           branchName={ "widget1" }
+                          onWidgetMount={ this._onWidgetMount }
                       />
                   </Fdiv>
               </div>
@@ -154,7 +156,7 @@ class App extends React.Component{
       )
   }
 
-  componentDidMount() {
+  _onWidgetMount() {
       this._Router.focus("widget1")
   }
 }

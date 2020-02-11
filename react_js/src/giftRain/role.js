@@ -179,8 +179,8 @@ class Role extends React.Component{
 		                display: {add_score_visible}
 	                }}/>:null
                 }
-	            <audio key="AudioGet" src={ this._AudioGetUrl} autoPlay={false} playsInline="true" ref={(ref) => { this._GetAudio = ref; }}/>
-	            <audio key="AudioBoom" src={ this._AudioBoomUrl} autoPlay={false} playsInline="true" ref={(ref) => { this._BoomAudio = ref; }} />
+	            <audio key="AudioGet" src={ this._AudioGetUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._GetAudio = ref; }}/>
+	            <audio key="AudioBoom" src={ this._AudioBoomUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BoomAudio = ref; }} />
             </Fdiv>
         )
     }

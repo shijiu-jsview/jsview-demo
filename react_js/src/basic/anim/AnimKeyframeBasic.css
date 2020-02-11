@@ -1,0 +1,53 @@
+@keyframes AnimTranslate {
+  from {
+    transform: translate3d(50%, 50px, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes AnimScale {
+  from {
+    transform: scale3d(1.5, 1.5, 1);
+  }
+  to {
+    transform: scale3d(0, 0, 0);
+  }
+}
+
+@keyframes AnimRotate {
+  from {
+    transform: rotate3d(1.5, 1, 1, 90deg);
+  }
+  to {
+    transform: rotate3d(0, 0, 0);
+  }
+}
+
+@keyframes AnimSkew {
+  from {
+    transform: skew(30deg, 45deg);
+  }
+  to {
+    transform: skew(0, 0);
+  }
+}
+
+@keyframes AnimOpacityOut {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes AnimOpacityIn {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 20%;
+  }
+}

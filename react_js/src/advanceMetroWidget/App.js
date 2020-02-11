@@ -151,10 +151,12 @@ class App extends React.Component{
         this._FrameRenderItem = this._FrameRenderItem.bind(this);
         this._FrameOnItemFocus = this._FrameOnItemFocus.bind(this);
         this._FrameOnItemBlur = this._FrameOnItemBlur.bind(this);
+
+        this._onWidgetMount = this._onWidgetMount.bind(this);
     }
 
     _Measures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _RenderFocus(item) {
@@ -207,7 +209,7 @@ class App extends React.Component{
     }
 
     _FrameMeasure(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _FrameOnItemFocus(item) {
@@ -235,6 +237,7 @@ class App extends React.Component{
                         renderFocus={ this._FrameRenderFocus }
                         measures={ this._FrameMeasure }
                         branchName="widget1"
+                        onWidgetMount={ this._onWidgetMount }
                     />
 
                 </Fdiv>
@@ -242,7 +245,7 @@ class App extends React.Component{
         )
     }
 
-    componentDidMount() {
+    _onWidgetMount() {
         this._Router.focus("widget1")
     }
 }

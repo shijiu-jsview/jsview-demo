@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 
-import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+
 import {JsvTabWidget} from "../common/JsViewReactWidget/JsvTabWidget"
 import {bodyData, tabData} from "./Data"
 import focusBg from "./images/focus_bg.png"
@@ -22,13 +23,10 @@ class App extends React.Component{
         this._TabRenderItem = this._TabRenderItem.bind(this);
         this._TabOnItemFocus = this._TabOnItemFocus.bind(this);
         this._TabRenderCur = this._TabRenderCur.bind(this);
-
-        this._TabOnEdge = this._TabOnEdge.bind(this);
-        this._ContentOnEdge = this._ContentOnEdge.bind(this);
     }
 
     _Measures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _RenderFocus(item) {
@@ -65,7 +63,7 @@ class App extends React.Component{
     }
 
     _TabMeasures(item) {
-        return item;
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
     _TabRenderItem(item) {
@@ -99,26 +97,13 @@ class App extends React.Component{
         this.setState({ curTab: item.id })
     }
 
-    _TabOnEdge(rect_info) {
-        if (rect_info.direction === EdgeDirection.bottom) {
-            this._Router.focus("widget1")
-        }
-    }
-
-    _ContentOnEdge(rect_info) {
-        if (rect_info.direction === EdgeDirection.top) {
-            this._Router.focus("tab1")
-        }
-    }
-
     render() {
         return (
             <FdivRoot>
                 <Fdiv style={{backgroundColor: "#005500", width: 1280, height: 720}} router={this._Router}>
                     <JsvTabWidget
-                        direction={ HORIZONTAL }
+                        flowDirection={ HORIZONTAL }
                         branchName={ "tabwidget" }
-                        tabPosition={EdgeDirection.top}
 
                         tabStyle={{left: 64, top: 100, width: 1280, height: 50}}
                         tabRenderItem={ this._TabRenderItem }
@@ -134,6 +119,7 @@ class App extends React.Component{
                         bodyMeasures={ this._Measures }
                         bodyPadding={{left: 64, right: 64, top: 20, height: 20}}
                         bodyData={ bodyData }
+                        onWidgetMount={ () => { this._Router.focus("tabwidget") }}
                     />
                 </Fdiv>
             </FdivRoot>

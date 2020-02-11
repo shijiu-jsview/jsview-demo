@@ -10,10 +10,6 @@ class App extends React.Component{
 		this.state = {rain:null}
 
 	}
-	onRainDown(rain) {
-		alert(this.state)
-	}
-
 	render() {
 		return (
 			<FdivRoot style={{width: "1920px", height: "920px"}}>
