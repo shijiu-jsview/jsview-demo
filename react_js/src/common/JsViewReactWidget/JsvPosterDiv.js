@@ -1,5 +1,11 @@
 import React from 'react';
 
+/*
+	<JsvPosterDiv style={{...otherStyle, backgroundImage:`url:${海报url}`}}>
+		...Holder内容
+	</JsvPosterDiv>
+ */
+
 class JsvPosterDiv extends React.Component{
 	constructor(props) {
 		super(props);
