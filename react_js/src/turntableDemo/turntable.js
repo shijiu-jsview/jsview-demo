@@ -4,6 +4,7 @@ import {Fdiv} from "jsview-react"
 class Turntable extends React.Component{
     constructor(props) {
         super(props);
+        this._PreviousRadian = "";
         this._OkUrl = 'http://111.32.138.57/cms/loong/prize/2019-10-25/0bffaf6b-95bd-42cb-b55e-1f8d2d2ed543.png';
         this._BgUrl = 'http://111.32.138.57/cms/loong/prize/2019-10-24/b390f264-d3da-4cf9-bfe0-1ed540c03d70.png'
         this.state = {
@@ -32,6 +33,24 @@ class Turntable extends React.Component{
         let animation_name = "rotate"+radian;
         let animation = animation_name +" 4s cubic-bezier(0,0.55,0.55,0.78)";
         this.state.radian = radian;
+
+        const ballRunKeyframes = this.getkeyframes('rotate'+this._PreviousRadian);
+        if (ballRunKeyframes != null) {
+            ballRunKeyframes.styleSheet.deleteRule(ballRunKeyframes.index);
+            const runkeyframes = ` @keyframes rotate${radian} {
+                              from {
+                                transform: rotate3d(0,0,1,0deg);
+                              }
+                              to {
+                                transform: rotate3d(0,0,1,${radian}deg);
+                              }
+                            }`;
+            if (ballRunKeyframes.styleSheet) {
+                ballRunKeyframes.styleSheet.insertRule(runkeyframes, ballRunKeyframes.index);
+            }
+            this._PreviousRadian = radian;
+        }
+
         this.setState({animation:animation});
     }
 
@@ -55,6 +74,21 @@ class Turntable extends React.Component{
         return distance + 360*8;
     }
 
+    getkeyframes(name) {
+        var animation = null;
+        // 获取所有的style
+        var ss = document.styleSheets;
+        for (var i = 0; i < ss.length; ++i) {
+            const item = ss[i];
+            if (item.cssRules[0] && item.cssRules[0].name && item.cssRules[0].name === name) {
+                animation = {};
+                animation.cssRule = item.cssRules[0];
+                animation.styleSheet = ss[i];
+                animation.index = 0;
+            }
+        }
+        return animation;
+    }
     getCoordByAngle(angle) {
         let radian =  (Math.PI/180.0)*angle;
         //以正北面为0度起点计算指定角度所对应的圆周上的点的坐标：
@@ -80,7 +114,7 @@ class Turntable extends React.Component{
 		}
         return true;
 	}
-	
+
 	render(){
 		return (
 			<Fdiv onKeyDown={this._onKeyDown} branchName={this.props.branchName}>
