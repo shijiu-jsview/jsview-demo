@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle, SWidgetDispatcher} from "jsview-react"
+import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle, SWidgetDispatcher} from "../../jsview-utils/jsview-react/index.js"
 import TitleMetroWidget from './TitleMetroWidget'
 
 class FlowMetroWidget extends React.Component {

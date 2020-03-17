@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Turntable from "./turntable"
-import {Router, Fdiv, FdivRoot} from "jsview-react"
+import {Router, Fdiv, FdivRoot} from "../jsview-utils/jsview-react/index.js"
 
 class App extends React.Component{
 	constructor(props) {
