@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "core-js": "^3.6.4",
     "md5": "2.2.1",
     "react": "16.12.0",
     "react-dom": "16.12.0",
