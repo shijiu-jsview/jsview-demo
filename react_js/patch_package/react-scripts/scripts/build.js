@@ -126,32 +126,12 @@ checkBrowsers(paths.appPath, isInteractive)
       stats.toJson({ all: false, assets: true })
            .assets.filter(asset => asset.name.startsWith('static/js') && asset.name.endsWith('js'))
            .map(asset => {
-               const fromJsFile = path.join(buildFolder, asset.name);
-               const jsvAppContents = fs.readFileSync(fromJsFile);
+               const jsFile = path.join(buildFolder, asset.name);
+               console.log("Updating " + jsFile);
+               var jsvAppContents = fs.readFileSync(jsFile);
                const jsvAppMd5 = md5(jsvAppContents);
-               const toJsFile = path.join(buildFolder, path.dirname(asset.name), "app.jsv." + jsvAppMd5.substr(0, 8) + ".js");
-               console.log("Move " + fromJsFile + " => " + toJsFile);
-               fs.moveSync(fromJsFile, toJsFile);
-
-               const fromJsName = path.basename(asset.name);
-               const toJsName = "app.jsv." + jsvAppMd5.substr(0, 8) + ".js";
-               stats.toJson({ all: false, assets: true })
-                    .assets.map(asset => {
-                        if(!asset.name.match(/\.html$|\.js$|\.json$|\.map$/)) {
-                            return;
-                        }
-                        if(asset.name.endsWith(fromJsName)) {
-                            return;
-                        }
-
-                        const updateFile = path.join(buildFolder, asset.name);
-                        console.log("Updating " + updateFile);
-                        const originData = fs.readFileSync(updateFile, "utf8");
-                        var updatedData = originData.replace(new RegExp(fromJsName, 'g'), toJsName);
-                        fs.writeFileSync(updateFile, updatedData);
-                    });
-
-
+               jsvAppContents = "/*jsvmd5:" + jsvAppMd5 + "*/" + jsvAppContents;
+               fs.writeFileSync(jsFile, jsvAppContents);
            });
     },
     err => {
