@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { JsvInput, JsvInputDispatcher } from '../common/JsViewReactWidget/JsvInput'
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "jsview-react"
+import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index.js"
 
 class FullKeyboard extends Component {
     constructor(props) {

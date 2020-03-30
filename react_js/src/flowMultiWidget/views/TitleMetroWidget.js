@@ -1,6 +1,6 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "jsview-react"
-import JsvMarquee from "../../common/JsViewReactWidget/JsvMarquee"
+import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index.js"
+import JsvMarquee from "../../jsview-utils/JsViewReactWidget/JsvMarquee"
 const Title = ({text, style}) => {
 	return <div key={text} style={style}>{text}</div>
 };

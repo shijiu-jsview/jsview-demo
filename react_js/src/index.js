@@ -1,4 +1,6 @@
-import 'jsview-react'
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+import './jsview-utils/jsview-react/index.js'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 allprojects {
     repositories {
         flatDir {
@@ -9,11 +8,11 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.qcode.jsview.sample_with_button"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -53,13 +52,12 @@ android {
 }
 
 dependencies {
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     // JsView接口
     implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.365")
 
     // 预制引擎，加速第一次启动（可选）
-    implementation(name: "jsview.core-embedded-370.full", ext:"aar")
-
+    implementation(name: "jsview_386_service_386", ext:"aar")
     // 内部测试
 //    implementation project(path: ':jsview:jsview.view')
 }

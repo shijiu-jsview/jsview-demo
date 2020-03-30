@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import "./App.css"
-import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
-import {JsvSquareNinePatch} from '../common/JsViewReactWidget/JsvNinePatch'
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index.js"
+import {JsvSquareNinePatch} from '../jsview-utils/JsViewReactWidget/JsvNinePatch'
 
 import borderImgPath from './border.png';
 let data = [

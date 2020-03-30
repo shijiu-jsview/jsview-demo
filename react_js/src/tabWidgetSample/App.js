@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 
-import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "jsview-react"
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index.js"
 
-import {JsvTabWidget} from "../common/JsViewReactWidget/JsvTabWidget"
+import {JsvTabWidget} from "../jsview-utils/JsViewReactWidget/JsvTabWidget"
 import {bodyData, tabData} from "./Data"
 import focusBg from "./images/focus_bg.png"
 import foucsNinePatch from "./images/nine_patch_focus.png"
