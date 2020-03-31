@@ -4,7 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "qr.js":"0.0.0",
+    "qr.js": "0.0.0",
     "core-js": "3.6.4",
     "md5": "2.2.1",
     "react": "16.12.0",

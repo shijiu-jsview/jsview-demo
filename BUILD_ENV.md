@@ -17,4 +17,4 @@
 
 6. 界面启动后，修改js代码后，可以按遥控器的两次菜单键进行reload操作
 
-7. 更改react js中的样例，请参照react_js/index.js中的import的说明
+7. 更改react js中的样例，请参照react_js/src/main.js中的import的说明
