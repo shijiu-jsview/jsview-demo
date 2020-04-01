@@ -1,11 +1,4 @@
 apply plugin: 'com.android.application'
-allprojects {
-    repositories {
-        flatDir {
-            dirs "src/libs/"
-        }
-    }
-}
 
 android {
     compileSdkVersion 28
@@ -53,11 +46,13 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     // JsView接口
     implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.365")
 
     // 预制引擎，加速第一次启动（可选）
-    implementation(name: "jsview_386_service_386", ext:"aar")
+    implementation fileTree(include: '*.aar', dir: 'src/aar-libs')
+
     // 内部测试
 //    implementation project(path: ':jsview:jsview.view')
 }
