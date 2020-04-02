@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Role from "./role"
 import RedPacket from "./red_packet.js"
-import {Router, Fdiv, FdivRoot} from "../jsview-utils/jsview-react/index.js"
+import {Router, Fdiv, FdivRoot} from "../jsview-utils/jsview-react/index_widget.js"
 
 class App extends React.Component{
 	constructor(props) {

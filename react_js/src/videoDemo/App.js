@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
 function throttle(callback, limit) {
 	let wait = false;
 	return () => {

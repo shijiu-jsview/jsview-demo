@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 
 import {JsvTabWidget} from "../jsview-utils/JsViewReactWidget/JsvTabWidget"
 import {bodyData, tabData} from "./Data"

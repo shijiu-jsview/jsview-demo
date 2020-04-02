@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget"
 
 let frameTemplate = [
     {

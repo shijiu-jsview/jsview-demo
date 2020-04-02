@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import PropTypes from "prop-types"
 import QRCodeImpl from 'qr.js/lib/QRCode'
-import {Forge, ForgeExtension} from "../jsview-react/index.js"
+import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
 
 const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
 function convertStr(str) {
