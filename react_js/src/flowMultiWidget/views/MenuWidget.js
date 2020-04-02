@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index.js"
+import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index_widget.js"
 const Title = ({text, style}) => {
 	return <div style={style}>{text}</div>
 };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Router, BaseDispatcher, Fdiv, EdgeDirection} from "../jsview-react/index.js"
+import {Router, BaseDispatcher, Fdiv, EdgeDirection} from "../jsview-react/index_widget.js"
 
 let defaultCharList = []
 for (let i = 0; i < 36; ++i) {

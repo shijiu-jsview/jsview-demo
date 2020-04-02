@@ -1,5 +1,5 @@
 import React from 'react';
-import {Fdiv} from "../jsview-utils/jsview-react/index.js"
+import {Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
 
 class Turntable extends React.Component{
     constructor(props) {

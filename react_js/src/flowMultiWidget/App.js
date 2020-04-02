@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Router, FdivRoot, Fdiv} from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
 import FlowMetroWidget from './views/FlowMetroWidget'
 import MenuWidget from './views/MenuWidget'
 import {HomePageData, HomePageStyle, MenuPageStyle, MenuPageData} from './DataProvader'

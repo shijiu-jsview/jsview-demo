@@ -1,5 +1,5 @@
 import React from 'react';
-import {Fdiv} from "../jsview-utils/jsview-react/index.js"
+import {Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
 class Role extends React.Component{

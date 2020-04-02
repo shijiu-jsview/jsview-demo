@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Router, Fdiv, FdivRoot, SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "../jsview-react/index.js"
+import {Router, Fdiv, FdivRoot, SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "../jsview-react/index_widget.js"
 
 let directionPair = {}
 directionPair[EdgeDirection.left] = EdgeDirection.right;

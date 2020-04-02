@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
 import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee"
 import {HomePageData,PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT} from "./DataProvader"
 import borderImgPath from './images/nine_patch_focus.png';

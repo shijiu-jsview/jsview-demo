@@ -6,7 +6,7 @@ import DivGroup2 from './div/DivGroup2.js';
 import TextGroup from './text/TextGroup.js';
 import AnimGroup from './anim/AnimGroup.js';
 import AVGroup from './av/AVGroup.js';
-import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index.js"
+import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import {TitleFont} from './CommonFontStyle'
 
 class App extends React.Component {
