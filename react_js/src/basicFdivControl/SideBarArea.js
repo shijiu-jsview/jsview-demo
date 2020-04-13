@@ -28,6 +28,8 @@ class SideBarArea extends FocusBlock {
 			// 焦点与之前相同时也可以重复调用，焦点管理系统内容有是否变更的判断处理
 			this.changeFocus("/sideBar/L" + this._line + "C" + this._column);
 		}
+
+		return key_used;
 	}
 
 	// FocusBlock: 使用renderContent函数进行布局，而不是render

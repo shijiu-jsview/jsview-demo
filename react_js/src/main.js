@@ -11,12 +11,13 @@ import './index.css';
 // import App from './videoDemo/App'; // 视频播放控制demo
 // import App from './tabWidgetSample/App'; // 多TAB主页场景Demo
 // import App from './turntableDemo/App'; // 轮盘游戏demo
-// import App from './showcaseDemo/App'; // 橱窗界面Demo(SimpleWidget的一个使用场景)
+import App from './showcaseDemo/App'; // 橱窗界面Demo(SimpleWidget的一个使用场景)
 // import App from './flowMultiWidget/App' //界面切换demo
 // import App from './InputDemo/App'
 // import App from './ninePatchDemo/App'
 // import App from './routerDemo/App'
-import App from './spriteImage/App'
+// import App from './spriteImage/App'
+// import App from './basicFdivControl/App'
 
 function startApp(confirm_entry) {
 	if(!!window.JsView) { // 如果使用JsView

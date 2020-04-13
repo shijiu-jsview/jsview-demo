@@ -21,7 +21,7 @@ class SideBarBlock extends FocusBlock {
 
 	onKeyDown(ev) {
 		if (ev.keyCode == 37) {
-			// Right key
+			// Left key
 			this.changeFocus("/main/L0C0");
 			EventCenter.emitEvent("ResetMainPosition", null);
 			return true;
