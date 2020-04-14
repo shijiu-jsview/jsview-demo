@@ -44,7 +44,7 @@ class MainAreaBasic extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<div style={this.props.style}>
 				<MainAreaLeftBlock branchName="/main/L0C0" style={{left:0,top:0}}/>
 				<MainAreaRightBlock branchName="/main/L0C1" style={{left:120,top:0}}/>
 				<MainAreaLeftBlock branchName="/main/L1C0" style={{left:0,top:120}}/>

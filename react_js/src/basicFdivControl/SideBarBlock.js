@@ -33,6 +33,7 @@ class SideBarBlock extends FocusBlock {
 	// FocusBlock: 使用renderContent函数进行布局，而不是render
 	renderContent() {
 		return <div style={{
+            ...this.props.style,
 			width:100,
 			height:100,
 			backgroundColor:(this.state.focused ? "rgba(255,0,0,1)":"rgba(0,255,0,1)")

@@ -35,7 +35,7 @@ class SideBarArea extends FocusBlock {
 	// FocusBlock: 使用renderContent函数进行布局，而不是render
 	renderContent() {
 		return (
-			<div>
+			<div style={this.props.style}>
 				<SideBarBlock branchName="/sideBar/L0C0" style={{left:0,top:0}}/>
 				<SideBarBlock branchName="/sideBar/L1C0" style={{left:0,top:120}}/>
 			</div>
