@@ -1,8 +1,9 @@
 import React from 'react';
-import {Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
-class Role extends React.Component{
+import {FocusBlock} from "../demoCommon/BlockDefine"
+
+class Role extends FocusBlock{
     constructor(props) {
         super(props);
 	    this._KiMiNormalImg = "http://oss.image.qcast.cn/demo_images/red_packet_rain/kimi_normal.png";
@@ -22,8 +23,6 @@ class Role extends React.Component{
         this.score_height = 0;
         this.kimi = this._KiMiNormalImg;
         this._CurrentRain = null;
-        this._onKeyDown = this._onKeyDown.bind(this);
-	    this._onKeyUp = this._onKeyUp.bind(this);
 	    this._KeyDownTimer = null;
         this._Step = 25;
 	    this._BoomAudio = null;
@@ -38,8 +37,8 @@ class Role extends React.Component{
 	    }
     }
 
-	_onKeyUp(ev) {
-    	console.log("_onKeyUp in : ", ev);
+	onKeyUp(ev) {
+    	console.log("onKeyUp in : ", ev);
 		if (ev.keyCode === 37 || ev.keyCode === 39) {
 			this._clearTimer();
 			return true;
@@ -47,7 +46,7 @@ class Role extends React.Component{
 		return false;
 	}
 
-    _onKeyDown(ev) {
+    onKeyDown(ev) {
 	    if (ev.keyCode === 37) {
 		    if(this._KeyDownTimer== null) {
 			    this._KeyDownTimer = setInterval(()=>{
@@ -70,7 +69,7 @@ class Role extends React.Component{
         return false;
     }
 
-    render() {
+    renderContent() {
         console.log("role render");
 	    let rain = this.props.rain;
 	    let add_score_visible = "none";
@@ -131,7 +130,7 @@ class Role extends React.Component{
 	    let process_top = 400-this.score_height;
 	    console.log("process_top:", process_top);
         return (
-            <Fdiv onKeyDown={this._onKeyDown} onKeyUp={this._onKeyUp} branchName={this.props.branchName}>
+            <div>
                 <div key="progress-container" style={{
 		            width: 40,
 		            height: 400,
@@ -181,7 +180,7 @@ class Role extends React.Component{
                 }
 	            <audio key="AudioGet" src={ this._AudioGetUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._GetAudio = ref; }}/>
 	            <audio key="AudioBoom" src={ this._AudioBoomUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BoomAudio = ref; }} />
-            </Fdiv>
+            </div>
         )
     }
 }
