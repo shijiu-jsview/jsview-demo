@@ -1,5 +1,7 @@
 import React from 'react';
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
+import { globalHistory } from '../demoCommon/RouterHistory';
+import { FocusBlock } from "../demoCommon/BlockDefine"
+
 function throttle(callback, limit) {
 	let wait = false;
 	return () => {
@@ -13,46 +15,44 @@ function throttle(callback, limit) {
 		}
 	};
 }
-class App extends React.Component{
-  constructor(props) {
-      super(props);
-      this._autoPlay = false;
-      this.state={
-	      play_state:this._autoPlay?"pause":"play",
-          focus_id:0,
-      }
-      this._Router = new Router();
-	  this._OnKeyDown = this._OnKeyDown.bind(this);
-	  this.video = null; // the html5 video
-	  this.play = this.play.bind(this);
-	  this.pause = this.pause.bind(this);
-	  this.seek = this.seek.bind(this);
-	  this.forward = this.forward.bind(this);
-	  this.replay = this.replay.bind(this);
-	  this.handleLoadStart = this.handleLoadStart.bind(this);
-	  this.handleCanPlay = this.handleCanPlay.bind(this);
-	  this.handleCanPlayThrough = this.handleCanPlayThrough.bind(this);
-	  this.handlePlay = this.handlePlay.bind(this);
-	  this.handlePlaying = this.handlePlaying.bind(this);
-	  this.handlePause = this.handlePause.bind(this);
-	  this.handleEnded = this.handleEnded.bind(this);
-	  this.handleWaiting = this.handleWaiting.bind(this);
-	  this.handleSeeking = this.handleSeeking.bind(this);
-	  this.handleSeeked = this.handleSeeked.bind(this);
-	  this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
-	  this.handleError = this.handleError.bind(this);
-	  this.handleSuspend = this.handleSuspend.bind(this);
-	  this.handleAbort = this.handleAbort.bind(this);
-	  this.handleEmptied = this.handleEmptied.bind(this);
-	  this.handleStalled = this.handleStalled.bind(this);
-	  this.handleLoadedMetaData = this.handleLoadedMetaData.bind(this);
-	  this.handleLoadedData = this.handleLoadedData.bind(this);
-	  this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
-	  this.handleRateChange = this.handleRateChange.bind(this);
-	  this.handleVolumeChange = this.handleVolumeChange.bind(this);
-	  this.handleDurationChange = this.handleDurationChange.bind(this);
-	  this.handleProgress = throttle(this.handleProgress.bind(this), 250);
-  }
+class App extends FocusBlock {
+	constructor(props) {
+		super(props);
+		this._autoPlay = false;
+		this.state = {
+			play_state: this._autoPlay ? "pause" : "play",
+			focus_id: 0,
+		}
+		this.video = null; // the html5 video
+		this.play = this.play.bind(this);
+		this.pause = this.pause.bind(this);
+		this.seek = this.seek.bind(this);
+		this.forward = this.forward.bind(this);
+		this.replay = this.replay.bind(this);
+		this.handleLoadStart = this.handleLoadStart.bind(this);
+		this.handleCanPlay = this.handleCanPlay.bind(this);
+		this.handleCanPlayThrough = this.handleCanPlayThrough.bind(this);
+		this.handlePlay = this.handlePlay.bind(this);
+		this.handlePlaying = this.handlePlaying.bind(this);
+		this.handlePause = this.handlePause.bind(this);
+		this.handleEnded = this.handleEnded.bind(this);
+		this.handleWaiting = this.handleWaiting.bind(this);
+		this.handleSeeking = this.handleSeeking.bind(this);
+		this.handleSeeked = this.handleSeeked.bind(this);
+		this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
+		this.handleError = this.handleError.bind(this);
+		this.handleSuspend = this.handleSuspend.bind(this);
+		this.handleAbort = this.handleAbort.bind(this);
+		this.handleEmptied = this.handleEmptied.bind(this);
+		this.handleStalled = this.handleStalled.bind(this);
+		this.handleLoadedMetaData = this.handleLoadedMetaData.bind(this);
+		this.handleLoadedData = this.handleLoadedData.bind(this);
+		this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+		this.handleRateChange = this.handleRateChange.bind(this);
+		this.handleVolumeChange = this.handleVolumeChange.bind(this);
+		this.handleDurationChange = this.handleDurationChange.bind(this);
+		this.handleProgress = throttle(this.handleProgress.bind(this), 250);
+	}
 	// get playback rate
 	get playbackRate() {
 		return this.video.playbackRate;
@@ -100,7 +100,7 @@ class App extends React.Component{
 	play() {
 		const promise = this.video.play();
 		if (promise !== undefined) {
-			promise.catch(() => {}).then(() => {});
+			promise.catch(() => { }).then(() => { });
 		}
 	}
 
@@ -108,7 +108,7 @@ class App extends React.Component{
 	pause() {
 		const promise = this.video.pause();
 		if (promise !== undefined) {
-			promise.catch(() => {}).then(() => {});
+			promise.catch(() => { }).then(() => { });
 		}
 	}
 
@@ -119,7 +119,7 @@ class App extends React.Component{
 
 	// Add a new text track to the video
 	addTextTrack(...args) {
-  	    console.log("addTextTrack");
+		console.log("addTextTrack");
 		this.video.addTextTrack(...args);
 	}
 
@@ -131,10 +131,10 @@ class App extends React.Component{
 	// toggle play
 	togglePlay() {
 		if (this.video.paused == null || this.video.paused) {
-		    this.setState({play_state:"pause"});
+			this.setState({ play_state: "pause" });
 			this.play();
 		} else {
-			this.setState({play_state:"play"});
+			this.setState({ play_state: "play" });
 			this.pause();
 		}
 	}
@@ -208,7 +208,7 @@ class App extends React.Component{
 	// is reached (currentTime == duration)
 	handleEnded(...args) {
 		console.log("handleEnded");
-		this.setState({play_state:"play"});
+		this.setState({ play_state: "play" });
 	}
 
 	// Fired whenever the media begins waiting
@@ -295,118 +295,105 @@ class App extends React.Component{
 		console.log("handleResize")
 	}
 
-  _OnKeyDown(ev) {
-	  switch (ev.keyCode) {
-		  case 13:
-			  switch (this.state.focus_id) {
-				  case 0:
-					  this.togglePlay();
-					  break;
-				  case 1:
-					  this.forward(5);
-					  break;
-				  case 2:
-					  this.replay(5);
-					  break;
-			  }
-			  break;
-		  case 39:
-			  switch (this.state.focus_id) {
-				  case 0:
-					  this.setState({focus_id:1});
-					  break;
-				  case 1:
-					  this.setState({focus_id:2});
-					  break;
-				  case 2:
+	onKeyDown(ev) {
+		switch (ev.keyCode) {
+			case 13:
+				switch (this.state.focus_id) {
+					case 0:
+						this.togglePlay();
+						break;
+					case 1:
+						this.forward(5);
+						break;
+					case 2:
+						this.replay(5);
+						break;
+				}
+				break;
+			case 39:
+				switch (this.state.focus_id) {
+					case 0:
+						this.setState({ focus_id: 1 });
+						break;
+					case 1:
+						this.setState({ focus_id: 2 });
+						break;
+					case 2:
+						break;
+				}
+				break;
+			case 37:
+				switch (this.state.focus_id) {
+					case 0:
+						break;
+					case 1:
+						this.setState({ focus_id: 0 });
+						break;
+					case 2:
+						this.setState({ focus_id: 1 });
+						break;
+				}
+				break;
+			case 27:
+			case 10000:
+				globalHistory.goBack();
+				this.changeFocus("/main");
+				break;
+			default:
+				break;
+		}
 
-					  break;
-			  }
-		  	break;
-		  case 37:
-			  switch (this.state.focus_id) {
-				  case 0:
-					  break;
-				  case 1:
-					  this.setState({focus_id:0});
-					  break;
-				  case 2:
-					  this.setState({focus_id:1});
-					  break;
-			  }
-		  	break;
-		  default:
-		  	break;
-	  }
+		return true;
+	}
 
-	  return true;
-  }
+	_Measures(item) {
+		return item;
+	}
 
-  _Measures(item) {
-      return item;
-  }
+	renderContent() {
+		return (
+			<div style={{ top: 0, left: 0 }} >
+				<video style={{ top: 50, left: (1280 - 800) / 2, width: 800, height: 500 }}
+					loop={true}
+					autoPlay
+					playsInline
+					src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
+					ref={(c) => {
+						console.log("video:", c);
+						this.video = c;
+					}}
+					onLoadStart={this.handleLoadStart}
+					onWaiting={this.handleWaiting}
+					onCanPlay={this.handleCanPlay}
+					onCanPlayThrough={this.handleCanPlayThrough}
+					onPlaying={this.handlePlaying}
+					onEnded={this.handleEnded}
+					onSeeking={this.handleSeeking}
+					onSeeked={this.handleSeeked}
+					onPlay={this.handlePlay}
+					onPause={this.handlePause}
+					onProgress={this.handleProgress}
+					onDurationChange={this.handleDurationChange}
+					onError={this.handleError}
+					onSuspend={this.handleSuspend}
+					onAbort={this.handleAbort}
+					onEmptied={this.handleEmptied}
+					onStalled={this.handleStalled}
+					onLoadedMetadata={this.handleLoadedMetaData}
+					onLoadedData={this.handleLoadedData}
+					onTimeUpdate={this.handleTimeUpdate}
+					onRateChange={this.handleRateChange}
+					onVolumeChange={this.handleVolumeChange}
+				/>
+				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
 
-  render(){
-      return(
-          <FdivRoot>
-              <Fdiv style={{top: 0, left: 0}} router={this._Router} >
-                  <video  style={{top: 50, left:(1280-800)/2, width:800,height:500}}
-                          loop={true}
-                          autoPlay
-                          playsInline
-                          src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
-                          ref={(c) => {
-                              console.log("video:",c);
-	                          this.video = c;
-                          }}
-                          onLoadStart={this.handleLoadStart}
-                          onWaiting={this.handleWaiting}
-                          onCanPlay={this.handleCanPlay}
-                          onCanPlayThrough={this.handleCanPlayThrough}
-                          onPlaying={this.handlePlaying}
-                          onEnded={this.handleEnded}
-                          onSeeking={this.handleSeeking}
-                          onSeeked={this.handleSeeked}
-                          onPlay={this.handlePlay}
-                          onPause={this.handlePause}
-                          onProgress={this.handleProgress}
-                          onDurationChange={this.handleDurationChange}
-                          onError={this.handleError}
-                          onSuspend={this.handleSuspend}
-                          onAbort={this.handleAbort}
-                          onEmptied={this.handleEmptied}
-                          onStalled={this.handleStalled}
-                          onLoadedMetadata={this.handleLoadedMetaData}
-                          onLoadedData={this.handleLoadedData}
-                          onTimeUpdate={this.handleTimeUpdate}
-                          onRateChange={this.handleRateChange}
-                          onVolumeChange={this.handleVolumeChange}
-                  />
-                  <Fdiv router={this._Router} branchName={ "playorpause" }
-                        style={{textAlign:"center",fontSize:"30px",left: (1280-800)/2, top: 600, width: 120, height: 40,
-                            backgroundColor: `${this.state.focus_id == 0?"#FFFF00":"#a8a8a8"}`}}
-                        onKeyDown={(ev) => {
-		                    return this._OnKeyDown(ev)
-	                    }}>{this.state.play_state}</Fdiv>
+				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 1 ? "#FFFF00" : "#a8a8a8"}` }}>forward</div>
 
-                  <Fdiv router={this._Router} branchName={ "forward" }
-                        style={{textAlign:"center",fontSize:"30px",left: (1280-800)/2 + 140, top: 600, width: 120, height: 40,
-                            backgroundColor: `${this.state.focus_id == 1?"#FFFF00":"#a8a8a8"}`}}
-                        onKeyDown={(ev) => {
-		                    return this._OnKeyDown(ev)
-	                    }}>forward</Fdiv>
-	              <Fdiv router={this._Router} branchName={ "replay" }
-	                    style={{textAlign:"center",fontSize:"30px",left: (1280-800)/2 + 140+140, top: 600, width: 120, height: 40,
-		                    backgroundColor: `${this.state.focus_id == 2?"#FFFF00":"#a8a8a8"}`}}
-	                    onKeyDown={(ev) => {
-		                    return this._OnKeyDown(ev)
-	                    }}>replay</Fdiv>
-              </Fdiv>
-          </FdivRoot>
-      )
-  }
-  componentDidMount() {
-      this._Router.focus("playorpause");
-  }
+				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 2 ? "#FFFF00" : "#a8a8a8"}` }}>replay</div>
+			</div>
+		)
+	}
+	componentDidMount() {
+	}
 }
 export default App;
