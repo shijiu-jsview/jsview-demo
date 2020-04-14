@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import "./App.css"
 import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import {JsvSquareNinePatch} from '../jsview-utils/JsViewReactWidget/JsvNinePatch'
-
+import {FocusBlock} from "../demoCommon/BlockDefine"
 import borderImgPath from './border.png';
+import {globalHistory} from '../demoCommon/RouterHistory';
+
 let data = [
     {
         "blocks":{
@@ -34,11 +36,9 @@ let data = [
     },
 ]
 
-class App extends Component {
+class App extends FocusBlock {
     constructor(props) {
         super(props);
-        this._Router = new Router();
-
         this._Measures = this._Measures.bind(this);
         this._RenderItem = this._RenderItem.bind(this);
         this._RenderFocus = this._RenderFocus.bind(this);
@@ -97,10 +97,10 @@ class App extends Component {
         })
     }
 
-    render() {
+    renderContent() {
         return(
-            <FdivRoot>
-                <Fdiv style={{width: 1280, height: 720, backgroundColor: '#009999'}} router={this._Router}>
+            <div>
+                <div style={{width: 1280, height: 720, backgroundColor: '#009999'}}>
                     <SimpleWidget 
                     width={ 1000 } 
                     height={ 400 } 
@@ -115,8 +115,8 @@ class App extends Component {
                     measures={ this._Measures }
                     onWidgetMount={ this._onWidgetMount }
                     padding={{left: 50, right: 50, top: 50, height: 50}}
-                    branchName={ "widget1" }/>
-                </Fdiv>
+                    branchName={ this.props.branchName + "/swidget" }/>
+                </div>
                 <div style={{top: 50, left: 50}}>
                     <JsvSquareNinePatch
                         style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH}}
@@ -127,12 +127,24 @@ class App extends Component {
                         animTime={ 0.2 }
                         />
                 </div>
-            </FdivRoot>
+            </div>
         )
     }
 
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+            return true;
+        }
+        return false;
+    }
+
     _onWidgetMount() {
-        this._Router.focus('widget1')
+    }
+
+    componentDidMount() {
+        this.changeFocus(this.props.branchName + "/swidget");
     }
 }
 
