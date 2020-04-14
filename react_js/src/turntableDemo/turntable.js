@@ -1,7 +1,8 @@
 import React from 'react';
-import {Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
+import {globalHistory} from '../demoCommon/RouterHistory';
+import {FocusBlock} from "../demoCommon/BlockDefine"
 
-class Turntable extends React.Component{
+class Turntable extends FocusBlock{
     constructor(props) {
         super(props);
         this._PreviousRadian = "";
@@ -23,8 +24,6 @@ class Turntable extends React.Component{
             contentVisible:"hidden",
             content: '',
         }
-
-		this._onKeyDown = this._onKeyDown.bind(this);
     }
 
     // 处理旋转的关键方法
@@ -102,7 +101,7 @@ class Turntable extends React.Component{
         return {x:x, y:y};
     }
 
-	_onKeyDown(ev) {
+	onKeyDown(ev) {
     	console.log("ev", ev);
     	if (ev.keyCode === 13) {
             // 只要抽奖没有结束，就不让再次抽奖
@@ -111,13 +110,16 @@ class Turntable extends React.Component{
             const distance = this.distanceToStop();
             this.rotatePanel(distance);//调用处理旋转的方法
 
-		}
+		} else if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+        }
         return true;
 	}
 
-	render(){
+	renderContent(){
 		return (
-			<Fdiv onKeyDown={this._onKeyDown} branchName={this.props.branchName}>
+			<div>
 				<div style={{
                     transform: 'rotate3d(0,0,1,'+this.state.radian+'deg)',
                     animation: this.state.animation,
@@ -169,8 +171,7 @@ class Turntable extends React.Component{
                 }}>
                     按【OK】键或PC上的【Enter】键，启动抽奖
                 </div>
-
-			</Fdiv>
+			</div>
 		)
 	}
 }
