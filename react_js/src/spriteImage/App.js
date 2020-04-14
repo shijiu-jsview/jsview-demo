@@ -1,8 +1,8 @@
 /*
  * @Author: ChenChanghua
  * @Date: 2020-04-07 11:25:20
- * @LastEditTime: 2020-04-09 18:32:22
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-04-14 15:08:59
+ * @LastEditors: ChenChanghua
  * @Description: In User Settings Edit
  * @FilePath: /jsview-export-react-sample/react_js/src/spriteImage/App.js
  */
@@ -11,6 +11,8 @@ import React from 'react';
 import JsvSpriteAnim from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import sprite from './images/sprite.png'
 import cat_run from './images/cat_run.png'
+import {globalHistory} from '../demoCommon/RouterHistory';
+import {FocusBlock} from "../demoCommon/BlockDefine"
 
 let sprite_info = {"frames": [
 
@@ -50,7 +52,7 @@ let sprite_info = {"frames": [
     }
 }
 
-class App extends React.Component{
+class App extends FocusBlock{
     constructor(props) {
         super(props);
 
@@ -58,11 +60,21 @@ class App extends React.Component{
             stop: false
         }
     }
-	render() {
+
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+            return true;
+        }
+        return false;
+    }
+
+	renderContent() {
         return(
             <JsvSpriteAnim 
             spriteInfo={sprite_info} 
-            loop="2" 
+            loop="infinite" 
             viewSize={{w:1024, h:512}} 
             duration={0.8} 
             onAnimEnd= {function() {console.log("anim end")}}
