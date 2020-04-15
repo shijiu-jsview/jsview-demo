@@ -294,7 +294,9 @@ class App extends FocusBlock {
 	handleResize(...args) {
 		console.log("handleResize")
 	}
-
+	stop() {
+		this.video.unload();
+	}
 	onKeyDown(ev) {
 		switch (ev.keyCode) {
 			case 13:
@@ -392,6 +394,9 @@ class App extends FocusBlock {
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 2 ? "#FFFF00" : "#a8a8a8"}` }}>replay</div>
 			</div>
 		)
+	}
+	componentWillUnmount() {
+		this.stop();
 	}
 	componentDidMount() {
 	}
