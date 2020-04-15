@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Router, Fdiv, FdivRoot, SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle} from "../jsview-react/index_widget.js"
+import {SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle, FdivWrapper} from "../jsview-react/index_widget.js"
 
 let directionPair = {}
 directionPair[EdgeDirection.left] = EdgeDirection.right;
@@ -60,7 +60,7 @@ class TabItem extends React.Component{
 
  }
 
-class JsvTabWidget extends Component{
+class JsvTabWidget extends FdivWrapper{
     constructor(props) {
         super(props);
         this._tabOnEdge = this._tabOnEdge.bind(this);
@@ -73,12 +73,10 @@ class JsvTabWidget extends Component{
         this._tabRenderItem = this._tabRenderItem.bind(this);
         this._updateTabItem = this._updateTabItem.bind(this);
         this._getTabPosition = this._getTabPosition.bind(this);
-        this._onFocus = this._onFocus.bind(this);
         this._dispatcherMap = new Map();
         this._dispatcherMap.set("tab", new SWidgetDispatcher());
         this._dispatcherMap.set("body", new SWidgetDispatcher());
 
-        this._Router = new Router();
         this.state = {
             curId: 0,
             frameData: this._generateFrameData(this.props.bodyData)
@@ -148,7 +146,7 @@ class JsvTabWidget extends Component{
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: 0
             });
-            this._Router.focus(this.props.branchName + "_body");
+            this.changeFocus(this.props.branchName + "/body");
         } else {
             if (this.props.onEdge) {
                 this.props.onEdge(edge_info);
@@ -162,7 +160,7 @@ class JsvTabWidget extends Component{
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: this.state.curId
             })
-            this._Router.focus(this.props.branchName + "_tab");
+            this.changeFocus(this.props.branchName + "/tab");
         } else {
             if (this.props.onEdge) {
                 this.props.onEdge(edge_info);
@@ -197,7 +195,7 @@ class JsvTabWidget extends Component{
                 data: enter_rect
             };
             this._dispatcherMap.get("body_" + item.tabIndex).dispatch(focus_info);
-            this._Router.focus(this.props.branchName + "_body" + item.tabIndex);
+            this.changeFocus(this.props.branchName + "/body" + item.tabIndex);
         });
     }
 
@@ -216,7 +214,7 @@ class JsvTabWidget extends Component{
                 renderItem={ this.props.bodyRenderItem }
                 renderFocus={ this.props.bodyRenderFocus }
                 measures={ this.props.bodyMeasures }
-                branchName={ this.props.branchName + "_body" + item.tabIndex }/>
+                branchName={ this.props.branchName + "/body" + item.tabIndex }/>
         )
     }
 
@@ -224,31 +222,31 @@ class JsvTabWidget extends Component{
         return item;
     }
 
-    _onFocus() {
+    onFocus() {
         if (this.props.initFocusComponent === "body") {
             this._dispatcherMap.get("body").dispatch({
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: this.state.curId
             })
-            this._Router.focus(this.props.branchName + "_body")
+            this.changeFocus(this.props.branchName + "/body")
         } else {
             this._dispatcherMap.get("tab").dispatch({
                 type: SWidgetDispatcher.Type.setFocusId,
                 data: this.state.curId
             })
-            this._Router.focus(this.props.branchName + "_tab")
+            this.changeFocus(this.props.branchName + "/tab")
         }
     }
 
-    render(){
+    renderContent(){
         return(
-            <Fdiv branchName={ this.props.branchName } router={ this._Router } onFocus={ this._onFocus} >
+            <div>
                 <SimpleWidget 
                     left={ this.props.tabStyle.left }
                     top={ this.props.tabStyle.top }
                     width={ this.props.tabStyle.width }
                     height={ this.props.tabStyle.height }
-                    branchName={ this.props.branchName + "_tab" }
+                    branchName={ this.props.branchName + "/tab" }
                     dispatcher={ this._dispatcherMap.get("tab") }
                     direction={ this.props.flowDirection }
                     data={ this.props.tabData }
@@ -260,6 +258,7 @@ class JsvTabWidget extends Component{
                     renderBlur={ this.props.tabRenderBlur }
                     measures={ this.props.tabMeasures }
                     onEdge={ this._tabOnEdge }
+                    onClick={ this.props.tabOnClick }
                     onItemFocus={ this._tabOnItemFocus }
                     initFocusId={ this.props.initFocusId }/>
 
@@ -269,19 +268,20 @@ class JsvTabWidget extends Component{
                     width={ this.props.bodyStyle.width }
                     height={ this.props.bodyStyle.height }
                     dispatcher={ this._dispatcherMap.get("body") }
-                    branchName={this.props.branchName + "_body"}
+                    branchName={this.props.branchName + "/body"}
                     direction={ this.props.flowDirection }
                     slideStyle={ SlideStyle.wholePage }
                     onFocus={ this.props.bodyOnFocus }
                     onBlur={ this.props.bodyOnBlur }
                     onEdge={ this._bodyOnEdge }
+                    onClick={ this.props.bodyOnClick}
                     onItemFocus={ this._frameOnItemFocus }
                     renderItem={ this._frameRenderItem }
                     measures={ this._frameMeasures }
                     initFocusId={ this.props.initFocusId }
                     data={ this.state.frameData }
                     baseAnchor={{id : this.state.curId, type: "start"}}/>
-            </Fdiv>
+            </div>
         )
     }
 
