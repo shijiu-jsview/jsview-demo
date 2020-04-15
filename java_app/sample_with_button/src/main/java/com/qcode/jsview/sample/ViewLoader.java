@@ -16,6 +16,9 @@ public class ViewLoader {
 	private JsView mJsView;
 	private long mLastKeyUpTime = 0;
 
+	private static final String sJsViewEngineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
+	private static final String sAppUrl = BuildConfig.APP_URL;
+
 	public ViewLoader(Activity activity) {
 		mActivity = activity;
 
@@ -69,9 +72,9 @@ public class ViewLoader {
 
 		// JsView加载URL
 		mJsView.loadUrl2(
-				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r670.jsv.3a1d74c1.js",
+				sJsViewEngineUrl,
 				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
-				"http://192.168.0.32:3000/static/js/bundle.js");
+				sAppUrl);
 
 		mJsView.requestFocus();
 	}

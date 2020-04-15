@@ -16,13 +16,19 @@ android {
 
     signingConfigs {
         release {
-            // Assign in keystore.gradle
-            storeFile file("?"); storePassword "?";
-            keyAlias "?"; keyPassword "?";
+            storeFile file("$rootProject.projectDir/demo_keystore/qcode_export_demo_release.keystore");
+            storePassword 'demo@1234';
+            keyAlias 'qcode_export_demo_release';
+            keyPassword 'demo@1234';
         }
     }
 
     buildTypes {
+        buildTypes.each {
+            it.buildConfigField("String", "APP_URL", "\"${CustomConfig_AppUrl}\"")
+            it.buildConfigField("String", "JSVIEW_JS_ENGINE_URL", "\"${CustomConfig_EngineUrl}\"")
+        }
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -48,7 +54,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // JsView接口
-    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.365")
+    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.397")
 
     // 预制引擎，加速第一次启动（可选）
     implementation fileTree(include: '*.aar', dir: 'src/aar-libs')
@@ -56,11 +62,5 @@ dependencies {
     // 内部测试
 //    implementation project(path: ':jsview:jsview.view')
 }
-
-// 内部测试时需要关掉
-project.ext {
-    keystoreDirPath = "$rootProject.projectDir/demo_keystore/"
-}
-apply from: "$rootProject.projectDir/demo_keystore/keystore.gradle"
 
 
