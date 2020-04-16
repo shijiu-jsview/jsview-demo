@@ -91,6 +91,11 @@ let demoInfos = [
     //     "path": "/users/longText",
     //     "class": lazy(() => import('../longText/App')),
     // },
+    {
+        "name": "砸金蛋活动",
+        "path": "/users/smashEggs",
+        "class": lazy(() => import('../smashEggs/App')),
+    }
 ]
 
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
