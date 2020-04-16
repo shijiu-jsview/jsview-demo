@@ -85,7 +85,12 @@ let demoInfos = [
         "name": "焦点切换demo",
         "path": "/users/basicFdivControl",
         "class": lazy(() => import('../basicFdivControl/App')),
-    }
+    },
+    {
+        "name": "长文字",
+        "path": "/users/longText",
+        "class": lazy(() => import('../longText/App')),
+    },
 ]
 
 let color = ["#823935", "#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
@@ -112,10 +117,14 @@ class HomePageProxy extends React.Component{
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this._FocusControl;
+
+
+        this._FocusControl = null;
+
+
         this.state = {
             "homepageDisplay": "visible"
-        }
+        };
     }
 
     render() {

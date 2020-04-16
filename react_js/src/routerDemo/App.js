@@ -7,13 +7,13 @@ import {
 	useHistory
 } from "react-router-dom";
 import { createMemoryHistory } from 'history';
+import { globalHistory } from '../demoCommon/RouterHistory';
+import { FocusBlock } from "../demoCommon/BlockDefine"
+const LazyGreen = lazy(() => import('./green'));
+const LazyRed = lazy(() => import('./red'));
 
 const global_history = createMemoryHistory();
 
-const LazyGreen = lazy(() => import('./green'));
-const LazyRed = lazy(() => import('./red'));
-import { globalHistory } from '../demoCommon/RouterHistory';
-import { FocusBlock } from "../demoCommon/BlockDefine"
 
 class App extends FocusBlock {
 	constructor(props) {
