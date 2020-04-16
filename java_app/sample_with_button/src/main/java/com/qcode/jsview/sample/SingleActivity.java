@@ -32,7 +32,7 @@ public class SingleActivity extends Activity {
 	}
 
 	@Override
-	public boolean onKeyUp(int keycode, KeyEvent event) {
+	public boolean onKeyDown(int keycode, KeyEvent event) {
 		boolean consume_back_key = false;
 
 		// 当JsView未使用按键时，通过返回键退出JsView

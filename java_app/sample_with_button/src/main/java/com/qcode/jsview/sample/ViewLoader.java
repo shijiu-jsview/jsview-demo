@@ -29,7 +29,7 @@ public class ViewLoader {
 	public void onKeyDownForDebugReload(KeyEvent event) {
 		if (mJsView != null) {
 			// 双击菜单键进行view的reload操作
-			if (event.getKeyCode() != KeyEvent.KEYCODE_MENU || event.getAction() != KeyEvent.ACTION_UP) {
+			if (event.getKeyCode() != KeyEvent.KEYCODE_MENU || event.getAction() != KeyEvent.ACTION_DOWN) {
 				return;
 			}
 
@@ -46,7 +46,7 @@ public class ViewLoader {
 
 	public boolean onKeyDownForCloseJsView(KeyEvent event) {
 		if (mJsView != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_UP) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				clearPreJsView();
 			}
 			return true;
