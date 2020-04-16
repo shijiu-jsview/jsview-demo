@@ -93,7 +93,7 @@ let demoInfos = [
     // },
 ]
 
-let color = ["#823935", "#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
+let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
 for (let item of demoInfos) {
     item.color = color[index];

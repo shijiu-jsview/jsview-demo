@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-13 17:00:41
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-04-14 14:39:45
+ * @LastEditTime: 2020-04-16 13:52:32
  * @Description: file content
  */
 
@@ -34,15 +34,18 @@ class Home extends FdivWrapper {
 
     _RenderFocus(item) {
         return (
-            <div style={{backgroundColor: "#FFF5F7", width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30}}>
-                { item.name }
+            <div>
+                <div style={{backgroundColor: "#0000FF", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT}}></div>
+                <div style={{backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30}}>
+                    { item.name }
+                </div>
             </div>
         )
     }
 
     _RenderItem(item) {
         return (
-            <div style={{backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#FFFFFF", fontSize: 30}}>
+            <div style={{backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30}}>
                 { item.name }
             </div>
         )
@@ -55,7 +58,7 @@ class Home extends FdivWrapper {
 	// 直接集成自FdivWrapper的场合，使用renderContent而不是render进行布局
 	renderContent() {
         return (
-            <div style={{top: 0, left: 0}}>
+            <div style={{top: 10, left: 10}}>
                     <SimpleWidget 
                       width={ 1280 } 
                       height={ 720 } 
@@ -65,6 +68,7 @@ class Home extends FdivWrapper {
                       renderFocus={ this._RenderFocus }
                       onClick={ this._onClick }
                       measures={ this._Measures }
+                      padding={{top: 10, left: 10}}
                       branchName={ "home_page" }
                       onWidgetMount={ this._onWidgetMount }
                     />
