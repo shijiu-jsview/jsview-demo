@@ -18,7 +18,7 @@ DESCRIPTION
 
 OPTIONS
 		--appurl=URL of APP js, such as http://192.168.0.32:3000/static/js/bundle.js
-		
+		--showmode= Js Page show mode, such as 0:demo and 1:activity
 		-h, --help
                  Optional. Print help infomation and exit successfully.;
     ';
@@ -32,7 +32,7 @@ parse_options()
 	fi
 
 	options=`$cmd_getopt -o h \
-			 --long "appurl:,help" \
+			 --long "appurl:,help,showmode:" \
 			 -n 'make-apk' -- "$@"`;
 	eval set -- "$options"
 	while true; do
@@ -43,6 +43,10 @@ parse_options()
 				;;
 			(--appurl)
 				APP_URL=$2;
+				shift 2;
+				;;
+			(--showmode)
+				SHOW_MODE=$2;
 				shift 2;
 				;;
 			(- | --)
@@ -59,6 +63,9 @@ parse_options()
 	if [[ $APP_URL == "NO_SET" ]]; then
 		logerr_and_exit "ERROR: No app url set..."
 	fi
+	if [[ $SHOW_MODE == "NO_SET" ]]; then
+                logerr_and_exit "ERROR: No show mode set..."
+        fi
 }
 
 logdbg()
@@ -135,7 +142,7 @@ main_run()
 	cd "java_app";
 		
 	# 编译APK
-	./gradlew :sample_with_button:assembleRelease -PCustomConfig_AppUrl=${APP_URL}
+	./gradlew :sample_with_button:assembleRelease -PCustomConfig_AppUrl=${APP_URL} -PCustomConfig_ShowMode=${SHOW_MODE}
 	
 	# 拷贝文件
 	cp ./sample_with_button/build/outputs/apk/release/sample_with_button-release.apk ./main_app_${CODE_REVISION}.apk

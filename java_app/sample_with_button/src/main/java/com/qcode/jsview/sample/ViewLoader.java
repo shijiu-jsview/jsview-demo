@@ -75,7 +75,6 @@ public class ViewLoader {
 				sJsViewEngineUrl,
 				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
 				sAppUrl);
-
 		mJsView.requestFocus();
 	}
 

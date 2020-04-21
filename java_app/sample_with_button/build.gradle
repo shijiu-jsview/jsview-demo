@@ -27,6 +27,7 @@ android {
         buildTypes.each {
             it.buildConfigField("String", "APP_URL", "\"${CustomConfig_AppUrl}\"")
             it.buildConfigField("String", "JSVIEW_JS_ENGINE_URL", "\"${CustomConfig_EngineUrl}\"")
+            it.buildConfigField("String", "SHOW_MODE", "\"${CustomConfig_ShowMode}\"")
         }
 
         release {
