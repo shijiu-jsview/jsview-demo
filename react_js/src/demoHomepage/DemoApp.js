@@ -119,7 +119,7 @@ class HomePageProxy extends React.Component{
     }
 }
 
-class App extends React.Component {
+class DemoApp extends React.Component {
     constructor(props) {
         super(props);
         this._FocusControl = null;
@@ -162,4 +162,4 @@ class App extends React.Component {
     }
 }
 
-export default App;
+export default DemoApp;

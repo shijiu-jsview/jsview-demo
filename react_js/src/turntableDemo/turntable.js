@@ -1,7 +1,7 @@
 import React from 'react';
 import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"
-
+import CommonApi from "../api/CommonApi"
 class Turntable extends FocusBlock{
     constructor(props) {
         super(props);
@@ -26,11 +26,12 @@ class Turntable extends FocusBlock{
         }
     }
 
+
     // 处理旋转的关键方法
     rotatePanel(distance) {
         let radian = distance;
         let animation_name = "rotate"+radian;
-        let animation = animation_name +" 4s cubic-bezier(0,0.55,0.55,0.78)";
+        let animation = animation_name +" 5s cubic-bezier(0,0.55,0.55,0.78)";
         this.state.radian = radian;
 
         const ballRunKeyframes = this.getkeyframes('rotate'+this._PreviousRadian);
@@ -111,8 +112,8 @@ class Turntable extends FocusBlock{
             this.rotatePanel(distance);//调用处理旋转的方法
 
 		} else if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
             this.changeFocus("/main");
+            globalHistory.goBack();
         }
         return true;
 	}
@@ -174,6 +175,14 @@ class Turntable extends FocusBlock{
 			</div>
 		)
 	}
+
+    onFocus() {
+        this._PreviousRadian = CommonApi.getTurntableRotate();
+    }
+
+    onBlur() {
+        CommonApi.saveTurntableRotate(this._PreviousRadian);
+    }
 }
 
 export default Turntable;

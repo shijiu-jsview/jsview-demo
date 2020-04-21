@@ -4,7 +4,7 @@ import './jsview-utils/jsview-react/index_widget.js'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from "./demoHomepage/App"
+import App from "./transitPage/App"
 
 function startApp(confirm_entry) {
 	if(!!window.JsView) { // 如果使用JsView
