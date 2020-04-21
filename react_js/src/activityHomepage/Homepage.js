@@ -172,6 +172,7 @@ class Home extends FdivWrapper {
 	}
 
 	onBlur() {
+        this._preBackground = null;
 	}
 }
 
