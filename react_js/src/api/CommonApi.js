@@ -1,10 +1,6 @@
 /**
  * Created by luocf on 2020/4/21.
  */
-
-if (typeof window.jRuntime != "undefined") {
-    window.jRuntime = {};
-}
 var TurntableRotate = "";
 class CommonApi {
     static getShowMode() {
