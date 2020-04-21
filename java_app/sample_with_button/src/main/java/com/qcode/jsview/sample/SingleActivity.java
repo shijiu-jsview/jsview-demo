@@ -27,8 +27,9 @@ public class SingleActivity extends Activity {
 
 		mViewLoader = new ViewLoader(this);
 
+		mViewLoader.startJsView();
 		// 创建"点击开始"按钮
-		StarterButton.setupButton(this, mViewLoader);
+		//StarterButton.setupButton(this, mViewLoader);
 	}
 
 	@Override

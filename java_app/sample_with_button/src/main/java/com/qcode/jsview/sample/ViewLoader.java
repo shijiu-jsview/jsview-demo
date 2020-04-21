@@ -45,12 +45,13 @@ public class ViewLoader {
 	}
 
 	public boolean onKeyDownForCloseJsView(KeyEvent event) {
+		/* TODO 删除按钮后该代码注释掉
 		if (mJsView != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				clearPreJsView();
 			}
 			return true;
-		}
+		}*/
 
 		return false;
 	}
