@@ -26,8 +26,8 @@ class App extends FocusBlock {
 
 	onKeyDown(ev) {
 		if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
             this.changeFocus("/main");
+            globalHistory.goBack();
         }
         return true;
 	}
@@ -57,5 +57,6 @@ class App extends FocusBlock {
 	componentDidMount() {
 		this.changeFocus(this.props.branchName + "/role" )
 	}
+
 }
 export default App;

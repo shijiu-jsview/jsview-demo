@@ -26,7 +26,6 @@ class RedPacket extends Component {
 	}
 
 	componentDidMount() {
-
 		this.startGame();
 		this.startTimer();
 	}
@@ -41,6 +40,8 @@ class RedPacket extends Component {
 			clearInterval(this._TimerOutId);
 			this._TimerOutId=null;
 		}
+
+        this.stopGame();
 	}
 
 	addRandomItemList() {
@@ -83,21 +84,24 @@ class RedPacket extends Component {
 
 			if (timer === 0) {
 				this.stopGame();
+                this.setState({itemList:[]});
+
 			}
 		}, 1000)
 	}
 
 	startGame() {
+		console.log("startGame ");
 		if (this._BgAudio != null) {
 			this._BgAudio.play();
 		}
 		this._IsRunning = true;
 		this._Refresh();
 	}
-
+	
 	stopGame() {
+        console.log("stopGame ");
 		this._IsRunning = false;
-		this.setState({itemList:[]});
 		if (this._TimerOutId != null){
 			clearInterval(this._TimerOutId);
 			this._TimerOutId=null;
@@ -163,10 +167,12 @@ class RedPacket extends Component {
 						)
 					})
 				}
+
 				<audio key="AudioBg" src={ this._AudioBgUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BgAudio = ref; }} />
 			</div>
 		);
 	}
+
 }
 
 export default RedPacket;
