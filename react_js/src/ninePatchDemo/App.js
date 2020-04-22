@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import "./App.css"
 import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import {JsvSquareNinePatch} from '../jsview-utils/JsViewReactWidget/JsvNinePatch'
-
+import {FocusBlock} from "../demoCommon/BlockDefine"
 import borderImgPath from './border.png';
+import {globalHistory} from '../demoCommon/RouterHistory';
+
 let data = [
     {
         "blocks":{
@@ -34,11 +36,9 @@ let data = [
     },
 ]
 
-class App extends Component {
+class App extends FocusBlock {
     constructor(props) {
         super(props);
-        this._Router = new Router();
-
         this._Measures = this._Measures.bind(this);
         this._RenderItem = this._RenderItem.bind(this);
         this._RenderFocus = this._RenderFocus.bind(this);
@@ -59,10 +59,10 @@ class App extends Component {
     }
 
     _RenderFocus(item) {
-        let x = -5 + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
-        let y = -5 + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
+        let x = (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
+        let y = (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
         return (
-            <div style={{animation: "focusScale 0.2s", backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * (1/ 0.9), height: (item.blocks.h - 10)* (1/ 0.9), color: "#FF0000"}}>
+            <div style={{backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * 1.05, height: (item.blocks.h - 10)* 1.05, color: "#FF0000", animation: "focusScale 0.2s"}}>
                 { item.content }
             </div>
         )
@@ -70,7 +70,7 @@ class App extends Component {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{animation: "blurScale 0.2s",backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF"}}
+            <div style={{backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 0.2s"}}
             onAnimationEnd={callback}>
                 { item.content }
             </div>
@@ -87,20 +87,20 @@ class App extends Component {
 
     _onItemFocus(item, edgeInfo, queryObj) {
         let position = queryObj.queryPosition(queryObj.id)
-        let x = 50 + position.xPos + -5 + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
-        let y = 50 + position.yPos + -5 + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
+        let x = position.xPos + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
+        let y = position.yPos + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
         this.setState({
             focusFrameX: x,
             focusFrameY: y,
-            focusFrameW: (item.blocks.w - 10) * (1/ 0.9),
-            focusFrameH: (item.blocks.h - 10) * (1/ 0.9),
+            focusFrameW: (item.blocks.w - 10) * 1.05,
+            focusFrameH: (item.blocks.h - 10) * 1.05,
         })
     }
 
-    render() {
+    renderContent() {
         return(
-            <FdivRoot>
-                <Fdiv style={{width: 1280, height: 720, backgroundColor: '#009999'}} router={this._Router}>
+            <div>
+                <div style={{width: 1280, height: 720, backgroundColor: '#009999'}}>
                     <SimpleWidget 
                     width={ 1000 } 
                     height={ 400 } 
@@ -115,22 +115,36 @@ class App extends Component {
                     measures={ this._Measures }
                     onWidgetMount={ this._onWidgetMount }
                     padding={{left: 50, right: 50, top: 50, height: 50}}
-                    branchName={ "widget1" }/>
-                </Fdiv>
-                <JsvSquareNinePatch
-                    style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH}}
-                    imageUrl={ borderImgPath }
-                    imageWidth={ 81 }
-                    contentWidth={ 21 }
-                    borderOutset={ 10 }
-                    animTime={ 0.2 }
-                    />
-            </FdivRoot>
+                    branchName={ this.props.branchName + "/swidget" }/>
+                </div>
+                <div style={{top: 50, left: 50}}>
+                    <JsvSquareNinePatch
+                        style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH}}
+                        imageUrl={ borderImgPath }
+                        imageWidth={ 81 }
+                        contentWidth={ 21 }
+                        borderOutset={ 10 }
+                        animTime={ 0.2 }
+                        />
+                </div>
+            </div>
         )
     }
 
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+            return true;
+        }
+        return false;
+    }
+
     _onWidgetMount() {
-        this._Router.focus('widget1')
+    }
+
+    componentDidMount() {
+        this.changeFocus(this.props.branchName + "/swidget");
     }
 }
 

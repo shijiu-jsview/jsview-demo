@@ -1,0 +1,54 @@
+*{
+  padding:0;
+  margin:0;
+}
+div{
+  position: absolute;
+  background-size: 100% 100%;
+  white-space: pre-line;
+}
+
+img{
+  position: absolute;
+}
+@keyframes itemScale {
+  from {
+    transform:scale3d(0.808,0.8,1.0);
+    transform-origin:center bottom;
+  }
+  to {
+    transform:scale3d(1.0,1.0,1.0);
+    transform-origin:center bottom;
+  }
+}
+
+@keyframes itemBlurScale {
+  from {
+    transform:scale3d(1.24,1.25,1.0);
+    transform-origin:center bottom;
+  }
+  to {
+    transform:scale3d(1.0,1.0,1.0);
+    transform-origin:center bottom;
+  }
+}
+
+
+@keyframes bgInOpacity0 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bgInOpacity1 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

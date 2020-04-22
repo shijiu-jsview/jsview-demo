@@ -1,0 +1,16 @@
+@keyframes swing-hammer {
+    0% {
+        transform: rotate3d(0,0,1,10deg);
+        transform-origin: bottom right;
+    }
+
+    30% {
+        transform: rotate3d(0,0,1,-28deg);
+        transform-origin: bottom right;
+    }
+
+    100% {
+        transform: rotate3d(0,0,1,0deg);
+        transform-origin: bottom right;
+    }
+}

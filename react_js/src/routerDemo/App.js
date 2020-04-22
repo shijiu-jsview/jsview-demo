@@ -7,13 +7,15 @@ import {
 	useHistory
 } from "react-router-dom";
 import { createMemoryHistory } from 'history';
-
-const global_history = createMemoryHistory();
-
+import { globalHistory } from '../demoCommon/RouterHistory';
+import { FocusBlock } from "../demoCommon/BlockDefine"
 const LazyGreen = lazy(() => import('./green'));
 const LazyRed = lazy(() => import('./red'));
 
-class App extends React.Component {
+const global_history = createMemoryHistory();
+
+
+class App extends FocusBlock {
 	constructor(props) {
 		super(props);
 
@@ -31,7 +33,15 @@ class App extends React.Component {
 		}, 2000);
 	}
 
-	render() {
+	onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+        }
+        return true;
+	}
+	
+	renderContent() {
 		return (
 			<Router history={global_history} >
 				<div>

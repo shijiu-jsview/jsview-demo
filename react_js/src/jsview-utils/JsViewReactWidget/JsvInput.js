@@ -10,6 +10,12 @@ class CharacterSizeMeasure extends Component{
     constructor(props) {
         super(props);
         this._SizeMap = {};
+        this._RefCallback = value => element => {
+            //unmount的时候会调用ref函数，传值为null
+            if (element) {
+                this._SizeMap[value] = element.clientWidth / 20 
+            }
+        }
     }
 
     shouldComponentUpdate() {
@@ -23,7 +29,7 @@ class CharacterSizeMeasure extends Component{
                     this.props.charList.map((value) => {
                         //精确测量，画20个取平均
                         return(
-                            <div key={value} style={{ ...this.props.style, visibility: "hidden" }} ref={ (element) => { this._SizeMap[value] = element.clientWidth / 20 } }>
+                            <div key={value} style={{ ...this.props.style, visibility: "hidden" }} ref={ this._RefCallback(value) }>
                                 {value.repeat(20)}
                             </div>
                         )

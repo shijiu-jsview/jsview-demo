@@ -1,6 +1,8 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index_widget.js"
+import {SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index_widget.js"
 import JsvMarquee from "../../jsview-utils/JsViewReactWidget/JsvMarquee"
+import { FocusBlock } from "../../demoCommon/BlockDefine"
+
 const Title = ({text, style}) => {
 	return <div key={text} style={style}>{text}</div>
 };
@@ -22,10 +24,9 @@ const ItemImage = ({key, style, onAnimationEnd = null}) => {
 	return <div key={key} style={style} onAnimationEnd={onAnimationEnd}></div>;
 }
 
-class TitleMetroWidget extends React.Component {
+class TitleMetroWidget extends FocusBlock {
 	constructor(props) {
 		super(props);
-		this._Router = new Router();
 		this._Measures = this._Measures.bind(this);
 		this._RenderItem = this._RenderItem.bind(this);
 		this._RenderFocus = this._RenderFocus.bind(this);
@@ -53,10 +54,10 @@ class TitleMetroWidget extends React.Component {
 		});
 
 		return (
-			<Fdiv>
+			<div>
 				<ItemImage style={image_style}/>
 				<ItemTitle focus={true} text={item.content.title} style={this.props.pageTheme.content.title.focusStyle}/>
-			</Fdiv>
+			</div>
 		)
 	}
 
@@ -67,12 +68,12 @@ class TitleMetroWidget extends React.Component {
 			height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
 		});
 		return (
-			<Fdiv>
+			<div>
 				<ItemImage style={image_style}
 					onAnimationEnd={callback}>
 				</ItemImage>
 				<ItemTitle focus={false} text={item.content.title} style={this.props.pageTheme.content.title.normalStyle}/>
-			</Fdiv>
+			</div>
 		)
 	}
 
@@ -83,22 +84,23 @@ class TitleMetroWidget extends React.Component {
 			height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
 		});
 		return (
-			<Fdiv>
+			<div>
 				<ItemImage style={image_style}/>
 				<ItemTitle focus={false} text={item.content.title} style={this.props.pageTheme.content.title.normalStyle}/>
-			</Fdiv>
+			</div>
 		)
 	}
 
-	render() {
+	onFocus() {
+		this.changeFocus(this.props.branchName + "/titleM");
+	}
+
+	renderContent() {
 		console.log("render TitleMetroWidget");
 		return (
-			<Fdiv style={this.props.style} branchName={this.props.branchName}
-			      onFocus={ () => {
-				      this._Router.focus("titleM");
-			      }} router={this._Router}>
+			<div style={this.props.style}>
 				<Title text={this.props.title} style={this.props.pageTheme.title.style}/>
-				<Fdiv style={{left: this.props.pageTheme.content.left, top: this.props.pageTheme.content.top}}>
+				<div style={{left: this.props.pageTheme.content.left, top: this.props.pageTheme.content.top}}>
 					<SimpleWidget
 						width={ this.props.pageTheme.content.width }
 						height={ this.props.pageTheme.content.height}
@@ -112,10 +114,10 @@ class TitleMetroWidget extends React.Component {
 						renderItem={ this._RenderItem }
 						renderFocus={ this._RenderFocus }
 						measures={ this._Measures }
-						branchName="titleM"
+						branchName={this.props.branchName + "/titleM"}
 					/>
-				</Fdiv>
-			</Fdiv>
+				</div>
+			</div>
 		)
 	}
 

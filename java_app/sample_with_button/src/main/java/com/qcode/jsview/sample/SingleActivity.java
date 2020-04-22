@@ -27,12 +27,13 @@ public class SingleActivity extends Activity {
 
 		mViewLoader = new ViewLoader(this);
 
+		mViewLoader.startJsView();
 		// 创建"点击开始"按钮
-		StarterButton.setupButton(this, mViewLoader);
+		//StarterButton.setupButton(this, mViewLoader);
 	}
 
 	@Override
-	public boolean onKeyUp(int keycode, KeyEvent event) {
+	public boolean onKeyDown(int keycode, KeyEvent event) {
 		boolean consume_back_key = false;
 
 		// 当JsView未使用按键时，通过返回键退出JsView

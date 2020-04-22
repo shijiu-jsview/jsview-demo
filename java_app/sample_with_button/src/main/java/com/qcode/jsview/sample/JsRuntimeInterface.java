@@ -14,7 +14,11 @@ public class JsRuntimeInterface {
 	public JsRuntimeInterface(Context ctx) {
 		mContext = ctx;
 	}
-
+	@JavascriptInterface
+	public String getShowMode() {
+		//0:demo 1:activity;
+		return BuildConfig.SHOW_MODE;
+	}
 	@JavascriptInterface
 	public String test(String data) {
 		Log.i(TAG, "JsRuntime.test data=" + data);

@@ -16,6 +16,9 @@ public class ViewLoader {
 	private JsView mJsView;
 	private long mLastKeyUpTime = 0;
 
+	private static final String sJsViewEngineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
+	private static final String sAppUrl = BuildConfig.APP_URL;
+
 	public ViewLoader(Activity activity) {
 		mActivity = activity;
 
@@ -26,7 +29,7 @@ public class ViewLoader {
 	public void onKeyDownForDebugReload(KeyEvent event) {
 		if (mJsView != null) {
 			// 双击菜单键进行view的reload操作
-			if (event.getKeyCode() != KeyEvent.KEYCODE_MENU || event.getAction() != KeyEvent.ACTION_UP) {
+			if (event.getKeyCode() != KeyEvent.KEYCODE_MENU || event.getAction() != KeyEvent.ACTION_DOWN) {
 				return;
 			}
 
@@ -42,12 +45,13 @@ public class ViewLoader {
 	}
 
 	public boolean onKeyDownForCloseJsView(KeyEvent event) {
+		/* TODO 删除按钮后该代码注释掉
 		if (mJsView != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_UP) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				clearPreJsView();
 			}
 			return true;
-		}
+		}*/
 
 		return false;
 	}
@@ -69,10 +73,9 @@ public class ViewLoader {
 
 		// JsView加载URL
 		mJsView.loadUrl2(
-				"http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r670.jsv.3a1d74c1.js",
+				sJsViewEngineUrl,
 				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
-				"http://192.168.0.32:3000/static/js/bundle.js");
-
+				sAppUrl);
 		mJsView.requestFocus();
 	}
 

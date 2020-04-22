@@ -8,13 +8,14 @@ import AnimGroup from './anim/AnimGroup.js';
 import AVGroup from './av/AVGroup.js';
 import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import {TitleFont} from './CommonFontStyle'
+import {globalHistory} from '../demoCommon/RouterHistory';
+import {FocusBlock} from "../demoCommon/BlockDefine"
 
-class App extends React.Component {
+class App extends FocusBlock {
     constructor(props) {
         super(props);
         console.log("App.constructor().");
 
-        this._onKeyDown = this.onKeyDown.bind(this);
         this._FdivRouter = new Router();
 
         this.state = {
@@ -37,15 +38,19 @@ class App extends React.Component {
         } else if (ev.keyCode === 40) {
             // 'Down' key down
             this.setState({offsetY: this.state.offsetY - 30})
+        } else if (ev.keyCode == 27 || ev.keyCode === 10000) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
         }
+        return true;
     }
 
     componentDidMount() {
         console.log("App.componentDidMount(). time=" + Date.now());
-        this._FdivRouter.focus("main");
+        // this._FdivRouter.focus("main");
     }
 
-    render() {
+    renderContent() {
         console.log("App.render(). time=" + Date.now());
 
         const rootStyle = {
@@ -55,37 +60,37 @@ class App extends React.Component {
         const itemHeight = 160;
         const marginLeft = 20;
 
-        return (<FdivRoot><Fdiv router={this._FdivRouter}>
-                <Fdiv branchName="main" onKeyDown={this._onKeyDown}>
-                    <div style={{ ...rootStyle,
-                        top: 10, left: 10,
-                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
-                    }}>
-                        <div key="ContentArea" style={{top:this.state.offsetY, left:this.state.offsetX}}>
-                            <div style={{top:20, left:marginLeft}}>
-                                <Title style={{ ...rootStyle }}
-                                       contentTop='20px' contentLeft= {marginLeft + 'px'}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                <DivGroup1 style={{ ...rootStyle}}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                <DivGroup2 style={{ ...rootStyle, left:itemWidth}}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                <TextGroup style={{ ...rootStyle, left:itemWidth * 2}}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                <AnimGroup style={{ ...rootStyle, left:itemWidth * 3}}
-                                       itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                                {/*<AVGroup style={{ ...rootStyle, left:itemWidth * 4}}*/}
-                                       {/*itemWidth = {itemWidth} itemHeight = {itemHeight}/>*/}
-                            </div>
+        return (
+            <div>
+                <div style={{ ...rootStyle,
+                    top: 10, left: 10,
+                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                }}>
+                    <div key="ContentArea" style={{top:this.state.offsetY, left:this.state.offsetX}}>
+                        <div style={{top:20, left:marginLeft}}>
+                            <Title style={{ ...rootStyle }}
+                                    contentTop='20px' contentLeft= {marginLeft + 'px'}
+                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                            <DivGroup1 style={{ ...rootStyle}}
+                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                            <DivGroup2 style={{ ...rootStyle, left:itemWidth}}
+                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                            <TextGroup style={{ ...rootStyle, left:itemWidth * 2}}
+                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                            <AnimGroup style={{ ...rootStyle, left:itemWidth * 3}}
+                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                            {/*<AVGroup style={{ ...rootStyle, left:itemWidth * 4}}*/}
+                                    {/*itemWidth = {itemWidth} itemHeight = {itemHeight}/>*/}
                         </div>
                     </div>
-                    <div style={{...TitleFont, color: 'rgba(255, 0, 0, 1)',
-                        top:650, left:900,
-                        width:280, height:20}}>
-                        》》按上下左右键可调整视图位置《《
-                    </div>
-                </Fdiv>
-        </Fdiv></FdivRoot>);
+                </div>
+                <div style={{...TitleFont, color: 'rgba(255, 0, 0, 1)',
+                    top:650, left:900,
+                    width:280, height:20}}>
+                    》》按上下左右键可调整视图位置《《
+                </div>
+            </div>
+        );
     }
 }
 

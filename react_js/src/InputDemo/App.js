@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
-import {Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
+import {SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
+import {globalHistory} from '../demoCommon/RouterHistory';
+import {FocusBlock} from "../demoCommon/BlockDefine"
 
-class FullKeyboard extends Component {
+class FullKeyboard extends FocusBlock {
     constructor(props) {
         super(props);
-        this._Router = new Router();
         this._Data = this._initData();
         this._ScaleRate = 1.05;
 
@@ -88,9 +89,12 @@ class FullKeyboard extends Component {
         }
     }
 
-    render() {
+    onFocus() {
+        this.changeFocus(this.props.branchName + "/full_keyboard");
+    }
+
+    renderContent() {
         return (
-        <Fdiv branchName={ this.props.branchName } router={ this._Router } onFocus={ () => {this._Router.focus("full_keyboard")}}>
             <SimpleWidget
             width={ 260 }
             height={ 300 }
@@ -103,20 +107,17 @@ class FullKeyboard extends Component {
             renderItem={ this._renderItem }
             renderFocus={ this._renderFocus }
             measures={ this._measures }
-            branchName={ "full_keyboard" }
+            branchName={ this.props.branchName + "/full_keyboard" }
             />
-        </Fdiv>
         )
     }
 }
 
-class App extends Component{
+class App extends FocusBlock{
     constructor(props) {
         super(props);
-        this._Router = new Router();
         this._Ref = null;
         this._dispatcher = new JsvInputDispatcher();
-
         this._keyboardOnEdge = this._keyboardOnEdge.bind(this);
         this._keyboardOnClick = this._keyboardOnClick.bind(this);
         this._editableTextOnEdge = this._editableTextOnEdge.bind(this);
@@ -124,13 +125,13 @@ class App extends Component{
 
     _editableTextOnEdge(edge_info) {
         if (edge_info.direction === EdgeDirection.bottom) {
-            this._Router.focus("keyboard")
+            this.changeFocus(this.props.branchName + "/keyboard")
         }
     }
 
     _keyboardOnEdge(edge_info) {
         if (edge_info.direction === EdgeDirection.top) {
-            this._Router.focus("etext")
+            this.changeFocus(this.props.branchName + "/etext")
         }
     }
 
@@ -151,37 +152,44 @@ class App extends Component{
         }
     }
 
-    render() {
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            globalHistory.goBack();
+            this.changeFocus("/main");
+            return true;
+        }
+        return false;
+    }
+
+    renderContent() {
         return(
-            <FdivRoot>
-                <Fdiv onKeyDown={ this._onKeyDown } style={{backgroundColor: "#000000", width: 1280, height: 720}} router={ this._Router }>
-                    <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000'}}/>
-                    <JsvInput
-                        left={ 50 }
-                        top={ 50 }
-                        height={ 40 }
-                        width={ 150 }
-                        fontStyle={{ color: '#FFFFFF', fontSize: '20px'}}
-                        dispatcher={ this._dispatcher }
-                        branchName="etext"
-                        onEdge={this._editableTextOnEdge}
-                        onTextChange={ (str) => { console.log("ontextChange " + str) }}
-                        onTextOverflow={ () => {console.log("too long")}}
-                        />
-                    <div style={{ top: 100}}>
-                        <FullKeyboard
-                        onClick={ this._keyboardOnClick }
-                        onEdge={ this._keyboardOnEdge }
-                        branchName='keyboard'
-                        />
-                    </div>
-                </Fdiv>
-            </FdivRoot>
+            <div style={{backgroundColor: "#000000", width: 1280, height: 720}}>
+                <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000'}}/>
+                <JsvInput
+                    left={ 50 }
+                    top={ 50 }
+                    height={ 40 }
+                    width={ 150 }
+                    fontStyle={{ color: '#FFFFFF', fontSize: '20px'}}
+                    dispatcher={ this._dispatcher }
+                    branchName={this.props.branchName + "/etext"}
+                    onEdge={this._editableTextOnEdge}
+                    onTextChange={ (str) => { console.log("ontextChange " + str) }}
+                    onTextOverflow={ () => {console.log("too long")}}
+                    />
+                <div style={{ top: 100}}>
+                    <FullKeyboard
+                    onClick={ this._keyboardOnClick }
+                    onEdge={ this._keyboardOnEdge }
+                    branchName= { this.props.branchName + '/keyboard'}
+                    />
+                </div>
+            </div>        
         )
     }
 
     componentDidMount() {
-        this._Router.focus("keyboard");
+        this.changeFocus(this.props.branchName + "/keyboard");
     }
 }
 export default App

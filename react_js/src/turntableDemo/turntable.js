@@ -1,7 +1,8 @@
 import React from 'react';
-import {Fdiv} from "../jsview-utils/jsview-react/index_widget.js"
-
-class Turntable extends React.Component{
+import {globalHistory} from '../demoCommon/RouterHistory';
+import {FocusBlock} from "../demoCommon/BlockDefine"
+import CommonApi from "../api/CommonApi"
+class Turntable extends FocusBlock{
     constructor(props) {
         super(props);
         this._PreviousRadian = "";
@@ -23,15 +24,14 @@ class Turntable extends React.Component{
             contentVisible:"hidden",
             content: '',
         }
-
-		this._onKeyDown = this._onKeyDown.bind(this);
     }
+
 
     // 处理旋转的关键方法
     rotatePanel(distance) {
         let radian = distance;
         let animation_name = "rotate"+radian;
-        let animation = animation_name +" 4s cubic-bezier(0,0.55,0.55,0.78)";
+        let animation = animation_name +" 5s cubic-bezier(0,0.55,0.55,0.78)";
         this.state.radian = radian;
 
         const ballRunKeyframes = this.getkeyframes('rotate'+this._PreviousRadian);
@@ -102,7 +102,7 @@ class Turntable extends React.Component{
         return {x:x, y:y};
     }
 
-	_onKeyDown(ev) {
+	onKeyDown(ev) {
     	console.log("ev", ev);
     	if (ev.keyCode === 13) {
             // 只要抽奖没有结束，就不让再次抽奖
@@ -111,13 +111,16 @@ class Turntable extends React.Component{
             const distance = this.distanceToStop();
             this.rotatePanel(distance);//调用处理旋转的方法
 
-		}
+		} else if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            this.changeFocus("/main");
+            globalHistory.goBack();
+        }
         return true;
 	}
 
-	render(){
+	renderContent(){
 		return (
-			<Fdiv onKeyDown={this._onKeyDown} branchName={this.props.branchName}>
+			<div>
 				<div style={{
                     transform: 'rotate3d(0,0,1,'+this.state.radian+'deg)',
                     animation: this.state.animation,
@@ -169,10 +172,17 @@ class Turntable extends React.Component{
                 }}>
                     按【OK】键或PC上的【Enter】键，启动抽奖
                 </div>
-
-			</Fdiv>
+			</div>
 		)
 	}
+
+    onFocus() {
+        this._PreviousRadian = CommonApi.getTurntableRotate();
+    }
+
+    onBlur() {
+        CommonApi.saveTurntableRotate(this._PreviousRadian);
+    }
 }
 
 export default Turntable;

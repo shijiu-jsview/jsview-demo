@@ -7,11 +7,12 @@
         android:icon="@drawable/icon"
         android:logo="@drawable/icon"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
-        android:label="JsViewReact调试版">
+        android:label="视九H5引擎">
 
         <activity android:name=".SingleActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
             android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

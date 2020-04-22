@@ -1,11 +1,11 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle, SWidgetDispatcher} from "../../jsview-utils/jsview-react/index_widget.js"
+import {SimpleWidget, VERTICAL, SlideStyle, SWidgetDispatcher} from "../../jsview-utils/jsview-react/index_widget.js"
 import TitleMetroWidget from './TitleMetroWidget'
+import { FocusBlock } from "../../demoCommon/BlockDefine"
 
-class FlowMetroWidget extends React.Component {
+class FlowMetroWidget extends FocusBlock {
 	constructor(props) {
 		super(props);
-		this._Router = new Router();
 		this._Measures = this._Measures.bind(this);
 		this._FrameMeasure = this._FrameMeasure.bind(this);
 		this._FrameRenderItem = this._FrameRenderItem.bind(this);
@@ -38,7 +38,7 @@ class FlowMetroWidget extends React.Component {
 			                  dispatcher={ this._dispatcherMap.get("flow_" + item.id) }
 			                  title={this.state.flowData[item.id].title}
 			                  data={this.state.flowData[item.id].data}
-			                  branchName={"item" + item.id}/>
+			                  branchName={this.props.branchName + "/item" + item.id}/>
 		)
 	}
 
@@ -55,22 +55,21 @@ class FlowMetroWidget extends React.Component {
 			};
 			this._dispatcherMap.get("flow_" + item.id).dispatch(focus_info);
 		}
-
-		this._Router.focus("item" + item.id)
+		this.changeFocus(this.props.branchName + "/item" + item.id)
 	}
 
 	_FrameOnItemBlur(item) {
 		console.log("frame item blur " + item.id);
 	}
 
-	render() {
+	onFocus() { 
+		this.changeFocus(this.props.branchName + "/titleFlowMetro")
+	}
+
+	renderContent() {
 		console.log("render FlowMetroWidget");
 		return (
-			<Fdiv style={{top: this.props.style.top, left: this.props.style.left}} branchName={this.props.branchName} router={this._Router}
-			      onFocus={ () => {
-				      this._Router.focus("titleFlowMetro");
-			      }}
-				>
+			<div style={{top: this.props.style.top, left: this.props.style.left}}>
 				<SimpleWidget
 					width={ this.props.style.width }
 					height={ this.props.style.height }
@@ -85,9 +84,9 @@ class FlowMetroWidget extends React.Component {
 					onFocus={ () => {
 						console.log("titleFlowMetro onFocus");
 					}}
-					branchName="titleFlowMetro"
+					branchName={this.props.branchName + "/titleFlowMetro"}
 				/>
-			</Fdiv>
+			</div>
 		)
 	}
 

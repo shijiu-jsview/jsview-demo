@@ -1,5 +1,7 @@
 import React from 'react';
-import {Router, Fdiv, SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index_widget.js"
+import {SimpleWidget, VERTICAL, SlideStyle} from "../../jsview-utils/jsview-react/index_widget.js"
+import { FocusBlock } from "../../demoCommon/BlockDefine"
+
 const Title = ({text, style}) => {
 	return <div style={style}>{text}</div>
 };
@@ -8,10 +10,9 @@ const ItemTitle = ({text, style}) => {
 	return <div style={style}>{text}</div>
 }
 
-class MenuWidget extends React.Component {
+class MenuWidget extends FocusBlock {
 	constructor(props) {
 		super(props);
-		this._Router = new Router();
 		this._OnClick = this._OnClick.bind(this);
 		this._Measures = this._Measures.bind(this);
 		this._RenderItem = this._RenderItem.bind(this);
@@ -28,37 +29,32 @@ class MenuWidget extends React.Component {
 
 	_RenderFocus(item) {
 		return (
-			<Fdiv>
-				<ItemTitle text={item.title} style={this.props.pageTheme.content.title.focusStyle}/>
-			</Fdiv>
+			<ItemTitle text={item.title} style={this.props.pageTheme.content.title.focusStyle}/>
 		)
 	}
 
 	_RenderBlur(item, callback) {
 		return (
-			<Fdiv>
-				<ItemTitle text={item.title} style={this.props.pageTheme.content.title.normalStyle}/>
-			</Fdiv>
+			<ItemTitle text={item.title} style={this.props.pageTheme.content.title.normalStyle}/>
 		)
 	}
 
 	_RenderItem(item) {
 		return (
-			<Fdiv>
-				<ItemTitle text={item.title} style={this.props.pageTheme.content.title.normalStyle}/>
-			</Fdiv>
+			<ItemTitle text={item.title} style={this.props.pageTheme.content.title.normalStyle}/>
 		)
 	}
 
-	render() {
+	onFocus() {
+		this.changeFocus(this.props.branchName + "/MenuList");
+	}
+
+	renderContent() {
 		console.log("render MenuWidget");
 		return (
-			<Fdiv style={this.props.style} branchName={this.props.branchName}
-			      onFocus={ () => {
-				      this._Router.focus("MenuList");
-			      }} router={this._Router}>
+			<div style={this.props.style}>
 				<Title key="title" text={this.props.title} style={this.props.pageTheme.title.style}/>
-				<Fdiv key="content" style={{left: this.props.pageTheme.content.left, top: this.props.pageTheme.content.top}}>
+				<div key="content" style={{left: this.props.pageTheme.content.left, top: this.props.pageTheme.content.top}}>
 					<SimpleWidget
 						width={ this.props.pageTheme.content.width }
 						height={ this.props.pageTheme.content.height}
@@ -73,10 +69,10 @@ class MenuWidget extends React.Component {
 						renderFocus={ this._RenderFocus }
 						measures={ this._Measures }
 						onClick={this._OnClick}
-						branchName="MenuList"
+						branchName={this.props.branchName + "/MenuList"}
 					/>
-				</Fdiv>
-			</Fdiv>
+				</div>
+			</div>
 		)
 	}
 
