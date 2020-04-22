@@ -13,6 +13,7 @@ public class ViewLoader {
 	static private final String TAG = "ViewLoader";
 
 	private Activity mActivity;
+	private CoreSelector mCoreSelector;
 	private JsView mJsView;
 	private long mLastKeyUpTime = 0;
 
@@ -21,6 +22,16 @@ public class ViewLoader {
 
 	public ViewLoader(Activity activity) {
 		mActivity = activity;
+
+		// 调用JsView.requestSdk前，可通过JsView.configEngineVersion来调整加载的Core的版本
+		mCoreSelector = new CoreSelector(activity);
+		int core_selected_revision = mCoreSelector.getSelectedRevision();
+		if (core_selected_revision != -1) {
+			// 参数1为指定Core的版本，如果未指定则使用APK自带的默认版本(aar-libs里面的版本)
+			// 参数2为JsEngine的地址，
+			// PS: JsEngine配合loadUrl使用，若使用loadUrl2加载界面，则此处JsEngine应设置成null
+			JsView.configEngineVersion("" + core_selected_revision, null);
+		}
 
 		// 提前准备SDK, devtools 调试端口为9226
 		JsView.requestSdk(activity, 9226);
@@ -70,6 +81,9 @@ public class ViewLoader {
 		// 加入Runtime接口
 		JsRuntimeInterface js_interface = new JsRuntimeInterface(mActivity);
 		mJsView.addJavascriptInterface(js_interface, "jRuntime"); // 在JS中以，jRuntime.XXXX()，进行调用其中接口
+
+		// 加入Core版本配置的接口
+		mCoreSelector.registerApi(mJsView);
 
 		// JsView加载URL
 		mJsView.loadUrl2(

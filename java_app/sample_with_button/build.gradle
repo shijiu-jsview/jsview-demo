@@ -55,7 +55,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // JsView接口
-    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.403")
+    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.405")
 
     // 预制引擎，加速第一次启动（可选）
     implementation fileTree(include: '*.aar', dir: 'src/aar-libs')
