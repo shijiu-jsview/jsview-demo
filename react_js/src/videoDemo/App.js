@@ -294,9 +294,7 @@ class App extends FocusBlock {
 	handleResize(...args) {
 		console.log("handleResize")
 	}
-	stop() {
-		this.video.unload();
-	}
+
 	onKeyDown(ev) {
 		switch (ev.keyCode) {
 			case 13:
@@ -338,8 +336,8 @@ class App extends FocusBlock {
 				break;
 			case 27:
 			case 10000:
-				globalHistory.goBack();
-				this.changeFocus("/main");
+                globalHistory.goBack();
+                this.changeFocus("/main");
 				break;
 			default:
 				break;
@@ -356,9 +354,6 @@ class App extends FocusBlock {
 		return (
 			<div style={{ top: 0, left: 0 }} >
 				<video style={{ top: 50, left: (1280 - 800) / 2, width: 800, height: 500 }}
-					loop={true}
-					autoPlay
-					playsInline
 					src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
 					ref={(c) => {
 						console.log("video:", c);
@@ -395,10 +390,14 @@ class App extends FocusBlock {
 			</div>
 		)
 	}
+
 	componentWillUnmount() {
-		this.stop();
-	}
+        console.log("Video App componentWillUnmount in");
+
+    }
 	componentDidMount() {
-	}
+        console.log("Video App componentDidMount in");
+
+    }
 }
 export default App;

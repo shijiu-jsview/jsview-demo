@@ -2,7 +2,6 @@
  * Created by luocf on 2019/12/3.
  */
 import React, {Component} from 'react';
-import AudioBgUrl from "./audio/bgMusic.mp3";
 
 
 class RedPacket extends Component {
@@ -21,8 +20,7 @@ class RedPacket extends Component {
 		this._GameTimerID = null;
 		this._IsRunning = false;
 		this._Count = 0;
-		this._AudioBgUrl = AudioBgUrl;
-		this._BgAudio = null;
+
 	}
 
 	componentDidMount() {
@@ -31,6 +29,7 @@ class RedPacket extends Component {
 	}
 
 	componentWillUnmount() {
+		console.log("RedPacket componentWillUnmount in");
 		if (this._GameTimerID != null) {
 			clearInterval(this._GameTimerID);
 			this._GameTimerID = null;
@@ -41,7 +40,7 @@ class RedPacket extends Component {
 			this._TimerOutId=null;
 		}
 
-        this.stopGame();
+		this.stopGame();
 	}
 
 	addRandomItemList() {
@@ -92,9 +91,7 @@ class RedPacket extends Component {
 
 	startGame() {
 		console.log("startGame ");
-		if (this._BgAudio != null) {
-			this._BgAudio.play();
-		}
+
 		this._IsRunning = true;
 		this._Refresh();
 	}
@@ -109,9 +106,7 @@ class RedPacket extends Component {
 		if (this._onRainDown) {
 			this._onRainDown(null);
 		}
-		if (this._BgAudio != null) {
-			this._BgAudio.pause();
-		}
+
 	}
 
 	_RemoveItem(key) {
@@ -167,8 +162,6 @@ class RedPacket extends Component {
 						)
 					})
 				}
-
-				<audio key="AudioBg" src={ this._AudioBgUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BgAudio = ref; }} />
 			</div>
 		);
 	}
