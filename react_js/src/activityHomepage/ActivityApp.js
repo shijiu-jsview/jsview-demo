@@ -15,7 +15,8 @@ import smash_eggs_bg from "./images/smash_eggs_bg.jpg"
 import smash_eggs_icon from "./images/smash_eggs_icon.jpg"
 import turntable_bg from "./images/turntable_bg.jpg"
 import turntable_icon from "./images/turntable_icon.jpg"
-
+import ninesquared_bg from "./images/ninesquared_bg.jpg"
+import ninesquared_icon from "./images/ninesquared_icon.jpg"
 let demoInfos = [
     {
         "name": "红包雨",
@@ -37,6 +38,13 @@ let demoInfos = [
         "background":turntable_bg,
         "class": lazy(() => import('../turntableDemo/App')),
         "icon":turntable_icon,
+    },
+    {
+        "name": "幸运九宫格",
+        "path": "/users/nineSquared",
+        "background":ninesquared_bg,
+        "class": lazy(() => import('../nineSquared/App')),
+        "icon":ninesquared_icon,
     },
 ]
 
