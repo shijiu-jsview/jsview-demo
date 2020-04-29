@@ -95,6 +95,7 @@ let demoInfos = [
         "name": "幸运九宫格",
         "path": "/users/nineSquared",
         "class": lazy(() => import('../nineSquared/App')),
+    },
     {
         "name": "长文字",
         "path": "/users/longText",
