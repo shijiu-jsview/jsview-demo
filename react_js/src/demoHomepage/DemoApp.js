@@ -86,11 +86,6 @@ let demoInfos = [
         "path": "/users/basicFdivControl",
         "class": lazy(() => import('../basicFdivControl/App')),
     },
-    // {
-    //     "name": "长文字",
-    //     "path": "/users/longText",
-    //     "class": lazy(() => import('../longText/App')),
-    // },
     {
         "name": "砸金蛋活动",
         "path": "/users/smashEggs",
@@ -100,6 +95,10 @@ let demoInfos = [
         "name": "幸运九宫格",
         "path": "/users/nineSquared",
         "class": lazy(() => import('../nineSquared/App')),
+    {
+        "name": "长文字",
+        "path": "/users/longText",
+        "class": lazy(() => import('../longText/App')),
     },
 ]
 
