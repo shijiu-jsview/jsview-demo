@@ -100,6 +100,11 @@ let demoInfos = [
         "path": "/users/longText",
         "class": lazy(() => import('../longText/App')),
     },
+    {
+        "name": "碰撞",
+        "path": "/users/collision",
+        "class": lazy(() => import('../collision/App')),
+    },
 ]
 
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];

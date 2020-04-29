@@ -1,0 +1,85 @@
+@keyframes toLeft {
+    from {
+      transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 1.0);
+    }
+    to {
+      transform: translate3d(-300px, 0, 0) scale3d(1.5, 1.5, 1.0);
+    }
+  }
+  
+  @keyframes toRight {
+    from {
+      transform: translate3d(0, 0, 0) scale3d(0.5, 0.5, 1.0);
+    }
+    to {
+      transform: translate3d(300px, 0, 0) scale3d(1.5, 1.5, 1.0);
+    }
+  }
+
+  @keyframes rotate1 {
+      from {
+        transform: rotate3d(0, 0, 1, 0deg);
+      }
+      to {
+        transform: rotate3d(0, 0, 1, 360deg);
+      }
+  }
+
+  @keyframes rotate2 {
+    from {
+      transform: rotate3d(0, 0, -1, 0deg);
+    }
+    to {
+      transform: rotate3d(0, 0, -1, 360deg);
+    }
+}
+
+
+@keyframes scale1 {
+    0% {
+      transform: scale3d(1, 1, 1);
+    }
+    50% {
+        transform: scale3d(2, 2, 1);
+    }
+    100% {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes scale2 {
+    0% {
+        transform: scale3d(1, 1, 1);
+    }
+    50% {
+        transform: scale3d(2, 2, 1);
+    }
+    100% {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+
+@keyframes skew1 {
+    0% {
+      transform: skew(0, 0);
+    }
+    50% {
+      transform: skew(-60deg, 0);
+    }
+    100% {
+        transform: skew(0, 0);
+    }
+}
+
+@keyframes skew2 {
+  0% {
+      transform: skew(0, 0);
+    }
+    50% {
+      transform: skew(60deg, 0);
+    }
+    100% {
+        transform: skew(0, 0);
+    }
+}
