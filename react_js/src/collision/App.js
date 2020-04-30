@@ -6,7 +6,7 @@
  * @Description: file content
  */
 import React from 'react';
-import { Forge } from '../jsview-utils/jsview-react/jsview-js-react/index_widget';
+import { createImpactTracer, createImpactCallback } from "../jsview-utils/jsview-react/index_widget.js"
 import './App.css'
 import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"
@@ -54,9 +54,11 @@ class App extends FocusBlock{
                     <div ref={ele => this._TranslateEle1 = ele} style={{left: 0, width: 100, height: 100, backgroundColor: this.state.tLeftColor, animation: "toRight 5s"}}>
                         view1
                     </div>
-                    <div ref={ele => this._TranslateEle2 = ele} style={{left: 300, width: 100, height: 100, backgroundColor: this.state.tRightColor, animation: "toLeft 5s"}}>
-                        view2
-                    </div>
+	                <div style={{left: 300}}>
+	                    <div ref={ele => this._TranslateEle2 = ele} style={{width: 100, height: 100, backgroundColor: this.state.tRightColor, animation: "toLeft 5s"}}>
+	                        view2
+	                    </div>
+		            </div>
                 </div>
 
                 <div style={{top: 400, left: 100}}>
@@ -90,39 +92,48 @@ class App extends FocusBlock{
     }
 
     componentDidMount() {       
-        let translate_sensor = Forge.CollisionManager.startTrace(this._TranslateEle1, this._TranslateEle2, new Forge.CollisionManager.Callback(
-            () => {
-                this.setState({
-                    "tLeftColor": "#00FFFF",
-                    "tRightColor": "#FFFF00"
-                })
-            },
-            () => {
-                translate_sensor.recycle();
-                this.setState({
-                    "tLeftColor": "#FF0000",
-                    "tRightColor": "#00FF00"
-                })
-            })
-        );
-        
-        let rotate_sensor = Forge.CollisionManager.startTrace(this._RotateEle1, this._RotateEle2, new Forge.CollisionManager.Callback(
-            () => {
-                this.setState({
-                    "rLeftColor": "#00FFFF",
-                    "rRightColor": "#FFFF00"
-                })
-            },
-            () => {
-                rotate_sensor.recycle();
-                this.setState({
-                    "rLeftColor": "#FF0000",
-                    "rRightColor": "#00FF00"
-                })
-            })
+        let translate_sensor = createImpactTracer(this._TranslateEle1, this._TranslateEle2,
+            createImpactCallback(
+                () => {
+                    this.setState({
+                        "tLeftColor": "#00FFFF",
+                        "tRightColor": "#FFFF00"
+                    })
+                },
+                () => {
+                    translate_sensor.Recycle();
+                    this.setState({
+                        "tLeftColor": "#FF0000",
+                        "tRightColor": "#00FF00"
+                    })
+                }
+            )
         );
 
-        let scale_sensor = Forge.CollisionManager.startTrace(this._ScaleEle1, this._ScaleEle2, new Forge.CollisionManager.Callback(
+        let rotate_count = {count:0};
+        let rotate_sensor = createImpactTracer(this._RotateEle1, this._RotateEle2,
+            createImpactCallback(
+                () => {
+                    this.setState({
+                        "rLeftColor": "#00FFFF",
+                        "rRightColor": "#FFFF00"
+                    })
+                },
+                () => {
+                    rotate_count.count++;
+                    if (rotate_count.count >= 2) {
+                        // 旋转有头尾连续两次碰撞
+                        rotate_sensor.Recycle();
+                    }
+                    this.setState({
+                        "rLeftColor": "#FF0000",
+                        "rRightColor": "#00FF00"
+                    })
+                }
+            )
+        );
+
+        let scale_sensor = createImpactTracer(this._ScaleEle1, this._ScaleEle2, createImpactCallback(
             () => {
                 this.setState({
                     "sLeftColor": "#00FFFF",
@@ -130,7 +141,7 @@ class App extends FocusBlock{
                 })
             },
             () => {
-                scale_sensor.recycle();
+                scale_sensor.Recycle();
                 this.setState({
                     "sLeftColor": "#FF0000",
                     "sRightColor": "#00FF00"
@@ -138,7 +149,7 @@ class App extends FocusBlock{
             })
         );
 
-        let skew_sensor = Forge.CollisionManager.startTrace(this._SkewEle1, this._SkewEle2, new Forge.CollisionManager.Callback(
+        let skew_sensor = createImpactTracer(this._SkewEle1, this._SkewEle2, createImpactCallback(
             () => {
                 this.setState({
                     "skLeftColor": "#00FFFF",
@@ -146,7 +157,7 @@ class App extends FocusBlock{
                 })
             },
             () => {
-                skew_sensor.recycle();
+                skew_sensor.Recycle();
                 this.setState({
                     "skLeftColor": "#FF0000",
                     "skRightColor": "#00FF00"
