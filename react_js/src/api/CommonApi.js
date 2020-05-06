@@ -8,7 +8,7 @@ class CommonApi {
         if (typeof window.jRuntime != "undefined" && typeof window.jRuntime.getShowMode != "undefined") {
             return window.jRuntime.getShowMode();
         }
-        return "1";//0:demo, 1:activity
+        return "0";//0:demo, 1:activity
     }
     static saveTurntableRotate(rotate) {
         TurntableRotate = rotate;
