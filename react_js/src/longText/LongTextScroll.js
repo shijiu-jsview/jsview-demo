@@ -22,7 +22,7 @@ class Scroll extends React.Component{
 class LongTextScroll extends FocusBlock{
     constructor(props) {
         super(props);
-        this._Element;
+        // this._Element;
         this.state = {
             scrollY: 0,
             textY: 0,

@@ -14,17 +14,17 @@ import {FocusBlock} from "../demoCommon/BlockDefine"
 class App extends FocusBlock{
     constructor(props) {
         super(props);
-        this._TranslateEle1;
-        this._TranslateEle2;
-
-        this._RotateEle1;
-        this._RotateEle2;
-
-        this._ScaleEle1;
-        this._ScaleEle2;
-
-        this._SkewEle1;
-        this._SkewEle2;
+        // this._TranslateEle1;
+        // this._TranslateEle2;
+        //
+        // this._RotateEle1;
+        // this._RotateEle2;
+        //
+        // this._ScaleEle1;
+        // this._ScaleEle2;
+        //
+        // this._SkewEle1;
+        // this._SkewEle2;
 
         this.state = {
             "tLeftColor": "#FF0000",
