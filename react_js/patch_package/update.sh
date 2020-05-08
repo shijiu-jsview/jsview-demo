@@ -2,8 +2,12 @@
 
 # 已经在package.json做关联,不需在此拷贝了
 #echo UPDATE jsview-react
+if [ -f "../node_modules/jsview-react/folder_mark.txt" ];then
+    rm ../node_modules/jsview-react/folder_mark.txt
+fi
+
 touch jsview-react/folder_mark.txt
-if [ ! -f "jsview-react/folder_mark.txt" ];then
+if [ ! -f "../node_modules/jsview-react/folder_mark.txt" ];then
 	echo UPDATE jsview-react
 	cp -a jsview-react ../node_modules/
 else
