@@ -93,10 +93,10 @@ class Turntable extends FocusBlock{
         let radian =  (Math.PI/180.0)*angle;
         //以正北面为0度起点计算指定角度所对应的圆周上的点的坐标：
         let center = {
-            x:371,//中心点为742/2
-            y:371
+            x:618/2,//中心点为618/2
+            y:618/2
         }
-        let radius = 260;//内圆半径
+        let radius = 216;//内圆半径
         let x = center.x + Math.sin(radian)*radius;
         let y = center.y - Math.cos(radian)*radius;
         return {x:x, y:y};
@@ -125,14 +125,14 @@ class Turntable extends FocusBlock{
                     transform: 'rotate3d(0,0,1,'+this.state.radian+'deg)',
                     animation: this.state.animation,
                     backgroundImage: `url(${this._BgUrl})`,
-                    left:(1280-742)/2,
-                    top:0,
-                    width: 742,
-                    height: 742
+                    left:(1280-618)/2,
+                    top:(720-618)/2,
+                    width: 618,
+                    height: 618
                 }} onAnimationEnd={()=>{
                     this.setState({contentVisible:"visible"});
                 }}>
-				<div style={{position: 'absolute', top: -60, left: -60, width: 742, height: 742}}>,
+				<div style={{position: 'absolute', top: -60, left: -60, width: 618, height: 618}}>,
 						<div style={{transform: 'rotate3d(0,0,1,0deg)', backgroundImage: `url(${ this.state.awards[0].url })`, position: 'absolute', left: this.getCoordByAngle(0).x, top: this.getCoordByAngle(0).y, width: 120, height: 120}}></div>
 						<div style={{transform: 'rotate3d(0,0,1,45deg)', backgroundImage: `url(${ this.state.awards[1].url })`, position: 'absolute', left: this.getCoordByAngle(45).x, top: this.getCoordByAngle(45).y, width: 120, height: 120}}></div>
 						<div style={{transform: 'rotate3d(0,0,1,90deg)', backgroundImage: `url(${ this.state.awards[2].url })`, position: 'absolute', left: this.getCoordByAngle(90).x, top: this.getCoordByAngle(90).y, width: 120, height: 120}}></div>
@@ -142,8 +142,9 @@ class Turntable extends FocusBlock{
 						<div style={{transform: 'rotate3d(0,0,1,270deg)', backgroundImage: `url(${ this.state.awards[6].url })`, position: 'absolute', left: this.getCoordByAngle(270).x, top: this.getCoordByAngle(270).y, width: 120, height: 120}}></div>
 						<div style={{transform: 'rotate3d(0,0,1,315deg)', backgroundImage: `url(${ this.state.awards[7].url })`, position: 'absolute', left: this.getCoordByAngle(315).x, top: this.getCoordByAngle(315).y, width: 120, height: 120}}></div>
 					</div>
+
 				</div>
-                <div style={{backgroundImage: `url(${this._OkUrl})`, position: 'absolute', top: 200, left: (1280-180)/2, width: 180, height: 230
+                <div style={{backgroundImage: `url(${this._OkUrl})`, position: 'absolute', top: (720-192)/2-20, left: (1280-150)/2, width: 150, height: 192
                 }}/>
                 <div style={{
                     visibility:this.state.contentVisible,
@@ -165,7 +166,7 @@ class Turntable extends FocusBlock{
                     position: 'absolute',
                     top: 660,
                     left: 900,
-                    width: 240,
+                    width: 740,
                     height: 100,
                     color: "#0916ff",
                     fontSize:20,
