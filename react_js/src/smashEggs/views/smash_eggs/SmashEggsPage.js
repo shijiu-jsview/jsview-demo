@@ -142,6 +142,7 @@ class SmashEggsPage extends FocusBlock {
                         height={this._PageTheme.SmashEggsPage.widget.height}
                         direction={ HORIZONTAL }
                         data={this.state.data}
+                        padding={{top: 20}}
                         slideStyle={ SlideStyle.seamless }
                         onEdge={ this.props.onEdge}
                         renderBlur={ this._RenderBlur }

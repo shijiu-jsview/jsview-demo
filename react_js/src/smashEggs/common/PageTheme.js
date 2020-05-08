@@ -34,8 +34,8 @@ class PageTheme {
                         verticalAlign: "middle", textAlign: "center",
                     },
                     widget: {
-                        left: 571, top: 443,
-                        width: (191 + 105) * 3, height: 252 + 93,
+                        left: 571, top: 443-20,
+                        width: (191 + 105) * 3, height: 252 + 93+20,
                         hammer: {
                             style: {
                                 left: 134, top: 0, width: 192, height: 147,
