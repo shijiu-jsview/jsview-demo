@@ -2,6 +2,7 @@
  * Created by luocf on 2019/12/3.
  */
 import React, {Component} from 'react';
+import {createImpactTracer, createImpactCallback} from '../jsview-utils/jsview-react/index_widget';
 
 
 class RedPacket extends Component {
@@ -14,7 +15,7 @@ class RedPacket extends Component {
 		this._BoomImage = 'http://oss.image.qcast.cn/demo_images/red_packet_rain/boom.png';
 		this._ScoreBg = "http://oss.image.qcast.cn/demo_images/red_packet_rain/score_bg.png";
 		this.state = {itemList: [], timer:60, score:0};
-		this._onRainDown = props.onRainDown;
+		this.onImpactTracer = props.onImpactTracer;
 		this.addRandomItemList();
 		this._TimerOutId = null;
 		this._GameTimerID = null;
@@ -46,13 +47,12 @@ class RedPacket extends Component {
 	addRandomItemList() {
 		let total_num = 1;
 		let ret_obj ="";
-		console.log("initRandomItemList total_num:" + total_num);
 		for (let i = 0; i < total_num; i++) {
 			let random_index = Math.floor(Math.random() * 3);
 			let duration = 2 + Math.floor(Math.random() * 2) + "s";
 			let index = ++this._Index;
 			let left = 300+Math.floor(Math.random() * (1280-500));
-			let top = 600;
+			let top = 720;
 			switch (random_index) {
 				case 0:
 					ret_obj = {key: index.toString(), type:0,src: this._RedImage, left: left, top:top,width: 87, height: 118, duration: duration
@@ -106,20 +106,19 @@ class RedPacket extends Component {
 		if (this._onRainDown) {
 			this._onRainDown(null);
 		}
-
 	}
 
 	_RemoveItem(key) {
 		let itemList = this.state.itemList;
 		for(let i=0; i<itemList.length;i++) {
 			if (itemList[i].key === key) {
-				let rain = itemList.splice(i,1);
-				if (this._onRainDown) {
-					this._onRainDown(rain[0]);
-				}
+				console.log("_RemoveItem ele:", itemList[i].ele);
+				itemList.splice(i,1);
 				break;
 			}
 		}
+		console.log("_RemoveItem in");
+        this.setState({itemList:itemList});
 	}
 
 	_Refresh() {
@@ -139,6 +138,26 @@ class RedPacket extends Component {
 		}, delay)
 	}
 
+    _InitItemEle(item, ele) {
+		if (ele && !item.ele) {
+            item.ele = ele;
+            if (this.props.MoneyBag) {
+                let giftrain_sensor = createImpactTracer(this.props.MoneyBag, ele, createImpactCallback(
+                    () => {
+                        this.onImpactTracer(item);
+                    },
+                    () => {
+                        if (this._IsRunning === true) {
+                            this._RemoveItem(item.key);
+                        }
+                        giftrain_sensor.Recycle();
+
+                    })
+                );
+			}
+
+		}
+	}
 	render() {
 		const itemList = this.state.itemList;
 		return (
@@ -149,16 +168,14 @@ class RedPacket extends Component {
 				{
 					itemList.map((item) => {
 						return (
-							<div key={item.key} style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
+							<div key={item.key} ref={ele => this._InitItemEle(item, ele)}
+								 style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
 								height: item.height, animation: "rainDown " + item.duration + " linear",
-							}} onAnimationEnd={
-								()=>{
-									if (this._IsRunning === true) {
-										this._RemoveItem(item.key);
-									}
-
-								}
-							}/>
+							}} onAnimationEnd={()=>{
+                                if (this._IsRunning === true) {
+                                    this._RemoveItem(item.key);
+                                }
+							}}/>
 						)
 					})
 				}

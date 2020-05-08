@@ -1,17 +1,35 @@
 @keyframes scoreUp {
   from {
-    transform: translate3d(0, 120px, 0);
+    transform: translate3d(0, 0px, 0);
   }
   to {
-    transform: translate3d(0, 20px, 0);
+    transform: translate3d(0, -20px, 0);
   }
 }
+
 @keyframes rainDown {
   from {
-    transform: translate3d(0, -680px, 0);
+    transform: translate3d(0, -780px, 0);
   }
   to {
     transform: translate3d(0, 0px, 0);
   }
 }
 
+@keyframes moveLeft {
+  from {
+    transform: translate3d(0px, 0px, 0);
+  }
+  to {
+    transform: translate3d(-980px, 0px, 0);
+  }
+}
+
+@keyframes moveRight {
+  from {
+    transform: translate3d(0px, 0px, 0);
+  }
+  to {
+    transform: translate3d(980px, 0px, 0);
+  }
+}
