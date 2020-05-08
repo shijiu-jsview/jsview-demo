@@ -22,6 +22,7 @@ class App extends FocusBlock {
 		this.state = {
 			play_state: this._autoPlay ? "pause" : "play",
 			focus_id: 0,
+            currentTime:0,
 		}
 		this.video = null; // the html5 video
 		this.play = this.play.bind(this);
@@ -271,7 +272,9 @@ class App extends FocusBlock {
 	// playback position has changed
 	handleTimeUpdate(...args) {
 		console.log("handleTimeUpdate")
+		this.setState({currentTime:this.video.currentTime});
 	}
+
 
 	/**
 	 * Fires when the playing speed of the audio/video is changed
@@ -382,6 +385,9 @@ class App extends FocusBlock {
 					onRateChange={this.handleRateChange}
 					onVolumeChange={this.handleVolumeChange}
 				/>
+				<div style={{ textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
+				<div style={{ textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
+
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
 
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 1 ? "#FFFF00" : "#a8a8a8"}` }}>forward</div>
