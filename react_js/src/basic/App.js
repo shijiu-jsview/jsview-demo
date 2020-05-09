@@ -71,16 +71,18 @@ class App extends FocusBlock {
                             <Title style={{ ...rootStyle }}
                                     contentTop='20px' contentLeft= {marginLeft + 'px'}
                                     itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                            <DivGroup1 style={{ ...rootStyle}}
-                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                            <DivGroup2 style={{ ...rootStyle, left:itemWidth}}
-                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                            <TextGroup style={{ ...rootStyle, left:itemWidth * 2}}
-                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                            <AnimGroup style={{ ...rootStyle, left:itemWidth * 3}}
-                                    itemWidth = {itemWidth} itemHeight = {itemHeight}/>
-                            {/*<AVGroup style={{ ...rootStyle, left:itemWidth * 4}}*/}
-                                    {/*itemWidth = {itemWidth} itemHeight = {itemHeight}/>*/}
+                            <div style={{top: 20}}>
+                                <DivGroup1 style={{ ...rootStyle}}
+                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                                <DivGroup2 style={{ ...rootStyle, left:itemWidth}}
+                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                                <TextGroup style={{ ...rootStyle, left:itemWidth * 2}}
+                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                                <AnimGroup style={{ ...rootStyle, left:itemWidth * 3}}
+                                        itemWidth = {itemWidth} itemHeight = {itemHeight}/>
+                                {/*<AVGroup style={{ ...rootStyle, left:itemWidth * 4}}*/}
+                                        {/*itemWidth = {itemWidth} itemHeight = {itemHeight}/>*/}
+                            </div>
                         </div>
                     </div>
                 </div>

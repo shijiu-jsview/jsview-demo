@@ -27,7 +27,7 @@ class DivLayout extends React.Component {
                     </div>
                 </div>
                 <div style={{top:imageShowHeight + titleHeight + 4}}>
-                    <div style={{...FontBase, width:120, height:titleHeight }}>右上Overflow</div>
+                    <div style={{...FontBase, width:120, height:titleHeight }}>左上Overflow</div>
                     <div style={{top:titleHeight,
                         width: imageShowWidth + 4, height:imageShowHeight + 4,
                         backgroundColor: 'rgba(0, 255, 0, 1)'}}>
@@ -40,7 +40,7 @@ class DivLayout extends React.Component {
                     </div>
                 </div>
                 <div style={{top:(imageShowHeight + titleHeight + 4) * 2}}>
-                    <div style={{...FontBase, width:120, height:titleHeight }}>左下Overflow</div>
+                    <div style={{...FontBase, width:120, height:titleHeight }}>右下Overflow</div>
                     <div style={{top:titleHeight,
                         width: imageShowWidth + 4, height:imageShowHeight + 4,
                         backgroundColor: 'rgba(0, 255, 0, 1)'}}>
