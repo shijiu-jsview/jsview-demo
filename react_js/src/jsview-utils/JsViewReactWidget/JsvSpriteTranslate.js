@@ -239,10 +239,8 @@ class JsvSpriteTranslate extends React.Component{
 
 	_BuildLayoutView() {
 		// 创建一个宽高都为0的定位View作为动画被控对象
-		let sprite_view = new Forge.LayoutView(
-			new Forge.TextureSetting(ForgeExtension.TextureManager.GetColorTexture("rgba(125, 125, 255, 1.0)"))
-		);
-		let view_info = new Forge.ViewInfo(sprite_view, new Forge.LayoutParams({x:0,y:0, width:400, height:300}));
+		let sprite_view = new Forge.LayoutView();
+		let view_info = new Forge.ViewInfo(sprite_view);
 		let viewstore_id  = ForgeExtension.RootActivity.ViewStore.add(view_info);
 
 		this._LinkedControl._SetView(sprite_view);
