@@ -110,14 +110,19 @@ class RedPacket extends Component {
 
 	_RemoveItem(key) {
 		let itemList = this.state.itemList;
+        console.log("_RemoveItem in itemList.length:", itemList.length);
 		for(let i=0; i<itemList.length;i++) {
 			if (itemList[i].key === key) {
-				console.log("_RemoveItem ele:", itemList[i].ele);
-				itemList.splice(i,1);
+                let item = itemList[i];
+                if (item.sensor) {
+                    item.sensor.Recycle();
+				}
+				console.log("_RemoveItem key:", itemList[i].key);
+                itemList.splice(i,1);
 				break;
 			}
 		}
-		console.log("_RemoveItem in");
+        console.log("_RemoveItem out itemList.length:", itemList.length);
         this.setState({itemList:itemList});
 	}
 
@@ -144,22 +149,24 @@ class RedPacket extends Component {
             if (this.props.MoneyBag) {
                 let giftrain_sensor = createImpactTracer(this.props.MoneyBag, ele, createImpactCallback(
                     () => {
-                        this.onImpactTracer(item);
-                    },
-                    () => {
+                        this.onImpactTracer(item);//
                         if (this._IsRunning === true) {
                             this._RemoveItem(item.key);
                         }
-                        giftrain_sensor.Recycle();
+                    },
+                    () => {
 
                     })
                 );
+                item.sensor = giftrain_sensor;
 			}
 
 		}
 	}
 	render() {
 		const itemList = this.state.itemList;
+		console.log("render itemList.length:", itemList.length);
+
 		return (
 			<div>
 				<div key="timer" style={{'width': 140,'height': 140,
@@ -167,12 +174,16 @@ class RedPacket extends Component {
 					'lineHeight': '140px','color': "rgba(255,0,0,1.0)",'fontSize': 72}}>{this.state.timer}</div>
 				{
 					itemList.map((item) => {
+                        console.log("render item:", item.key);
 						return (
 							<div key={item.key} ref={ele => this._InitItemEle(item, ele)}
 								 style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
-								height: item.height, animation: "rainDown " + item.duration + " linear",
+								height: item.height,
+									 animation: "rainDown " + item.duration + " linear",
 							}} onAnimationEnd={()=>{
+
                                 if (this._IsRunning === true) {
+                                	console.log("onAnimationEnd item.key:"+item.key);
                                     this._RemoveItem(item.key);
                                 }
 							}}/>

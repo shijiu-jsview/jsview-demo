@@ -199,7 +199,7 @@ class App extends FocusBlock {
                                 left: 7,
                                 width: 180,
                                 height: 100,
-                                backgroundColor: "rgba(0,0,0,0.8)"
+                                backgroundColor: "rgba(0,0,0,0)"
                             }}></div>
                             {
                                 this.state.min_score_visible !== "none" ?
