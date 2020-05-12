@@ -118,6 +118,22 @@ class JsvControl {
 	}
 }
 
+class HtmlControl {
+	constructor(params_count) {
+		// TODO: 要补充
+	}
+
+	start() {
+		// TODO: 要补充
+		return this;
+	}
+
+	pause(paused_callback) {
+		// TODO: 要补充
+		return this;
+	}
+}
+
 var SpriteControlBase = window.JsView ? JsvControl : HtmlControl;
 
 class JsvSpriteBase extends React.Component{

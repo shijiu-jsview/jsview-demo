@@ -67,6 +67,32 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 }
 
+class HtmlTranslateControl extends SpriteControlBase {
+	constructor() {
+		super();
+	}
+
+	targetX(new_x) {
+		// TODO: 要补充
+		return this;
+	}
+
+	targetY(new_y) {
+		// TODO: 要补充
+		return this;
+	}
+
+	target(new_x, new_y) {
+		// TODO: 要补充
+		return this;
+	}
+
+	speed(pixel_per_second) {
+		// TODO: 要补充
+		return this;
+	}
+}
+
 var TranslateControl = window.JsView ? JsvTranslateControl : HtmlTranslateControl;
 
 export {
