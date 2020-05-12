@@ -112,12 +112,14 @@ function generatePath(modules, margin = 0) {
 class QRCodeSVG extends Component {
     constructor() {
         super();
-        this._renderview = this._renderview.bind(this);
         this._OldProps = null;
-        this._InnerViewId = null;
-        this._ActivityManager = null;
-        this._initActivityManager();
+
+        // info of JsView
+        this._InnerViewId = -1;
+        this._JsvBaseView = null;
+        this._QRCodeView = null;
     }
+
     getImageSettings(props,) {
         const {imageSettings, size} = props;
         if (imageSettings == null) {
@@ -136,12 +138,6 @@ class QRCodeSVG extends Component {
 
         return {x, y, h, w};
     }
-    _initActivityManager() {
-        if (!this._ActivityManager && window._instanceRef) {
-            this._ActivityManager = window._instanceRef.getActivityManager();
-        }
-    }
-
 
     render() {
         if (!!window.JsView) {
@@ -151,7 +147,13 @@ class QRCodeSVG extends Component {
         }
     }
 
-    _renderview() {
+    _renderJsvQRCode() {
+        // Remove old QRCode
+        if (this._QRCodeView != null) {
+            this._JsvBaseView.RemoveView(this._QRCodeView);
+        }
+
+        // Configure new QRCode
         const {
             value,
             size,
@@ -164,39 +166,39 @@ class QRCodeSVG extends Component {
         } = this.props;
         let view = null;
         let lp_params = null;
-        if (this._ActivityManager != null) {
-            let texture_manager =  ForgeExtension.TextureManager;
-            let qrcode_texture =texture_manager.GetQRCodeTexture(value, size,size,Forge.QRCodeLevel[level],bgColor,fgColor);
-            view = new Forge.LayoutView(new Forge.TextureSetting(qrcode_texture));
-            let calculatedImageSettings = this.getImageSettings(this.props);
-            if (imageSettings && calculatedImageSettings) {
-                let img_texture = texture_manager.GetImage(imageSettings.src);
-                let img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
-                view.AddView(img_view, new Forge.LayoutParams({x:calculatedImageSettings.x,y:calculatedImageSettings.y,
-                    width:calculatedImageSettings.w,height:calculatedImageSettings.h}))
-            }
-            lp_params = new Forge.LayoutParams({x:0,y:0,width:size,height:size});
+
+        let texture_manager =  ForgeExtension.TextureManager;
+        let qrcode_texture = texture_manager.GetQRCodeTexture(value, size,size,Forge.QRCodeLevel[level],bgColor,fgColor);
+        view = new Forge.LayoutView(new Forge.TextureSetting(qrcode_texture));
+        let calculatedImageSettings = this.getImageSettings(this.props);
+        if (imageSettings && calculatedImageSettings) {
+            let img_texture = texture_manager.GetImage(imageSettings.src);
+            let img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
+            view.AddView(img_view, new Forge.LayoutParams({x:calculatedImageSettings.x,y:calculatedImageSettings.y,
+                width:calculatedImageSettings.w,height:calculatedImageSettings.h}))
         }
-        return new Forge.ViewInfo(view, lp_params);
+        lp_params = new Forge.LayoutParams({x:0,y:0,width:size,height:size});
+
+        // Add new QRCode
+        this._QRCodeView = view;
+        this._JsvBaseView.AddView(this._QRCodeView, lp_params);
     }
 
     jsvQRcode() {
-        if (this._oldProps != this.props &&  this._ActivityManager != null) {
-            let view_info = this._renderview();
-            this._tryRemoveInnerView();
-            this._InnerViewId  = this._ActivityManager.ViewStore.add(view_info);
+        // 构建二维码父View
+        if (this._JsvBaseView == null) {
+            this._JsvBaseView = new Forge.LayoutView();
+            this._InnerViewId = ForgeExtension.RootActivity.ViewStore.add(
+                new Forge.ViewInfo(this._JsvBaseView, {x:0, y:0})
+            );
+        }
+
+        // 构建QRCdoe view
+        if (this._oldProps != this.props) {
+            this._renderJsvQRCode();
         }
 
         return (<div jsv_innerview={this._InnerViewId}></div>)
-    }
-
-    _tryRemoveInnerView() {
-        if (!!window.JsView) {
-            if (this._InnerViewId != null && this._ActivityManager != null) {
-                this._ActivityManager.ViewStore.remove(this._InnerViewId);
-                this._InnerViewId = null;
-            }
-        }
     }
 
     htmlQRCode() {
@@ -254,7 +256,11 @@ class QRCodeSVG extends Component {
         );
     }
     componentWillUnmount() {
-        this._tryRemoveInnerView();
+        if (this._InnerViewId != -1) {
+            ForgeExtension.RootActivity.ViewStore.remove(this._InnerViewId);
+            this._InnerViewId = -1;
+            this._JsvBaseView = null;
+        }
     }
 }
 
