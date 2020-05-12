@@ -1,3 +1,31 @@
+/*
+ * 【界面概述】
+ * 红包雨游戏，通过左右键控制小人左右移动来接收红包或炸弹，对应分数奖励和扣除，结果反映在界面左边计分板
+ *
+ * 【控件介绍】
+ * JsvSpriteTranslate：可控平移动画组件
+ *      style {Object} 同div的style属性，主要使用其中的top和left，控制动画图层的坐标位置
+ *      control {SpriteControlBase} (必须) Sprite动作控制器
+ *
+ * 【技巧说明】
+ * Q: 如何高效地判断红包和小人的碰撞？
+ * A: 在拿到红包物体的div的ref对象后，通过函数createImpactTracer创建该div与小人碰撞体div的碰撞跟踪对象，
+ *    通过函数createImpactCallback创建碰撞回调处理，接受物体相交(碰撞)事件和物体离开事件。
+ *    注意：当不再进行碰撞跟进时，请手动调用碰撞跟踪对象的Recycle函数，可在componentWillUnmount中进行
+ *
+ * Q: 如何让小人进行平滑移动？
+ * A: 通过传递给JsvSpriteTranslate的control的实例，通过speed()设置移动速度，通过targetX()设置相对移动的目标位置，
+ *    为该方向上移动的终点，数值为相对位置，调用start()，动画会开始。当需要小人暂停时，调用pause()进行动画暂停。
+ *    实例中，按键按下时进行一次start()，不要重复调用start()，直到按键抬起时进行pause()
+ *
+ * Q: 如何设置红包下落效果？
+ * A: 通过keyframe动画，在css文件中声明含有平移变化的keyframe，在js的style中通过animation属性设置动画
+ *
+ * Q: 如何设置分数上漂效果？
+ * A: 通过keyframe动画，在css文件中声明含有平移变化的keyframe，在js的style中通过animation属性设置动画
+ *    每次div从隐藏状态更换到显示状态时，动画都会执行一次。
+ */
+
 import React from 'react';
 import './App.css';
 import Score from "./score"
@@ -30,6 +58,7 @@ class App extends FocusBlock {
         this._AudioBgUrl = AudioBgUrl;
         this._BgAudio = null;
         this._IsRunning = false;
+        this._DisableEffectSound = true;
         this.state = {
             kimi: this._KiMiNormalImg,
             score: this.score,
@@ -163,7 +192,15 @@ class App extends FocusBlock {
         }
     }
 
+    _GetEffectAudio() {
+        if (!this._DisableEffectSound) {
+            return (<audio ref={(ref) => {this._Audio = ref;}}/>);
+        }
+    }
+
     renderContent() {
+        let effect_Audio = this._GetEffectAudio();
+
         return (
             <div style={{width: "1280px", height: "720px"}}>
                 {/*preload image */}
@@ -238,9 +275,7 @@ class App extends FocusBlock {
                 <audio key="AudioBg" src={ this._AudioBgUrl} ref={(ref) => {
                     this._BgAudio = ref;
                 }}/>
-                <audio ref={(ref) => {
-                    this._Audio = ref;
-                }}/>
+                {effect_Audio}
             </div>
         )
     }
