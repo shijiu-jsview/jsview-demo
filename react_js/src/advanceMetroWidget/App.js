@@ -162,7 +162,7 @@ class App extends FocusBlock {
 
     _RenderFocus(item) {
         return (
-            <div style={{ animation: "focusScale 0.2s", backgroundColor: item.color, width: (item.blocks.w - 10) * (1 / 0.9), height: (item.blocks.h - 10) * (1 / 0.9), color: "#FF0000" }}>
+            <div style={{ animation: "focusScale 0.2s", backgroundColor: "#FF0000", width: (item.blocks.w - 10) * (1 / 0.9), height: (item.blocks.h - 10) * (1 / 0.9), color: "#FF0000" }}>
                 {item.content}
             </div>
         )
@@ -170,7 +170,7 @@ class App extends FocusBlock {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{ animation: "blurScale 0.2s", backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF" }}
+            <div style={{ animation: "blurScale 0.2s", backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF" }}
                 onAnimationEnd={callback}>
                 {item.content}
             </div>
@@ -232,21 +232,23 @@ class App extends FocusBlock {
 
     renderContent() {
         return (
-            <div style={{ top: 50, left: 50 }}>
-                <SimpleWidget
-                    width={660}
-                    height={660}
-                    direction={HORIZONTAL}
-                    data={frameTemplate}
-                    onItemFocus={this._FrameOnItemFocus}
-                    onItemBlur={this._FrameOnItemBlur}
-                    onFocus={() => { console.log("widget 1 on focus") }}
-                    renderItem={this._FrameRenderItem}
-                    renderFocus={this._FrameRenderFocus}
-                    measures={this._FrameMeasure}
-                    branchName={this.props.branchName + "/widget"}
-                    onWidgetMount={this._onWidgetMount}
-                />
+            <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
+                <div style={{ top: 50, left: 50 }}>
+                    <SimpleWidget
+                        width={660}
+                        height={660}
+                        direction={HORIZONTAL}
+                        data={frameTemplate}
+                        onItemFocus={this._FrameOnItemFocus}
+                        onItemBlur={this._FrameOnItemBlur}
+                        onFocus={() => { console.log("widget 1 on focus") }}
+                        renderItem={this._FrameRenderItem}
+                        renderFocus={this._FrameRenderFocus}
+                        measures={this._FrameMeasure}
+                        branchName={this.props.branchName + "/widget"}
+                        onWidgetMount={this._onWidgetMount}
+                    />
+                </div>
             </div>
         )
     }

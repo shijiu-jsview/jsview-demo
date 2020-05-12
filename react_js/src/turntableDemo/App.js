@@ -11,7 +11,7 @@ class App extends FocusBlock{
 	}
 	renderContent() {
 		return (
-			<div style={{width: "1920px", height: "920px"}}>
+			<div style={{width: "1280px", height: "720px"}}>
 				<Turntable branchName={ this.props.branchName + "/Turntable" }/>
 			</div>
 		)

@@ -2,7 +2,7 @@
  * Created by luocf on 2019/12/3.
  */
 import React, {Component} from 'react';
-import AudioBgUrl from "./audio/bgMusic.mp3";
+import {createImpactTracer, createImpactCallback} from '../jsview-utils/jsview-react/index_widget';
 
 
 class RedPacket extends Component {
@@ -15,14 +15,13 @@ class RedPacket extends Component {
 		this._BoomImage = 'http://oss.image.qcast.cn/demo_images/red_packet_rain/boom.png';
 		this._ScoreBg = "http://oss.image.qcast.cn/demo_images/red_packet_rain/score_bg.png";
 		this.state = {itemList: [], timer:60, score:0};
-		this._onRainDown = props.onRainDown;
+		this.onImpactTracer = props.onImpactTracer;
 		this.addRandomItemList();
 		this._TimerOutId = null;
 		this._GameTimerID = null;
 		this._IsRunning = false;
 		this._Count = 0;
-		this._AudioBgUrl = AudioBgUrl;
-		this._BgAudio = null;
+
 	}
 
 	componentDidMount() {
@@ -31,6 +30,7 @@ class RedPacket extends Component {
 	}
 
 	componentWillUnmount() {
+		console.log("RedPacket componentWillUnmount in");
 		if (this._GameTimerID != null) {
 			clearInterval(this._GameTimerID);
 			this._GameTimerID = null;
@@ -41,19 +41,18 @@ class RedPacket extends Component {
 			this._TimerOutId=null;
 		}
 
-        this.stopGame();
+		this.stopGame();
 	}
 
 	addRandomItemList() {
 		let total_num = 1;
 		let ret_obj ="";
-		console.log("initRandomItemList total_num:" + total_num);
 		for (let i = 0; i < total_num; i++) {
 			let random_index = Math.floor(Math.random() * 3);
 			let duration = 2 + Math.floor(Math.random() * 2) + "s";
 			let index = ++this._Index;
 			let left = 300+Math.floor(Math.random() * (1280-500));
-			let top = 600;
+			let top = 720;
 			switch (random_index) {
 				case 0:
 					ret_obj = {key: index.toString(), type:0,src: this._RedImage, left: left, top:top,width: 87, height: 118, duration: duration
@@ -92,9 +91,7 @@ class RedPacket extends Component {
 
 	startGame() {
 		console.log("startGame ");
-		if (this._BgAudio != null) {
-			this._BgAudio.play();
-		}
+
 		this._IsRunning = true;
 		this._Refresh();
 	}
@@ -109,22 +106,24 @@ class RedPacket extends Component {
 		if (this._onRainDown) {
 			this._onRainDown(null);
 		}
-		if (this._BgAudio != null) {
-			this._BgAudio.pause();
-		}
 	}
 
 	_RemoveItem(key) {
 		let itemList = this.state.itemList;
+        console.log("_RemoveItem in itemList.length:", itemList.length);
 		for(let i=0; i<itemList.length;i++) {
 			if (itemList[i].key === key) {
-				let rain = itemList.splice(i,1);
-				if (this._onRainDown) {
-					this._onRainDown(rain[0]);
+                let item = itemList[i];
+                if (item.sensor) {
+                    item.sensor.Recycle();
 				}
+				console.log("_RemoveItem key:", itemList[i].key);
+                itemList.splice(i,1);
 				break;
 			}
 		}
+        console.log("_RemoveItem out itemList.length:", itemList.length);
+        this.setState({itemList:itemList});
 	}
 
 	_Refresh() {
@@ -144,8 +143,30 @@ class RedPacket extends Component {
 		}, delay)
 	}
 
+    _InitItemEle(item, ele) {
+		if (ele && !item.ele) {
+            item.ele = ele;
+            if (this.props.MoneyBag) {
+                let giftrain_sensor = createImpactTracer(this.props.MoneyBag, ele, createImpactCallback(
+                    () => {
+                        this.onImpactTracer(item);//
+                        if (this._IsRunning === true) {
+                            this._RemoveItem(item.key);
+                        }
+                    },
+                    () => {
+
+                    })
+                );
+                item.sensor = giftrain_sensor;
+			}
+
+		}
+	}
 	render() {
 		const itemList = this.state.itemList;
+		console.log("render itemList.length:", itemList.length);
+
 		return (
 			<div>
 				<div key="timer" style={{'width': 140,'height': 140,
@@ -153,22 +174,22 @@ class RedPacket extends Component {
 					'lineHeight': '140px','color': "rgba(255,0,0,1.0)",'fontSize': 72}}>{this.state.timer}</div>
 				{
 					itemList.map((item) => {
+                        console.log("render item:", item.key);
 						return (
-							<div key={item.key} style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
-								height: item.height, animation: "rainDown " + item.duration + " linear",
-							}} onAnimationEnd={
-								()=>{
-									if (this._IsRunning === true) {
-										this._RemoveItem(item.key);
-									}
+							<div key={item.key} ref={ele => this._InitItemEle(item, ele)}
+								 style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
+								height: item.height,
+									 animation: "rainDown " + item.duration + " linear",
+							}} onAnimationEnd={()=>{
 
-								}
-							}/>
+                                if (this._IsRunning === true) {
+                                	console.log("onAnimationEnd item.key:"+item.key);
+                                    this._RemoveItem(item.key);
+                                }
+							}}/>
 						)
 					})
 				}
-
-				<audio key="AudioBg" src={ this._AudioBgUrl} autoPlay={false} playsInline={true} ref={(ref) => { this._BgAudio = ref; }} />
 			</div>
 		);
 	}

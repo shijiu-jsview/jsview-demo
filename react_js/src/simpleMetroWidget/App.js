@@ -99,7 +99,7 @@ class App extends FocusBlock {
 
     _RenderFocus(item) {
         return (
-            <div style={{ animation: "focusScale 0.2s", backgroundColor: item.color, width: (item.blocks.w - 10) * (1 / 0.9), height: (item.blocks.h - 10) * (1 / 0.9), color: "#FF0000" }}>
+            <div style={{animation: "focusScale 0.2s",  backgroundColor: "#FF0000", width: (item.blocks.w - 10) * (1 / 0.9), height: (item.blocks.h - 10) * (1 / 0.9), color: "#FFFFFF", }}>
                 {item.content}
             </div>
         )
@@ -107,7 +107,7 @@ class App extends FocusBlock {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{ animation: "blurScale 0.2s", backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF" }}
+            <div style={{  backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 0.2s",}}
                 onAnimationEnd={callback}>
                 {item.content}
             </div>
@@ -132,19 +132,21 @@ class App extends FocusBlock {
 
     renderContent() {
         return (
-            <div style={{ top: 120, left: 0 }}>
-                <SimpleWidget
-                    width={1280}
-                    height={480}
-                    direction={HORIZONTAL}
-                    data={homePageData}
-                    renderBlur={this._RenderBlur}
-                    renderItem={this._RenderItem}
-                    renderFocus={this._RenderFocus}
-                    measures={this._Measures}
-                    branchName={this.props.branchName + "/widget1"}
-                    onWidgetMount={this._onWidgetMount}
-                />
+            <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
+                <div style={{ top: 120, left: 0 }}>
+                    <SimpleWidget
+                        width={1280}
+                        height={480}
+                        direction={HORIZONTAL}
+                        data={homePageData}
+                        renderBlur={this._RenderBlur}
+                        renderItem={this._RenderItem}
+                        renderFocus={this._RenderFocus}
+                        measures={this._Measures}
+                        branchName={this.props.branchName + "/widget1"}
+                        onWidgetMount={this._onWidgetMount}
+                    />
+                </div>
             </div>
         )
     }

@@ -22,6 +22,7 @@ class App extends FocusBlock {
 		this.state = {
 			play_state: this._autoPlay ? "pause" : "play",
 			focus_id: 0,
+            currentTime:0,
 		}
 		this.video = null; // the html5 video
 		this.play = this.play.bind(this);
@@ -271,7 +272,9 @@ class App extends FocusBlock {
 	// playback position has changed
 	handleTimeUpdate(...args) {
 		console.log("handleTimeUpdate")
+		this.setState({currentTime:this.video.currentTime});
 	}
+
 
 	/**
 	 * Fires when the playing speed of the audio/video is changed
@@ -294,9 +297,7 @@ class App extends FocusBlock {
 	handleResize(...args) {
 		console.log("handleResize")
 	}
-	stop() {
-		this.video.unload();
-	}
+
 	onKeyDown(ev) {
 		switch (ev.keyCode) {
 			case 13:
@@ -338,8 +339,8 @@ class App extends FocusBlock {
 				break;
 			case 27:
 			case 10000:
-				globalHistory.goBack();
-				this.changeFocus("/main");
+                globalHistory.goBack();
+                this.changeFocus("/main");
 				break;
 			default:
 				break;
@@ -356,9 +357,6 @@ class App extends FocusBlock {
 		return (
 			<div style={{ top: 0, left: 0 }} >
 				<video style={{ top: 50, left: (1280 - 800) / 2, width: 800, height: 500 }}
-					loop={true}
-					autoPlay
-					playsInline
 					src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
 					ref={(c) => {
 						console.log("video:", c);
@@ -387,6 +385,9 @@ class App extends FocusBlock {
 					onRateChange={this.handleRateChange}
 					onVolumeChange={this.handleVolumeChange}
 				/>
+				<div style={{ textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
+				<div style={{ textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
+
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
 
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 1 ? "#FFFF00" : "#a8a8a8"}` }}>forward</div>
@@ -395,10 +396,14 @@ class App extends FocusBlock {
 			</div>
 		)
 	}
+
 	componentWillUnmount() {
-		this.stop();
-	}
+        console.log("Video App componentWillUnmount in");
+
+    }
 	componentDidMount() {
-	}
+        console.log("Video App componentDidMount in");
+
+    }
 }
 export default App;

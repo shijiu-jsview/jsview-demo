@@ -86,16 +86,26 @@ let demoInfos = [
         "path": "/users/basicFdivControl",
         "class": lazy(() => import('../basicFdivControl/App')),
     },
-    // {
-    //     "name": "长文字",
-    //     "path": "/users/longText",
-    //     "class": lazy(() => import('../longText/App')),
-    // },
     {
         "name": "砸金蛋活动",
         "path": "/users/smashEggs",
         "class": lazy(() => import('../smashEggs/App')),
-    }
+    },
+    {
+        "name": "幸运九宫格",
+        "path": "/users/nineSquared",
+        "class": lazy(() => import('../nineSquared/App')),
+    },
+    {
+        "name": "长文字",
+        "path": "/users/longText",
+        "class": lazy(() => import('../longText/App')),
+    },
+    {
+        "name": "碰撞",
+        "path": "/users/collision",
+        "class": lazy(() => import('../collision/App')),
+    },
 ]
 
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
