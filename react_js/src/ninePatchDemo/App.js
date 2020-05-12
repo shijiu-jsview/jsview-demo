@@ -1,3 +1,22 @@
+/*
+ * 【界面概述】
+ * 绘制三个矩形，通过能在矩形间进行移动的焦点框来展示JsvNinePatch控件的使用方法
+ *
+ * 【控件介绍】
+ * JsvSquareNinePatch：对原图为正方形进行NinePatch扩展的控件
+ *      style { object } (必须) div的left,top,width,height的定位信息
+ *      animTime { int } transition动画时长
+ *      imageUrl { string } (必须) 图片url
+ *      imageWidth { int } (必须) 图片的宽，正方形宽和高相等
+ *      contentWidth { int } (必须) 图片延展区域的宽
+ *      borderOutset { int } 边框向外扩展的大小
+ *
+ * 【技巧说明】
+ * Q: 如何实现NinePatch框的大小和位置的变化?
+ * A: 通过css配置控件的left,top,width,height的transition，setState时，只需要改变框的x,y,w,h，
+ *    引擎就会自动按照transition中定义的动画，对框进行尺寸和位置调整动画。
+ */
+
 import React, { Component } from 'react';
 import "./App.css"
 import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
