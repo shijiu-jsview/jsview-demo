@@ -1,14 +1,39 @@
+/*
+ * 【界面概述】
+ * 展示SimpleWidget控件的嵌套用法
+ *
+ * 【控件介绍】
+ * SimpleWidget：见simpleMetroWidget
+ * SWidgetDispatcher：向SimpleWidget分发消息的对象，用于设置SimpleWidget内部状态
+ *                      成员函数：
+ *                          dispatch
+ *                              @params msg {obj} 消息体，{type: SWidgetDispatcher.Type, data: 数据}
+ * SWidgetDispatcher.Type: 消息的类型
+ *                          "setFocusId": Focus时初始的焦点id data为int
+ *                          "setFocusRect": Focus时距离某区域最近的item获得焦点 data为{type:EdgeDirection, rect:{x:0, y:0, widht:0, height:0}}
+ *                          "updateItem": 重新描画某个item data为int
+ *                          "slideToItem": 界面移到某个item处 data为int
+ *                              
+ * 
+ * 【技巧说明】
+ * Q: 如何实现嵌套?
+ * A: 当SimpleWidget的measure回调返回值中hasSub为true时，该item的renderItem就可以返回可获得焦点的控件
+ * 
+ * Q: 如何实现焦点的就近切换？
+ * A: 通过dispatcher向将要获得焦点的控件发送setFocusRect消息。
+ */
+
 import React from 'react';
 import './App.css';
-import { Router, FdivRoot, Fdiv, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget"
+import {SimpleWidget, SWidgetDispatcher, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget"
 import { globalHistory } from '../demoCommon/RouterHistory';
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
 let frameTemplate = [
     {
         "blocks": {
-            "w": 330,
-            "h": 330
+            "w": 340,
+            "h": 340
         },
         "focusable": true,
         "hasSub": true,
@@ -16,8 +41,8 @@ let frameTemplate = [
     },
     {
         "blocks": {
-            "w": 330,
-            "h": 330
+            "w": 340,
+            "h": 340
         },
         "focusable": true,
         "hasSub": true,
@@ -25,8 +50,8 @@ let frameTemplate = [
     },
     {
         "blocks": {
-            "w": 330,
-            "h": 330
+            "w": 340,
+            "h": 340
         },
         "focusable": true,
         "hasSub": true,
@@ -34,8 +59,8 @@ let frameTemplate = [
     },
     {
         "blocks": {
-            "w": 330,
-            "h": 330
+            "w": 340,
+            "h": 340
         },
         "focusable": true,
         "hasSub": true,
@@ -148,12 +173,16 @@ class App extends FocusBlock {
         this._RenderFocus = this._RenderFocus.bind(this);
 
         this._FrameMeasure = this._FrameMeasure.bind(this);
-        this._FrameRenderFocus = this._FrameRenderFocus.bind(this);
         this._FrameRenderItem = this._FrameRenderItem.bind(this);
         this._FrameOnItemFocus = this._FrameOnItemFocus.bind(this);
         this._FrameOnItemBlur = this._FrameOnItemBlur.bind(this);
 
         this._onWidgetMount = this._onWidgetMount.bind(this);
+
+        this._DispatcherMap = {};
+        for (let i of frameTemplate) {
+            this._DispatcherMap["item_" + i.id] = new SWidgetDispatcher();
+        }
     }
 
     _Measures(item) {
@@ -161,8 +190,12 @@ class App extends FocusBlock {
     }
 
     _RenderFocus(item) {
+        let width = (item.blocks.w - 10) * (1 / 0.9);
+        let height = (item.blocks.h - 10) * (1 / 0.9)
+        let x = ((item.blocks.w - 10) - width) / 2;
+        let y = ((item.blocks.h - 10) - height) / 2;
         return (
-            <div style={{ animation: "focusScale 0.2s", backgroundColor: "#FF0000", width: (item.blocks.w - 10) * (1 / 0.9), height: (item.blocks.h - 10) * (1 / 0.9), color: "#FF0000" }}>
+            <div style={{ animation: "focusScale 0.2s", top:y, left: x, backgroundColor: "#FF0000", width: width, height: height, color: "#000000" }}>
                 {item.content}
             </div>
         )
@@ -185,17 +218,18 @@ class App extends FocusBlock {
         )
     }
 
-    _FrameRenderItem(item, onedge, enter_react) {
+    _FrameRenderItem(item, onedge, query) {
         let direction = HORIZONTAL;
         return (
             <SimpleWidget
-                width={300}
-                height={300}
+                width={340}
+                height={340}
+                padding={{left: 20, top: 20, right: 20, bottom:20}}
                 direction={direction}
                 data={template}
                 onEdge={onedge}
+                dispatcher={this._DispatcherMap["item_" + item.id]}
                 onClick={(item) => { console.log("click", item) }}
-                enterRect={enter_react}
                 renderBlur={this._RenderBlur}
                 renderItem={this._RenderItem}
                 renderFocus={this._RenderFocus}
@@ -205,16 +239,16 @@ class App extends FocusBlock {
         )
     }
 
-    _FrameRenderFocus(item) {
-
-    }
-
     _FrameMeasure(item) {
         return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
     }
 
-    _FrameOnItemFocus(item) {
-        this.changeFocus(this.props.branchName + "/item" + item.id)
+    _FrameOnItemFocus(item, pre_edge, query) {
+        this._DispatcherMap["item_" + item.id].dispatch({
+                type: SWidgetDispatcher.Type.setFocusRect,
+                data: pre_edge
+        });
+        this.changeFocus(this.props.branchName + "/item" + item.id);
         console.log("frame item focus " + item.id);
     }
 
@@ -235,15 +269,14 @@ class App extends FocusBlock {
             <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
                 <div style={{ top: 50, left: 50 }}>
                     <SimpleWidget
-                        width={660}
-                        height={660}
+                        width={680}
+                        height={680}
                         direction={HORIZONTAL}
                         data={frameTemplate}
                         onItemFocus={this._FrameOnItemFocus}
                         onItemBlur={this._FrameOnItemBlur}
                         onFocus={() => { console.log("widget 1 on focus") }}
                         renderItem={this._FrameRenderItem}
-                        renderFocus={this._FrameRenderFocus}
                         measures={this._FrameMeasure}
                         branchName={this.props.branchName + "/widget"}
                         onWidgetMount={this._onWidgetMount}

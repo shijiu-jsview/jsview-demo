@@ -1,3 +1,16 @@
+/*
+ * 【界面概述】
+ * 带有菜单的橱窗界面，主要展示界面间切换的用法
+ *
+ * 【控件介绍】
+ * SimpleWidget：见simpleMetroWidget
+ * JsvMarquee: 见showcaseDemo
+ *
+ * 【技巧说明】
+ * Q: 如何实现菜单的显示和隐藏?
+ * A: 通过设置菜单界面的visibility属性
+ */
+
 import React from 'react';
 import './App.css';
 import FlowMetroWidget from './views/FlowMetroWidget'

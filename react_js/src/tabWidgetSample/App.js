@@ -1,7 +1,50 @@
+/*
+ * 【界面概述】
+ * 展示tabWidget的使用方法
+ *
+ * 【控件介绍】
+ * JsvTabWidget：带tab的主页控件
+ *                  onEdge {function} 边缘回调
+ *                  flowDirection {Symbol} (必选)控件的方向 
+ *                  initFocusId {int} 初始的焦点
+ *                  tabFocusable {boolean} tab是否可获得焦点
+ *                  onWidgetMount{function} 控件挂载完成回调
+ *
+ *                  tabData {array} (必选)tab的数据 
+ *                  tabMeasures {function} (必选)tab的measures函数 
+ *                  tabOnItemFocus {function} tab的onItemFoucs函数
+ *                  tabOnItemBlur {function} tab的onItemBlur函数
+ *                  tabStyle {object} (必选)tab的style {width: 宽, height: 高, left: x, top: y} 
+ *                  tabOnBlur {function} tab的onBlur函数
+ *                  tabOnFocus {function} tab的onFocus函数
+ *                  tabRenderItem {function} (必选)tab的renderItem函数 
+ *                  tabRenderCurItem {function} tab的blur状态下焦点描画函数
+ *                  tabRenderFocus {function} tab的renderFocus函数
+ *                  tabRenderBlur {function} tab的renderBlur函数
+ *                  tabPadding {object} 同SimpleWidget的padding, 默认{top: 0, right: 0, bottom: 0, left: 0}
+ *
+ *                  bodyStyle {object} (必选)body的style {width: 宽, height: 高, left: x, top: y} 
+ *                  bodyData {array} (必选)body的数据 
+ *                  bodyOnFocus {function} body的onFocus
+ *                  bodyOnItemFocus {function} body的onItemFocus
+ *                  bodyOnItemBlur {function} body的onItemBlur
+ *                  bodyOnBlur {function} body的onBlur
+ *                  bodyRenderItem {function} (必选)body的RenderItem 
+ *                  bodyRenderFocus {function} body的renderFocus
+ *                  bodyRenderBlur {function} body的renderBlur
+ *                  bodyMeasures {function} (必选)body的measures 
+ *                  bodyPadding {function} 同SimpleWidget的padding, 默认{top: 0, right: 0, bottom: 0, left: 0}
+ *                  bodySlideStyle { Symbol } body的SlideStyle
+ *
+ * 【技巧说明】
+ * Q: 当焦点在content上时，怎么更新tab上对应item的view？
+ * A: tabRenderCurItem回调可以设置焦点在content上时对应tab上item显示的view
+ */
+
 import React from 'react';
 import './App.css';
 
-import { Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
+import { HORIZONTAL, SimpleWidget, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import { JsvTabWidget } from "../jsview-utils/JsViewReactWidget/JsvTabWidget"
 import { bodyData, tabData } from "./Data"
 import focusBg from "./images/focus_bg.png"

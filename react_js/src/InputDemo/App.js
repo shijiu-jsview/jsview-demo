@@ -1,8 +1,39 @@
+/*
+ * 【界面概述】
+ * 一个简易的输入界面，介绍JsvInput控件的用法
+ *
+ * 【控件介绍】
+ * JsvInput：带有光标的输入框
+ *      left {int} 组件的x，默认为0
+ *      top {int} 组件的y 默认为0
+ *      width {int} (必选)组件的宽
+ *      height {int} (必选)组件的高
+ *      fontStyle {object} 文字的style
+ *      defaultText {string} 提示文字，默认为“请输入”
+ *      cursorColor {string} 光标颜色，默认为白色
+ *      cursorWidth {int} 光标宽度，默认1像素
+ *      dispatcher {JsvInputDispatcher} (必选)向组件发送增删事件的对象, 支持add/delete/clear三种事件
+ *      branchName {string} (必选)焦点管理所需的branchName
+ *      charList {array} 可输入的字符串列表, 默认为大写字母+数字
+ *      onTextOverflow {function} 文字过长回调，文字最长为3倍的width
+ *      onEdge {function} 方向键到达边缘回调
+ *          @params edge_info 边缘信息{direction: EdgeDirection, rect: {x: value,y: value, widht: value,height: value}}
+ *      onTextChange {function} 文字改动回调 
+ *          @params string 当前文字
+ *
+ * 【技巧说明】
+ * Q: 如何修改输入框中的文字?
+ * A: 通过JsvInputDispatcher，具体的三个事件的示例可见App的_keyboardOnClick函数
+ * 
+ * Q: 如何获取输入框中的文字?
+ * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
+ */
+
 import React, { Component } from 'react'
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
-import {SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
-import {globalHistory} from '../demoCommon/RouterHistory';
-import {FocusBlock} from "../demoCommon/BlockDefine"
+import { SimpleWidget, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
+import { globalHistory } from '../demoCommon/RouterHistory';
+import { FocusBlock } from "../demoCommon/BlockDefine"
 
 class FullKeyboard extends FocusBlock {
     constructor(props) {
@@ -53,9 +84,9 @@ class FullKeyboard extends FocusBlock {
     }
 
     _renderItem(item, onedge) {
-        return(
-            <div style={{ width: item.blocks.w, height: item.blocks.h, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF"}}>
-                { item.content }
+        return (
+            <div style={{ width: item.blocks.w, height: item.blocks.h, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF" }}>
+                {item.content}
             </div>
         )
     }
@@ -65,26 +96,27 @@ class FullKeyboard extends FocusBlock {
         let height = item.blocks.h * this._ScaleRate;
         let x = (item.blocks.w - width) / 2
         let y = (item.blocks.h - height) / 2
-        return(
-            <div style={{animation: "focusScale 0.5s", backgroundColor: "#44DD00", top: y, left: x, width: width, height: height, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF"}}>
-                { item.content }
+        return (
+            <div style={{ animation: "focusScale 0.5s", backgroundColor: "#44DD00", top: y, left: x, width: width, height: height, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF" }}>
+                {item.content}
             </div>
         )
     }
 
     _renderBlur(item, callback) {
-        return(
-            <div style={{ 
-                animation: "blurScale 0.5s", width: item.blocks.w, height: item.blocks.h, 
-                fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF"}}
+        return (
+            <div style={{
+                animation: "blurScale 0.5s", width: item.blocks.w, height: item.blocks.h,
+                fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF"
+            }}
                 onAnimationEnd={callback}>
-                { item.content }
+                {item.content}
             </div>
         )
     }
 
     _onClick(item) {
-        if(this.props.onClick) {
+        if (this.props.onClick) {
             this.props.onClick(item.content);
         }
     }
@@ -96,24 +128,24 @@ class FullKeyboard extends FocusBlock {
     renderContent() {
         return (
             <SimpleWidget
-            width={ 260 }
-            height={ 300 }
-            padding={{left: 10, right: 10, top: 10, bottom: 10}}
-            direction={ VERTICAL }
-            data={ this._Data }
-            onClick={ this._onClick }
-            renderBlur={ this._renderBlur }
-            onEdge={ this.props.onEdge }
-            renderItem={ this._renderItem }
-            renderFocus={ this._renderFocus }
-            measures={ this._measures }
-            branchName={ this.props.branchName + "/full_keyboard" }
+                width={260}
+                height={300}
+                padding={{ left: 10, right: 10, top: 10, bottom: 10 }}
+                direction={VERTICAL}
+                data={this._Data}
+                onClick={this._onClick}
+                renderBlur={this._renderBlur}
+                onEdge={this.props.onEdge}
+                renderItem={this._renderItem}
+                renderFocus={this._renderFocus}
+                measures={this._measures}
+                branchName={this.props.branchName + "/full_keyboard"}
             />
         )
     }
 }
 
-class App extends FocusBlock{
+class App extends FocusBlock {
     constructor(props) {
         super(props);
         this._Ref = null;
@@ -162,29 +194,31 @@ class App extends FocusBlock{
     }
 
     renderContent() {
-        return(
-            <div style={{backgroundColor: "#000000", width: 1280, height: 720}}>
-                <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000'}}/>
+        return (
+            <div style={{ backgroundColor: "#000000", width: 1280, height: 720 }}>
+                <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000' }} />
                 <JsvInput
-                    left={ 50 }
-                    top={ 50 }
-                    height={ 40 }
-                    width={ 150 }
-                    fontStyle={{ color: '#FFFFFF', fontSize: '20px'}}
-                    dispatcher={ this._dispatcher }
+                    left={50}
+                    top={50}
+                    height={40}
+                    width={150}
+                    fontStyle={{ color: '#FFFFFF', fontSize: '20px' }}
+                    dispatcher={this._dispatcher}
                     branchName={this.props.branchName + "/etext"}
                     onEdge={this._editableTextOnEdge}
-                    onTextChange={ (str) => { console.log("ontextChange " + str) }}
-                    onTextOverflow={ () => {console.log("too long")}}
-                    />
-                <div style={{ top: 100}}>
+                    cursorColor="#999900"
+                    cursorWidth={2}
+                    onTextChange={(str) => { console.log("ontextChange " + str) }}
+                    onTextOverflow={() => { console.log("too long") }}
+                />
+                <div style={{ top: 100 }}>
                     <FullKeyboard
-                    onClick={ this._keyboardOnClick }
-                    onEdge={ this._keyboardOnEdge }
-                    branchName= { this.props.branchName + '/keyboard'}
+                        onClick={this._keyboardOnClick}
+                        onEdge={this._keyboardOnEdge}
+                        branchName={this.props.branchName + '/keyboard'}
                     />
                 </div>
-            </div>        
+            </div>
         )
     }
 

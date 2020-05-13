@@ -1,3 +1,16 @@
+/*
+ * 【界面概述】
+ * 用于检验JsView-react可以兼容react标准router模块的样例
+ *
+ * 【控件介绍】
+ * 无
+ *
+ * 【技巧说明】
+ * Q: history如何设置？
+ * A: 由于jsview并不是浏览器，所以无法使用浏览器的history功能，所以history需要使用react-router提供的接口
+ *    createMemoryHistory来创建。
+ */
+
 import React, { Suspense, lazy } from 'react';
 import {
 	Switch,
