@@ -1,10 +1,15 @@
 /*
- * @Author: ChenChanghua
- * @Date: 2020-04-15 10:43:35
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-04-22 11:21:23
- * @Description: file content
+ * 【界面概述】
+ * 协议书的示例
+ *
+ * 【控件介绍】
+ * SimpleWidget：见simpleMetrowidget
+ * 
+ * 【技巧说明】
+ * Q: 如何长文字div的高度自适应？
+ * A: 描画长文字的div的高度不设置即可
  */
+
 import React from 'react';
 import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"

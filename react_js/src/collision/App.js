@@ -1,10 +1,19 @@
 /*
- * @Author: ChenChanghua
- * @Date: 2020-04-24 09:59:23
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-04-29 16:17:50
- * @Description: file content
+ * 【界面概述】
+ * 展示transition, rotate, scale, skew四种动画下的碰撞检测
+ *
+ * 【控件介绍】
+ * createImpactTracer：创建碰撞检测对象
+ *                          @params {object} 第一个碰撞div
+ *                          @params {object} 第二个碰撞div
+ *                          @params {object} 回调对象，由createImpactCallback生成
+ * createImpactCallback：创建碰撞回调对象
+ *                          @params onContact {function} 碰撞回调
+ *                          @params onDisContact {function} 碰撞结束回调
+ *
+ * 【技巧说明】
  */
+
 import React from 'react';
 import { createImpactTracer, createImpactCallback } from "../jsview-utils/jsview-react/index_widget.js"
 import './App.css'
@@ -14,17 +23,17 @@ import {FocusBlock} from "../demoCommon/BlockDefine"
 class App extends FocusBlock{
     constructor(props) {
         super(props);
-        // this._TranslateEle1;
-        // this._TranslateEle2;
-        //
-        // this._RotateEle1;
-        // this._RotateEle2;
-        //
-        // this._ScaleEle1;
-        // this._ScaleEle2;
-        //
-        // this._SkewEle1;
-        // this._SkewEle2;
+        this._TranslateEle1;
+        this._TranslateEle2;
+        
+        this._RotateEle1;
+        this._RotateEle2;
+        
+        this._ScaleEle1;
+        this._ScaleEle2;
+        
+        this._SkewEle1;
+        this._SkewEle2;
 
         this.state = {
             "tLeftColor": "#FF0000",

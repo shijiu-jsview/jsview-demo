@@ -1,58 +1,81 @@
 /*
- * @Author: ChenChanghua
- * @Date: 2020-04-07 11:25:20
- * @LastEditTime: 2020-04-14 15:08:59
- * @LastEditors: ChenChanghua
- * @Description: In User Settings Edit
- * @FilePath: /jsview-export-react-sample/react_js/src/spriteImage/App.js
+ * 【界面概述】
+ * 展示精灵图的用法，包含动图和切图
+ *
+ * 【控件介绍】
+ * JsvSpriteImg：精灵图控件
+ *                  spriteInfo {object}  (必需)精灵图配置信息{frames:[], meta:{}}
+ *                  viewSize {object}  (必需){w:0, h:0}
+ *                  imageUrl {string}  (必需)图片地址
+ *                  duration {float}  (动图必需)动图的时间
+ *                  onAnimEnd {fucntion} 动图结束回调
+ *                  stop {boolean} 停止动图，默认false
+ *                  loop {string} 动图的循环次数 infinite/数字，默认为infinite
+ *                  spriteName {string} 动图的名称，默认为null
+ *   
+ *
+ * 【技巧说明】
+ * Q: 动图和切图如何实现?
+ * A: spriteInfo中的frame有多个时为动图，只有一个时为切图
+ * 
+ * Q: spriteInfo中属性的含义?
+ * A: meta.size为整张切图的大小；frames中为每一帧的位置和大小信息，目前仅支持统一大小的帧
  */
+
 import React from 'react';
-// import './App.css';
-import JsvSpriteAnim from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import './App.css';
+import JsvSpriteImg from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import sprite from './images/sprite.png'
 import cat_run from './images/cat_run.png'
-import {globalHistory} from '../demoCommon/RouterHistory';
-import {FocusBlock} from "../demoCommon/BlockDefine"
+import { globalHistory } from '../demoCommon/RouterHistory';
+import { FocusBlock } from "../demoCommon/BlockDefine"
 
-let sprite_info = {"frames": [
+let sprite_info = {
+    "frames": [
 
-    {
-        "frame": {"x":0,"y":0,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":512,"y":0,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":1024,"y":0,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":1536,"y":0,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":0,"y":256,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":512,"y":256,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":1024,"y":256,"w":512,"h":256},
-    },
-    {
-        "frame": {"x":1536,"y":256,"w":512,"h":256},
-    }
-],
+        {
+            "frame": { "x": 0, "y": 0, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 512, "y": 0, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 1024, "y": 0, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 1536, "y": 0, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 0, "y": 256, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 512, "y": 256, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 1024, "y": 256, "w": 512, "h": 256 },
+        },
+        {
+            "frame": { "x": 1536, "y": 256, "w": 512, "h": 256 },
+        }
+    ],
     "meta": {
-        "app": "https://www.codeandweb.com/texturepacker",
-        "version": "1.0",
-        "image": "target_2.png",
-        "format": "RGBA8888",
-        "size": {"w":2048,"h":512},
-        "scale": "1",
-        "smartupdate": "$TexturePacker:SmartUpdate:6b895b10049e3e44bb1433676e457c49:c962f50d33ad949bb5f27266dd144cae:9ea127d7b5db876ab2a98a7f69391dc2$"
+        "size": { "w": 2048, "h": 512 },
     }
 }
 
-class App extends FocusBlock{
+let static_info = {
+    "frames": [
+
+        {
+            "frame": { "x": 0, "y": 0, "w": 512, "h": 256 },
+        }
+    ],
+    "meta": {
+        "size": { "w": 2048, "h": 512 },
+    }
+}
+
+class App extends FocusBlock {
     constructor(props) {
         super(props);
 
@@ -70,18 +93,26 @@ class App extends FocusBlock{
         return false;
     }
 
-	renderContent() {
-        return(
-            <JsvSpriteAnim 
-            spriteInfo={sprite_info} 
-            loop="infinite" 
-            viewSize={{w:1024, h:512}} 
-            duration={0.8} 
-            onAnimEnd= {function() {console.log("anim end")}}
-            stop={ this.state.stop }
-            imageUrl={cat_run}/>
+    renderContent() {
+        return (
+            <div style={{top: 20, left: 20}}>
+                <JsvSpriteImg
+                    spriteInfo={sprite_info}
+                    loop="infinite"
+                    viewSize={{ w: 1024, h: 512 }}
+                    duration={0.8}
+                    onAnimEnd={function () { console.log("anim end") }}
+                    stop={this.state.stop}
+                    imageUrl={cat_run} />
+                <div style={{left: 1050, top: 20}}>
+                    <JsvSpriteImg
+                        spriteInfo={static_info}
+                        viewSize={{ w: 256, h: 128 }}
+                        imageUrl={cat_run} />
+                </div>
+            </div>
         )
 
-	}
+    }
 }
 export default App;

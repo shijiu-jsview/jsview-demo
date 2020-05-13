@@ -119,7 +119,7 @@ class App extends FocusBlock {
     renderContent() {
         return(
             <div>
-                <div style={{width: 1280, height: 720, backgroundColor: '#009999'}}>
+                <div style={{width: 1280, height: 720, backgroundColor: '#FFFFFF'}}>
                     <SimpleWidget 
                     width={ 1000 } 
                     height={ 400 } 

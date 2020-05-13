@@ -1,3 +1,19 @@
+/*
+ * 【界面概述】
+ * 绘制橱窗界面，展示SimpleWidget控件，JsvMarquee控件
+ *
+ * 【控件介绍】
+ * SimpleWidget：见simpleMetroWidget示例中的说明
+ * JsvMarquee：文字跑马灯控件
+ *              top {int} 控件的Y坐标，默认为0
+ *              left {int} 控件的X坐标，默认为0
+ *	            width {int} (必须)控件的宽度
+ *              height {int} (必须)控件的高度
+ *              text {string} (必须)控件中显示的文字内容
+ *              fontStyle {object} style中的文字相关属性设置，例如font, color, fontSize, lineHeight
+ * 【技巧说明】
+ */
+
 import React from 'react';
 import './App.css';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
