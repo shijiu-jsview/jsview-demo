@@ -1,3 +1,21 @@
+/*
+ * 【界面概述】
+ * 视频播放和控制样例
+ *
+ * 【控件介绍】
+ * Fdiv：参照本地另一个demo: basicFdivConrol
+ *
+ * 【技巧说明】
+ * Q: 如何加入播放视频？
+ * A: render时使用H5的video标签即可
+ *
+ * Q: 视频播放控制？
+ * A: video标签中通过ref拿到标签对象，通过H5视频标签标准接口进行控制
+ *    起播：video标签.play()
+ *    暂停：video标签.pause()
+ *    改变播放进度：video标签.currentTime = 新的播放时间(毫秒)
+ */
+
 import React from 'react';
 import { globalHistory } from '../demoCommon/RouterHistory';
 import { FocusBlock } from "../demoCommon/BlockDefine"
