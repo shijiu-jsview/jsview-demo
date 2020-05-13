@@ -181,7 +181,7 @@ class JsvTabWidget extends FdivWrapper{
                         id : 0,
                         type: "start"
                     }
-                })
+                });
             }
         })
     }
@@ -213,6 +213,8 @@ class JsvTabWidget extends FdivWrapper{
                 renderBlur={ this.props.bodyRenderBlur }
                 renderItem={ this.props.bodyRenderItem }
                 renderFocus={ this.props.bodyRenderFocus }
+                onItemFocus={ this.props.bodyOnItemFocus }
+                onItemBlur={ this.props.bodyOnItemBlur}
                 measures={ this.props.bodyMeasures }
                 branchName={ this.props.branchName + "/body" + item.tabIndex }/>
         )

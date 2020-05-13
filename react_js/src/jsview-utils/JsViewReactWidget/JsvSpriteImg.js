@@ -136,7 +136,8 @@ class JsvSpriteImg extends React.Component{
 }
 JsvSpriteImg.defaultProps = {
     loop: 'infinite',
-    onAnimEnd: function() {}
+    onAnimEnd: function() {},
+    duration: 0.5
 }
 
 export default JsvSpriteImg;

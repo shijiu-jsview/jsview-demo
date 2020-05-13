@@ -219,7 +219,7 @@ class Input extends Component{
         if (this._CharSizeMap) {
             let full_text_width = this._calculateCursorPosition(full_str, cur_index);
             if (full_text_width + this.state.textLeft  > this.props.width) {
-                new_left = this.state.textLeft - this._CharSizeMap[full_str[cur_index]];
+                new_left = this.props.width - full_text_width - 1;
             } else if (full_text_width + this.state.textLeft < 0) {
                 if (cur_index >= 0) {
                     new_left = this.state.textLeft + this._CharSizeMap[full_str[cur_index]];
@@ -281,7 +281,7 @@ class Input extends Component{
             <div style={{left: this.props.left, top: this.props.top}}>
                 <CharacterSizeMeasure charList={ this.props.charList } style={{ ...this.props.fontStyle }} onMeasureDone={(map) => {console.log("char map ", map); this._CharSizeMap = map; }}/>
                 <Fdiv onFocus={ this._onFocus } routner={ this._Router } branchName={ this.props.branchName } onKeyDown={ this._onKeyDown }>
-                    <div style={{clipPath: "inset(0px 0px 0px 0px)", width: this.props.width + this.props.cursorWidth, height: this.props.height,}}>
+                    <div style={{clipPath: "inset(0px 1px 0px 0px)"/*切1px防止右侧出界 */, width: this.props.width + this.props.cursorWidth, height: this.props.height,}}>
                         <div style={{ left: this.state.textLeft, width: this.props.width * 3, height: this.props.height, lineHeight: this.props.height + 'px', ...this.props.fontStyle }}>
                             { text }
                         </div>
