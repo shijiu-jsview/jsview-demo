@@ -14,17 +14,16 @@
  *      branchName {string} (必选)控件名称，用于设置焦点
  *      slideStyle {SlideStyle} 页面滑动类型 seamless/wholepage
  *      dispatcher {SWidgetDispatcher} 用于设置SimpleWidget控件内部的状态，默认为null
- *      measures {function} (必选)返回item的模板信息的回调, 可调用SimpleWidget.getMeasureObj方法获取返回值
- *                              @params item data中的数据
- *                              @return 模板信息 格式: 
- *                                  {
- *                                      "blocks":{
- *                                          "w":330,
- *                                          "h":330
- *                                      },
- *                                      "focusable":true, //该item是否可获得焦点
- *                                      "hasSub": false, //该item中是否包含可获得焦点的控件
- *                                  }
+ *      measures {function} (必选)返回item的模板信息的回调,
+ *                              @params item {object} data中的数据
+ *                              @return 模板信息，通过SimpleWidget.getMeasureObj(width, height, fosucable, hasSub)方法构建
+ *                                      SimpleWidget.getMeasureObj
+ *                                          @params width {int} item的宽
+ *                                          @params height {int} item的高
+ *                                          @params focusable {boolean} item是否可以获得焦点
+ *                                          @params hasSub {boolean} item内是否是可获得焦点的控件
+ *                                          @return {object} 模板信息
+ *                                  
  *      onClick {function} item点击回调 
  *                @params item data中的数据
  *      renderItem {function} (必选)item描画的回调
@@ -64,6 +63,7 @@
  * 
  * Q: 点击事件怎么获得
  * A: 传递onClick回调，回调参数是当前点击item的数据。
+ * 
  */
 import React from 'react';
 import './App.css';
@@ -170,7 +170,7 @@ class App extends FocusBlock {
         let x = ((item.blocks.w - 10) - width) / 2;
         let y = ((item.blocks.h - 10) - height) / 2;
         return (
-            <div style={{animation: "focusScale 0.2s", left: x, top: y, backgroundColor: "#FF0000", width: width, height: height, color: "#FFFFFF", }}>
+            <div style={{animation: "focusScale 2s", left: x, top: y, backgroundColor: "#FF0000", width: width, height: height, color: "#FFFFFF", }}>
                 {item.content}
             </div>
         )
@@ -178,7 +178,7 @@ class App extends FocusBlock {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{  backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 0.2s",}}
+            <div style={{  backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 2s",}}
                 onAnimationEnd={callback}>
                 {item.content}
             </div>
