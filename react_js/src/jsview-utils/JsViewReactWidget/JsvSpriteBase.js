@@ -145,9 +145,7 @@ class JsvControl {
 
 		this._StateIndex = 0; // mark idle
 		let that = this;
-		// setTimeout(()=>{
-			that._StateMachineNext(); // Trigger next start
-		// }, 0);
+		that._StateMachineNext(); // Trigger next start
 	}
 
 	_SetView(jsv_view) {
