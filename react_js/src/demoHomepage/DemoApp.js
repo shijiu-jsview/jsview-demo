@@ -52,17 +52,17 @@ let demoInfos = [
         "class": lazy(() => import('../showcaseDemo/App')),
     },
     {
-        "name": "界面切换",
+        "name": "纵向布局+界面切换",
         "path": "/users/flowMultiWidget",
         "class": lazy(() => import('../flowMultiWidget/App')),
     },
     {
-        "name": "输入界面",
+        "name": "数字字母录入界面",
         "path": "/users/inputDemo",
         "class": lazy(() => import('../InputDemo/App')),
     },
     {
-        "name": "焦点框",
+        "name": ".9图片动画展示",
         "path": "/users/ninePatchDemo",
         "class": lazy(() => import('../ninePatchDemo/App')),
     },
@@ -97,7 +97,7 @@ let demoInfos = [
         "class": lazy(() => import('../nineSquared/App')),
     },
     {
-        "name": "长文字",
+        "name": "长文本显示\n(用户协议界面Demo)",
         "path": "/users/longText",
         "class": lazy(() => import('../longText/App')),
     },

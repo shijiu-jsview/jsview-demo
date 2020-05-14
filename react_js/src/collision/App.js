@@ -12,6 +12,12 @@
  *                          @params onDisContact {function} 碰撞结束回调
  *
  * 【技巧说明】
+ * Q: 如何进行碰撞检测？
+ * A: 首先通过 createImpactCallback() 函数先创建出回调函数组
+ *    然后通过div的ref属性拿到div的句柄，
+ *    两个div的句柄通过 createImpactTracer() 创建它俩之间的碰撞观察对象。
+ *    当碰撞发生时，onContact会被回调，当碰撞离开时，onDisContact会被回调。
+ *    【请关注】当碰撞观测对象不再需要观测时，请手动调用观测对象的Recycle()接口，手动释放资源。可以在componentWillUnmount中做。
  */
 
 import React from 'react';

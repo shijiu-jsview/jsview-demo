@@ -3,8 +3,8 @@
  * 带有菜单的橱窗界面，主要展示界面间切换的用法
  *
  * 【控件介绍】
- * SimpleWidget：见simpleMetroWidget
- * JsvMarquee: 见showcaseDemo
+ * SimpleWidget：表单布局，见simpleMetroWidget样例
+ * JsvMarquee: 跑马灯，见showcaseDemo样例
  *
  * 【技巧说明】
  * Q: 如何实现菜单的显示和隐藏?

@@ -3,7 +3,8 @@
  * 展示tabWidget的使用方法
  *
  * 【控件介绍】
- * JsvTabWidget：带tab的主页控件
+ * JsvTabWidget：带tab的主页控件，是SimpleWidget的高阶封装，tab和body部分中的各接口对应SimpleWidget的各接口，
+ *               SimpleWidget接口使用规则可以参照 simpleMetroWidget 样例中的说明
  *                  onEdge {function} 边缘回调
  *                  flowDirection {Symbol} (必选)控件的方向 
  *                  initFocusId {int} 初始的焦点

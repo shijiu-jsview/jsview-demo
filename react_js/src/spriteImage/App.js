@@ -23,7 +23,6 @@
  */
 
 import React from 'react';
-import './App.css';
 import JsvSpriteImg from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import sprite from './images/sprite.png'
 import cat_run from './images/cat_run.png'

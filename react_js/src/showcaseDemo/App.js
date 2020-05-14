@@ -12,6 +12,12 @@
  *              text {string} (必须)控件中显示的文字内容
  *              fontStyle {object} style中的文字相关属性设置，例如font, color, fontSize, lineHeight
  * 【技巧说明】
+ * Q: 跑马灯控件如何使用？
+ * A: 将div的style中要填写的文字style内容做成一个对象，通过fontStyle传入。
+ *    div的style的坐标属性，也改为通过对应属性传入。
+ *    本应用中，simpleMetroWidget.renderFocus下加入跑马灯控件，非焦点状态时，只是使用简单的文字展示，
+ *    所以非焦点切换焦点状态，才会表现出跑马灯效果，焦点移走后跑马灯就消失了。
+ *
  */
 
 import React from 'react';
