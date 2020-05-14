@@ -7,32 +7,44 @@ class JsvControl {
 	constructor(params_count) {
 		this._Current = new Array(params_count).fill(0);
 		this._Target = new Array(params_count).fill(0);
+		this._JumpTarget = null;
+		this._Jumping = false;
 		this._ParameterCount = params_count;
 		this._StateIndex = 0; // 0: idle, 1:running
 		this._StateLocked = false;
 		this._StartSwitcher = false;
-		this._Callbacks = [];
+		this._PausedCallback = null;
+		this._EndCallback = null;
 		this._Token = 0;
 
 		this._SpriteView = null;
 	}
 
-	start() {
+	start(end_callback) {
+		this._EndCallback = end_callback;
 		this._StartSwitcher = true;
+		this._Jumping = false;
 		this._StateMachineNext();
 	}
 
 	pause(paused_callback) {
 		if (this._StateIndex == 0) {
 			if (paused_callback) {
-				this._WrapCallback(this._Current, paused_callback);
+				this._CallbackWithCatch(this._Current, paused_callback);
 			}
 		} else {
 			if (paused_callback) {
-				this._Callbacks.push(paused_callback);
+				this._PausedCallback = paused_callback;
 			}
 			this._StateMachineNext();
 		}
+	}
+
+	jump() {
+		this._JumpTarget = [...this._Target];
+		this._Jumping = true;
+		this._StartSwitcher = true;
+		this._StateMachineNext();
 	}
 
 	_WrapBuildAnimation(froms_array, tos_array) {
@@ -41,6 +53,15 @@ class JsvControl {
 
 	_WrapCallback(currents, callback) {
 		console.warn("Should Override");
+	}
+
+	_CallbackWithCatch(currents, callback) {
+		try {
+			this._WrapCallback(currents, callback);
+		} catch(e) {
+			console.error("Error:in callback");
+			console.error(e);
+		}
 	}
 
 	_StateMachineNext() {
@@ -64,8 +85,10 @@ class JsvControl {
 	}
 
 	_StartAnimation() {
-		let froms = [...this._Current];
+		let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
 		let tos = [...this._Target];
+
+		let token = this._Token++;
 
 		let that = this;
 		let listener = (new Forge.AnimationListener())
@@ -73,7 +96,12 @@ class JsvControl {
 				that._OnPaused(froms, tos, progress);
 			});
 
-		let anim = this._WrapBuildAnimation(froms, tos);
+		let anim = this._WrapBuildAnimation(froms, tos, this._Jumping);
+
+		// clear jump status
+		this._JumpTarget = null;
+		this._Jumping = false;
+
 		if (anim == null) {
 			return;
 		}
@@ -98,19 +126,28 @@ class JsvControl {
 		this._StateLocked = true;
 
 		// 换出callbacks，回调时可能加入新的callbacks
-		let callbacks = this._Callbacks;
-		this._Callbacks = [];
+		let paused_callback = this._PausedCallback;
+		let ended_callback = this._EndCallback;
+		this._PausedCallback = null;
+		this._EndCallback = null;
 
 		// 回调所有callback
-		let size = callbacks.length;
-		for (let i = 0; i < size; i++) {
-			this._WrapCallback(this._Current, callbacks[i]);
+		if (paused_callback) {
+			// Paused callback
+			this._CallbackWithCatch(this._Current, paused_callback);
+		}
+		if (ended_callback && progress == 1) {
+			// Ended callback
+			this._CallbackWithCatch(this._Current, ended_callback);
 		}
 
 		this._StateLocked = false;
 
 		this._StateIndex = 0; // mark idle
-		this._StateMachineNext(); // Trigger next start
+		let that = this;
+		// setTimeout(()=>{
+			that._StateMachineNext(); // Trigger next start
+		// }, 0);
 	}
 
 	_SetView(jsv_view) {
@@ -123,12 +160,17 @@ class HtmlControl {
 		// TODO: 要补充
 	}
 
-	start() {
+	start(ended_callback) {
 		// TODO: 要补充
 		return this;
 	}
 
 	pause(paused_callback) {
+		// TODO: 要补充
+		return this;
+	}
+
+	jump() {
 		// TODO: 要补充
 		return this;
 	}

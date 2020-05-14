@@ -41,28 +41,32 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	// Override
-	_WrapBuildAnimation(froms_array, tos_array) {
+	_WrapBuildAnimation(froms_array, tos_array, act_jump) {
 		let from_x = froms_array[0];
 		let to_x = tos_array[0];
 		let from_y = froms_array[1];
 		let to_y = tos_array[1];
+		let time = 1;
 
-		let dx = to_x - from_x;
-		let dy = to_y - from_y;
-		let time = Math.floor(Math.sqrt(dx * dx + dy * dy) * 1000 / this._Speed);
-		if (time == 0) {
-			console.log("Discard starting request for no distance");
-			return null; // failed to start
+		if (!act_jump) {
+			let dx = to_x - from_x;
+			let dy = to_y - from_y;
+			time = Math.floor(Math.sqrt(dx * dx + dy * dy) * 1000 / this._Speed);
+			if (time == 0) {
+				console.log("Discard starting request for no distance");
+				return null; // failed to start
+			}
 		}
 
 		let anim = new Forge.TranslateAnimation(from_x, to_x, from_y, to_y, time, null);
+
 		return anim;
 	}
 
 	// Override
 	_WrapCallback(currents, callback) {
 		if (callback) {
-			callback(currents[0], currents, callback[1]);
+			callback(currents[0], currents[1]);
 		}
 	}
 }
