@@ -2,7 +2,7 @@
 div{
   position: absolute;
   background-size: 100% 100%;
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
 img{
