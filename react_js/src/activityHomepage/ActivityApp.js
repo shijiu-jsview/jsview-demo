@@ -22,28 +22,28 @@ let demoInfos = [
         "name": "红包雨",
         "path": "/users/giftRain",
         "background":giftrain_bg,
-        "class": lazy(() => import('../giftRain/App')),
+        "class": lazy(() => import('../giftRain/App').then(m => ({ default: m.SubApp }))),
         "icon":giftrain_icon,
     },
     {
         "name": "砸金蛋活动",
         "path": "/users/smashEggs",
         "background":smash_eggs_bg,
-        "class": lazy(() => import('../smashEggs/App')),
+        "class": lazy(() => import('../smashEggs/App').then(m => ({ default: m.SubApp }))),
         "icon":smash_eggs_icon,
     },
     {
         "name": "转盘抽奖",
         "path": "/users/turntableDemo",
         "background":turntable_bg,
-        "class": lazy(() => import('../turntableDemo/App')),
+        "class": lazy(() => import('../turntableDemo/App').then(m => ({ default: m.SubApp }))),
         "icon":turntable_icon,
     },
     {
         "name": "幸运九宫格",
         "path": "/users/nineSquared",
         "background":ninesquared_bg,
-        "class": lazy(() => import('../nineSquared/App')),
+        "class": lazy(() => import('../nineSquared/App').then(m => ({ default: m.SubApp }))),
         "icon":ninesquared_icon,
     },
 ]
@@ -64,6 +64,12 @@ class ActivityApp extends React.Component {
     constructor(props) {
         super(props);
         this._FocusControl = null;
+
+        this._NavigateHome = (()=>{
+            globalHistory.goBack();
+            this._FocusControl.changeFocus("/main");
+        }).bind(this);
+
         this.state = {
             "homepageDisplay": "visible"
         };
@@ -71,30 +77,28 @@ class ActivityApp extends React.Component {
 
     render() {
         return (
-            <FdivRoot>
-                <FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
-                    <Router history={globalHistory} >
-                        <React.Suspense fallback={<div></div>}>
-                            <Switch>
-                                {
-                                    demoInfos.map((item, index) => {
-                                        return (
-                                            <Route key={index} path={item.path}>
-                                                <item.class branchName={item.path} />
-                                            </Route>)
-                                    })
-                                }
-                                <Route path="/">
-                                    <HomePageProxy callback={(v) => { this.setState({"homepageDisplay": v})}}/>
-                                </Route>
-                            </Switch>
-                        </React.Suspense>
-                    </Router>
-                    <div style={{"visibility": this.state.homepageDisplay}}>
-                        <Home branchName="/main" data={demoInfos} />
-                    </div>
-                </FdivRouter>
-            </FdivRoot>
+            <FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
+                <Router history={globalHistory} >
+                    <React.Suspense fallback={<div></div>}>
+                        <Switch>
+                            {
+                                demoInfos.map((item, index) => {
+                                    return (
+                                        <Route key={index} path={item.path}>
+                                            <item.class branchName={item.path} navigateHome={this._NavigateHome}/>
+                                        </Route>)
+                                })
+                            }
+                            <Route path="/">
+                                <HomePageProxy callback={(v) => { this.setState({"homepageDisplay": v})}}/>
+                            </Route>
+                        </Switch>
+                    </React.Suspense>
+                </Router>
+                <div style={{"visibility": this.state.homepageDisplay}}>
+                    <Home branchName="/main" data={demoInfos} />
+                </div>
+            </FdivRouter>
         )
     }
 

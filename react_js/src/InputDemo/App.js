@@ -32,7 +32,7 @@
 import React, { Component } from 'react'
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
 import { SimpleWidget, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
 class FullKeyboard extends FocusBlock {
@@ -145,7 +145,7 @@ class FullKeyboard extends FocusBlock {
     }
 }
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Ref = null;
@@ -186,8 +186,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
             return true;
         }
         return false;
@@ -226,4 +227,9 @@ class App extends FocusBlock {
         this.changeFocus(this.props.branchName + "/keyboard");
     }
 }
-export default App
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

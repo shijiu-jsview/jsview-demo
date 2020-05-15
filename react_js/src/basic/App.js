@@ -52,18 +52,15 @@ import DivGroup1 from './div/DivGroup1.js';
 import DivGroup2 from './div/DivGroup2.js';
 import TextGroup from './text/TextGroup.js';
 import AnimGroup from './anim/AnimGroup.js';
-import AVGroup from './av/AVGroup.js';
-import {Router, FdivRoot, Fdiv, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
+import { HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
 import {TitleFont} from './CommonFontStyle'
-import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         console.log("App.constructor().");
-
-        this._FdivRouter = new Router();
 
         this.state = {
             offsetX:0,
@@ -86,15 +83,15 @@ class App extends FocusBlock {
             // 'Down' key down
             this.setState({offsetY: this.state.offsetY - 30})
         } else if (ev.keyCode == 27 || ev.keyCode === 10000) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
 
     componentDidMount() {
         console.log("App.componentDidMount(). time=" + Date.now());
-        // this._FdivRouter.focus("main");
     }
 
     renderContent() {
@@ -143,4 +140,9 @@ class App extends FocusBlock {
     }
 }
 
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

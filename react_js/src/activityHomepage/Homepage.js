@@ -73,7 +73,7 @@ class Home extends FdivWrapper {
     _onClick(item) {
         console.log(globalHistory)
         globalHistory.push(item.path);
-        this.changeFocus(item.path);
+        this.changeFocus(item.path, true); // 若子节点已经focus，则不改变focus状态
     }
 
     _Measures(item) {

@@ -25,11 +25,11 @@ import './App.css';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
 import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee"
 import { HomePageData, PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT } from "./DataProvader"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import borderImgPath from './images/nine_patch_focus.png';
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -41,8 +41,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         } return true;
     }
 
@@ -171,4 +172,9 @@ class App extends FocusBlock {
         this.changeFocus(this.props.branchName + "/widget")
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

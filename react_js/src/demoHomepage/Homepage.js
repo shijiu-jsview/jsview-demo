@@ -25,7 +25,7 @@ class Home extends FdivWrapper {
     _onClick(item) {
         console.log(globalHistory)
         globalHistory.push(item.path);
-        this.changeFocus(item.path);
+        this.changeFocus(item.path, true);
     }
 
     _Measures(item) {

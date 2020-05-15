@@ -10,7 +10,7 @@ class AnimGroup extends React.Component {
         console.log("AnimGroup.constructor().");
 
         this.state = {timeCount: 0};
-        setInterval(() => {
+        this._Timer = setInterval(() => {
             const count = this.state.timeCount + 5;
             //console.log('change timeCount: ' + count);
             this.setState({timeCount: count})
@@ -31,6 +31,13 @@ class AnimGroup extends React.Component {
                     <AnimTransition timeCount={this.state.timeCount}/>
                 </TitleBlock>
             </div>
+    }
+
+    componentWillUnmount() {
+        if (this._Timer >= 0) {
+            window.clearInterval(this._Timer);
+            this._Timer = -1;
+        }
     }
 }
 

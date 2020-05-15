@@ -79,8 +79,8 @@
 import React from 'react';
 import './App.css';
 import { SimpleWidget, HORIZONTAL, SlideStyle} from "../jsview-utils/jsview-react/index_widget.js"
-import { globalHistory } from '../demoCommon/RouterHistory';
 import { FocusBlock } from "../demoCommon/BlockDefine"
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
 let homePageData = [
     {
@@ -161,7 +161,7 @@ for (let i = 0; i < 5; i++) {
     });
 }
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -206,8 +206,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -239,4 +240,10 @@ class App extends FocusBlock {
         this.changeFocus(this.props.branchName + "/widget1")
     }
 }
-export default App;
+
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

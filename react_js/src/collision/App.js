@@ -23,10 +23,10 @@
 import React from 'react';
 import { createImpactTracer, createImpactCallback } from "../jsview-utils/jsview-react/index_widget.js"
 import './App.css'
-import {globalHistory} from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import {FocusBlock} from "../demoCommon/BlockDefine"
 
-class App extends FocusBlock{
+class MainScene extends FocusBlock{
     constructor(props) {
         super(props);
         this._TranslateEle1;
@@ -40,6 +40,8 @@ class App extends FocusBlock{
         
         this._SkewEle1;
         this._SkewEle2;
+
+        this._Sensors = [];
 
         this.state = {
             "tLeftColor": "#FF0000",
@@ -55,8 +57,9 @@ class App extends FocusBlock{
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
             return true;
         }
         return false;
@@ -124,6 +127,7 @@ class App extends FocusBlock{
                 }
             )
         );
+        this._Sensors.push(translate_sensor);
 
         let rotate_count = {count:0};
         let rotate_sensor = createImpactTracer(this._RotateEle1, this._RotateEle2,
@@ -147,6 +151,7 @@ class App extends FocusBlock{
                 }
             )
         );
+        this._Sensors.push(rotate_sensor);
 
         let scale_sensor = createImpactTracer(this._ScaleEle1, this._ScaleEle2, createImpactCallback(
             () => {
@@ -163,6 +168,7 @@ class App extends FocusBlock{
                 })
             })
         );
+        this._Sensors.push(scale_sensor);
 
         let skew_sensor = createImpactTracer(this._SkewEle1, this._SkewEle2, createImpactCallback(
             () => {
@@ -179,7 +185,20 @@ class App extends FocusBlock{
                 })
             })
         );
+        this._Sensors.push(skew_sensor);
+    }
+
+    componentWillUnmount() {
+        for (var i = 0; i < this._Sensors.length; i++) {
+            this._Sensors[i].Recycle();
+        }
+        this._Sensors = [];
     }
 }
 
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

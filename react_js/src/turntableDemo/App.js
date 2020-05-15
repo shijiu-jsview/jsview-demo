@@ -22,13 +22,15 @@ import React from 'react';
 import './App.css';
 import Turntable from "./turntable"
 import {FocusBlock} from "../demoCommon/BlockDefine"
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
-class App extends FocusBlock{
+class MainScene extends FocusBlock{
 	constructor(props) {
 		super(props);
 		this.state = {rain:null}
 
 	}
+
 	renderContent() {
 		return (
 			<div style={{width: "1280px", height: "720px"}}>
@@ -37,8 +39,23 @@ class App extends FocusBlock{
 		)
 	}
 
+	onKeyDown(ev) {
+		if (ev.keyCode === 10000 || ev.keyCode === 27) {
+			if (this._NavigateHome) {
+				this._NavigateHome();
+			}
+		}
+		return true;
+	}
+
 	componentDidMount() {
-		this.changeFocus(this.props.branchName + "/Turntable");
+		this.changeFocus(this.props.branchName + "/Turntable", true);
 	}
 }
-export default App;
+
+let App = createStandaloneApp(MainScene);
+
+export {
+	App, // 独立运行时的入口
+	MainScene as SubApp, // 作为导航页的子入口时
+};

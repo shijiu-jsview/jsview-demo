@@ -23,7 +23,7 @@ import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, Edg
 import {JsvSquareNinePatch} from '../jsview-utils/JsViewReactWidget/JsvNinePatch'
 import {FocusBlock} from "../demoCommon/BlockDefine"
 import borderImgPath from './border.png';
-import {globalHistory} from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
 let data = [
     {
@@ -55,7 +55,7 @@ let data = [
     },
 ]
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -152,8 +152,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
             return true;
         }
         return false;
@@ -167,4 +168,9 @@ class App extends FocusBlock {
     }
 }
 
-export default App
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

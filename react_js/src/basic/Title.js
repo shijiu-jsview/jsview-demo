@@ -4,9 +4,9 @@ import {TitleFont as titleFont} from './CommonFontStyle'
 
 class Title extends React.Component {
     render() {
-        console.log("style=", this.props.style);
-        console.log("contentLeft=", this.props.contentLeft, " contentTop=", this.props.contentTop);
-        console.log("itemWidth=", this.props.itemWidth, " itemHeight=", this.props.itemHeight);
+        // console.log("style=", this.props.style);
+        // console.log("contentLeft=", this.props.contentLeft, " contentTop=", this.props.contentTop);
+        // console.log("itemWidth=", this.props.itemWidth, " itemHeight=", this.props.itemHeight);
         const itemWidth = this.props.itemWidth;
         const itemHeight = this.props.itemHeight;
         const rowStyle = {...this.props.style, width: itemWidth, textAlign: 'center'};
