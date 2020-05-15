@@ -155,23 +155,68 @@ class JsvControl {
 
 class HtmlControl {
 	constructor(params_count) {
-		// TODO: 要补充
+        this._Current = new Array(params_count).fill(0);
+        this._Target = new Array(params_count).fill(0);
+        this._ParameterCount = params_count;
+        this._SpriteDiv = null;
+        this._PausedCallback = null;
+		this._EndCallback = null;
 	}
 
-	start(ended_callback) {
-		// TODO: 要补充
+	start(end_callback) {
+        this._EndCallback = end_callback;
+        this._SpriteDiv.style.animation = null;
+        let animation = this._WrapBuildAnimation(this._Current, this._Target);
+        this._SpriteDiv.style.animation = animation;
+        this._SpriteDiv.onanimationend = () => {
+            this._Current = this._Target;
+            this._SpriteDiv.style.animation = null;
+            this._SpriteDiv.style.transform = this._GetTransform(this._Current);
+            this._SpriteDiv.onanimationend = null;
+            let callback = this._EndCallback;
+            this._EndCallback = null;
+            this._WrapCallback(this._Current, callback);
+        };
+
 		return this;
 	}
 
 	pause(paused_callback) {
-		// TODO: 要补充
+        this._Current = this._GetCurrentValue();
+        this._SpriteDiv.style.animation = null;
+        this._SpriteDiv.style.transform = this._GetTransform(this._Current);
+        this._SpriteDiv.onanimationend = null;
+        this._WrapCallback(this._Current, paused_callback);
+		return this;
+    }
+
+    jump() {
+        this._Current = this._Target;
+        this._SpriteDiv.style.animation = null;
+        this._SpriteDiv.style.transform = this._GetTransform(this._Target);
+        this._SpriteDiv.onanimationend = null;
 		return this;
 	}
 
-	jump() {
-		// TODO: 要补充
-		return this;
-	}
+    _GetTransform(value_list) {
+        console.warn("Should Override");
+    }
+
+    _GetCurrentValue() {
+        console.warn("Should Override");
+    }
+
+    _WrapBuildAnimation() {
+        console.warn("Should Override");
+    }
+
+    _WrapCallback(currents, callback) {
+		console.warn("Should Override");
+    }
+    
+    _SetView(sprite_div) {
+        this._SpriteDiv = sprite_div;
+    }
 }
 
 var SpriteControlBase = window.JsView ? JsvControl : HtmlControl;
@@ -200,7 +245,7 @@ class JsvSpriteBase extends React.Component{
 			return this._RenderInJsView();
 		} else {
 			// TODO: 要补充html运行状态
-			return (<div></div>);
+			return this._RenderInHtmlView();
 		}
 	}
 
@@ -210,7 +255,14 @@ class JsvSpriteBase extends React.Component{
 			ForgeExtension.RootActivity.ViewStore.remove(this._JsvViewStoreId);
 			this._JsvViewStoreId = -1;
 		}
-	}
+    }
+    
+    _RenderInHtmlView() {
+        let {control, ...other_prop} = this.props;
+        return (
+            <div ref={(ele) => {if (ele) this._LinkedControl._SetView(ele.jsvMainView.Element)}} {...other_prop} />
+        )
+    }
 
 	_RenderInJsView() {
 		// 创建LayoutView，并通过jsv_innerview做成ProxyView(接管所有子View)
