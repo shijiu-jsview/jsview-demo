@@ -1,6 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import './jsview-utils/jsview-react/index_widget.js'
+import { FdivRoot } from './jsview-utils/jsview-react/index_widget.js'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -17,11 +17,11 @@ function startApp(confirm_entry) {
 		// React相关配置
 		window.JsView.React.DesignMap = {width:1280, displayScale:1.0}; // (可选配置)设置View坐标映射值，默认值也是1280, 1.0
 		window.JsView.React.Render = function() {
-			ReactDOM.render(<App />, document.getElementById('root'));
+			ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
 		}
 		confirm_entry();
 	} else {
-		ReactDOM.render(<App />, document.getElementById('root'));
+		ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
 	}
 }
 

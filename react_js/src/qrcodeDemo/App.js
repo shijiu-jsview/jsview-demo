@@ -22,12 +22,12 @@
 
 import React, { Component } from 'react';
 import QRCode from "../jsview-utils/JsViewReactWidget/JsvQrcode"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
-class App extends FocusBlock {
-    constructor() {
-        super();
+class MainScene extends FocusBlock {
+    constructor(props) {
+        super(props);
         this.state = {
             value: 'http://www.baidu.com/',
             size: 128,
@@ -43,8 +43,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -73,4 +74,9 @@ class App extends FocusBlock {
     }
 }
 
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

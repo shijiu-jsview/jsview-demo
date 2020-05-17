@@ -4,9 +4,9 @@ import TipsPage from "./views/not_support/TipsPage"
 import MainPage from "./views/smash_eggs/MainPage"
 import SubPageBgUrl from "./images/subpage_bg.png"
 import CommonApi from "./common/CommonApi"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._FocusControl = null;
@@ -17,13 +17,13 @@ class App extends FocusBlock {
         console.log("smash eggs in")
     }
 
-    _requestFocus(branchName) {
-        this.changeFocus(branchName);
+    _requestFocus(branchName, keep_child_focus) {
+        this.changeFocus(branchName, keep_child_focus);
     }
 
     _goMainPage() {
         this.setState({AlreadyPurchased: 1});
-        this._requestFocus("smash/MainPage")
+        this._requestFocus("smash/MainPage", false)
     }
 
     componentDidMount() {
@@ -36,21 +36,22 @@ class App extends FocusBlock {
             promise.then((data) => {*/
                 console.log("isSubcribed:",1);
                 this.setState({AlreadyPurchased: 1});
-                this._requestFocus("smash/MainPage")
+                this._requestFocus("smash/MainPage", true)
             /*})
                 .catch((error) => {
                     console.log("App error:", error);
                     this._requestFocus("smash/MainPage")
                 });*/
         } else {
-            this._requestFocus("smash/TipsPage")
+            this._requestFocus("smash/TipsPage", true)
         }
     }
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -69,4 +70,9 @@ class App extends FocusBlock {
     }
 }
 
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

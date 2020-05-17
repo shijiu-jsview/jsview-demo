@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
 function throttle(callback, limit) {
@@ -33,7 +33,7 @@ function throttle(callback, limit) {
 		}
 	};
 }
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
 	constructor(props) {
 		super(props);
 		this._autoPlay = false;
@@ -357,8 +357,9 @@ class App extends FocusBlock {
 				break;
 			case 27:
 			case 10000:
-                globalHistory.goBack();
-                this.changeFocus("/main");
+				if (this._NavigateHome) {
+					this._NavigateHome();
+				}
 				break;
 			default:
 				break;
@@ -424,4 +425,10 @@ class App extends FocusBlock {
 
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+	App, // 独立运行时的入口
+	MainScene as SubApp, // 作为导航页的子入口时
+};
+

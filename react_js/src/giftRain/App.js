@@ -31,13 +31,13 @@ import './App.css';
 import Score from "./score"
 import RedPacket from "./red_packet.js"
 import {JsvSpriteTranslate, TranslateControl} from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
-import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
 import AudioBgUrl from "./audio/bgMusic-1.mp3";
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._bgImage = 'http://oss.image.qcast.cn/demo_images/red_packet_rain/bg.jpg';
@@ -150,8 +150,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         } else if (ev.keyCode === 37) {
             console.log(" ev.keyCode === 37 !this.state.moveAnim ");
             if (!this._IsRunning ) {
@@ -294,4 +295,10 @@ class App extends FocusBlock {
         console.log("giftRain App componentWillUnmount in");
     }
 }
-export default App;
+
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

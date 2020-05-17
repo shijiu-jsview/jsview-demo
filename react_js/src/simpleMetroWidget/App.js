@@ -14,17 +14,16 @@
  *      branchName {string} (必选)控件名称，用于设置焦点
  *      slideStyle {SlideStyle} 页面滑动类型 seamless/wholepage
  *      dispatcher {SWidgetDispatcher} 用于设置SimpleWidget控件内部的状态，默认为null
- *      measures {function} (必选)返回item的模板信息的回调, 可调用SimpleWidget.getMeasureObj方法获取返回值
- *                              @params item data中的数据
- *                              @return 模板信息 格式: 
- *                                  {
- *                                      "blocks":{
- *                                          "w":330,
- *                                          "h":330
- *                                      },
- *                                      "focusable":true, //该item是否可获得焦点
- *                                      "hasSub": false, //该item中是否包含可获得焦点的控件
- *                                  }
+ *      measures {function} (必选)返回item的模板信息的回调,
+ *                              @params item {object} data中的数据
+ *                              @return 模板信息，通过SimpleWidget.getMeasureObj(width, height, fosucable, hasSub)方法构建
+ *                                      SimpleWidget.getMeasureObj
+ *                                          @params width {int} item的宽
+ *                                          @params height {int} item的高
+ *                                          @params focusable {boolean} item是否可以获得焦点
+ *                                          @params hasSub {boolean} item内是否是可获得焦点的控件
+ *                                          @return {object} 模板信息
+ *                                  
  *      onClick {function} item点击回调 
  *                @params item data中的数据
  *      renderItem {function} (必选)item描画的回调
@@ -53,6 +52,21 @@
  *              @params {"direction": {EdgeDirection}边缘方向, "rect": 到达边缘时的区域{x: 0, y: 0, width: 0,height: 0}}
  *
  * 【技巧说明】
+ * Q: 如何进行布局，定制每个格的尺寸？
+ * A: 首先选定一个布局的方式，一列列地横向布局(HROIZONTAL)还是一行行地纵向(VERTICAL)布局，设置给属性direction
+ *    然后将单元格尺寸反馈器(函数)设置到measures中，进行布局时，组件会回调measures函数获得每个单元格的尺寸，
+ *    当一列放满单元格后(如果是纵向布局，则是一行放满后)，自动换列去布局下一列。
+ *
+ * Q: 单元格的普通状态，焦点状态，失焦状态如何渲染？
+ * A: 普通状态对应渲染函数renderItem；
+ *    焦点状态渲染对应函数renderFocus，若焦点有放大动画，应该在此处理中定义放大效果的keyFrame
+ *    失焦状态渲染对应函数renderBlur，失焦状态展示时间很短暂，只在焦点刚失去到恢复到单元格恢复到普通状态这段期间，
+ *    主要用于绘制失焦动画
+ *
+ * Q: 控件中的导航处理(上下左右，OK键)需要什么响应的开发？
+ * A: 上下左右键已经由控件接管，不需要开发者而外处理，上下左右键会触发翻页时间，翻页的形式由属性slideStyle来定制。
+ *    另外，通过OnClick属性可以注册按键回调函数，来处理用户的OK键动作。
+ *
  * Q: 焦点放大如何居中?
  * A: 1.renderFocus中需要计算view的位置。2.css动画的transform-origin需要设置为center
  * 
@@ -61,15 +75,12 @@
  * 
  * Q: 焦点怎么移出控件？
  * A: 当焦点移动到控件边缘时，会调用onEdge回调。在回调中通过参数传递的值来决定焦点转移的行为
- * 
- * Q: 点击事件怎么获得
- * A: 传递onClick回调，回调参数是当前点击item的数据。
  */
 import React from 'react';
 import './App.css';
 import { SimpleWidget, HORIZONTAL, SlideStyle} from "../jsview-utils/jsview-react/index_widget.js"
-import { globalHistory } from '../demoCommon/RouterHistory';
 import { FocusBlock } from "../demoCommon/BlockDefine"
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 
 let homePageData = [
     {
@@ -150,7 +161,7 @@ for (let i = 0; i < 5; i++) {
     });
 }
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -170,7 +181,7 @@ class App extends FocusBlock {
         let x = ((item.blocks.w - 10) - width) / 2;
         let y = ((item.blocks.h - 10) - height) / 2;
         return (
-            <div style={{animation: "focusScale 0.2s", left: x, top: y, backgroundColor: "#FF0000", width: width, height: height, color: "#FFFFFF", }}>
+            <div style={{animation: "focusScale 2s", left: x, top: y, backgroundColor: "#FF0000", width: width, height: height, color: "#FFFFFF", }}>
                 {item.content}
             </div>
         )
@@ -178,7 +189,7 @@ class App extends FocusBlock {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{  backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 0.2s",}}
+            <div style={{  backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 2s",}}
                 onAnimationEnd={callback}>
                 {item.content}
             </div>
@@ -195,8 +206,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -228,4 +240,10 @@ class App extends FocusBlock {
         this.changeFocus(this.props.branchName + "/widget1")
     }
 }
-export default App;
+
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import {HORIZONTAL, Fdiv, SimpleWidget, SlideStyle} from "../../../jsview-utils/jsview-react/index_widget"
+import {HORIZONTAL, Fdiv, SimpleWidget, SWidgetDispatcher, SlideStyle} from "../../../jsview-utils/jsview-react/index_widget"
 import PageTheme from "../../common/PageTheme"
 import CommonApi from "../../common/CommonApi"
 import ConstantVar from "../../common/ConstantVar"
@@ -23,9 +23,10 @@ class SmashEggsPage extends FocusBlock {
         this._Measures = this._Measures.bind(this);
         this._RenderItem = this._RenderItem.bind(this);
         this._RenderFocus = this._RenderFocus.bind(this);
-        this._RenderBlur = this._RenderBlur.bind(this);
         this._onClick = this._onClick.bind(this);
         this._SmashEggEnd = this._SmashEggEnd.bind(this);
+        this._onItemFocus = this._onItemFocus.bind(this);
+        this._Dispatcher = new SWidgetDispatcher();
         this._FocusId = 0;
         this._HammerAnimation = null;
         this.state = {
@@ -75,7 +76,6 @@ class SmashEggsPage extends FocusBlock {
     }
 
     _RenderFocus(item) {
-        this._FocusId = item.id;
         let animation = this._HammerAnimation;
 
         let hammer_style = {...this._PageTheme.SmashEggsPage.widget.hammer.focusStyle, ...{animation:animation}};
@@ -84,17 +84,7 @@ class SmashEggsPage extends FocusBlock {
         return (
             <Fdiv>
                 <Fdiv style={{...this._PageTheme.SmashEggsPage.widget.egg.style, ...{backgroundImage:item.eggUrl}}}></Fdiv>
-                <Hammer visible={item.id===this._FocusId} style={hammer_style} onAnimationEnd={this._SmashEggEnd}/>
-            </Fdiv>
-        )
-    }
-    
-    _RenderBlur(item, callback) {
-        return (
-            <Fdiv>
-                <Fdiv style={{...this._PageTheme.SmashEggsPage.widget.egg.style, ...{backgroundImage:item.eggUrl}}}></Fdiv>
-                <Hammer visible={item.id===this._FocusId} style={{...this._PageTheme.SmashEggsPage.widget.hammer.style, ...{animation:null}}}/>
-
+                <Hammer visible={true} style={hammer_style} onAnimationEnd={this._SmashEggEnd}/>
             </Fdiv>
         )
     }
@@ -107,6 +97,16 @@ class SmashEggsPage extends FocusBlock {
 
             </Fdiv>
         )
+    }
+
+    _onItemFocus(item, pre_edge, query) {
+        let pre_focus = this._FocusId;
+        this._FocusId = item.id;
+        let info = {
+            type: SWidgetDispatcher.Type.updateItem,
+            data: [pre_focus, this._FocusId]
+        };
+        this._Dispatcher.dispatch(info);
     }
 
     _onClick(item) {
@@ -145,9 +145,10 @@ class SmashEggsPage extends FocusBlock {
                         padding={{top: 20}}
                         slideStyle={ SlideStyle.seamless }
                         onEdge={ this.props.onEdge}
-                        renderBlur={ this._RenderBlur }
                         renderItem={ this._RenderItem }
                         renderFocus={ this._RenderFocus }
+                        onItemFocus={this._onItemFocus}
+                        dispatcher={this._Dispatcher}
                         onClick={ this._onClick }
                         measures={ this._Measures }
                         branchName="SmashEggsWidget"

@@ -3,8 +3,8 @@
  * 带有菜单的橱窗界面，主要展示界面间切换的用法
  *
  * 【控件介绍】
- * SimpleWidget：见simpleMetroWidget
- * JsvMarquee: 见showcaseDemo
+ * SimpleWidget：表单布局，见simpleMetroWidget样例
+ * JsvMarquee: 跑马灯，见showcaseDemo样例
  *
  * 【技巧说明】
  * Q: 如何实现菜单的显示和隐藏?
@@ -16,10 +16,10 @@ import './App.css';
 import FlowMetroWidget from './views/FlowMetroWidget'
 import MenuWidget from './views/MenuWidget'
 import { HomePageData, HomePageStyle, MenuPageStyle, MenuPageData } from './DataProvader'
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,8 +50,9 @@ class App extends FocusBlock {
         } else if (this.state.menu_visibility === "visible" && (ev.keyCode === 10000 || ev.keyCode === 82)) {// back key or R
             this._HideMenu();
         } else if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -82,4 +83,9 @@ class App extends FocusBlock {
         )
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

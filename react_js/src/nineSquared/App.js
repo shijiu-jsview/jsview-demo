@@ -21,11 +21,11 @@
 import React from 'react';
 import './App.css';
 import {FocusBlock} from "../demoCommon/BlockDefine"
-import {globalHistory} from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import MainPage from "./views/MainPage"
 import ConstantVar from "./common/ConstantVar"
 
-class App extends FocusBlock{
+class MainScene extends FocusBlock{
 	constructor(props) {
 		super(props);
 
@@ -40,8 +40,9 @@ class App extends FocusBlock{
 	}
     onKeyDown(ev) {
         if (ev.keyCode === ConstantVar.KeyCode.Back || ev.keyCode === ConstantVar.KeyCode.Back2) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+	        if (this._NavigateHome) {
+		        this._NavigateHome();
+	        }
             return true;
         }
         return false;
@@ -55,4 +56,9 @@ class App extends FocusBlock{
     }
 
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+	App, // 独立运行时的入口
+	MainScene as SubApp, // 作为导航页的子入口时
+};

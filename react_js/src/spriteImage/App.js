@@ -23,11 +23,10 @@
  */
 
 import React from 'react';
-import './App.css';
 import JsvSpriteImg from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import sprite from './images/sprite.png'
 import cat_run from './images/cat_run.png'
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
 let sprite_info = {
@@ -75,7 +74,7 @@ let static_info = {
     }
 }
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
 
@@ -86,8 +85,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
             return true;
         }
         return false;
@@ -115,4 +115,9 @@ class App extends FocusBlock {
 
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

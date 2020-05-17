@@ -3,7 +3,8 @@
  * 展示tabWidget的使用方法
  *
  * 【控件介绍】
- * JsvTabWidget：带tab的主页控件
+ * JsvTabWidget：带tab的主页控件，是SimpleWidget的高阶封装，tab和body部分中的各接口对应SimpleWidget的各接口，
+ *               SimpleWidget接口使用规则可以参照 simpleMetroWidget 样例中的说明
  *                  onEdge {function} 边缘回调
  *                  flowDirection {Symbol} (必选)控件的方向 
  *                  initFocusId {int} 初始的焦点
@@ -49,10 +50,10 @@ import { JsvTabWidget } from "../jsview-utils/JsViewReactWidget/JsvTabWidget"
 import { bodyData, tabData } from "./Data"
 import focusBg from "./images/focus_bg.png"
 import foucsNinePatch from "./images/nine_patch_focus.png"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -147,8 +148,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         }
         return true;
     }
@@ -180,4 +182,9 @@ class App extends FocusBlock {
         )
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};

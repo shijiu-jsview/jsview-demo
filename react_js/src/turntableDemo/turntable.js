@@ -1,5 +1,4 @@
 import React from 'react';
-import {globalHistory} from '../demoCommon/RouterHistory';
 import {FocusBlock} from "../demoCommon/BlockDefine"
 import CommonApi from "../api/CommonApi"
 class Turntable extends FocusBlock{
@@ -110,11 +109,10 @@ class Turntable extends FocusBlock{
 
             const distance = this.distanceToStop();
             this.rotatePanel(distance);//调用处理旋转的方法
-
 		} else if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            this.changeFocus("/main");
-            globalHistory.goBack();
+		    return false; // Popup 【back】 key event
         }
+
         return true;
 	}
 

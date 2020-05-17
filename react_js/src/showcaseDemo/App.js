@@ -12,6 +12,12 @@
  *              text {string} (必须)控件中显示的文字内容
  *              fontStyle {object} style中的文字相关属性设置，例如font, color, fontSize, lineHeight
  * 【技巧说明】
+ * Q: 跑马灯控件如何使用？
+ * A: 将div的style中要填写的文字style内容做成一个对象，通过fontStyle传入。
+ *    div的style的坐标属性，也改为通过对应属性传入。
+ *    本应用中，simpleMetroWidget.renderFocus下加入跑马灯控件，非焦点状态时，只是使用简单的文字展示，
+ *    所以非焦点切换焦点状态，才会表现出跑马灯效果，焦点移走后跑马灯就消失了。
+ *
  */
 
 import React from 'react';
@@ -19,11 +25,11 @@ import './App.css';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
 import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee"
 import { HomePageData, PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT } from "./DataProvader"
-import { globalHistory } from '../demoCommon/RouterHistory';
+import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import borderImgPath from './images/nine_patch_focus.png';
 
-class App extends FocusBlock {
+class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Measures = this._Measures.bind(this);
@@ -35,8 +41,9 @@ class App extends FocusBlock {
 
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            globalHistory.goBack();
-            this.changeFocus("/main");
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
         } return true;
     }
 
@@ -165,4 +172,9 @@ class App extends FocusBlock {
         this.changeFocus(this.props.branchName + "/widget")
     }
 }
-export default App;
+let App = createStandaloneApp(MainScene);
+
+export {
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
+};
