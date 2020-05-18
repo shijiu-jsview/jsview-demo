@@ -16,10 +16,13 @@ class JsvControl {
 		this._PausedCallback = null;
 		this._EndCallback = null;
 		this._Token = 0;
-
+		this._Repeat = false;
 		this._SpriteView = null;
 	}
-
+	enableRepeat() {
+        this._Repeat = true;
+        return this;
+	}
 	start(end_callback) {
 		this._EndCallback = end_callback;
 		this._StartSwitcher = true;
@@ -108,7 +111,9 @@ class JsvControl {
 
 		anim.AddAnimationListener(listener);
 		anim.Enable(Forge.AnimationEnable.AckFinalProgress | Forge.AnimationEnable.KeepTransform);
-
+		if(this._Repeat) {
+            anim.EnableInfinite();
+		}
 		this._SpriteView.StartAnimation(anim);
 
 		return true; // success
@@ -161,8 +166,12 @@ class HtmlControl {
         this._SpriteDiv = null;
         this._PausedCallback = null;
 		this._EndCallback = null;
+        this._Repeat = false;
 	}
-
+    enableRepeat() {
+        this._Repeat = true;
+        return this;
+    }
 	start(end_callback) {
         this._EndCallback = end_callback;
         this._SpriteDiv.style.animation = null;
@@ -228,7 +237,6 @@ class JsvSpriteBase extends React.Component{
 	 */
 	constructor(props) {
 		super(props);
-
 		this._LinkedControl = props.control;
 
 		// Props for JsView
