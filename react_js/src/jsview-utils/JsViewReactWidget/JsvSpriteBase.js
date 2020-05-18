@@ -177,8 +177,10 @@ class HtmlControl {
         this._SpriteDiv.style.animation = null;
         let animation = this._WrapBuildAnimation(this._Current, this._Target);
         this._SpriteDiv.style.animation = animation;
+        console.log("start animation:"+animation);
         this._SpriteDiv.onanimationend = () => {
-            this._Current = this._Target;
+            this._Current[0] = this._Target[0];
+            this._Current[1] = this._Target[1];
             this._SpriteDiv.style.animation = null;
             this._SpriteDiv.style.transform = this._GetTransform(this._Current);
             this._SpriteDiv.onanimationend = null;
