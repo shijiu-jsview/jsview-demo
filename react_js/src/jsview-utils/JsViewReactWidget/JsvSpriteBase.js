@@ -7,6 +7,7 @@ class JsvControl {
 	constructor(params_count) {
 		this._Current = new Array(params_count).fill(0);
 		this._Target = new Array(params_count).fill(0);
+		this._RepeatStart = new Array(params_count).fill(0);
 		this._JumpTarget = null;
 		this._Jumping = false;
 		this._ParameterCount = params_count;
@@ -90,16 +91,17 @@ class JsvControl {
 	_StartAnimation() {
 		let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
 		let tos = [...this._Target];
+		let repeat_starts = (this._Repeat ? [...this._RepeatStart] : null);
 
 		let token = this._Token++;
 
 		let that = this;
 		let listener = (new Forge.AnimationListener())
 			.OnFinalProgress((progress)=>{
-				that._OnPaused(froms, tos, progress);
+				that._OnPaused((repeat_starts != null ? repeat_starts : froms), tos, progress);
 			});
 
-		let anim = this._WrapBuildAnimation(froms, tos, this._Jumping);
+		let anim = this._WrapBuildAnimation(repeat_starts, froms, tos, this._Jumping);
 
 		// clear jump status
 		this._JumpTarget = null;
@@ -168,10 +170,12 @@ class HtmlControl {
 		this._EndCallback = null;
         this._Repeat = false;
 	}
+
     enableRepeat() {
         this._Repeat = true;
         return this;
     }
+
 	start(end_callback) {
         this._EndCallback = end_callback;
         this._SpriteDiv.style.animation = null;

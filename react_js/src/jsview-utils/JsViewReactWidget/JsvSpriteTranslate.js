@@ -35,6 +35,13 @@ class JsvTranslateControl extends SpriteControlBase {
 		return this;
 	}
 
+	enableRepeatFrom(start_x, start_y) {
+		this.enableRepeat();
+		this._RepeatStart[0] = start_x;
+		this._RepeatStart[1] = start_y;
+		return this;
+	}
+
 	speed(pixel_per_second) {
 		// Take effect in next Start
 		this._Speed = pixel_per_second;
@@ -42,26 +49,56 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	// Override
-	_WrapBuildAnimation(froms_array, tos_array, act_jump) {
-		let from_x = froms_array[0];
-		let to_x = tos_array[0];
-		let from_y = froms_array[1];
-		let to_y = tos_array[1];
-		let time = 1;
+	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
+		let from_x = 0;
+		let from_y = 0;
+		let start_pos = 0.0;
+		let animate_time = 1;
 
-		if (!act_jump) {
-			let dx = to_x - from_x;
-			let dy = to_y - from_y;
-			time = Math.floor(Math.sqrt(dx * dx + dy * dy) * 1000 / this._Speed);
-			if (time == 0) {
-				console.log("Discard starting request for no distance");
-				return null; // failed to start
+		let current_x = current_array[0];
+		let current_y = current_array[1];
+		let to_x = tos_array[0];
+		let to_y = tos_array[1];
+
+		if (repeat_start_array != null) {
+			from_x = repeat_start_array[0];
+			from_y = repeat_start_array[1];
+			let distance = this._Distance(current_x, current_y, to_x, to_y);
+			let distance_total = this._Distance(from_x, from_y, to_x, to_y);
+			start_pos = (distance_total - distance) / distance_total;
+			if (!act_jump) {
+				animate_time = distance_total * 1000 / this._Speed;
+			}
+		} else {
+			from_x = current_x;
+			from_y = current_y;
+			start_pos = 0.0;
+			if (!act_jump) {
+				animate_time = this._Distance(current_x, current_y, to_x, to_y) * 1000 / this._Speed;
 			}
 		}
 
-		let anim = new Forge.TranslateAnimation(from_x, to_x, from_y, to_y, time, null);
+		if (!act_jump && animate_time == 0) {
+			console.log("Discard starting request for no distance");
+			return null; // failed to start
+		}
+
+		let anim = new Forge.TranslateAnimation(from_x, to_x, from_y, to_y, animate_time, null);
+		if (start_pos != 0) {
+			if (start_pos < 0) {
+				console.warn("Warning: start position out of repeating range");
+			} else {
+				anim.SetStartPos(start_pos);
+			}
+		}
 
 		return anim;
+	}
+
+	_Distance(from_x, from_y, to_x, to_y) {
+		let dx = to_x - from_x;
+		let dy = to_y - from_y;
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 	// Override
