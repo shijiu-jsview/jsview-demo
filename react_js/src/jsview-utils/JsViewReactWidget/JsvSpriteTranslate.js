@@ -15,8 +15,9 @@ class JsvTranslateControl extends SpriteControlBase {
 		super(2); // targetX, targetY, accelerate, init velocity
 		this._Mode = 0; // 0: 匀速控制模式, 1: 加减速控制模式
 		this._Speed = 0; // pixel per second
-		this._VerlocityAcc = new Array(2).fill(0); // 加速度值
-		this._VerlocityInit = new Array(2).fill(0); // 初始速度
+		this._VerlocityAcc = 0; // 加速度值
+		this._VerlocityInit = 0; // 初始速度
+		this._AccAlongX = true; // true 延X轴加速， false 延Y轴加速
 	}
 
 	selectMode(mode) {
@@ -55,10 +56,7 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	enableRepeatFrom(start_x, start_y) {
-		if (this._Mode != 0) {
-			console.error("Error: mode error");
-			return;
-		}
+		if (!this._ComfirmMode(0)) return;
 
 		this.setRepeat(true);
 		this._RepeatStart[0] = start_x;
@@ -67,10 +65,7 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	speed(pixel_per_second) {
-		if (this._Mode != 0) {
-			console.error("Error: mode error");
-			return;
-		}
+		if (!this._ComfirmMode(0)) return;
 
 		// Take effect in next Start
 		this._Speed = pixel_per_second;
@@ -78,18 +73,41 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	// Start后，从当前位置到目标位置后动画结束
-	accelerate(acc_x, acc_y, target_x, target_y) {
-		if (this._Mode != 1) {
-			console.error("Error: mode error");
-			return;
-		}
+	accelerateX(acc_x, target_x) {
+		if (!this._ComfirmMode(1)) return;
 
 		this._Target[0] = target_x;
+		this._VerlocityAcc = acc_x;
+		this._VerlocityInit = 0;
+		this._AccAlongX = true;
+		return this;
+	}
+
+	accelerateY(acc_y, target_y) {
+		if (!this._ComfirmMode(1)) return;
+
 		this._Target[1] = target_y;
-		this._VerlocityAcc[0] = acc_x;
-		this._VerlocityAcc[1] = acc_y;
-		this._VerlocityInit[0] = 0;
-		this._VerlocityInit[1] = 0;
+		this._VerlocityAcc = acc_x;
+		this._VerlocityInit = 0;
+		this._AccAlongX = false;
+		return this;
+	}
+
+	decelerateX(acc_x, init_v_x) {
+		if (!this._ComfirmMode(1)) return;
+
+		this._VerlocityAcc = acc_x;
+		this._VerlocityInit = init_v_x;
+		this._AccAlongX = true;
+		return this;
+	}
+
+	decelerateY(acc_y, init_v_y) {
+		if (!this._ComfirmMode(1)) return;
+
+		this._VerlocityAcc = acc_y;
+		this._VerlocityInit = init_v_y;
+		this._AccAlongX = false;
 		return this;
 	}
 
@@ -105,6 +123,14 @@ class JsvTranslateControl extends SpriteControlBase {
 		this._VerlocityInit[0] = init_v_x;
 		this._VerlocityInit[1] = init_v_y;
 		return this;
+	}
+
+	_ComfirmMode(mode) {
+		if (this._Mode != mode) {
+			console.error("Error: mode error");
+			return false;
+		}
+		return true;
 	}
 
 	// Override
@@ -167,35 +193,29 @@ class JsvTranslateControl extends SpriteControlBase {
 	}
 
 	_AccelerMove(current_array, tos_array) {
-		let current_x = current_array[0];
-		let current_y = current_array[1];
-		let int_v_x = this._VerlocityInit[0];
-		let int_v_y = this._VerlocityInit[1];
-		let acc_x = this._VerlocityAcc[0];
-		let acc_y = this._VerlocityAcc[1];
-		let target_x, target_y, time;
+		let current = (this._AccAlongX ? current_array[0] : current_array[1]);
+		let init_v = this._VerlocityInit;
+		let acc = this._VerlocityAcc;
+
+		let target, time;
 		let is_acc_up = true;
 
-		if (acc_x == 0 && acc_y == 0) {
+		if (acc == 0) {
 			console.error("Error: no found acceleration");
 			return;
 		}
 
-		let d_acc = Math.sqrt(acc_x * acc_x + acc_y * acc_y);
-
-		if (int_v_x == 0 && int_v_x == 0) {
+		if (init_v == 0) {
 			// 加速度运动，终点为target x，y
-			target_x = tos_array[0];
-			target_y = tos_array[1];
+			target = (this._AccAlongX ? tos_array[0] : tos_array[1]);
+
 			// d = 0.5 * acc * time^2 ==> time = sqrt(d * 2 / acc)
-			time = Math.floor(Math.sqrt(this._Distance(current_x, current_y, target_x, target_y) * 2 / d_acc) * 1000);
+			time = Math.floor(Math.sqrt(Math.abs(target - current) * 2 / acc) * 1000);
 			is_acc_up = true;
 		} else {
 			// 减速运动
-			let d_velocity = Math.sqrt(int_v_x * int_v_x + int_v_y * int_v_y);
-			time = Math.floor(d_velocity * 1000 / d_acc);
-			target_x = current_x + Math.floor(0.0000005 * acc_x * time * time);
-			target_y = current_y + Math.floor(0.0000005 * acc_y * time * time);
+			time = Math.floor(Math.abs(init_v) * 1000 / acc);
+			target = current + Math.floor(0.0005 * init_v * time);
 			is_acc_up = false;
 		}
 
@@ -205,19 +225,25 @@ class JsvTranslateControl extends SpriteControlBase {
 			return;
 		}
 
+		// Update target memo
+		let target_x, target_y;
+		if (this._AccAlongX) {
+			this._Target[0] = target_x = target;
+			target_y = this._Target[1];
+		} else {
+			target_x = this._Target[0];
+			this._Target[1] = target_y = target;
+		}
+
 		// console.log("_AccelerMove "
-		// 	+ " current_x=" + current_x
+		// 	+ " current_x=" + current_array[0]
 		// 	+ " target_x=" + target_x
-		// 	+ " current_y=" + current_y
+		// 	+ " current_y=" + current_array[1]
 		// 	+ " target_y=" + target_y
 		// 	+ " time=" + time
 		// );
 
-		// Update target memo
-		this._Target[0] = target_x;
-		this._Target[1] = target_y;
-
-		return new Forge.TranslateAnimation(current_x, target_x, current_y, target_y, time,
+		return new Forge.TranslateAnimation(current_array[0], target_x, current_array[1], target_y, time,
 			(is_acc_up ? Forge.Easing.Circular.In : Forge.Easing.Circular.Out));
 	}
 
