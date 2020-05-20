@@ -20,10 +20,12 @@ class JsvControl {
 		this._Repeat = false;
 		this._SpriteView = null;
 	}
-	enableRepeat() {
-        this._Repeat = true;
+
+	setRepeat(enable) {
+        this._Repeat = enable;
         return this;
 	}
+
 	start(end_callback) {
 		this._EndCallback = end_callback;
 		this._StartSwitcher = true;
@@ -90,16 +92,10 @@ class JsvControl {
 
 	_StartAnimation() {
 		let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
-		let tos = [...this._Target];
+		let tos = this._Target;
 		let repeat_starts = (this._Repeat ? [...this._RepeatStart] : null);
 
 		let token = this._Token++;
-
-		let that = this;
-		let listener = (new Forge.AnimationListener())
-			.OnFinalProgress((progress)=>{
-				that._OnPaused((repeat_starts != null ? repeat_starts : froms), tos, progress);
-			});
 
 		let anim = this._WrapBuildAnimation(repeat_starts, froms, tos, this._Jumping);
 
@@ -110,6 +106,14 @@ class JsvControl {
 		if (anim == null) {
 			return;
 		}
+
+		// 生成OnFinalProgress处理监听，memo在 _WrapBuildAnimation()处理后生成，因为build处理中可能改变tos
+		let memo_tos = [...tos];
+		let that = this;
+		let listener = (new Forge.AnimationListener())
+			.OnFinalProgress((progress)=>{
+				that._OnPaused((repeat_starts != null ? repeat_starts : froms), memo_tos, progress);
+			});
 
 		anim.AddAnimationListener(listener);
 		anim.Enable(Forge.AnimationEnable.AckFinalProgress | Forge.AnimationEnable.KeepTransform);
@@ -171,8 +175,8 @@ class HtmlControl {
         this._Repeat = false;
 	}
 
-    enableRepeat() {
-        this._Repeat = true;
+	setRepeat(enable) {
+        this._Repeat = enable;
         return this;
     }
 
