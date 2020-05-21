@@ -34,6 +34,12 @@ class JsvControl {
 	}
 
 	pause(paused_callback) {
+		// 执行pause动作时，相当于取消start()动作，所以EndCallback同时也应该被取消
+		if (this._EndCallback != null) {
+			this._EndCallback = null;
+		}
+
+		// 根据当前状态，已经处于Pause则直接回调，否则发送pause指令
 		if (this._StateIndex == 0) {
 			if (paused_callback) {
 				this._CallbackWithCatch(this._Current, paused_callback);
@@ -140,15 +146,14 @@ class JsvControl {
 		let ended_callback = this._EndCallback;
 		this._PausedCallback = null;
 
-
 		// 回调所有callback
 		if (paused_callback) {
 			// Paused callback
 			this._CallbackWithCatch(this._Current, paused_callback);
 		}
 		if (ended_callback && progress == 1) {
-            this._EndCallback = null;
 			// Ended callback
+			this._EndCallback = null;
 			this._CallbackWithCatch(this._Current, ended_callback);
 		}
 
