@@ -53,7 +53,7 @@ class JsvControl {
 		this._StateMachineNext();
 	}
 
-	_WrapBuildAnimation(froms_array, tos_array) {
+	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
 		console.warn("Should Override");
 	}
 
@@ -168,6 +168,7 @@ class HtmlControl {
 	constructor(params_count) {
         this._Current = new Array(params_count).fill(0);
         this._Target = new Array(params_count).fill(0);
+		this._RepeatStart = new Array(params_count).fill(0);
         this._ParameterCount = params_count;
         this._SpriteDiv = null;
         this._PausedCallback = null;
@@ -183,19 +184,33 @@ class HtmlControl {
 	start(end_callback) {
         this._EndCallback = end_callback;
         this._SpriteDiv.style.animation = null;
-        let animation = this._WrapBuildAnimation(this._Current, this._Target);
-        this._SpriteDiv.style.animation = animation;
-        console.log("start animation:"+animation);
-        this._SpriteDiv.onanimationend = () => {
-            this._Current[0] = this._Target[0];
-            this._Current[1] = this._Target[1];
-            this._SpriteDiv.style.animation = null;
-            this._SpriteDiv.style.transform = this._GetTransform(this._Current);
-            this._SpriteDiv.onanimationend = null;
-            let callback = this._EndCallback;
-            this._EndCallback = null;
-            this._WrapCallback(this._Current, callback);
-        };
+        let animation = (this._WrapBuildAnimation(null, this._Current, this._Target, false)).getDescribe();
+        console.log("start animation:" + animation);
+
+		if (this._Repeat) {
+			this._SpriteDiv.onanimationend = () => {
+				// Start repeat animation
+				let animation_repeat =
+					((this._WrapBuildAnimation(null, this._RepeatStart, this._Target, false))
+						.getDescribe()) + " infinite";
+				console.log("start animation(repeat):" + animation_repeat);
+				this._SpriteDiv.style.animation = animation_repeat;
+			};
+		} else {
+			this._SpriteDiv.onanimationend = () => {
+				for (let idx = 0; idx < this._ParameterCount; idx++ ) {
+					this._Current[idx] = this._Target[idx];
+				}
+				this._SpriteDiv.style.animation = null;
+				this._SpriteDiv.style.transform = this._GetTransform(this._Current);
+				this._SpriteDiv.onanimationend = null;
+				let callback = this._EndCallback;
+				this._EndCallback = null;
+				this._WrapCallback(this._Current, callback);
+			};
+		}
+
+		this._SpriteDiv.style.animation = animation;
 
 		return this;
 	}
@@ -225,7 +240,7 @@ class HtmlControl {
         console.warn("Should Override");
     }
 
-    _WrapBuildAnimation() {
+    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
         console.warn("Should Override");
     }
 
