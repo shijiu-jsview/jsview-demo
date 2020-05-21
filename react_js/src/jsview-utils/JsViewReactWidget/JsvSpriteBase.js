@@ -135,12 +135,11 @@ class JsvControl {
 		}
 
 		this._StateLocked = true;
-
 		// 换出callbacks，回调时可能加入新的callbacks
 		let paused_callback = this._PausedCallback;
 		let ended_callback = this._EndCallback;
 		this._PausedCallback = null;
-		this._EndCallback = null;
+
 
 		// 回调所有callback
 		if (paused_callback) {
@@ -148,6 +147,7 @@ class JsvControl {
 			this._CallbackWithCatch(this._Current, paused_callback);
 		}
 		if (ended_callback && progress == 1) {
+            this._EndCallback = null;
 			// Ended callback
 			this._CallbackWithCatch(this._Current, ended_callback);
 		}

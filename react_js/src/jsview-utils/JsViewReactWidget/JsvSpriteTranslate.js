@@ -87,7 +87,7 @@ class JsvTranslateControl extends SpriteControlBase {
 		if (!this._ComfirmMode(1)) return;
 
 		this._Target[1] = target_y;
-		this._VerlocityAcc = acc_x;
+		this._VerlocityAcc = acc_y;
 		this._VerlocityInit = 0;
 		this._AccAlongX = false;
 		return this;
