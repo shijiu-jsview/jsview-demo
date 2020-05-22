@@ -66,6 +66,9 @@ class JsvSpriteImg extends React.Component{
                     base_size.h = item.frame.h;
                 }
                 size_keyframes_str += this._resizeKeyframeItem(item.frame.w * scale_info.scaleW, item.frame.h * scale_info.scaleH);
+
+                // TODO: 本版本不支持size变化
+                has_size_anim = false;
             }
             translate_keyframes_str += '}'
             size_keyframes_str += '}'
@@ -88,7 +91,7 @@ class JsvSpriteImg extends React.Component{
     }
 
     _resizeKeyframeItem(w, h) {
-        return 'width:' + w + ';height:' + h +';'
+        return 'width:' + w + 'px;height:' + h +'px;'
     }
 
     _getStyleInfo() {

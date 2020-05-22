@@ -188,12 +188,22 @@ class HtmlControl {
 
 	start(end_callback) {
         this._EndCallback = end_callback;
-        this._SpriteDiv.style.animation = null;
-        let animation = (this._WrapBuildAnimation(null, this._Current, this._Target, false)).getDescribe();
+		this._SpriteDiv.style.animation = null;
+		this._SpriteDiv.style.transform = null;
+		this._SpriteDiv.onanimationend = null;
+
+		let animation;
+		let built_obj = this._WrapBuildAnimation(null, this._Current, this._Target, false);
+		if (built_obj == null) {
+			// Discarded animation
+			animation = null;
+		} else {
+			animation = built_obj.getDescribe();
+		}
         console.log("start animation:" + animation);
 
 		if (this._Repeat) {
-			this._SpriteDiv.onanimationend = () => {
+			let start_repeat = () => {
 				// Start repeat animation
 				let animation_repeat =
 					((this._WrapBuildAnimation(null, this._RepeatStart, this._Target, false))
@@ -201,6 +211,13 @@ class HtmlControl {
 				console.log("start animation(repeat):" + animation_repeat);
 				this._SpriteDiv.style.animation = animation_repeat;
 			};
+			if (animation != null) {
+				// 完成前序动画后，到达repeat基点后，再开始repeat动画
+				this._SpriteDiv.onanimationend = start_repeat;
+			} else {
+				// 无前序，可以直接进行repeat动画
+				start_repeat();
+			}
 		} else {
 			this._SpriteDiv.onanimationend = () => {
 				for (let idx = 0; idx < this._ParameterCount; idx++ ) {
@@ -230,7 +247,7 @@ class HtmlControl {
     }
 
     jump() {
-        this._Current = this._Target;
+        this._Current = [...this._Target];
         this._SpriteDiv.style.animation = null;
         this._SpriteDiv.style.transform = this._GetTransform(this._Target);
         this._SpriteDiv.onanimationend = null;
