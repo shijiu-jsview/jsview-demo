@@ -1,0 +1,95 @@
+window.Game = window.Game ? window.Game:{};
+window.Game.progress_counter_info = {"frames": [
+
+{
+	"filename": "countdown_timer.png",
+	"frame": {"x":0,"y":0,"w":80,"h":88},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":80,"h":88},
+	"sourceSize": {"w":80,"h":88},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "number_counter.png",
+	"frame": {"x":80,"y":0,"w":162,"h":80},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":80},
+	"sourceSize": {"w":162,"h":80},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "process_bg_left.png",
+	"frame": {"x":242,"y":0,"w":40,"h":80},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":80},
+	"sourceSize": {"w":40,"h":80},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "process_bg_mid.png",
+	"frame": {"x":282,"y":0,"w":2,"h":80},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2,"h":80},
+	"sourceSize": {"w":2,"h":80},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "process_bg_right.png",
+	"frame": {"x":284,"y":0,"w":40,"h":80},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":80},
+	"sourceSize": {"w":40,"h":80},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "process_completed.png",
+	"frame": {"x":324,"y":0,"w":37,"h":37},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":37,"h":37},
+	"sourceSize": {"w":37,"h":37},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "process_uncompleted.png",
+	"frame": {"x":361,"y":0,"w":40,"h":40},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":40},
+	"sourceSize": {"w":40,"h":40},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "progress_bar_h_1.png",
+	"frame": {"x":0,"y":88,"w":455,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":455,"h":46},
+	"sourceSize": {"w":455,"h":46},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "progress_bar_h_2.png",
+	"frame": {"x":0,"y":134,"w":455,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":455,"h":46},
+	"sourceSize": {"w":455,"h":46},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "progress_counter.png",
+	"format": "RGBA8888",
+	"size": {"w":455,"h":180},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1268c5c5a561cc8838876e9ba3ede499:8869f02cdfb023e9960b6a29760beb8c:6e0cc44bedcb5a81bca3efa932a0e322$"
+}
+}
+export default progress_counter_info;

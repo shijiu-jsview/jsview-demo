@@ -1,4 +1,6 @@
-
+*{
+  margin:0px;
+}
 div{
   position: absolute;
   background-size: 100% 100%;
