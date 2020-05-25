@@ -1,11 +1,9 @@
 /**
  * Created by luocf on 2020/5/12.
  */
-import Config from "./Config"
-
 window.Editor = window.Editor || {}
-window.Editor.Config = Config;
+window.Editor.Config = require("../config/config.json");
 window.Editor.env = "production"
-
+window.GameSource = window.GameSource?window.GameSource:{};
 var Editor = window.Editor;
 export default Editor;

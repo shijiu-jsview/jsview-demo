@@ -53,4 +53,6 @@ Game.stageIndex = 0;
 Game.Config = Editor.Config;
 Game.assetData = Until.dataFromatAsstes();
 Game.state = State;
+
+window.GameSourceSource = window.GameSourceSource ? window.GameSourceSource:{};
 export default Game;

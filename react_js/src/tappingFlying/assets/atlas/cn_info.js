@@ -1,5 +1,5 @@
-window.Game = window.Game ? window.Game:{};
-window.Game.cn_info = {
+window.GameSource = window.GameSource ? window.GameSource:{};
+window.GameSource.cn_info = {
     "frames": [
 
         {

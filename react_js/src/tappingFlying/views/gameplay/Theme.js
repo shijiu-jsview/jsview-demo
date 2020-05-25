@@ -1,14 +1,21 @@
 /**
  * Created by luocf on 2020/5/11.
  */
-import "../../assets/atlas/ending_btn_info"
-import "../../assets/atlas/en_info"
 import continueBtnImage from "../../assets/atlas/en.png"
 import closeSpriteImage from "../../assets/atlas/ending_btn.png"
 import wheelSpriteImage from "../../assets/images/ending_frame.png"
 import charSpriteImage from "../../assets/images/ending_char_complete.png"
 import barSpriteImage from "../../assets/images/ending_char_bar.png"
 import gesturetiperHandImage from "../../assets/images/gesturetiper_hand.png"
+window.GameSource = window.GameSource?window.GameSource:{};
+if (!window.GameSource["ending_btn.json"]) {
+    window.GameSource["ending_btn.json"] = require("../../assets/atlas/ending_btn.json")
+}
+
+if (!window.GameSource["en.json"]) {
+    window.GameSource["en.json"] = require("../../assets/atlas/en.json")
+}
+
 var Theme = {
     gameover:{
         bg:{
@@ -27,8 +34,8 @@ var Theme = {
                 },
                 sprite:{
                     //"btn_close.png"
-                    spriteInfo:{frames:[window.Game.ending_btn_info.frames[0]],meta:window.Game.ending_btn_info.meta},
-                    viewSize:window.Game.ending_btn_info.frames[0].spriteSourceSize,
+                    spriteInfo:{frames:[window.GameSource["ending_btn.json"].frames[0]],meta:window.GameSource["ending_btn.json"].meta},
+                    viewSize:window.GameSource["ending_btn.json"].frames[0].spriteSourceSize,
                     imageUrl:closeSpriteImage,
                 }
             },
@@ -52,26 +59,26 @@ var Theme = {
             },
             replayBtn:{
                 style:{
-                    left:(1280-window.Game.ending_btn_info.frames[2].spriteSourceSize.w)/2-200,
-                    top:(720-window.Game.ending_btn_info.frames[2].spriteSourceSize.h)/2+134+40,
+                    left:(1280-window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w)/2-200,
+                    top:(720-window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h)/2+134+40,
                 },
                 sprite:{
                     //"btn_close.png"
-                    spriteInfo:{frames:[window.Game.ending_btn_info.frames[2]],meta:window.Game.ending_btn_info.meta},
-                    viewSize:window.Game.ending_btn_info.frames[2].spriteSourceSize,
+                    spriteInfo:{frames:[window.GameSource["ending_btn.json"].frames[2]],meta:window.GameSource["ending_btn.json"].meta},
+                    viewSize:window.GameSource["ending_btn.json"].frames[2].spriteSourceSize,
                     imageUrl:closeSpriteImage,
                 }
             },
             continueBtn:{
                 style:{
-                    left:(1280-window.Game.en_info.frames[2].sourceSize.w)/2+60,top:(720-window.Game.en_info.frames[2].sourceSize.h)/2+134+40,
-                    width:window.Game.en_info.frames[2].sourceSize.w,
-                    height:window.Game.en_info.frames[2].sourceSize.h,
+                    left:(1280-window.GameSource["en.json"].frames[2].sourceSize.w)/2+60,top:(720-window.GameSource["en.json"].frames[2].sourceSize.h)/2+134+40,
+                    width:window.GameSource["en.json"].frames[2].sourceSize.w,
+                    height:window.GameSource["en.json"].frames[2].sourceSize.h,
                 },
                 sprite:{
                     //"btn_continue.png"
-                    spriteInfo:{frames:[window.Game.en_info.frames[2]],meta:window.Game.en_info.meta},
-                    viewSize:window.window.Game.en_info.frames[2].spriteSourceSize,
+                    spriteInfo:{frames:[window.GameSource["en.json"].frames[2]],meta:window.GameSource["en.json"].meta},
+                    viewSize:window.GameSource["en.json"].frames[2].spriteSourceSize,
                     imageUrl:continueBtnImage,
                 }
             }
@@ -82,16 +89,16 @@ var Theme = {
                 backgroundImage:gesturetiperHandImage,
             },
             closeSprite:{
-                left:13+window.Game.ending_btn_info.frames[0].spriteSourceSize.w/2,
-                top:-27+window.Game.ending_btn_info.frames[0].spriteSourceSize.h/3,
+                left:13+window.GameSource["ending_btn.json"].frames[0].spriteSourceSize.w/2,
+                top:-27+window.GameSource["ending_btn.json"].frames[0].spriteSourceSize.h/3,
             },
             replayBtn: {
-                left: (1280 - window.Game.ending_btn_info.frames[2].spriteSourceSize.w) / 2 - 200 + window.Game.ending_btn_info.frames[2].spriteSourceSize.w / 3,
-                top: (720 - window.Game.ending_btn_info.frames[2].spriteSourceSize.h) / 2 + 134 + 40 + window.Game.ending_btn_info.frames[2].spriteSourceSize.h / 3,
+                left: (1280 - window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w) / 2 - 200 + window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w / 3,
+                top: (720 - window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h) / 2 + 134 + 40 + window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h / 3,
             },
             continueBtn:{
-                left:(1280-window.Game.en_info.frames[2].sourceSize.w)/2+60+window.window.Game.en_info.frames[2].spriteSourceSize.w/2,
-                top:(720-window.Game.en_info.frames[2].sourceSize.h)/2+134+40+window.window.Game.en_info.frames[2].spriteSourceSize.h/2,
+                left:(1280-window.GameSource["en.json"].frames[2].sourceSize.w)/2+60+window.GameSource["en.json"].frames[2].spriteSourceSize.w/2,
+                top:(720-window.GameSource["en.json"].frames[2].sourceSize.h)/2+134+40+window.GameSource["en.json"].frames[2].spriteSourceSize.h/2,
             }
         }
 

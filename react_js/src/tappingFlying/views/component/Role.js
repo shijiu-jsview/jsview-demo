@@ -84,10 +84,10 @@ class Role extends FocusBlock {
     renderContent() {
         let {assets, clashObstacle, isFlyingMode} = this.props;
         let roleconfig = assets[this.state.roleSpriteName];
-        let roleDetailInfo = Until.clone(window.Game[roleconfig.detail]);
+        let roleDetailInfo = Until.clone(window.GameSource[roleconfig.json]);
         let roleViewSize = roleDetailInfo.frames[0].sourceSize;
         let clashObstacleConfig = clashObstacle.config;
-        let clashObstacleDetailInfo =  window.Game[clashObstacleConfig.detail];
+        let clashObstacleDetailInfo =  window.GameSource[clashObstacleConfig.json];
         let clashObstacleViewSize = clashObstacleDetailInfo.frames[0].sourceSize;
         let role_duration = roleDetailInfo.frames.length/roleconfig.rate;
         let clashObstacle_duration = clashObstacleDetailInfo.frames.length/clashObstacleConfig.rate;

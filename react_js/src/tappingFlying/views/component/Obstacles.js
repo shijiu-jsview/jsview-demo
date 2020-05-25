@@ -82,7 +82,7 @@ class Obstacles extends ScrollPage {
     }
     render() {
         const itemList = this.state.itemList;
-        let spriteInfo = window.Game[this.obstacleConfig.detail];
+        let spriteInfo = window.GameSource[this.obstacleConfig.json];
         this._InitItemImpactTracer(this.props.roleRef);
         return (
             <div>
@@ -132,7 +132,7 @@ class Obstacles extends ScrollPage {
 
 
     _DrawObstacles() {
-        let spriteInfo = window.Game[this.obstacleConfig.detail];
+        let spriteInfo = window.GameSource[this.obstacleConfig.json];
         let itemList = this.state.itemList;
         for(let i=0; i<this.obstacleNum; i++) {
             this._TotalDistance += parseInt(this.obstacleTime * this.obstacleConfig.speed);//坐标调整

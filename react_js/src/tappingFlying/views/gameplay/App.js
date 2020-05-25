@@ -1,6 +1,5 @@
 import React from 'react';
 import "./App.css"
-import Theme from "./Theme"
 import Game from "../../common/Game"
 import GameAppBase from "../base/GameAppBase"
 import BackGround from "../component/Background";
@@ -8,6 +7,7 @@ import Role from "../component/Role"
 import Obstacles from "../component/Obstacles"
 import ProgressBar from "../component/ProgressBar";
 import GameOver from "../component/GameOver"
+import Theme from "./Theme"
 class App extends GameAppBase {
     constructor(props) {
         super(props);
@@ -150,9 +150,10 @@ class App extends GameAppBase {
     _RequireAltasInfo(cur_stage) {
         //加载资源包中的json文件，对于jsview来说，将json文件改成全局变量的方式使用。
         for(let o in this.currStage.assets) {
-            if (this.currStage.assets[o].detail) {
-                console.log("this.currStage.assets["+o+"].detail:"+this.currStage.assets[o].detail);
-                require("../../assets/atlas/"+this.currStage.assets[o].detail);
+            let json_name = this.currStage.assets[o].json;
+            if (json_name && !window.GameSource[json_name]) {
+                console.log("this.currStage.assets["+o+"].json_name:"+json_name);
+                window.GameSource[json_name] = require("../../assets/atlas/"+json_name);
             }
         }
     }
