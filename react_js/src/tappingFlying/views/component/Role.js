@@ -112,16 +112,7 @@ class Role extends FocusBlock {
                                         width: roleViewSize.w,
                                         height:roleViewSize.h}}
                                     control={this.TranslateControl}>
-                    {/*碰撞实体保持不变*/}
-                    <div ref={(ref) => {
-                        this.Sprite = ref;
-                    }} style={{
-                        left: isFlyingMode?this.bodySize.x+30:this.bodySize.x+50,
-                        top: isFlyingMode?this.bodySize.y+30:this.bodySize.y+50,
-                        width: isFlyingMode?(this.bodySize.w-60):(this.bodySize.w-100),
-                        height: isFlyingMode ?(this.bodySize.h-60):(this.bodySize.h-100),
-                        backgroundColor:"rgba(0,0,0,0)"
-                    }}/>
+
                     <div key={roleconfig.value+"/"+clashObstacle.style.visibility}>{
                         /*通过key控制role 信息变化时，对象重建 TODO 高阶组件问题，修正后，可不设置key*/}
                         <JsvSpriteAnim
@@ -141,7 +132,16 @@ class Role extends FocusBlock {
                                 imageUrl={`url(${require("../../assets/atlas/" + clashObstacleConfig.value)})`}/>
                         </div>}
                     </div>
-
+                    {/*碰撞实体保持不变*/}
+                    <div ref={(ref) => {
+                        this.Sprite = ref;
+                    }} style={{
+                        left: isFlyingMode?this.bodySize.x+30:this.bodySize.x+50,
+                        top: isFlyingMode?this.bodySize.y+30:this.bodySize.y+50,
+                        width: isFlyingMode?(this.bodySize.w-60):(this.bodySize.w-100),
+                        height: isFlyingMode ?(this.bodySize.h-60):(this.bodySize.h-100),
+                        backgroundColor:"rgba(0,0,0,0)"
+                    }}/>
                 </JsvSpriteTranslate>
                 {/*下坠时碰撞物，提高精灵图变化的时机*/}
                 <div ref={(ref) => {
