@@ -21,7 +21,7 @@ class AnimDelegateBase {
 	}
 
 	cancel() {
-		recycle();
+		this.recycle();
 	}
 
 	recycle() {

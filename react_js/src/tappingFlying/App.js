@@ -13,6 +13,7 @@ class MainScene extends GameAppBase {
     constructor(props) {
         super(props);
         this.game = Game;
+        this.game.state.goHome = this._NavigateHome;
         this.game.state.add({
             "name": "Boot",//name 随意命名
             "path": "/state/boot",
@@ -34,15 +35,14 @@ class MainScene extends GameAppBase {
             "class": lazy(() => import('./views/gameplay/App')),
         });
     }
+
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            this.game.state.start("Boot");
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
+            this.game.state.close();
         }
         return true;
     }
+
     renderContent() {
         return (
             <Router history={this.game.state.globalHistory}>

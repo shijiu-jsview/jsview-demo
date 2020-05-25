@@ -23,7 +23,7 @@ class Obstacles extends ScrollPage {
      */
     constructor(props) {
         super(props);
-        console.log("Obstacles props:", props);
+        console.log("Obstacles constructor");
         this._IsPause = false;
         this.obstacleNum = this.props.obstacleNum;
         this.obstacleConfig = this.props.config;

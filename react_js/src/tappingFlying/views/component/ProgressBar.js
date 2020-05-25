@@ -16,6 +16,7 @@ class ProgressBar extends ScrollPage {
      */
     constructor(props) {
         super(props);
+        console.log("ProgressBar constructor");
         this._ClipControl = new TranslateControl();
         this._ClipControl.speed(this.props.speed)
         this._ProgressControl = new TranslateControl();

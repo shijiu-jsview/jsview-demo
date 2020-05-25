@@ -2,21 +2,20 @@
  * Created by luocf on 2020/5/11.
  */
 import { createMemoryHistory } from 'history';
-
 const globalHistory = createMemoryHistory();
 
 class State {
     static add(state) {
         State.list.push(state);
     }
-    
+
     static start(name) {
         for(let i=0; i<State.list.length; i++) {
             if (State.list[i].name === name) {
                 let path = State.list[i].path;
                 console.log("State start path:"+path);
                 globalHistory.push(path);
-                State.current.changeFocus(path, false);
+                State.current.changeFocus(path);
                 break;
             }
         }
@@ -27,9 +26,19 @@ class State {
             State.current.restart();
         }
     }
+
+    static close() {
+        //恢复现场
+        State.start("Boot");
+        if (State.goHome) {
+            State.goHome();
+        }
+    }
 }
-State.globalHistory = globalHistory;
+
 State.list = [];
 State.current = null;
 State.focusControl = null;
+State.goHome = null;
+State.globalHistory = globalHistory;
 export default State

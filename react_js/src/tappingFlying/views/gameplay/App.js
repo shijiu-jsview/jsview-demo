@@ -1,33 +1,44 @@
 import React from 'react';
 import "./App.css"
+import Theme from "./Theme"
 import Game from "../../common/Game"
 import GameAppBase from "../base/GameAppBase"
 import BackGround from "../component/Background";
 import Role from "../component/Role"
 import Obstacles from "../component/Obstacles"
 import ProgressBar from "../component/ProgressBar";
-
+import GameOver from "../component/GameOver"
 class App extends GameAppBase {
     constructor(props) {
         super(props);
         this.game = Game;
-        this._IsPlaying = true;
-        this._RoleTranslateEnd = this._RoleTranslateEnd.bind(this);
-        this._OnProgress = this._OnProgress.bind(this);
-        this._onPassed = this._onPassed.bind(this);
         this._ObstaclesRef = null;
         this._ProgreessRef = null;
         this._AudioRef = null;
         this._CurObstacle = null;
+        this._RoleRef = null;
+        this.stageIndex = 0;
+        this.roundIndex = 0;
+        this.repeatCount = 0;
+        this._RoleTranslateEnd = this._RoleTranslateEnd.bind(this);
+        this._OnProgress = this._OnProgress.bind(this);
+        this._onPassed = this._onPassed.bind(this);
+        this._Init();
+    }
+
+    _Init() {
+        this._IsPlaying = true;
         this.state = {
             clashObstacleVisible:"hidden",
-            roleSpriteLeft:0,
-            roleSpriteTransition:"left 1s linear 0s",
             progress:1,
+            repeatCount: this.repeatCount,
+            stageIndex:this.stageIndex,
+            roundIndex:this.roundIndex,
             roleRef:null,
         }
         this._InitGame();
         this._Create();
+
     }
 
     _OnProgress() {
@@ -43,7 +54,32 @@ class App extends GameAppBase {
             this._ProgreessRef.play();
         } else {
             //主角出场动画结束
-            //TODO 进入下一个场景
+            if (this.count < this.targetNum) {
+                this._ShowGameSuccess('uncomplete');
+            } else {
+                if (this.game.roundIndex) {
+                    this.game.roundIndex += 1;
+                } else {
+                    this.game.roundIndex = 1;
+                }
+                console.log(this.game.roundIndex, this.roundsNum);
+                if (this.game.roundIndex == this.roundsNum) {
+                    this.game.roundIndex = 0;
+                    this._ShowGameSuccess('complete');
+                } else {
+                    this.game.state.restart();
+                }
+            }
+        }
+    }
+
+    _ShowGameSuccess(result) {
+        if (result == 'complete') {
+            //显示完成页面
+            let focus_name = this.props.branchName ? this.props.branchName : "";
+            this.changeFocus(focus_name + "/gameover")
+        } else {
+            //显示未完成页面
         }
     }
 
@@ -78,6 +114,7 @@ class App extends GameAppBase {
         }
         this.stageIndex = this.getStageIndex();
         this.roundIndex = this.getRoundIndex();
+
         this.currStage = this.getCurrentStage(this.stageIndex);
         this.setAssetsKeyWithStage();
         //加载atlas infos
@@ -127,8 +164,12 @@ class App extends GameAppBase {
         this.obstacleTime = ((this.midImageNum - 2) * this.BGWidth) / (this.obstacleNum * this.scrollSpeed);
         this.targetSpeed = this.scrollSpeed;
         //this.distancePos = parseInt(this.obstacleTime *  this.obstacleSpeed / 2);
+        if (this.isTarget) {
+            //this.loadNumberCounter();
+        } else {
+            this.targetNum = 0;
+        }
         this.createAudios();
-
     }
 
     createAudios() {
@@ -201,7 +242,9 @@ class App extends GameAppBase {
 
     restart() {
         //初始化变量，刷新页面
-
+        this._Init();
+        let repeat_count = ++this.repeatCount;
+        this._StartGame(repeat_count);
     }
 
     onFocus() {
@@ -213,8 +256,10 @@ class App extends GameAppBase {
     }
 
     _InitRoleRef(ref) {
-        if(!this.state.roleRef) {
-            this.setState({roleRef:ref});
+        if(!this._RoleRef && ref != null) {
+            this._RoleRef = ref;
+            this.setState({roleRef:this._RoleRef});
+            this._RoleRef.play();
         }
     }
 
@@ -228,6 +273,7 @@ class App extends GameAppBase {
             console.log("_onImpactTracer game over");
             return;
         }
+
         let obstaclePassedCount = this.state.obstaclePassedCount;
         if (this._CurObstacle !== obstacle) {
             this._CurObstacle = obstacle;
@@ -255,7 +301,6 @@ class App extends GameAppBase {
             clearTimeout(this.ObstaclesTimer);
             this.ObstaclesTimer = null;
         }
-
         this.ObstaclesTimer = setTimeout(()=>{
             if (!this._IsPlaying) {
                 console.log("_onImpactTracer game over");
@@ -274,10 +319,12 @@ class App extends GameAppBase {
      * @return {XML}
      */
     renderContent() {
-        console.log("debugjump renderContent , now:"+(new Date().getTime()));
-        return (<div>
+        let basekey = "Game_"+this.state.stageIndex+"_"+this.state.roundIndex+this.state.repeatCount;
+        console.log("debugjump renderContent ,key:"+(basekey));
+
+        return (<div key={basekey}>
             {/*滚动背景*/}
-            <BackGround key="BackGround" ref={(ref) => {this._BgRef = ref;}}
+            <BackGround key={basekey+"_BackGround"} ref={(ref) => {this._BgRef = ref;}}
                         style={{left:0,top:0, width: this.width, height: this.height, backgroundImage: `url(${require("../../assets/images/" + this.backgroundKey)})`}}
                         scrollPageNums={this.midImageNum}
                         scrollSpeed={this.scrollSpeed}
@@ -285,7 +332,7 @@ class App extends GameAppBase {
                         direction="horizontal"/>
 
             {/*碰撞物*/}
-            <Obstacles  key="Obstacles" roleRef={this.state.roleRef}
+            <Obstacles  key={basekey+"_Obstacles"} roleRef={this._RoleRef}
                        worldWidth={this.width}
                        worldHeight={this.height}
                        direction="horizontal"
@@ -302,8 +349,11 @@ class App extends GameAppBase {
             />
 
             {/*角色*/}
-            <Role branchName={(this.props.branchName ? this.props.branchName : "")+"/role"} ref={(ref) => {this._InitRoleRef(ref)}}
-                  style={{left: this.state.roleSpriteLeft, top: this.height / 2-40, transition:"left 1s linear 0s"}}
+            <Role key={basekey+"_Role"}
+                  branchName={(this.props.branchName ? this.props.branchName : "")+"/role"} ref={(ref) => {this._InitRoleRef(ref)}}
+                  worldSize={{width:this.width,height:this.height}}
+                  offsetX={this.offsetX}
+                  clickSound={this.clickSound}
                   isFlyingMode={this.isFlyingMode}
                   roleUpSpeed = {this.velocityUp}
                   roleDownSpeed = { this.garavity}
@@ -315,7 +365,7 @@ class App extends GameAppBase {
                   }}/>
 
             {/*进度条*/}
-           <ProgressBar key="ProgressBar" ref={(ref)=>{this._ProgreessRef=ref}}
+           <ProgressBar key={basekey+"_ProgressBar"} ref={(ref)=>{this._ProgreessRef=ref}}
                         style={{left:(this.width-455)/2, top:(this.height-80),width:455,height:45}}
                         speed={455*this.scrollSpeed/this.totalDistance}
                         totalBG={`url(${require("../../assets/images/progress_bar_1.png")})`}
@@ -323,45 +373,57 @@ class App extends GameAppBase {
                         direction="horizontal"
                         onEnd={this._OnProgress}/>
 
+            <GameOver key={basekey+"_GameOver"}
+                      branchName={(this.props.branchName ? this.props.branchName : "") + "/gameover"}
+                      theme={Theme.gameover}/>
+
             {/*背景音乐*/}
             <audio  loop="loop" src={require("../../assets/audio/"+this.backgroundSoundKey)} ref={(ref) => {
                 this._AudioRef = ref
+                if (this._AudioRef) {
+                    this._AudioRef.play();
+                }
             }} />
         </div>)
     }
 
-    _StartGame() {
+    _StartGame(repeat_count) {
         let focus_name = this.props.branchName ? this.props.branchName : "";
         this.changeFocus(focus_name + "/role")
         this._IsPlaying = true;
-        this._AudioRef.play();
         this.setState({//主角入场
-            roleSpriteLeft:this.width / 4 + this.offsetX,
+            stageIndex:this.stageIndex,
+            roundIndex:this.roundIndex,
+            repeatCount:repeat_count,
         })
+
     }
 
     _StopGame() {
         console.log("_StopGame in");
         this._IsPlaying = false;
-        this._AudioRef.unload();
         this._BgRef.pause();
         this._ObstaclesRef.pause();
-        if (this.state.roleRef) {
-            this.state.roleRef.GameOver();
+        if (this.ObstaclesTimer) {
+            clearTimeout(this.ObstaclesTimer);
+            this.ObstaclesTimer = null;
         }
-        this.setState({//主角出场
-            roleSpriteLeft:this.width
-        })
+
+        if (this._RoleRef) {
+            this._RoleRef.stop();
+            this._RoleRef = null;
+        }
     }
 
     componentWillUnmount() {
         console.log("GamePlay app componentWillUnmount");
         this._StopGame();
+        this._AudioRef.unload();
     }
 
     componentDidMount() {
         console.log("GamePlay app componentDidMount");
-        this._StartGame();
+        this._StartGame(this.repeatCount);
     }
 }
 

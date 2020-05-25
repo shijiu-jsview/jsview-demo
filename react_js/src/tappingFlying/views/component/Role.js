@@ -6,10 +6,8 @@ import JsvSpriteAnim from '../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import Until from "../../common/Until"
 import {JsvSpriteTranslate, TranslateControl} from "../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 import {createImpactTracer, createImpactCallback} from '../../../jsview-utils/jsview-react/index_widget';
-
-import GameAppBase from "../base/GameAppBase"
-
-class Role extends GameAppBase {
+import {FocusBlock} from "../../../demoCommon/BlockDefine"
+class Role extends FocusBlock {
     /**
      * @param style role 坐标&大小等信息
      * @param roleSprite  {config,角色的配置
@@ -20,9 +18,13 @@ class Role extends GameAppBase {
      */
     constructor(props) {
         super(props);
+        console.log("Role constructor");
         this.state = {
+            roleSpriteLeft:0,
             roleSpriteName: "role"
         }
+        this.clickSound = this.props.clickSound;
+        this.offsetX = this.props.offsetX;
         this.Sprite = null;
         this._SpritDown = false;
         this.TranslateControl = new TranslateControl();
@@ -33,10 +35,18 @@ class Role extends GameAppBase {
         this._IsJump = false;
     }
 
-    GameOver() {
-        this._IsPlaying = false;
+    play() {
+        this.setState({//主角入场
+            roleSpriteLeft:parseInt(this.props.worldSize.width / 4 + this.offsetX),
+        });
+    }
 
-        this.setState({roleSpriteName: "role"})
+    stop() {
+        this._IsPlaying = false;
+        this.setState({//主角出场
+            roleSpriteLeft:this.props.worldSize.width,
+            roleSpriteName:"role"
+        })
     }
 
     jump() {
@@ -58,7 +68,7 @@ class Role extends GameAppBase {
             if (!this._IsJump && this._IsPlaying && !this._IsCollision) {
                 this.jump();
                 this.setState({roleSpriteName: "roleJump"});
-                //TODO this.clickSound.play();
+                this.clickSound.play();
             }
             return true;
         }
@@ -72,7 +82,7 @@ class Role extends GameAppBase {
     }
 
     renderContent() {
-        let {assets, clashObstacle, isFlyingMode, branchName, roleDownSpeed, roleUpSpeed, ...others} = this.props;
+        let {assets, clashObstacle, isFlyingMode} = this.props;
         let roleconfig = assets[this.state.roleSpriteName];
         let roleDetailInfo = Until.clone(window.Game[roleconfig.detail]);
         let roleViewSize = roleDetailInfo.frames[0].sourceSize;
@@ -93,7 +103,8 @@ class Role extends GameAppBase {
 
         console.log("debugjump roleDetailInfo length:"+roleDetailInfo.frames.length+", now:"+(new Date().getTime()));
         return (
-            <div {...others}>
+            <div style={{left: this.state.roleSpriteLeft, top: this.props.worldSize.height / 2-40, transition:"left 1s linear 0s"}}
+                 onTransitionEnd={this.props.onTransitionEnd}>
                 <JsvSpriteTranslate key="RoleTranslate"
                                     style={{
                                         left:0,
@@ -101,6 +112,16 @@ class Role extends GameAppBase {
                                         width: roleViewSize.w,
                                         height:roleViewSize.h}}
                                     control={this.TranslateControl}>
+                    {/*碰撞实体保持不变*/}
+                    <div ref={(ref) => {
+                        this.Sprite = ref;
+                    }} style={{
+                        left: isFlyingMode?this.bodySize.x+30:this.bodySize.x+50,
+                        top: isFlyingMode?this.bodySize.y+30:this.bodySize.y+50,
+                        width: isFlyingMode?(this.bodySize.w-60):(this.bodySize.w-100),
+                        height: isFlyingMode ?(this.bodySize.h-60):(this.bodySize.h-100),
+                        backgroundColor:"rgba(0,0,0,0)"
+                    }}/>
                     <div key={roleconfig.value+"/"+clashObstacle.style.visibility}>{
                         /*通过key控制role 信息变化时，对象重建 TODO 高阶组件问题，修正后，可不设置key*/}
                         <JsvSpriteAnim
@@ -120,16 +141,6 @@ class Role extends GameAppBase {
                                 imageUrl={`url(${require("../../assets/atlas/" + clashObstacleConfig.value)})`}/>
                         </div>}
                     </div>
-                    {/*碰撞实体保持不变*/}
-                    <div ref={(ref) => {
-                        this.Sprite = ref;
-                    }} style={{
-                        left: isFlyingMode?this.bodySize.x+30:this.bodySize.x+50,
-                        top: isFlyingMode?this.bodySize.y+30:this.bodySize.y+50,
-                        width: isFlyingMode?(this.bodySize.w-60):(this.bodySize.w-100),
-                        height: isFlyingMode ?(this.bodySize.h-60):(this.bodySize.h-100),
-                        backgroundColor:"rgba(0,0,0,0)"
-                    }}/>
 
                 </JsvSpriteTranslate>
                 {/*下坠时碰撞物，提高精灵图变化的时机*/}
