@@ -29,17 +29,17 @@ import {FocusBlock} from "../demoCommon/BlockDefine"
 class MainScene extends FocusBlock{
     constructor(props) {
         super(props);
-        this._TranslateEle1;
-        this._TranslateEle2;
+        this._TranslateEle1 = null;
+        this._TranslateEle2 = null;
         
-        this._RotateEle1;
-        this._RotateEle2;
+        this._RotateEle1 = null;
+        this._RotateEle2 = null;
         
-        this._ScaleEle1;
-        this._ScaleEle2;
+        this._ScaleEle1 = null;
+        this._ScaleEle2 = null;
         
-        this._SkewEle1;
-        this._SkewEle2;
+        this._SkewEle1 = null;
+        this._SkewEle2 = null;
 
         this._Sensors = [];
 
