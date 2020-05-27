@@ -19,6 +19,10 @@ class App extends GameAppBase{
     _OnTransitionEnd() {
 		console.log("preload _OnTransitionEnd");
         this._IsLoaded = true;
+        if (this._AudioRef) {
+            this._AudioRef.src = Theme.audio.src;
+            this._AudioRef.play();
+        }
 	}
 
     _AudioPlayEnded() {

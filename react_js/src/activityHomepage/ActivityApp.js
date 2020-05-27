@@ -17,6 +17,8 @@ import turntable_bg from "./images/turntable_bg.jpg"
 import turntable_icon from "./images/turntable_icon.jpg"
 import ninesquared_bg from "./images/ninesquared_bg.jpg"
 import ninesquared_icon from "./images/ninesquared_icon.jpg"
+import dog_bg from "./images/dog_bg.jpg"
+import dog_icon from "./images/dog_icon.jpg"
 let demoInfos = [
     {
         "name": "红包雨",
@@ -45,6 +47,13 @@ let demoInfos = [
         "background":ninesquared_bg,
         "class": lazy(() => import('../nineSquared/App').then(m => ({ default: m.SubApp }))),
         "icon":ninesquared_icon,
+    },
+    {
+        "name": "小狗跨栏游戏",
+        "path": "/users/games",
+        "background":dog_bg,
+        "icon":dog_icon,
+        "class": lazy(() => import('../tappingFlying/App').then(m => ({ default: m.SubApp }))),
     },
 ]
 
