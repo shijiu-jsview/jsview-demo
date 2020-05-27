@@ -118,7 +118,8 @@ class App extends GameAppBase {
         this.currStage = this.getCurrentStage(this.stageIndex);
         this.setAssetsKeyWithStage();
         //加载atlas infos
-        this._RequireAltasInfo(this.currStage);
+
+        this._UpdateCurrentStateResource(this.currStage);
 
         this.roundsNum = this.game.Config.stages[this.stageIndex].roundsNum;
         this.scrollSpeed = this.currStage.game.roleSpeed;
@@ -143,19 +144,43 @@ class App extends GameAppBase {
         this.obstacleMinY = this.currStage.game.obstacleMinY;
         this.obstacleMaxY = this.currStage.game.obstacleMaxY;
         this.isFlyingMode = this.currStage.game.isFlyingMode;
-
         this.isStartAnim = this.currStage.game.isStartAni;
     }
 
-    _RequireAltasInfo(cur_stage) {
+    _UpdateCurrentStateResource(cur_stage) {
         //加载资源包中的json文件，对于jsview来说，将json文件改成全局变量的方式使用。
-        for(let o in this.currStage.assets) {
-            let json_name = this.currStage.assets[o].json;
+        let rolesList = [];
+        for(let o in cur_stage.assets) {
+            let json_name = cur_stage.assets[o].json;
             if (json_name && !window.GameSource[json_name]) {
                 console.log("this.currStage.assets["+o+"].json_name:"+json_name);
                 window.GameSource[json_name] = require("../../assets/atlas/"+json_name);
             }
+            //生成精灵信息
+            if (o.toLocaleLowerCase().indexOf("role") >= 0) {
+                rolesList.push({
+                    key:o,
+                    spriteInfo:window.GameSource[json_name],
+                    imageUrl:`url(${require("../../assets/atlas/" + cur_stage.assets[o].value)})`,
+                    duration:window.GameSource[json_name].frames.length/cur_stage.assets[o].rate,
+                    viewSize:window.GameSource[json_name].frames[0].sourceSize,
+                    bodySize:cur_stage.assets[o].bodySize,
+                });
+                if (o.toLocaleLowerCase() === "role") {
+                    //追加碰撞后角色信息
+                    rolesList.push({
+                        key:"clashObstacleRole",
+                        spriteInfo:{frames:[window.GameSource[json_name].frames[0]], meta:window.GameSource[json_name].meta},
+                        imageUrl:`url(${require("../../assets/atlas/" + cur_stage.assets[o].value)})`,
+                        duration:window.GameSource[json_name].frames.length/cur_stage.assets[o].rate,
+                        bodySize:cur_stage.assets[o].bodySize,
+                        viewSize:window.GameSource[json_name].frames[0].sourceSize
+                    });
+                }
+            }
         }
+
+        cur_stage["rolesList"] = rolesList;
     }
 
     _Create() {
@@ -288,7 +313,7 @@ class App extends GameAppBase {
 
         //发生碰撞,游戏暂停，并更新角色、进度条的显示状态
         this.clashSound.play();
-
+        this._RoleRef.triggerClashObstacle(true);
         this._BgRef.pause();
         this._ObstaclesRef.pause();
         this._ProgreessRef.pause(()=>{
@@ -307,6 +332,7 @@ class App extends GameAppBase {
                 console.log("_onImpactTracer game over");
                 return;
             }
+            this._RoleRef.triggerClashObstacle(false);
             this._BgRef.play();
             this._ObstaclesRef.play();
             this._ProgreessRef.play((obstacle.key)/this.obstacleNum);
@@ -359,9 +385,8 @@ class App extends GameAppBase {
                   roleUpSpeed = {this.velocityUp}
                   roleDownSpeed = { this.garavity}
                   onTransitionEnd={this._RoleTranslateEnd}
-                  assets={this.currStage.assets}
+                  rolesList={this.currStage.rolesList}
                   clashObstacle={{
-                      style:{visibility:this.state.clashObstacleVisible, left:130, top:20},
                       config: this.currStage.assets["clashObstacle"]
                   }}/>
 

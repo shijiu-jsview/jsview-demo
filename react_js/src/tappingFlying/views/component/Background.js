@@ -65,8 +65,7 @@ class BackGround extends ScrollPage {
                 <JsvSpriteTranslate key="BgTranslate"
                                     style={{width:this._Width, height:this._Height, left:this._Left,top:this._Top}}
                                     control={this._TranslateControl}>
-                    <div style={this.props.style}/>
-                    <div style={{...this.props.style, ...{left:this._Width}}}/>
+                    <div style={this.props.style}/><div style={{...this.props.style, ...{left:this._Width}}}/>
                 </JsvSpriteTranslate>
             </div>
         )

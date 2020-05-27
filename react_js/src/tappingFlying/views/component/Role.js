@@ -21,7 +21,8 @@ class Role extends FocusBlock {
         console.log("Role constructor");
         this.state = {
             roleSpriteLeft:0,
-            roleSpriteName: "role"
+            roleSpriteName: "role",
+            clashObstacleVisible:"hidden",
         }
         this.clickSound = this.props.clickSound;
         this.offsetX = this.props.offsetX;
@@ -31,7 +32,7 @@ class Role extends FocusBlock {
         this.TranslateControl.selectMode("AcceleratedMotion");
         this._IsPlaying = true;
         this._IsCollision = false;
-        this.bodySize = this.props.assets[this.state.roleSpriteName].bodySize;
+        this.bodySize = this.props.rolesList[0].bodySize;
         this._IsJump = false;
     }
 
@@ -57,17 +58,18 @@ class Role extends FocusBlock {
                 console.log("decelerateY end!");
                 this._SpritDown = true;
                 this.TranslateControl.accelerateY(this.props.roleDownSpeed, 0).start(()=>{
-                    this._IsJump = false;
+                    this._onJumpEnd();
                 })
             })
         }
     }
+
     onKeyDown(ev) {
         //按键处理
         if (ev.keyCode === 13) { //OK按键
             if (!this._IsJump && this._IsPlaying && !this._IsCollision) {
                 this.jump();
-                this.setState({roleSpriteName: "roleJump"});
+                this.setState({roleSpriteName: "roleJump", clashObstacleVisible:"hidden"});
                 this.clickSound.play();
             }
             return true;
@@ -78,51 +80,56 @@ class Role extends FocusBlock {
 
     _onJumpEnd() {
         console.log("debugjump _onJumpEnd in"+", now:"+(new Date().getTime()));
-        this.setState({roleSpriteName: "role"});
+        this._IsJump = false;
+        if (!this._IsCollision) {
+            this.setState({roleSpriteName: "role", clashObstacleVisible:"hidden"});
+        }
+    }
+
+    triggerClashObstacle(is_clash) {
+        console.log("debugjump triggerClashObstacle is_clash:"+is_clash+", now:"+(new Date().getTime()));
+
+        if (is_clash) {
+            this._IsCollision = true;
+            this.setState({roleSpriteName: "clashObstacleRole", clashObstacleVisible:"visible"});
+        } else {
+            this._IsCollision = false;
+            this.setState({roleSpriteName: "role", clashObstacleVisible:"hidden"});
+        }
     }
 
     renderContent() {
-        let {assets, clashObstacle, isFlyingMode} = this.props;
-        let roleconfig = assets[this.state.roleSpriteName];
-        let roleDetailInfo = Until.clone(window.GameSource[roleconfig.json]);
-        let roleViewSize = roleDetailInfo.frames[0].sourceSize;
+        let {clashObstacle, isFlyingMode} = this.props;
         let clashObstacleConfig = clashObstacle.config;
         let clashObstacleDetailInfo =  window.GameSource[clashObstacleConfig.json];
         let clashObstacleViewSize = clashObstacleDetailInfo.frames[0].sourceSize;
-        let role_duration = roleDetailInfo.frames.length/roleconfig.rate;
         let clashObstacle_duration = clashObstacleDetailInfo.frames.length/clashObstacleConfig.rate;
-
-        console.log("debugjump clashObstacle.style.visibility:"+clashObstacle.style.visibility+", now:"+(new Date().getTime()));
-        if (clashObstacle.style.visibility === "visible") {
-            this._IsCollision = true;
-            //只显示最后一帧数据
-            roleDetailInfo.frames = roleDetailInfo.frames.splice(0,1);
-        } else {
-            this._IsCollision = false;
-        }
-
-        console.log("debugjump roleDetailInfo length:"+roleDetailInfo.frames.length+", now:"+(new Date().getTime()));
         return (
             <div style={{left: this.state.roleSpriteLeft, top: this.props.worldSize.height / 2-40, transition:"left 1s linear 0s"}}
                  onTransitionEnd={this.props.onTransitionEnd}>
                 <JsvSpriteTranslate key="RoleTranslate"
                                     style={{
                                         left:0,
-                                        top:0,
-                                        width: roleViewSize.w,
-                                        height:roleViewSize.h}}
+                                        top:0}}
                                     control={this.TranslateControl}>
-
-                    <div key={roleconfig.value+"/"+clashObstacle.style.visibility}>{
-                        /*通过key控制role 信息变化时，对象重建 TODO 高阶组件问题，修正后，可不设置key*/}
-                        <JsvSpriteAnim
-                            spriteInfo={roleDetailInfo}
-                            loop="infinite"
-                            viewSize={roleViewSize}
-                            duration={role_duration}
-                            onAnimEnd= {function() {console.log("anim end")}}
-                            imageUrl={`url(${require("../../assets/atlas/" + roleconfig.value)})`}/>
-                        {<div style={clashObstacle.style}>
+                    <div key={"role"}>
+                        {
+                            this.props.rolesList.map((item) => {
+                                console.log("render item:", item.key);
+                                return (
+                                    <div key={item.key} style={{visibility: this.state.roleSpriteName === item.key?"visible":"hidden"}}>
+                                        <JsvSpriteAnim
+                                            spriteInfo={item.spriteInfo}
+                                            loop="infinite"
+                                            viewSize={item.viewSize}
+                                            duration={item.duration}
+                                            onAnimEnd= {function() {console.log("anim end")}}
+                                            imageUrl={item.imageUrl}/>
+                                    </div>
+                                )
+                            })
+                        }
+                        {<div style={{visibility:this.state.clashObstacleVisible, left:130,top:20}}>
                             <JsvSpriteAnim
                                 spriteInfo={clashObstacleDetailInfo}
                                 loop="infinite"
@@ -143,38 +150,17 @@ class Role extends FocusBlock {
                         backgroundColor:"rgba(0,0,0,0)"
                     }}/>
                 </JsvSpriteTranslate>
-                {/*下坠时碰撞物，提高精灵图变化的时机*/}
-                <div ref={(ref) => {
-                    this.DownSprite = ref;
-                }} style={{
-                    left:0,
-                    top:parseInt(roleViewSize.h/2),
-                    width: roleViewSize.w,
-                    height:10,
-                    backgroundColor:"rgba(0,0,0,0)"
-                }}/>
+
             </div>
         )
     }
 
     componentDidMount() {
-        this._DownSpriteSensor = createImpactTracer(this.Sprite, this.DownSprite, createImpactCallback(
-            () => {
-                //碰撞开始
-                console.log("Role 碰撞开始 ");
-                if (this._SpritDown) {
-                    this._onJumpEnd();
-                }
-            },
-            () => {
-                //碰撞结束
-                console.log("Role 碰撞结束 ");
-            })
-        );
+
     }
 
     componentWillUnmount() {
-        this._DownSpriteSensor.Recycle();
+
     }
 }
 Role.JumpState = {
