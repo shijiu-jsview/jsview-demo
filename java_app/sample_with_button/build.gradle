@@ -3,12 +3,28 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.qcode.jsview.sample_with_button"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        flavorDimensions "default" // 有Flavor后，必须声明，否则报错
     }
+
+    productFlavors {
+        // 在AS环境下，通过Build Variants横向卡片选择flavor
+        // 声明了Flavor后，没有默认flavor，当执行./gradlew :XXXX:assembleRelease后，会编译所有Flavor
+        // 编译指定flavor的指令: ./gradlew {模块}:assemble{Flavor}{Debug/Release}
+        Demo {
+            applicationId "com.qcode.jsview.sample_demo"
+            manifestPlaceholders = [LABEL_NAME:"视九JSV测试"]
+        }
+
+        PublicShow {
+            applicationId "com.qcode.jsview.sample_show"
+            manifestPlaceholders = [LABEL_NAME:"视九H5引擎"]
+        }
+    }
+
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -23,11 +39,19 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        println("++++++Iterating variant: " + variant.getFlavorName())
+        if (variant.getFlavorName() == "PublicShow") {
+            buildConfigField "String", "SHOW_MODE", "\"1\""
+        } else {
+            buildConfigField "String", "SHOW_MODE", "\"0\""
+        }
+    }
+
     buildTypes {
         buildTypes.each {
             it.buildConfigField("String", "APP_URL", "\"${CustomConfig_AppUrl}\"")
             it.buildConfigField("String", "JSVIEW_JS_ENGINE_URL", "\"${CustomConfig_EngineUrl}\"")
-            it.buildConfigField("String", "SHOW_MODE", "\"${CustomConfig_ShowMode}\"")
         }
 
         release {

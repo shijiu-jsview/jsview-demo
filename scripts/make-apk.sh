@@ -133,17 +133,14 @@ main_run()
 
 	cd "java_app";
 		
-	# 编译demo APK
-	./gradlew :sample_with_button:assembleRelease -PCustomConfig_AppUrl=${APP_URL} -PCustomConfig_ShowMode=0
+	# 编译APK
+	./gradlew :sample_with_button:assembleRelease -PCustomConfig_AppUrl=${APP_URL}
 	
-	# 拷贝文件
-	cp ./sample_with_button/build/outputs/apk/release/sample_with_button-release.apk ./main_app_demo_${CODE_REVISION}.apk
+	# 拷贝Demo文件
+	cp ./sample_with_button/build/outputs/apk/Demo/release/sample_with_button-Demo-release.apk ./main_app_demo_${CODE_REVISION}.apk
 	
-	# 编译demo APK
-        ./gradlew :sample_with_button:assembleRelease -PCustomConfig_AppUrl=${APP_URL} -PCustomConfig_ShowMode=1
-
-        # 拷贝文件
-        cp ./sample_with_button/build/outputs/apk/release/sample_with_button-release.apk ./main_app_activity_${CODE_REVISION}.apk
+    # 拷贝PublicShow文件
+    cp ./sample_with_button/build/outputs/apk/PublicShow/release/sample_with_button-PublicShow-release.apk ./main_app_activity_${CODE_REVISION}.apk
 
 	loginfo "DONE !!!";
 	loginfo "BUILD SUCCESSED";

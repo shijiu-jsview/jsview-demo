@@ -7,7 +7,7 @@
         android:icon="@drawable/icon"
         android:logo="@drawable/icon"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
-        android:label="视九H5引擎">
+        android:label="${LABEL_NAME}">
 
         <activity android:name=".SingleActivity"
             android:launchMode="singleInstance"
