@@ -106,8 +106,12 @@ let demoInfos = [
         "path": "/users/collision",
         "class": lazy(() => import('../collision/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "小狗过障碍游戏",
+        "path": "/users/games",
+        "class": lazy(() => import('../tappingFlying/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
-
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
 for (let item of demoInfos) {

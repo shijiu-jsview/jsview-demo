@@ -85,6 +85,8 @@ public class ViewLoader {
 		// 加入Core版本配置的接口
 		mCoreSelector.registerApi(mJsView);
 
+		DebugSettings.load(mJsView);
+
 		// JsView加载URL
 		mJsView.loadUrl2(
 				sJsViewEngineUrl,

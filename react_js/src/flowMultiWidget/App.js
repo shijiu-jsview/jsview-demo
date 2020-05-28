@@ -45,7 +45,7 @@ class MainScene extends FocusBlock {
 
     onKeyDown(ev) {
         console.log("ev.keyCode:", ev.keyCode);
-        if (ev.keyCode === 10001 || ev.keyCode === 77) {//menu key or M
+        if (this.state.menu_visibility != "visible" && (ev.keyCode === 10001 || ev.keyCode === 77)) {//menu key or M
             this._ShowMenu();
         } else if (this.state.menu_visibility === "visible" && (ev.keyCode === 10000 || ev.keyCode === 82)) {// back key or R
             this._HideMenu();

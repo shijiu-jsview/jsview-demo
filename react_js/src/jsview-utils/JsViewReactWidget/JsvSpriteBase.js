@@ -7,6 +7,7 @@ class JsvControl {
 	constructor(params_count) {
 		this._Current = new Array(params_count).fill(0);
 		this._Target = new Array(params_count).fill(0);
+		this._RepeatStart = new Array(params_count).fill(0);
 		this._JumpTarget = null;
 		this._Jumping = false;
 		this._ParameterCount = params_count;
@@ -16,8 +17,13 @@ class JsvControl {
 		this._PausedCallback = null;
 		this._EndCallback = null;
 		this._Token = 0;
-
+		this._Repeat = false;
 		this._SpriteView = null;
+	}
+
+	setRepeat(enable) {
+        this._Repeat = enable;
+        return this;
 	}
 
 	start(end_callback) {
@@ -28,6 +34,12 @@ class JsvControl {
 	}
 
 	pause(paused_callback) {
+		// 执行pause动作时，相当于取消start()动作，所以EndCallback同时也应该被取消
+		if (this._EndCallback != null) {
+			this._EndCallback = null;
+		}
+
+		// 根据当前状态，已经处于Pause则直接回调，否则发送pause指令
 		if (this._StateIndex == 0) {
 			if (paused_callback) {
 				this._CallbackWithCatch(this._Current, paused_callback);
@@ -47,7 +59,7 @@ class JsvControl {
 		this._StateMachineNext();
 	}
 
-	_WrapBuildAnimation(froms_array, tos_array) {
+	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
 		console.warn("Should Override");
 	}
 
@@ -86,17 +98,12 @@ class JsvControl {
 
 	_StartAnimation() {
 		let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
-		let tos = [...this._Target];
+		let tos = this._Target;
+		let repeat_starts = (this._Repeat ? [...this._RepeatStart] : null);
 
 		let token = this._Token++;
 
-		let that = this;
-		let listener = (new Forge.AnimationListener())
-			.OnFinalProgress((progress)=>{
-				that._OnPaused(froms, tos, progress);
-			});
-
-		let anim = this._WrapBuildAnimation(froms, tos, this._Jumping);
+		let anim = this._WrapBuildAnimation(repeat_starts, froms, tos, this._Jumping);
 
 		// clear jump status
 		this._JumpTarget = null;
@@ -106,9 +113,19 @@ class JsvControl {
 			return;
 		}
 
+		// 生成OnFinalProgress处理监听，memo在 _WrapBuildAnimation()处理后生成，因为build处理中可能改变tos
+		let memo_tos = [...tos];
+		let that = this;
+		let listener = (new Forge.AnimationListener())
+			.OnFinalProgress((progress)=>{
+				that._OnPaused((repeat_starts != null ? repeat_starts : froms), memo_tos, progress);
+			});
+
 		anim.AddAnimationListener(listener);
 		anim.Enable(Forge.AnimationEnable.AckFinalProgress | Forge.AnimationEnable.KeepTransform);
-
+		if(this._Repeat) {
+            anim.EnableInfinite();
+		}
 		this._SpriteView.StartAnimation(anim);
 
 		return true; // success
@@ -124,12 +141,10 @@ class JsvControl {
 		}
 
 		this._StateLocked = true;
-
 		// 换出callbacks，回调时可能加入新的callbacks
 		let paused_callback = this._PausedCallback;
 		let ended_callback = this._EndCallback;
 		this._PausedCallback = null;
-		this._EndCallback = null;
 
 		// 回调所有callback
 		if (paused_callback) {
@@ -138,6 +153,7 @@ class JsvControl {
 		}
 		if (ended_callback && progress == 1) {
 			// Ended callback
+			this._EndCallback = null;
 			this._CallbackWithCatch(this._Current, ended_callback);
 		}
 
@@ -157,26 +173,66 @@ class HtmlControl {
 	constructor(params_count) {
         this._Current = new Array(params_count).fill(0);
         this._Target = new Array(params_count).fill(0);
+		this._RepeatStart = new Array(params_count).fill(0);
         this._ParameterCount = params_count;
         this._SpriteDiv = null;
         this._PausedCallback = null;
 		this._EndCallback = null;
+        this._Repeat = false;
 	}
+
+	setRepeat(enable) {
+        this._Repeat = enable;
+        return this;
+    }
 
 	start(end_callback) {
         this._EndCallback = end_callback;
-        this._SpriteDiv.style.animation = null;
-        let animation = this._WrapBuildAnimation(this._Current, this._Target);
-        this._SpriteDiv.style.animation = animation;
-        this._SpriteDiv.onanimationend = () => {
-            this._Current = this._Target;
-            this._SpriteDiv.style.animation = null;
-            this._SpriteDiv.style.transform = this._GetTransform(this._Current);
-            this._SpriteDiv.onanimationend = null;
-            let callback = this._EndCallback;
-            this._EndCallback = null;
-            this._WrapCallback(this._Current, callback);
-        };
+		this._SpriteDiv.style.animation = null;
+		this._SpriteDiv.style.transform = null;
+		this._SpriteDiv.onanimationend = null;
+
+		let animation;
+		let built_obj = this._WrapBuildAnimation(null, this._Current, this._Target, false);
+		if (built_obj == null) {
+			// Discarded animation
+			animation = null;
+		} else {
+			animation = built_obj.getDescribe();
+		}
+        console.log("start animation:" + animation);
+
+		if (this._Repeat) {
+			let start_repeat = () => {
+				// Start repeat animation
+				let animation_repeat =
+					((this._WrapBuildAnimation(null, this._RepeatStart, this._Target, false))
+						.getDescribe()) + " infinite";
+				console.log("start animation(repeat):" + animation_repeat);
+				this._SpriteDiv.style.animation = animation_repeat;
+			};
+			if (animation != null) {
+				// 完成前序动画后，到达repeat基点后，再开始repeat动画
+				this._SpriteDiv.onanimationend = start_repeat;
+			} else {
+				// 无前序，可以直接进行repeat动画
+				start_repeat();
+			}
+		} else {
+			this._SpriteDiv.onanimationend = () => {
+				for (let idx = 0; idx < this._ParameterCount; idx++ ) {
+					this._Current[idx] = this._Target[idx];
+				}
+				this._SpriteDiv.style.animation = null;
+				this._SpriteDiv.style.transform = this._GetTransform(this._Current);
+				this._SpriteDiv.onanimationend = null;
+				let callback = this._EndCallback;
+				this._EndCallback = null;
+				this._WrapCallback(this._Current, callback);
+			};
+		}
+
+		this._SpriteDiv.style.animation = animation;
 
 		return this;
 	}
@@ -191,7 +247,7 @@ class HtmlControl {
     }
 
     jump() {
-        this._Current = this._Target;
+        this._Current = [...this._Target];
         this._SpriteDiv.style.animation = null;
         this._SpriteDiv.style.transform = this._GetTransform(this._Target);
         this._SpriteDiv.onanimationend = null;
@@ -206,7 +262,7 @@ class HtmlControl {
         console.warn("Should Override");
     }
 
-    _WrapBuildAnimation() {
+    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
         console.warn("Should Override");
     }
 
@@ -228,7 +284,6 @@ class JsvSpriteBase extends React.Component{
 	 */
 	constructor(props) {
 		super(props);
-
 		this._LinkedControl = props.control;
 
 		// Props for JsView
