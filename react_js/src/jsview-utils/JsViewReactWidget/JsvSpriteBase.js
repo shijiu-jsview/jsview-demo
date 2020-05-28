@@ -189,9 +189,8 @@ class HtmlControl {
 	start(end_callback) {
         this._EndCallback = end_callback;
 		this._SpriteDiv.style.animation = null;
-		this._SpriteDiv.style.transform = null;
 		this._SpriteDiv.onanimationend = null;
-
+		
 		let animation;
 		let built_obj = this._WrapBuildAnimation(null, this._Current, this._Target, false);
 		if (built_obj == null) {
@@ -233,6 +232,9 @@ class HtmlControl {
 		}
 
 		this._SpriteDiv.style.animation = animation;
+		if (animation !== null) {
+            this._SpriteDiv.style.transform = null;
+		}
 
 		return this;
 	}
