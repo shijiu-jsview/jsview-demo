@@ -2,20 +2,26 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import Editor from "./Editor"
-import Until from "./Until"
 import State from "./State"
 import math from "./math"
 class AudioProxy {
     constructor(audio, name) {
         this.audio = audio;
-        this.audiopath =require("../assets/audio/" +name);
+        this.audiopath = null;
+        try {
+            this.audiopath =require("../../"+Game.apppath+"/assets/audio/"+name);
+        } catch(e) {
+            console.log("AudioProxy file not exist:", "../../"+Game.apppath+"/assets/audio/"+name);
+        }
+
     }
 
     play() {
-        this.audio.src = this.audiopath;
-        console.log("audio play src:"+this.audiopath);
-        this.audio.play();//TODO 调整声音
+        if (this.audiopath) {
+            this.audio.src = this.audiopath;
+            console.log("audio play src:"+this.audiopath);
+            this.audio.play();//TODO 调整声音
+        }
     }
 
     pause() {
@@ -36,7 +42,7 @@ class Game {
 
     static enableAudio() {
         if (!Game.Audio) {
-            Game.Audio = new Audio();
+            Game.Audio = new window.Audio();
         }
     }
 
@@ -50,9 +56,12 @@ Game.Math = math;
 Game.Audio = null;
 Game.roundIndex = 0;
 Game.stageIndex = 0;
-Game.Config = Editor.Config;
-Game.assetData = Until.dataFromatAsstes();
+Game.Config = null;
+Game.assetData = null;
 Game.state = State;
+Game.apppath = "";
+Game.env = "production";
 
-window.GameSourceSource = window.GameSourceSource ? window.GameSourceSource:{};
 export default Game;
+
+window.GameSource = window.GameSource?window.GameSource:{};

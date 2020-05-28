@@ -1,0 +1,142 @@
+{
+  "title": "艾因小萌班",
+  "version": "1.1",
+  "common": {
+    "language": "cn",
+    "platform": "WeChat",
+    "ratio": "16/9",
+    "pix": "720p",
+    "effect": false,
+    "ending": "default_ending",
+    "theme": "Vertical",
+    "template": "tapping_flying",
+    "style": "tapping_flying",
+    "uiTheme": "default_ui_theme",
+    "log": true,
+    "autoGameStart": true,
+    "showProgressBar": true,
+    "showProfile": false,
+    "exitInterval": 5,
+    "exitTotalTime": 5,
+    "gesture": true
+  },
+  "setting": {
+    "x": 426,
+    "y": 360
+  },
+  "stages": [{
+    "roundsNum": 1,
+    "roundIndex": 1,
+    "backgroundSound": {
+      "type": "audio",
+      "value": "bgm_4.mp3"
+    },
+    "narration": {
+      "type": "audio",
+      "value": "none.mp3",
+      "lang": true
+    },
+    "ambientSound": {
+      "type": "audio",
+      "value": "none.mp3"
+    },
+    "flySound": {
+      "type": "audio",
+      "value": "none.mp3"
+    },
+    "clashSound": {
+      "type": "audio",
+      "value": "wrong.mp3"
+    },
+    "crossTargetSound": {
+      "type": "audio",
+      "value": "right.mp3"
+    },
+    "clickSound": {
+      "type": "audio",
+      "value": "none.mp3"
+    },
+    "throughFail": {
+      "type": "audio",
+      "value": "none.mp3"
+    },
+    "rounds": [
+      {
+        "assets": {
+          "backgroundImage": {
+            "type": "images",
+            "value": "middle.jpg"
+          },
+          "iconImage": {
+            "type": "images",
+            "value": "wind.png",
+            "x": -4,
+            "y": 15
+          },
+          "role": {
+            "type": "atlas",
+            "value": "bird.png",
+            "json": "bird.json",
+            "rate": 10
+          },
+          "clashObstacle": {
+            "type": "atlas",
+            "value": "dizziness.png",
+            "json": "dizziness.json",
+            "rate": 10
+          },
+          "targetUp": {
+            "type": "atlas",
+            "value": "obstacle_2.png",
+            "json": "obstacle_2.json",
+            "rate": 10
+          },
+          "targetDown": {
+            "type": "atlas",
+            "value": "",
+            "json": "",
+            "rate": 10
+          },
+          "obstacle": {
+            "type": "atlas",
+            "value": "obstacle_1.png",
+            "json": "obstacle_1.json",
+            "rate": 10
+          },
+          "startAni": {
+            "type": "atlas",
+            "value": "",
+            "json": "",
+            "rate": 10,
+            "x": 0,
+            "y": 200
+          }
+        },
+        "game": {
+          "midImageNum": 10,
+          "isTarget": true,
+          "isTargetDown": false,
+          "targetNum": 4,
+          "appearNum": 5,
+          "crossTargetNum": 0,
+          "isObstacle": true,
+          "obstacleNum": 4,
+          "roleDownSpeed": 200,
+          "roleSpeed": 200,
+          "offsetX": 0,
+          "counterOffset": {
+            "x": 0,
+            "y": 0
+          },
+          "isStartAni": false,
+          "isIconImage": true,
+          "topBorder": 0,
+          "rangeHeight": 720,
+          "targetMinY": 180,
+          "targetMaxY": 600,
+          "obstacleMinY": 180,
+          "obstacleMaxY": 600
+        }
+      }]
+  }]
+}

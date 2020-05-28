@@ -107,9 +107,14 @@ let demoInfos = [
         "class": lazy(() => import('../collision/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        "name": "小狗过障碍游戏",
-        "path": "/users/games",
-        "class": lazy(() => import('../tappingFlying/App').then(m => ({ default: m.SubApp }))),
+        "name": "小狗跨栏游戏",
+        "path": "/users/games1",
+        "class": lazy(() => import('../games/tappingFlying/apps/dog/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        "name": "小鸟飞翔游戏",
+        "path": "/users/games2",
+        "class": lazy(() => import('../games/tappingFlying/apps/birdflying/App').then(m => ({ default: m.SubApp }))),
     },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
