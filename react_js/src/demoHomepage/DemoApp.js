@@ -116,6 +116,11 @@ let demoInfos = [
         "path": "/users/games2",
         "class": lazy(() => import('../games/tappingFlying/apps/birdflying/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "粒子效果",
+        "path": "/users/particle",
+        "class": lazy(() => import('../sprayView/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
