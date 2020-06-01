@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 10:14:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-01 16:48:53
+ * @LastEditTime: 2020-06-01 17:36:05
  * @Description: file content
  */ 
 
@@ -83,14 +83,14 @@ class MainScene extends FocusBlock{
                 </div>
                 <div style={{left: 200, top: 400, width: 10, height:10, backgroundColor: "#00FF00"}}>
                     {
-                        this.state.count > 0 ? <JsvSpray key={this.state.count} pointImg="http://192.168.0.50:8080/res/texture_32.png" sprayStyle={spray_style1}/> : null
+                        this.state.count > 0 ? <JsvSpray key={this.state.count} pointImg={location.origin + pointImg} sprayStyle={spray_style1}/> : null
                     }
                 </div>
                 <div style={{left: 600, top: 400, width: 10, height:10, animation: "AnimRotate 3s linear infinite", backgroundColor: "#00FF00"}}>
-                    <JsvSpray pointImg="http://192.168.0.50:8080/res/texture_32.png" sprayStyle={spray_style2}/>
+                    <JsvSpray pointImg={location.origin + pointImg} sprayStyle={spray_style2}/>
                 </div>
                 <div style={{left: 1000, top: 400, width: 100, height:5, animation: "AnimTranslate 10s linear infinite", backgroundColor: "#00FF00"}}>
-                    <JsvSpray pointImg="http://192.168.0.50:8080/res/texture_32.png" sprayStyle={spray_style3}/>
+                    <JsvSpray pointImg={location.origin + pointImg} sprayStyle={spray_style3}/>
                 </div>
             </div>
         );
