@@ -115,6 +115,8 @@ class Role extends FocusBlock {
     }
 
     onKeyDown(ev) {
+        console.log("Role onKeyDown:",ev.keyCode);
+
         //按键处理
         if (ev.keyCode === 13) { //OK按键
             if (!this._IsPrepareFlying

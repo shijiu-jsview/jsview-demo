@@ -491,7 +491,12 @@ class App extends GameAppBase {
             <audio key={basekey+"_audio"} loop="loop" src={this._bgUrl} autoPlay="autoplay"/>
         </div>)
     }
-    
+
+    onKeyDown(ev) {
+        super.onKeyDown(ev);
+        console.log("GamePlay onKeyDown:",ev.keyCode);
+        return false;
+    }
     _StartGame(repeat_count) {
         let focus_name = this.props.branchName ? this.props.branchName : "";
         this.changeFocus(focus_name + "/role");
@@ -501,7 +506,6 @@ class App extends GameAppBase {
             roundIndex:this.roundIndex,
             repeatCount:repeat_count,
         })
-
     }
 
     _StopGame() {

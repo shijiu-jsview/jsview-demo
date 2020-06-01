@@ -14,7 +14,6 @@ class State {
                 if (!not_need_load) {
                     State.globalHistory.push(path);
                 }
-                State.current.changeFocus(path);
                 break;
             }
         }
