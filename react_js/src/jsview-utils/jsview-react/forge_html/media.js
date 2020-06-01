@@ -1,11 +1,13 @@
 class BaseMedia {
-    constructor() {
+    constructor(type) {
         this.state = {};
+        this.type = type;
+        this._AutoPlay = false;
     }
 
     buildPlatformInstance() {
-        this.VideoEle = window.originDocument.createElement('VIDEO');
-        this.VideoEle.addEventListener("loadedmetadata", ()=>{
+        this.Ele = window.originDocument.createElement(this.type);
+        this.Ele.addEventListener("loadedmetadata", ()=>{
             if (this.hasOwnProperty("onload")) {//这个onload是必须调用的，否则创建的video 标签不会被添加到父view上
                 this.onload();
             }
@@ -16,30 +18,37 @@ class BaseMedia {
     }
 
     set autoplay(value) {
-        if (value) {
-            this.play();
+        if (typeof value !== "undefined") {
+            this._AutoPlay = true;
+            if (this.Ele.paused) {//属性设置时，不允许操作play，故设置timeout 0
+                setTimeout(()=>{
+                    this.play();
+                },0)
+            }
         }
     }
 
     get currentTime() {
-        return this.VideoEle.currentTime;
+        return this.Ele.currentTime;
     }
 
     set currentTime(value) {
-        this.VideoEle.isRenderable = false;
-        this.VideoEle.currentTime = value;
+        this.Ele.isRenderable = false;
+        this.Ele.currentTime = value;
         this.setState("seek", value, "number");
     }
 
     get duration() {
-        return this.VideoEle.duration;
+        return this.Ele.duration;
     }
 
     set loop(value) {
-        if (typeof(value) !== "boolean") {
-            this.VideoEle.loop = true;
+        if(typeof value == "boolean") {
+            this.Ele.loop = true;
+        } else if(typeof value == "undefined") {
+            this.Ele.loop = false;
         } else {
-            this.VideoEle.loop = value;
+            this.Ele.loop = true;; // html5标准用法, 任何value不为boolean|undefined都会转变为true
         }
     }
 
@@ -52,7 +61,7 @@ class BaseMedia {
     }
 
     get paused() {
-        return this.VideoEle.paused;
+        return this.Ele.paused;
     }
 
     get playbackRate() {
@@ -65,6 +74,11 @@ class BaseMedia {
 
     set src(value) {
         this.setState("src", value, "string");
+        if (value && this._AutoPlay) {
+            setTimeout(()=>{//属性设置时，不允许操作play，故设置timeout 0
+                this.play();
+            },0)
+        }
     }
 
     get style() {
@@ -100,22 +114,22 @@ class BaseMedia {
     }
 
     get playableDuration() {
-        return this.VideoEle.playableDuration;
+        return this.Ele.playableDuration;
     }
 
     addEventListener(type, listener) {
         this['on' + type] = listener;
-        this.VideoEle.addEventListener(type, (event)=>{
+        this.Ele.addEventListener(type, (event)=>{
             this['on' + type](event);
         })
     };
 
     load() {
-        this.VideoEle.load();
+        this.Ele.load();
     }
 
     pause() {
-        this.VideoEle.pause();
+        this.Ele.pause();
         this.setState("paused", true, "boolean");
         if (this.hasOwnProperty("onpause")) {
             this.onpause();
@@ -124,7 +138,7 @@ class BaseMedia {
 
     play() {
         this.setState("paused", false, "boolean");
-        this.VideoEle.play();
+        this.Ele.play();
         if (this.hasOwnProperty("onplay")) {
             this.onplay();
         }
@@ -132,10 +146,10 @@ class BaseMedia {
 
     unload() {
         this.setState("paused", true, "boolean");
-        this.VideoEle.isRenderable = false;
-        this.VideoEle.pause();
-        this.VideoEle.removeAttribute('src'); // empty source
-        this.VideoEle.load();
+        this.Ele.isRenderable = false;
+        this.Ele.pause();
+        this.Ele.removeAttribute('src'); // empty source
+        this.Ele.load();
     }
 
     setState(key, value, type) {
@@ -143,7 +157,7 @@ class BaseMedia {
             console.warn("invalid paramter type to set " + key + ". value is not " + type);
             return;
         }
-        this.VideoEle.setAttribute(key, value);
+        this.Ele.setAttribute(key, value);
         this.state[key] = value;
         console.log("set " + key + " = " + value);
     }
@@ -152,21 +166,21 @@ class BaseMedia {
         let value = this.state[key];
         console.log("get " + key + " = " + value);
         if (typeof value == "undefined") {
-            value = this.VideoEle.getAttribute(key);
+            value = this.Ele.getAttribute(key);
             this.state[key] = value;
         }
         return value;
     }
 
     onError(event) {
-        this.VideoEle.isRenderable = false;
+        this.Ele.isRenderable = false;
         if (this.hasOwnProperty("onerror")) {
             this.onerror(event.currentTarget.error.code);
         }
     }
 
     mediaHandler() {
-        return this.VideoEle;
+        return this.Ele;
     }
 
     // Extension beyond HTML5
@@ -182,23 +196,26 @@ class BaseMedia {
 BaseMedia.prototype.designMapWidth = 0
 
 class Media extends BaseMedia {
-    constructor() {
-        super();
-        super.buildPlatformInstance();
+    constructor(type) {
+        super(type);
+        super.buildPlatformInstance(type);
     }
 }
 
 class Audio extends Media {
+    constructor() {
+        super("audio");
+    }
 }
 
 class Video extends Media {
     constructor() {
-        super();
+        super("video");
         this.state.height = 0;
         this.state.width = 0;
         this.state.aspectRatiow = 'origin'; // 'origin', 'full', '16:9', '4:3',
-        this.VideoEle.videoWidth = 0;
-        this.VideoEle.videoHeight = 0;
+        this.Ele.videoWidth = 0;
+        this.Ele.videoHeight = 0;
     }
 
     get height() {
@@ -218,7 +235,6 @@ class Video extends Media {
         console.log("Video.poster() TODO");
     }
 
-    // Extension beyond HTML5
     get videoAspectRatio() {
         return this.getState("aspectRatio");
     }
@@ -228,11 +244,11 @@ class Video extends Media {
     }
 
     get videoHeight() {
-        return this.VideoEle.videoHeight;
+        return this.Ele.videoHeight;
     }
 
     get videoWidth() {
-        return this.VideoEle.videoWidth;
+        return this.Ele.videoWidth;
     }
 
     get width() {
@@ -245,14 +261,13 @@ class Video extends Media {
     }
 
     onLoad(event) {
-
         super.onLoad(event);
     }
 }
 
 class OffscreenVideoPlayer extends BaseMedia {
     constructor() {
-        super();
+        super("video");
         this._ReleaseCallbacks = [];
         this._ResourceTerminater = null;
         super.buildPlatformInstance();
@@ -295,4 +310,6 @@ class OffscreenVideoPlayer extends BaseMedia {
     }
 }
 
+window.Audio = Audio;
+window.Video = Video;
 window.OffscreenVideoPlayer = OffscreenVideoPlayer;
