@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-01 17:22:46
+ * @LastEditTime: 2020-06-02 09:50:22
  * @Description: file content
  */
 import React from 'react';
@@ -24,6 +24,8 @@ class JsvSpray extends React.Component {
         SprayTexture = texture;
         let spray_view = new Forge.SprayView(new Forge.ExternalTextureSetting(texture));
         let add_num_per_frame = this.props.sprayStyle.addNumPerFrame ? this.props.sprayStyle.addNumPerFrame : 0.0005;
+        let accelerate_x = typeof this.props.sprayStyle.accelerateX !== 'undefined' ? this.props.sprayStyle.accelerateX : 0;
+        let accelerate_y = typeof this.props.sprayStyle.accelerateY !== 'undefined' ? this.props.sprayStyle.accelerateY : -100;
         spray_view.SetSprayInfo(
             this.props.sprayStyle.type,
             this.props.sprayStyle.particleNum,
@@ -33,6 +35,7 @@ class JsvSpray extends React.Component {
             this.props.sprayStyle.pointSizeMin, this.props.sprayStyle.pointSizeMax,
             this.props.sprayStyle.speedMin, this.props.sprayStyle.speedMax,
             this.props.sprayStyle.lifeMin, this.props.sprayStyle.lifeMax,
+            accelerate_x, accelerate_y
         );
         let view_width = this.props.sprayStyle.deltaWidth === 0 ? 1 : 2 * this.props.sprayStyle.deltaWidth;
         return ForgeExtension.RootActivity.ViewStore.add(

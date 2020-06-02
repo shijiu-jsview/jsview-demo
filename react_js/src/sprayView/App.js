@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 10:14:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-01 17:36:05
+ * @LastEditTime: 2020-06-02 10:16:03
  * @Description: file content
  */ 
 
@@ -47,8 +47,10 @@ class MainScene extends FocusBlock{
             pointSizeMax: 30,
             speedMin: 1,
             speedMax: 7,
-            lifeMin: 1000,
-            lifeMax: 2000
+            lifeMin: 500,
+            lifeMax: 1000,
+            accelerateX: 0,
+            accelerateY: 0
         }
 
         let spray_style2 = {
@@ -61,7 +63,9 @@ class MainScene extends FocusBlock{
             speedMin: 5,
             speedMax: 10,
             lifeMin: 1000,
-            lifeMax: 3000
+            lifeMax: 3000,
+            accelerateX: 0,
+            accelerateY: -100
         }
 
         let spray_style3 = {
@@ -74,7 +78,9 @@ class MainScene extends FocusBlock{
             speedMin: 5,
             speedMax: 10,
             lifeMin: 1000,
-            lifeMax: 3000
+            lifeMax: 3000,
+            accelerateX: -50,
+            accelerateY: -120
         }
         return(
             <div style={{left: 0, top: 0, width: 1920, height: 1080, backgroundColor: "#334C4C"}}>
