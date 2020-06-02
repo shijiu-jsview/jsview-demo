@@ -2,13 +2,12 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-02 09:50:22
+ * @LastEditTime: 2020-06-02 16:37:51
  * @Description: file content
  */
 import React from 'react';
 import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
 
-let SprayTexture;
 class JsvSpray extends React.Component {
     constructor(props) {
         super(props);
@@ -18,11 +17,15 @@ class JsvSpray extends React.Component {
     };
 
     _buildForgeView() {
+        if (!this.props.pointRes) {return -1;}
         let texture_manager = ForgeExtension.TextureManager;
-        let texture = texture_manager.GetImage2(this.props.pointImg);
-        console.log("cchtest texture", SprayTexture, SprayTexture ? SprayTexture.RenderTexture.IdToken : -1, texture, texture.RenderTexture.IdToken, SprayTexture == texture);
-        SprayTexture = texture;
-        let spray_view = new Forge.SprayView(new Forge.ExternalTextureSetting(texture));
+        let texture_setting;
+        if (this.props.pointRes.trim().startsWith("#") || this.props.pointRes.trim().startsWith("rgba")) {
+            texture_setting = new Forge.TextureSetting(texture_manager.GetColorTexture(this.props.pointRes));
+        } else {
+            texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(this.props.pointRes));
+        }
+        let spray_view = new Forge.SprayView(texture_setting);
         let add_num_per_frame = this.props.sprayStyle.addNumPerFrame ? this.props.sprayStyle.addNumPerFrame : 0.0005;
         let accelerate_x = typeof this.props.sprayStyle.accelerateX !== 'undefined' ? this.props.sprayStyle.accelerateX : 0;
         let accelerate_y = typeof this.props.sprayStyle.accelerateY !== 'undefined' ? this.props.sprayStyle.accelerateY : -100;
@@ -67,16 +70,17 @@ class JsvSpray extends React.Component {
         if (Forge.SprayView) {
             this._releaseViewId();
             this._SpraViewId = this._buildForgeView();
-            
-            return (
-                <div key={this._SpraViewId} jsv_innerview={this._SpraViewId}>
-                </div>
-            )
+            if (this._SpraViewId < 0) {
+                return null; 
+            } else {
+                return (
+                    <div key={this._SpraViewId} jsv_innerview={this._SpraViewId}></div>
+                )
+            }
         } else {
             //暂时不支持网页
             return null
         }
-        
     }
 
     componentWillUnmount() {
