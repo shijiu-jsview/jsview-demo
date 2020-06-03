@@ -174,8 +174,10 @@ class App extends GameAppBase {
         for(let o in cur_stage.assets) {
             let json_name = cur_stage.assets[o].json;
             if (json_name && !window.GameSource[json_name]) {
-                window.GameSource[json_name] = require("../../../"+this.game.apppath+"/assets/atlas/"+json_name);
+                let config_json = require("../../../"+this.game.apppath+"/assets/atlas/"+json_name);
+                window.GameSource[json_name] = this.game.convertToSpriteInfo(config_json);
             }
+
             //生成精灵信息
             if (o.toLocaleLowerCase().indexOf("role") >= 0) {
                 rolesList.push({
@@ -183,7 +185,7 @@ class App extends GameAppBase {
                     spriteInfo:window.GameSource[json_name],
                     imageUrl:`url(${require("../../../"+this.game.apppath+"/assets/atlas/" + cur_stage.assets[o].value)})`,
                     duration:window.GameSource[json_name].frames.length/cur_stage.assets[o].rate,
-                    viewSize:window.GameSource[json_name].frames[0].sourceSize,
+                    viewSize:window.GameSource[json_name].viewSize,
                     bodySize:cur_stage.assets[o].bodySize,
                 });
                 if (o.toLocaleLowerCase() === "role") {
@@ -195,7 +197,7 @@ class App extends GameAppBase {
                             imageUrl:`url(${require("../../../"+this.game.apppath+"/assets/atlas/" + cur_stage.assets[o].value)})`,
                             duration:window.GameSource[json_name].frames.length/cur_stage.assets[o].rate,
                             bodySize:cur_stage.assets[o].bodySize,
-                            viewSize:window.GameSource[json_name].frames[0].sourceSize
+                            viewSize:window.GameSource[json_name].viewSize
                         });
                     } else {
                         rolesList.push({
@@ -203,7 +205,7 @@ class App extends GameAppBase {
                             spriteInfo:window.GameSource[json_name],
                             imageUrl:`url(${require("../../../"+this.game.apppath+"/assets/atlas/" + cur_stage.assets[o].value)})`,
                             duration:window.GameSource[json_name].frames.length/cur_stage.assets[o].rate,
-                            viewSize:window.GameSource[json_name].frames[0].sourceSize,
+                            viewSize:window.GameSource[json_name].viewSize,
                             bodySize:cur_stage.assets[o].bodySize,
                         });
                     }
@@ -215,7 +217,8 @@ class App extends GameAppBase {
         {//附加star_burst_big资源
             try {
                 if (!window.GameSource["star_burst_big.json"]) {
-                    window.GameSource["star_burst_big.json"] = require("../../../"+this.game.apppath+"/assets/atlas/star_burst_big.json");
+                    let config_json = require("../../../"+this.game.apppath+"/assets/atlas/star_burst_big.json");
+                    window.GameSource["star_burst_big.json"] = this.game.convertToSpriteInfo(config_json);
                 }
                 cur_stage.assets["star_burst_big"] = {
                     "type": "atlas",

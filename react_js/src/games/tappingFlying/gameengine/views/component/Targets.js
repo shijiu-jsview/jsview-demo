@@ -45,7 +45,7 @@ class Targets extends ScrollPage {
             this._IsPause = false;
         }
         let spriteInfo = window.GameSource[this.targetConfig.json];
-        this._Control.targetX(-(this._TotalDistance+spriteInfo.frames[0].spriteSourceSize.w)).start(()=>{
+        this._Control.targetX(-(this._TotalDistance+spriteInfo.frames[0].target.w)).start(()=>{
             console.log("Targets scroll end");
         });//滚动屏幕
     }
@@ -89,8 +89,8 @@ class Targets extends ScrollPage {
                                 <div key={"TargetsTranslate" + item.key}
                                      style={{
                                          left: item.left, top: item.top,
-                                         width: item.spriteInfo.frames[0].spriteSourceSize.w,
-                                         height: item.spriteInfo.frames[0].spriteSourceSize.h,
+                                         width: item.spriteInfo.frames[0].target.w,
+                                         height: item.spriteInfo.frames[0].target.h,
                                          animation: item.anim
                                      }}
                                      onAnimationEnd={this._scaleAnimationEnd}>
@@ -98,7 +98,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteStaticInfo}
                                             loop="infinite"
-                                            viewSize={item.spriteStaticInfo.frames[0].sourceSize}
+                                            viewSize={item.spriteStaticInfo.viewSize}
                                             duration={0.8}
                                             onAnimEnd={function () {
                                                 console.log("anim end")
@@ -109,7 +109,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteInfo}
                                             loop="infinite"
-                                            viewSize={item.spriteInfo.frames[0].sourceSize}
+                                            viewSize={item.spriteInfo.viewSize}
                                             duration={0.8}
                                             onAnimEnd={function () {
                                                 console.log("anim end")
@@ -122,8 +122,8 @@ class Targets extends ScrollPage {
                                              backgroundColor: "rgba(0,0,0,0.0)",
                                              left: 45,
                                              top: 30,
-                                             width: item.spriteInfo.frames[0].spriteSourceSize.w - 90,
-                                             height: item.spriteInfo.frames[0].spriteSourceSize.h - 60,
+                                             width: item.spriteInfo.frames[0].target.w - 90,
+                                             height: item.spriteInfo.frames[0].target.h - 60,
                                          }}></div>
 
                                 </div>
@@ -140,7 +140,7 @@ class Targets extends ScrollPage {
                             successEffectInfo ? <JsvSpriteAnim
                                 spriteInfo={successEffectInfo}
                                 loop="infinite"
-                                viewSize={successEffectInfo.frames[0].sourceSize}
+                                viewSize={successEffectInfo.viewSize}
                                 duration={successEffectInfo.frames.length / 15}
                                 onAnimEnd={function () {
                                     console.log("anim end")
@@ -165,18 +165,18 @@ class Targets extends ScrollPage {
         let itemList = this.state.itemList;
         let spriteBaseInfo = window.GameSource[this.targetConfig.json];
         for(let i=0; i<this.appearNum; i++) {
-            this._TotalDistance += this.width - spriteInfo.frames[0].spriteSourceSize.w/2;
+            this._TotalDistance += this.width - spriteInfo.frames[0].target.w/2;
             let left = this._TotalDistance;
-            let top = this.Math.between(this.props.targetMinY, this.props.targetMaxY) - spriteInfo.frames[0].spriteSourceSize.h/2;
+            let top = this.Math.between(this.props.targetMinY, this.props.targetMaxY) - spriteInfo.frames[0].target.h/2;
             let target = {
                 key: i,
-                spriteStaticInfo: {frames: [spriteBaseInfo.frames[0]], meta: spriteBaseInfo.meta},
+                spriteStaticInfo: {frames: [spriteBaseInfo.frames[0]], meta: spriteBaseInfo.meta, viewSize:spriteBaseInfo.viewSize},
                 showStatic:true,
-                spriteInfo: {frames: spriteBaseInfo.frames, meta: spriteBaseInfo.meta},
+                spriteInfo: {frames: spriteBaseInfo.frames, meta: spriteBaseInfo.meta, viewSize:spriteBaseInfo.viewSize},
                 left: left,
                 top: top,
-                w: spriteInfo.frames[0].spriteSourceSize.w,
-                h: spriteInfo.frames[0].spriteSourceSize.h
+                w: spriteInfo.frames[0].target.w,
+                h: spriteInfo.frames[0].target.h
             };
             itemList.push(target);
         }

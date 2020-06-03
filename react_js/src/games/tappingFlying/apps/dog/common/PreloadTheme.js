@@ -48,29 +48,19 @@ var PreloadTheme = {
         style:{left:(1280-536)/2, top:500, width:536,height:40},
         cn: {
             url:cn_img,
-            frames: [{"frame": {"x":0,"y":132,"w":536,"h":40}}],
+            frames: [{"source": {"x":0,"y":132,"w":536,"h":40},"target":{"x":0,"y":132,"w":536,"h":40}}],
             "meta": {
-                "app": "http://www.codeandweb.com/texturepacker",
-                "version": "1.0",
-                "image": "cn.png",
-                "format": "RGBA8888",
                 "size": {"w":740,"h":172},
-                "scale": "1",
-                "smartupdate": "$TexturePacker:SmartUpdate:eddd62013ac83f6ace926d619832ca28:bce0e310bdc7e0b8347e67d98e7d8dd6:68f9254be94abd84a5b5b78615a57405$"
-            }
+            },
+            viewSize:{"w":536,"h":40},
         },
         en: {
             url:en_img,
-            frames: [{"frame": {"x":0,"y":132,"w":536,"h":40}}],
+            frames: [{"source": {"x":0,"y":132,"w":536,"h":40},"target": {"x":0,"y":132,"w":536,"h":40}}],
             "meta": {
-                "app": "http://www.codeandweb.com/texturepacker",
-                "version": "1.0",
-                "image": "en.png",
-                "format": "RGBA8888",
                 "size": {"w":740,"h":172},
-                "scale": "1",
-                "smartupdate": "$TexturePacker:SmartUpdate:c67fabf2eedc5eb75043d1914808385f:8db211df560ac6b9394594ac4e3e2669:77ed6edc9cdea428c8c272827c6d3d32$"
-            }
+            },
+            viewSize:{"w":536,"h":40},
         }
     },
     audio:{

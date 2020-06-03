@@ -90,7 +90,7 @@ class Obstacles extends ScrollPage {
         this._InitItemImpactTracer(this.props.roleRef);
         let bodySize = this.obstacleConfig.bodySize;
         if(!bodySize) {
-            bodySize = {x:90,y:20,w:spriteInfo.frames[0].spriteSourceSize.w-180,h:spriteInfo.frames[0].spriteSourceSize.h-40}
+            bodySize = {x:90,y:20,w:spriteInfo.frames[0].target.w-180,h:spriteInfo.frames[0].target.h-40}
         }
         return (
             <div>
@@ -104,12 +104,12 @@ class Obstacles extends ScrollPage {
                             <div key={"ObstacleTranslate" + item.key}
                                  style={{
                                      left: item.left, top: item.top, transition:"top 2s linear",
-                                     width: spriteInfo.frames[0].spriteSourceSize.w,
-                                     height: spriteInfo.frames[0].spriteSourceSize.h}}>
+                                     width: spriteInfo.frames[0].target.w,
+                                     height: spriteInfo.frames[0].target.h}}>
                                 <JsvSpriteAnim
                                     spriteInfo={spriteInfo}
                                     loop="infinite"
-                                    viewSize={spriteInfo.frames[0].spriteSourceSize}
+                                    viewSize={spriteInfo.viewSize}
                                     duration={0.8}
                                     onAnimEnd= {function () {
                                         console.log("anim end")
@@ -145,8 +145,8 @@ class Obstacles extends ScrollPage {
 
             let left = this._TotalDistance;
             this._TotalDistance += parseInt(this.obstacleTime * this.speed);//坐标调整
-            let top = this.Math.between(this.props.obstacleMinY, this.props.obstacleMaxY) - spriteInfo.frames[0].spriteSourceSize.h/2;
-            const obstacle = {key:i, left:left, top:top, w:spriteInfo.frames[0].spriteSourceSize.w,h:spriteInfo.frames[0].spriteSourceSize.h};
+            let top = this.Math.between(this.props.obstacleMinY, this.props.obstacleMaxY) - spriteInfo.frames[0].target.h/2;
+            const obstacle = {key:i, left:left, top:top, w:spriteInfo.frames[0].target.w,h:spriteInfo.frames[0].target.h};
             itemList.push(obstacle);
         }
         /*if (this._isFlyingMode) {

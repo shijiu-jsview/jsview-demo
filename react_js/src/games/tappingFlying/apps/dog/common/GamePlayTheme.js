@@ -1,6 +1,7 @@
 /**
  * Created by luocf on 2020/5/11.
  */
+
 import continueBtnImage from "../assets/atlas/en.png"
 import closeSpriteImage from "../assets/atlas/ending_btn.png"
 import wheelSpriteImage from "../assets/images/ending_frame.png"
@@ -8,13 +9,16 @@ import charSpriteImage from "../assets/images/ending_char_complete.png"
 import charFailedImage from "../assets/images/ending_char_fail.png"
 import barSpriteImage from "../assets/images/ending_char_bar.png"
 import gesturetiperHandImage from "../assets/images/gesturetiper_hand.png"
+import Game from "../../../gameengine/common/Game"
 window.GameSource = window.GameSource?window.GameSource:{};
 if (!window.GameSource["ending_btn.json"]) {
-    window.GameSource["ending_btn.json"] = require("../assets/atlas/ending_btn.json")
+    let config_json = require("../assets/atlas/ending_btn.json")
+    window.GameSource["ending_btn.json"] = Game.convertToSpriteInfo(config_json);
 }
 
 if (!window.GameSource["en.json"]) {
-    window.GameSource["en.json"] = require("../assets/atlas/en.json")
+    let config_json = require("../assets/atlas/en.json");
+    window.GameSource["en.json"] = Game.convertToSpriteInfo(config_json);
 }
 
 var GamePlayTheme = {
@@ -41,7 +45,7 @@ var GamePlayTheme = {
                 sprite:{
                     //"btn_close.png"
                     spriteInfo:{frames:[window.GameSource["ending_btn.json"].frames[0]],meta:window.GameSource["ending_btn.json"].meta},
-                    viewSize:window.GameSource["ending_btn.json"].frames[0].spriteSourceSize,
+                    viewSize:window.GameSource["ending_btn.json"].frames[0].target,
                     imageUrl:closeSpriteImage,
                 }
             },
@@ -71,26 +75,26 @@ var GamePlayTheme = {
             },
             replayBtn:{
                 style:{
-                    left:(1280-window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w)/2,
-                    top:(720-window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h)/2+134+40,
+                    left:(1280-window.GameSource["ending_btn.json"].frames[2].target.w)/2,
+                    top:(720-window.GameSource["ending_btn.json"].frames[2].target.h)/2+134+40,
                 },
                 sprite:{
                     //"btn_close.png"
                     spriteInfo:{frames:[window.GameSource["ending_btn.json"].frames[2]],meta:window.GameSource["ending_btn.json"].meta},
-                    viewSize:window.GameSource["ending_btn.json"].frames[2].spriteSourceSize,
+                    viewSize:window.GameSource["ending_btn.json"].frames[2].target,
                     imageUrl:closeSpriteImage,
                 }
             },
             continueBtn:{
                 style:{
-                    left:(1280-window.GameSource["en.json"].frames[2].sourceSize.w)/2,top:(720-window.GameSource["en.json"].frames[2].sourceSize.h)/2+134+40,
-                    width:window.GameSource["en.json"].frames[2].sourceSize.w,
-                    height:window.GameSource["en.json"].frames[2].sourceSize.h,
+                    left:(1280-window.GameSource["en.json"].frames[2].target.w)/2,top:(720-window.GameSource["en.json"].frames[2].target.h)/2+134+40,
+                    width:window.GameSource["en.json"].frames[2].target.w,
+                    height:window.GameSource["en.json"].frames[2].target.h,
                 },
                 sprite:{
                     //"btn_continue.png"
                     spriteInfo:{frames:[window.GameSource["en.json"].frames[2]],meta:window.GameSource["en.json"].meta},
-                    viewSize:window.GameSource["en.json"].frames[2].spriteSourceSize,
+                    viewSize:window.GameSource["en.json"].frames[2].target,
                     imageUrl:continueBtnImage,
                 }
             }
@@ -101,12 +105,12 @@ var GamePlayTheme = {
                 backgroundImage:gesturetiperHandImage,
             },
             closeSprite:{
-                left:13+window.GameSource["ending_btn.json"].frames[0].spriteSourceSize.w/2,
-                top:-27+window.GameSource["ending_btn.json"].frames[0].spriteSourceSize.h/3,
+                left:13+window.GameSource["ending_btn.json"].frames[0].target.w/2,
+                top:-27+window.GameSource["ending_btn.json"].frames[0].target.h/3,
             },
             controlBtn: {
-                left: (1280 - window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w) / 2 + window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.w / 3,
-                top: (720 - window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h) / 2 + 134 + 40 + window.GameSource["ending_btn.json"].frames[2].spriteSourceSize.h / 3,
+                left: (1280 - window.GameSource["ending_btn.json"].frames[2].target.w) / 2 + window.GameSource["ending_btn.json"].frames[2].target.w / 3,
+                top: (720 - window.GameSource["ending_btn.json"].frames[2].target.h) / 2 + 134 + 40 + window.GameSource["ending_btn.json"].frames[2].target.h / 3,
             },
 
         }

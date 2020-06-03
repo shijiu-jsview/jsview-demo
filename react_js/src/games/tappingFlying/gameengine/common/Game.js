@@ -50,6 +50,23 @@ class Game {
         Game.enableAudio();
         return new AudioProxy(Game.Audio, audio_name);//jsview 系统支持2个audio标签。其中一个作为背景音使用，另一个用于效果音
     }
+
+    static convertToSpriteInfo(config_json) {
+        let info = {
+            viewSize:config_json.frames[0].sourceSize,
+            frames:[],
+            meta:{
+                size:config_json.meta.size
+            }};
+        let frames_ref = info.frames;
+        for (let i = 0; i < config_json.frames.length; i++) {
+            frames_ref.push({
+                "target": config_json.frames[i].spriteSourceSize,
+                "source": config_json.frames[i].frame,
+            });
+        }
+        return info;
+    }
 }
 
 Game.Math = math;

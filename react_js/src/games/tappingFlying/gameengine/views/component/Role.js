@@ -148,7 +148,7 @@ class Role extends FocusBlock {
         let {clashObstacle, isFlyingMode} = this.props;
         let clashObstacleConfig = clashObstacle.config;
         let clashObstacleDetailInfo =  window.GameSource[clashObstacleConfig.json];
-        let clashObstacleViewSize = clashObstacleDetailInfo.frames[0].sourceSize;
+        let clashObstacleViewSize = clashObstacleDetailInfo.viewSize;
         let clashObstacle_duration = clashObstacleDetailInfo.frames.length/clashObstacleConfig.rate;
         let bodySize = this.bodySize;
         if (!bodySize) {
