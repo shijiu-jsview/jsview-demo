@@ -20,7 +20,7 @@
  *          onFocus()   当被changeFocus改变焦点后，该节点获焦时被调用
  *          onBlur()    当被changeFocus改变焦点后，该节点丢失焦点时被调用
  *          renderContent()     替代render()函数，返回控件描绘内容
- *          changeFocus(branchName) 主动进行焦点切换
+ *          changeFocus(branchName, keepChildFocus) 主动进行焦点切换
  *
  *      enableFocusable(基础类)生成衍生类时的节点列表：
  *          onKeyDown(ev) 同上
@@ -41,6 +41,16 @@
  * A: 首先为子焦点设置branchName属性，当需要进行焦点切换的时候，调用FDiv类中的this.changeFocus()接口，
  *    传入目标的branchName，即可进行焦点切换。在同一个FdivRouter节点的所有Fdiv，只要指定对方的branchName，就可以进行切换。
  *    不限制切换目标是自己的子节点、兄弟节点或者是父几点。一般一个场景定义一个FdivRouter
+ *
+ * Q: changeFocus的第二个参数keepChildFocus的作用是什么？
+ * A: 使用场景举例：
+ *    场景1：changeFocus的目标是一个当前获焦节点的父节点时，若keepChildFocus为true，则不会发生任何改变；
+ *    若keepChildFocus为false或者不设置，则该焦点会失焦，焦点退回到父节点中。
+ *    场景2：changeFocus的目标为一个曾经获得过焦但目前处于非焦状态的节点的父节点时，若keepChildFocus为true时，
+ *    焦点会沿着该父节点的最后获焦状态记录，寻找到最末尾的落焦节点进行获焦；若keepChildFocus为false或者不设置，
+ *    则只会对该父节点进行获焦，不会根据最后获焦状态寻找最末尾节点。
+ *    （例如，进行场景回退时，返回上一个场景过程中，不需要该场景去记录最后的焦点位置，只要changeFocus设置
+ *    为该场景的根Fdiv，并且keepChildFocus设置为true，则Fdiv系统会自动将焦点落在此场景失焦时的最后获焦位置。）
  */
 
 import React, { Suspense } from 'react';
