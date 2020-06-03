@@ -7,7 +7,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-26 17:13:03
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-04-29 16:20:14
+ * @LastEditTime: 2020-06-03 15:25:27
  * @Description: file content
  */
 import Forge from "../ForgeDefine"
@@ -18,7 +18,11 @@ class Mat{
 		this.element = eles;
 		this.row = row;
 		this.column = column;
-	}
+    }
+    
+    toString() {
+        return "[" + this.element[0] + "," + this.element[1] + "," + this.element[2] + "," + this.element[3] + "," + this.element[4] + "," + this.element[5] + "," + this.element[6] + "," + this.element[7] + "," + this.element[8] + "," + this.element[9] + "," + this.element[10] + "," + this.element[11] + "," + this.element[12] + "," + this.element[13] + "," + this.element[14] + "," + this.element[15] + "]"
+    }
 
 	static multiply(m_1, m_2) {
 		if (m_1.column !== m_2.row) {
@@ -185,16 +189,20 @@ let parseTransformOrigin = t_o => {
 
 let getPolygonPoint = ele => {
 	let style = getComputedStyle(ele);
-	let transform_str = style.transform ? style.transform : style.webkitTransform;
-	let origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
-	let origin = parseTransformOrigin(origin_str);
-	let transform_mat4 = parseToMat4(transform_str, origin_str);
+    let transform_str = style.transform ? style.transform : style.webkitTransform;
+    let origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
+    let origin = parseTransformOrigin(origin_str);
+	let transform_mat4 = parseToMat4(transform_str);
 	// TODO: 使用parent_bounding，临时解决对比div不在同一个父节点时出现的计算偏差问题
-	let parent_bounding = ele.parentElement?ele.parentElement.getBoundingClientRect():{x:0,y:0};
-	let x = parseFloat(style.left.substr(0, style.left.length - 2)) + parent_bounding.x;
-	let y = parseFloat(style.top.substr(0, style.top.length - 2)) + parent_bounding.y;
+    let parent_bounding = ele.parentElement?ele.parentElement.getBoundingClientRect():{left:0,top:0};
+    // console.log("parent_bounding " + parent_bounding.left + " " + parent_bounding.top);
+    // console.log("origin " + origin[0] + " " + origin[1]);
+    // console.log("style " + style.left + " " + style.top + " " + style.width + " " + style.height)
+	let x = parseFloat(style.left.substr(0, style.left.length - 2)) + parent_bounding.left;
+	let y = parseFloat(style.top.substr(0, style.top.length - 2)) + parent_bounding.top;
 	let width = parseFloat(style.width.substr(0, style.width.length - 2));
-	let height = parseFloat(style.height.substr(0, style.height.length - 2));
+    let height = parseFloat(style.height.substr(0, style.height.length - 2));
+    // console.log("p " + x + " " + y + " " + width + " " + height)
 	let points = [
 		x, y, 0, 1,
 		x + width, y, 0, 1,
@@ -212,8 +220,8 @@ let getPolygonPoint = ele => {
 		cur_points.element[8], cur_points.element[9],
 		cur_points.element[12], cur_points.element[13]
 	];
-	// console.log("mat4", transform_str, transform_mat4.element)
-	// console.log("getPolygonPoint (%f, %f), (%f, %f), (%f, %f), (%f, %f)", result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7])
+	// console.log("mat4 " + transform_str + " " + transform_mat4.toString())
+	// console.log("getPolygonPoint " + result[0] + "," + result[1] + "," +  result[2] + "," +  result[3] + "," +  result[4] + "," +  result[5] + "," +  result[6] + "," +  result[7])
 	return result
 }
 
@@ -235,7 +243,7 @@ class ImpactSensor{
 	}
 
 	TestCollision() {
-		if (this._Recycled) { return; }
+        if (this._Recycled) { return; }
 		var intersected = gjk.intersect(getPolygonPoint(this._Element1), getPolygonPoint(this._Element2));
 		if (intersected) {
 			if (!this._Contacted) {

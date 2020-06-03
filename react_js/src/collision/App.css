@@ -25,12 +25,13 @@
       }
   }
 
+  /* webview中 旋转轴为(0,0,-1)会导致getComputeStyle中的transform为单位矩阵*/
   @keyframes rotate2 {
     from {
-      transform: rotate3d(0, 0, -1, 0deg);
+      transform: rotate3d(0, 0, 1, 0deg);
     }
     to {
-      transform: rotate3d(0, 0, -1, 360deg);
+      transform: rotate3d(0, 0, 1, -360deg);
     }
 }
 
