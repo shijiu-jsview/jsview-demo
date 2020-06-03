@@ -1,5 +1,6 @@
 import React from 'react';
 import './JsvSpriteImg.css';
+import {getKeyFramesGroup} from './JsvDynamicKeyFrames'
 
 let sAnimationToken = 0;
 class JsvSpriteImg extends React.Component{
@@ -32,7 +33,7 @@ class JsvSpriteImg extends React.Component{
             valid: false
         };
 
-        this._KeyFrameStyleSheet = null;
+        this._KeyFrameStyleSheet = getKeyFramesGroup("sprite-tag");
     }
 
     _getAnimNameBase() {
@@ -111,11 +112,9 @@ class JsvSpriteImg extends React.Component{
         image_keyframs += '}';
         clip_keyframs += '}';
 
-        let style_sheet_ref = this._getStyleInfo();
-        if (style_sheet_ref) {
-            let index = style_sheet_ref.cssRules.length;
-            style_sheet_ref.insertRule(image_keyframs, index);
-            style_sheet_ref.insertRule(clip_keyframs, index);
+        if (this._KeyFrameStyleSheet) {
+            this._KeyFrameStyleSheet.insertRule(image_keyframs);
+            this._KeyFrameStyleSheet.insertRule(clip_keyframs);
 
             // 记录Keyframe设置，以便于界面关闭时进行清理
             this._KeyFrameNames.clip = anim_name_clip;
@@ -169,43 +168,9 @@ class JsvSpriteImg extends React.Component{
         }
     }
 
-    _getStyleInfo() {
-        if (this._KeyFrameStyleSheet != null) {
-            return this._KeyFrameStyleSheet;
-        }
-
-        var style_sheets_ref = null;
-
-        // 获取所有的style
-        var ss = document.styleSheets;
-        for (var i = 0; i < ss.length; ++i) {
-            const item = ss[i];
-            if (item.cssRules[0] && item.cssRules[0].name && item.cssRules[0].name === 'sprite-tag') {
-                style_sheets_ref = item;
-                break;
-            }
-        }
-
-        this._KeyFrameStyleSheet = style_sheets_ref;
-        return style_sheets_ref;
-    }
-
     _removeKeyFrame(names_array) {
-        if (!this._KeyFrameStyleSheet) {
-            return null;
-        }
-
-        let style_sheet_ref = this._KeyFrameStyleSheet;
-        let css_rules_ref = this._KeyFrameStyleSheet.cssRules;
-        // 对CssRules进行删除操作，倒序轮询
-        for (let i = css_rules_ref.length - 1; i >= 0; i--) {
-            for (let j in names_array) {
-                if (css_rules_ref[i].name == names_array[j]) {
-                    names_array.splice(j, 1);
-                    style_sheet_ref.deleteRule(i);
-                    break;
-                }
-            }
+        if (this._KeyFrameStyleSheet) {
+            this._KeyFrameStyleSheet.removeMultiRules(names_array);
         }
     }
 
