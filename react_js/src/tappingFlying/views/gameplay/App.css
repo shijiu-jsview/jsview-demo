@@ -1,9 +1,0 @@
-
-@keyframes ProgressScale {
-    from {
-        transform: scale3d(0, 1.0, 1.0);
-    }
-    to {
-        transform: scale3d(455, 1.0, 1.0);
-    }
-}
