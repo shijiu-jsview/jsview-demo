@@ -22,7 +22,7 @@ class KeyFrameStyleSheet {
 	}
 
 	removeRule(name) {
-		removeMultiRules([name]);
+		this.removeMultiRules([name]);
 	}
 
 	removeMultiRules(names_array) {
