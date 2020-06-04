@@ -14,3 +14,21 @@
         transform-origin: bottom right;
     }
 }
+
+@keyframes crack-clip{
+    from {
+        transform: translate3d(0, -252px, 0)
+    }
+    to {
+        transform: translate3d(0, 0, 0)
+    }
+}
+
+@keyframes crack-img{
+    from {
+        transform: translate3d(0, 252px, 0)
+    }
+    to {
+        transform: translate3d(0, 0, 0)
+    }
+}

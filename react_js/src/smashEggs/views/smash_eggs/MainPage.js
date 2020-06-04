@@ -20,6 +20,7 @@ class MainPage extends FocusBlock {
         this._UserId = CommonApi.getUserId();
         this._TotalSmash = 3;
         this._RoadMap = null;
+        this._KeyLockSwitch;
         this.state = {
             visible: "hidden",
             data: null,
@@ -108,6 +109,11 @@ class MainPage extends FocusBlock {
         console.log("MainPage onBlur");
     }
 
+    onDispatchKeyDown(ev) {
+        if (this._KeyLockSwitch) { return true; }
+		return false;
+	}
+
     onKeyDown(ev) {
         let key_use = false;
         switch (ev.keyCode) {
@@ -179,7 +185,7 @@ class MainPage extends FocusBlock {
                                  isFocus={ConstantVar.BranchName.MyPrizeRecordBtn === this.state.focusBranchName}
                                  text={btn_theme.myrecord.text} hasGetDiscountBtn={!this.props.AlreadyPurchased}/>
                     <SmashEggsPage branchName="SmashEggsPage" activityData={this.state.data} onEdge={this._onEdge}
-                                   doSmashEggs={this._doSmashEggs} alreadyPurchased={this.props.AlreadyPurchased}/>
+                                   doSmashEggs={this._doSmashEggs} alreadyPurchased={this.props.AlreadyPurchased} onLockKey={(value) => {this._KeyLockSwitch = value}}/>
                 </Fdiv>
                 <MyPrizeRecordPage branchName="MyPrizeRecordPage" data={this.state.data} goTo={ this._goTo}/>
                 <NoPrizePage branchName="NoPrizePage" goTo={ this._goTo}/>
