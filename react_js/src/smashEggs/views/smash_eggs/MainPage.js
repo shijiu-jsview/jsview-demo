@@ -20,7 +20,7 @@ class MainPage extends FocusBlock {
         this._UserId = CommonApi.getUserId();
         this._TotalSmash = 3;
         this._RoadMap = null;
-        this._KeyLockSwitch;
+        this._KeyLockSwitch = false;
         this.state = {
             visible: "hidden",
             data: null,
