@@ -72,15 +72,26 @@ class MainScene extends FocusBlock {
             }};
 
         let frames_ref = info.frames;
+        let max_width = 0;
+        let max_height = 0;
 
         for (let i = 0; i < config_json.frames.length; i++) {
+            let target = config_json.frames[i].spriteSourceSize;
             frames_ref.push({
-                "target": config_json.frames[i].spriteSourceSize,
+                "target": target,
                 "source": config_json.frames[i].frame,
             });
+            let sprite_with = target.x + target.w;
+            let sprite_height = target.y + target.h;
+            if (sprite_with > max_width) {
+                max_width = sprite_with;
+            }
+            if (sprite_height > max_height) {
+                max_height = sprite_height;
+            }
         }
 
-        return info;
+        return {info:info, maxW:max_width, maxH:max_height };
     }
 
     renderContent() {
@@ -90,14 +101,14 @@ class MainScene extends FocusBlock {
 
             /* 精灵图绘图区域尺寸，格式: {w:XXXXX, h:XXXX} */
             let view_size = {
-                w: config_json.frames[0].sourceSize.w,
-                h: config_json.frames[0].sourceSize.h,
+                w: sprite_info.maxW,
+                h: sprite_info.maxH
             };
 
             let that = this;
             return (<div style={{top: 20, left: 20}}>
                 <JsvSpriteImg
-                    spriteInfo={sprite_info}
+                    spriteInfo={sprite_info.info}
                     loop={10}
                     viewSize={view_size}
                     duration={0.8}
