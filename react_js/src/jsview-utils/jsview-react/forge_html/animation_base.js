@@ -106,7 +106,18 @@ class AnimationBase {
 Forge.AnimationBase = AnimationBase;
 
 class AnimationListener {
-
+	/**
+	 * 监听动画启动和结束时间的接口
+	 *
+	 * @public
+	 * @constructor Forge.AnimationListener
+	 * @author donglin donglin.lu@qcast.cn
+	 * @param {function} on_start   监听动画启动事件（无参数）
+	 * @param {function} on_end     监听动画结束事件（无参数）
+	 * @param {function} on_view_hide    当更新过程中检测到动画对应的View已经不可见的回调<br>
+	 *                                   需要和LayoutView.OnDrawResumed(callback)配合使用<br>
+	 *     								 参数(LayoutView：对象View, TransformAnimation：监听的动画句柄)
+	 **/
 	constructor(on_start, on_end, on_view_hide) {
 		this.OnAnimationStart = on_start;
 		this._OnAnimationStart = on_start;
@@ -114,20 +125,43 @@ class AnimationListener {
 		this._OnAnimationEnd = on_end;
 		this.OnViewNoVisible = on_view_hide;
 		this._OnViewNoVisible = on_view_hide;
+		this.OnAnimFinal = null;
+		this._OnAnimFinal = null;
 		this._AttachedGroup = null;
 		this._InheritListener = [];
 	}
 
+	OnStart(on_start) {
+		this.OnAnimationStart = this._OnAnimationStart = on_start;
+		return this;
+	}
+
+	OnEnd(on_end) {
+		this.OnAnimationEnd = this._OnAnimationEnd = on_end;
+		return this;
+	}
+
+	OnFinalProgress(on_final) {
+		this.OnAnimFinal = this._OnAnimFinal = on_final;
+		return this;
+	}
+
+	/**
+	 * 添加继承的监听者，当本监听接口被调用后，会继续调用继承者的监听接口
+	 *
+	 * @public
+	 * @param {Forge.AnimationListener} inherit_listener   继承的监听者
+	 **/
 	AddInherit(inherit_listener) {
 		if (!inherit_listener) {
 			return;
 		}
 
-		if (this._InheritListener.length === 0) {
+		if (this._InheritListener.length == 0) {
 			// Init for first inherit
-			var _this = this;
+			var that = this;
 			this.OnAnimationStart = function() {
-				if (_this._OnAnimationStart) _this._OnAnimationStart();
+				if (that._OnAnimationStart) that._OnAnimationStart();
 				for (var i = 0; i < this._InheritListener.length; i++) {
 					if (this._InheritListener[i].OnAnimationStart) {
 						this._InheritListener[i].OnAnimationStart();
@@ -135,7 +169,7 @@ class AnimationListener {
 				}
 			};
 			this.OnAnimationEnd = function(normal_end) {
-				if (_this._OnAnimationEnd) _this._OnAnimationEnd(normal_end);
+				if (that._OnAnimationEnd) that._OnAnimationEnd(normal_end);
 				for (var i = 0; i < this._InheritListener.length; i++) {
 					if (this._InheritListener[i].OnAnimationEnd) {
 						this._InheritListener[i].OnAnimationEnd(normal_end);
@@ -143,10 +177,18 @@ class AnimationListener {
 				}
 			};
 			this.OnViewNoVisible = function() {
-				if (_this._OnViewNoVisible) _this._OnViewNoVisible();
+				if (that._OnViewNoVisible) that._OnViewNoVisible();
 				for (var i = 0; i < this._InheritListener.length; i++) {
 					if (this._InheritListener[i].OnViewNoVisible) {
 						this._InheritListener[i].OnViewNoVisible();
+					}
+				}
+			};
+			this.OnAnimFinal = function() {
+				if (that._OnAnimFinal) that._OnAnimFinal();
+				for (var i = 0; i < this._InheritListener.length; i++) {
+					if (this._InheritListener[i].OnAnimFinal) {
+						this._InheritListener[i].OnAnimFinal();
 					}
 				}
 			};
@@ -154,6 +196,5 @@ class AnimationListener {
 
 		this._InheritListener.push(inherit_listener);
 	};
-
 }
 Forge.AnimationListener = AnimationListener;
