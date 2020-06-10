@@ -612,11 +612,13 @@ class LayoutViewBase {
         }
     };
 
-    ResetCssTransform(transform_string) {
-        if (transform_string !== this._CssTransform) {
+    ResetCssTransform(transform_string, transform_origin_string) {
+        if (transform_string !== this._CssTransform || transform_origin_string != this._CssTransformOrigin) {
             console.log("ResetCssTransform transform_string:", transform_string);
             this.Element.style.transform = transform_string;
+            this.Element.style.transformOrigin = transform_origin_string;
             this._CssTransform = transform_string;
+	        this._CssTransformOrigin = transform_origin_string;
         }
     }
 
