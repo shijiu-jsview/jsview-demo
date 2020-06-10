@@ -273,8 +273,8 @@ class JsvSpriteImg extends React.Component{
 
         return (
             <div id="canvas">
-                <div id="clip" style={transform_style.clipStyle}>
-                    <div id="image" style={transform_style.imageStyle} onAnimationEnd={this.props.onAnimEnd}></div>
+                <div id="clip" style={{...transform_style.clipStyle}}>
+                    <div id="image" style={{...transform_style.imageStyle}} onAnimationEnd={this.props.onAnimEnd}></div>
                 </div>
             </div>
         )
