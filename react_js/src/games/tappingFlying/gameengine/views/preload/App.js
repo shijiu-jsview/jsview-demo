@@ -67,7 +67,6 @@ class App extends GameAppBase{
 				<JsvSpriteAnim
 					loop="infinite"
 					duration={0.8}
-					onAnimEnd= {function() {console.log("anim end")}}
 					stop={true}
 					spriteInfo={this.Theme.tipsinfo.en}
 					viewSize={{w:this.Theme.tipsinfo.style.width, h:this.Theme.tipsinfo.style.height}}

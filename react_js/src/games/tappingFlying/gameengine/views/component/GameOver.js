@@ -93,9 +93,6 @@ class GameOver extends FocusBlock {
                     <div style={this._Theme.content.style}>
                         <div style={this._Theme.content.closeSprite.style}>
                             {this._Theme.content.closeSprite.sprite?<JsvSpriteAnim
-                                onAnimEnd={function () {
-                                    console.log("anim end")
-                                }}
                                 stop={true}
                                 spriteInfo={this._Theme.content.closeSprite.sprite.spriteInfo}
                                 viewSize={this._Theme.content.closeSprite.sprite.viewSize}
@@ -107,9 +104,6 @@ class GameOver extends FocusBlock {
                         { this._Theme.content.starSprite && result === "complete" ?<div style={this._Theme.content.starSprite.style}/>:null}
                         <div style={btn.style}>
                             {btn.sprite?<JsvSpriteAnim
-                                onAnimEnd={function () {
-                                    console.log("anim end")
-                                }}
                                 stop={true}
                                 spriteInfo={btn.sprite.spriteInfo}
                                 viewSize={btn.sprite.viewSize}

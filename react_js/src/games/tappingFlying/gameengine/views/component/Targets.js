@@ -100,9 +100,6 @@ class Targets extends ScrollPage {
                                             loop="infinite"
                                             viewSize={item.spriteStaticInfo.viewSize}
                                             duration={0.8}
-                                            onAnimEnd={function () {
-                                                console.log("anim end")
-                                            }}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
                                     </div>
                                     <div style={{visibility:item.showStatic?"hidden":"visible"}}>
@@ -111,9 +108,6 @@ class Targets extends ScrollPage {
                                             loop="infinite"
                                             viewSize={item.spriteInfo.viewSize}
                                             duration={0.8}
-                                            onAnimEnd={function () {
-                                                console.log("anim end")
-                                            }}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
 
                                     </div>
@@ -142,9 +136,6 @@ class Targets extends ScrollPage {
                                 loop="infinite"
                                 viewSize={successEffectInfo.viewSize}
                                 duration={successEffectInfo.frames.length / 15}
-                                onAnimEnd={function () {
-                                    console.log("anim end")
-                                }}
                                 imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/star_burst_big.png")})`}/>
                                 : null
                         }

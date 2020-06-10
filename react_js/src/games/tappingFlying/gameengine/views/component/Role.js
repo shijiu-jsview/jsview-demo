@@ -174,7 +174,6 @@ class Role extends FocusBlock {
                                             loop="infinite"
                                             viewSize={item.viewSize}
                                             duration={item.duration}
-                                            onAnimEnd= {function() {console.log("anim end")}}
                                             imageUrl={item.imageUrl}/>
                                     </div>
                                 )
@@ -189,7 +188,6 @@ class Role extends FocusBlock {
                                 loop="infinite"
                                 viewSize={clashObstacleViewSize}
                                 duration={clashObstacle_duration}
-                                onAnimEnd= {function() {console.log("anim end")}}
                                 imageUrl={`url(${require("../../../"+Game.apppath+"/assets/atlas/" + clashObstacleConfig.value)})`}/>
                         </div>}
                     </div>
