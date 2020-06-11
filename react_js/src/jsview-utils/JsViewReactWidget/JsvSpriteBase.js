@@ -169,115 +169,7 @@ class JsvControl {
 	}
 }
 
-class HtmlControl {
-	constructor(params_count) {
-        this._Current = new Array(params_count).fill(0);
-        this._Target = new Array(params_count).fill(0);
-		this._RepeatStart = new Array(params_count).fill(0);
-        this._ParameterCount = params_count;
-        this._SpriteDiv = null;
-        this._PausedCallback = null;
-		this._EndCallback = null;
-        this._Repeat = false;
-	}
-
-	setRepeat(enable) {
-        this._Repeat = enable;
-        return this;
-    }
-
-	start(end_callback) {
-        this._EndCallback = end_callback;
-		this._SpriteDiv.style.animation = null;
-		this._SpriteDiv.onanimationend = null;
-		
-		let animation;
-		let built_obj = this._WrapBuildAnimation(null, this._Current, this._Target, false);
-		if (built_obj == null) {
-			// Discarded animation
-			animation = null;
-		} else {
-			animation = built_obj.getDescribe();
-		}
-        console.log("start animation:" + animation);
-
-		if (this._Repeat) {
-			let start_repeat = () => {
-				// Start repeat animation
-				let animation_repeat =
-					((this._WrapBuildAnimation(null, this._RepeatStart, this._Target, false))
-						.getDescribe()) + " infinite";
-				console.log("start animation(repeat):" + animation_repeat);
-				this._SpriteDiv.style.animation = animation_repeat;
-			};
-			if (animation != null) {
-				// 完成前序动画后，到达repeat基点后，再开始repeat动画
-				this._SpriteDiv.onanimationend = start_repeat;
-			} else {
-				// 无前序，可以直接进行repeat动画
-				start_repeat();
-			}
-		} else {
-			this._SpriteDiv.onanimationend = () => {
-				for (let idx = 0; idx < this._ParameterCount; idx++ ) {
-					this._Current[idx] = this._Target[idx];
-				}
-				this._SpriteDiv.style.animation = null;
-				this._SpriteDiv.style.transform = this._GetTransform(this._Current);
-				this._SpriteDiv.onanimationend = null;
-				let callback = this._EndCallback;
-				this._EndCallback = null;
-				this._WrapCallback(this._Current, callback);
-			};
-		}
-
-		this._SpriteDiv.style.animation = animation;
-		if (animation !== null) {
-            this._SpriteDiv.style.transform = null;
-		}
-
-		return this;
-	}
-
-	pause(paused_callback) {
-        this._Current = this._GetCurrentValue();
-        this._SpriteDiv.style.animation = null;
-        this._SpriteDiv.style.transform = this._GetTransform(this._Current);
-        this._SpriteDiv.onanimationend = null;
-        this._WrapCallback(this._Current, paused_callback);
-		return this;
-    }
-
-    jump() {
-        this._Current = [...this._Target];
-        this._SpriteDiv.style.animation = null;
-        this._SpriteDiv.style.transform = this._GetTransform(this._Target);
-        this._SpriteDiv.onanimationend = null;
-		return this;
-	}
-
-    _GetTransform(value_list) {
-        console.warn("Should Override");
-    }
-
-    _GetCurrentValue() {
-        console.warn("Should Override");
-    }
-
-    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
-        console.warn("Should Override");
-    }
-
-    _WrapCallback(currents, callback) {
-		console.warn("Should Override");
-    }
-    
-    _SetView(sprite_div) {
-        this._SpriteDiv = sprite_div;
-    }
-}
-
-var SpriteControlBase = window.JsView ? JsvControl : HtmlControl;
+var SpriteControlBase = JsvControl;
 
 class JsvSpriteBase extends React.Component{
 	/**
@@ -301,7 +193,6 @@ class JsvSpriteBase extends React.Component{
 		if (window.JsView) {
 			return this._RenderInJsView();
 		} else {
-			// TODO: 要补充html运行状态
 			return this._RenderInHtmlView();
 		}
 	}
@@ -317,7 +208,7 @@ class JsvSpriteBase extends React.Component{
     _RenderInHtmlView() {
         let {control, ...other_prop} = this.props;
         return (
-            <div ref={(ele) => {if (ele) this._LinkedControl._SetView(ele.jsvMainView.Element)}} {...other_prop} />
+            <div ref={(ele) => {if (ele) this._LinkedControl._SetView(ele.jsvMainView)}} {...other_prop} />
         )
     }
 

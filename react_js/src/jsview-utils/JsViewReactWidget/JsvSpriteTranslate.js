@@ -1,13 +1,13 @@
-import React from 'react';
-import {Forge} from "../jsview-react/index_widget.js"
-import { JsvSpriteBase, SpriteControlBase } from "./JsvSpriteBase"
-import { TranslateAnimation as HtmlTranslate, TranslateStyle } from "./JsvAnimationDelegate"
 // JsvSpriteTranslate comes from JsView React Project
 
 /**
  * Component: JsvSpriteTranslate
  * @param {TranslateControl} Sprite动作控制器 必需
  */
+
+import React from 'react';
+import {Forge} from "../jsview-react/index_widget.js"
+import { JsvSpriteBase, SpriteControlBase } from "./JsvSpriteBase"
 
 class __SharedControl extends SpriteControlBase{
 	constructor() {
@@ -279,32 +279,7 @@ class JsvTranslateControl extends __SharedControl {
 	}
 }
 
-class HtmlTranslateControl extends __SharedControl {
-	constructor() {
-        super();
-	}
-
-	_GetAnimationClass() {
-		return HtmlTranslate;
-	}
-
-    _GetTransform(valie_list) {
-    	return TranslateStyle.buildTransform( valie_list[0],  valie_list[1]);
-    }
-    
-    _GetCurrentValue() {
-    	let values_obj = TranslateStyle.getCurrentValue(this._SpriteDiv);
-	    return [values_obj.x, values_obj.y];
-    }
-
-	_WrapCallback(currents, callback) {
-		if (this._AnimationRef != null)
-			this._AnimationRef.recycle();
-		super._WrapCallback(currents, callback);
-	}
-}
-
-var TranslateControl = window.JsView ? JsvTranslateControl : HtmlTranslateControl;
+var TranslateControl = JsvTranslateControl;
 
 export {
 	JsvSpriteBase as JsvSpriteTranslate,

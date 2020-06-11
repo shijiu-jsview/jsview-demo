@@ -101,4 +101,3 @@ class RenderBridge {
 }
 Forge.RenderBridge = RenderBridge;
 Forge.sRenderBridge = new Forge.RenderBridge();
-Forge.sAnimationManager = new Forge.AnimationManager();

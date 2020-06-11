@@ -194,7 +194,7 @@ class LayoutViewBase {
             this.Element.style.position = "absolute";
         }
 
-        this._TransitionStore = {};
+        this.TransitionStore = {}; // div的所有transition信息，多个Transition动画会同时作用？
 
         this.TransformAnimationObj = null;
         this._TextureAnimationObj = null;
@@ -262,7 +262,15 @@ class LayoutViewBase {
             child_view._OnDetachFromSystem();
         }
         this.ParentView.Element.removeChild(this.Element);
+
+        this._releaseViewResources();
     }
+
+    _releaseViewResources() {
+        // Stop animation
+        this.StopAnimation();
+        this.StopTextureAnimation();
+    };
 
     ClearViews() {
         let child_count = this.ChildViews.length;
@@ -402,40 +410,6 @@ class LayoutViewBase {
         return this._IsChildOfRootView;
     }
 
-    _ConvertTimingFunc(easing_info) {
-        let timing_function = "linear";
-        if (easing_info.T) {
-            switch (easing_info.T) {
-                case Forge.EasingTypeIn:
-                    timing_function = "ease-in";
-                    break;
-                case Forge.EasingTypeOut:
-                    timing_function = "ease-out";
-                    break;
-                case Forge.EasingTypeInOut:
-                    timing_function = "ease-in-out";
-                    break;
-                case Forge.EasingTypeBezier:
-                    timing_function = "cubic-bezier(" + easing_info.St.X1 + "," + easing_info.St.Y1 + "," + easing_info.St.X2 + "," + easing_info.St.Y2 + ")";
-                    break;
-                case Forge.EasingTypeSteps:
-                    timing_function = "steps(" + easing_info.St.S + "," + (easing_info.St.T == 0 ? "start" : "end") + ")";
-                    break;
-                case Forge.EasingTypeBlink:
-                case Forge.EasingTypeDeceleration:
-                default:
-                    break;
-            }
-        }
-        return timing_function;
-    }
-
-    ClearAnimation() {
-        if (this._AnimationOpacity != -1) {
-            this._AnimationOpacity = -1;
-        }
-    };
-
     StartAnimation(anim, anim_for_self, delay) {
         if (typeof this.TransformAnimationObj != "undefined" && this.TransformAnimationObj) {
             this.TransformAnimationObj.Cancel(anim);
@@ -448,69 +422,18 @@ class LayoutViewBase {
             anim.EnableDelay(delay);
         }
         anim.Start(this);
+    }
 
-        if (anim && anim._SettingInfo && anim._SettingInfo.Set) {
-            let keyframes = anim._SettingInfo.Set["Kf"];
-            let transitions = anim._SettingInfo.Set["Ts"];
-            if (keyframes && (keyframes.indexOf("@keyframes") >= 0 || keyframes.indexOf("@-webkit-keyframes") >= 0)) {
-                let keyframes_list = keyframes.split(" ");
-                let anim_name = keyframes_list[1];
-                if (anim_name.indexOf("{") >= 0) {
-                    anim_name = anim_name.substr(0, anim_name.indexOf("{"));
-                }
-                let repeat = anim._SettingInfo["Rpt"];
-
-                let timing_func = "linear";
-                if (anim._SettingInfo["E"]) {
-                    timing_func = this._ConvertTimingFunc(anim._SettingInfo["E"]);
-                }
-
-                //name duration timing-function delay iteration-count direction;
-                let style_anim = anim_name+ " " + anim._SettingInfo.Dur / 1000 + "s "+ timing_func + " " +anim._SettingInfo.Dly / 1000 + "s " + (repeat === -1 ? "infinite" : repeat);
-                console.log("StartAnimation style_anim:", style_anim);
-                this.Element.style.animation = style_anim;
-                this.Element.addEventListener("animationend", (event) => {
-                    event.stopPropagation();
-                    anim.OnEnd();
-                });
-                this.Element.style.webkitAnimation = style_anim;
-                this.Element.addEventListener("webkitAnimationEnd", (event) => {
-                    event.stopPropagation();
-                    anim.OnEnd();
-                });
-            } else if (transitions && transitions.length >= 0) {
-                let transition_str = "";
-                for(let i =0; i<transitions.length; i++) {
-                    let timing_function = "linear";
-                    let transition = transitions[i];
-                    if (transition["tf"]) {
-                        timing_function = this._ConvertTimingFunc(transition["tf"]);
-                    }
-
-                    transition_str = transition["name"] + " " + transition["dur"] / 1000 + "s " + timing_function + " " + transition["dly"] / 1000 + "s";
-                    this._TransitionStore[transition["name"]] = transition_str;
-                }
-                if (transition_str) {
-                    let transitions = "";
-                    for(let transition_name in this._TransitionStore) {
-                        if (transitions) {
-                            transitions += ",";
-                        }
-                        transitions += this._TransitionStore[transition_name];
-                    }
-                    this.Element.style.transition = transitions;
-                    this.Element.addEventListener("transitionend", (event) => {
-                        event.stopPropagation();
-                        anim.OnEnd();
-                    });
-                    this.Element.style.webkitTransition = transitions;
-                    this.Element.addEventListener("webkitTransitionEnd", (event) => {
-                        event.stopPropagation();
-                        anim.OnEnd();
-                    });
-                }
+    ApplyStyleTransition(new_map) {
+        this.TransitionStore = {...this.TransitionStore, ...new_map};
+        let transitions = "";
+        for(let transition_name in this.TransitionStore) {
+            if (transitions) {
+                transitions += ",";
             }
+            transitions += this.TransitionStore[transition_name];
         }
+        this.Element.style.transition = transitions;
     }
 
     /**
@@ -609,6 +532,7 @@ class LayoutViewBase {
             this.TransformAnimationObj = null;
             this.Element.style.animation = null;
             this.Element.style.webkitAnimation = null;
+            this.Element.style.transition = null;
         }
     };
 

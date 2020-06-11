@@ -1,9 +1,10 @@
 import Forge from "../ForgeDefine"
-Forge.AnimationEnable = {ReleaseAfterEndCallback:0};
+
+let sIdTokenGenerator = 0;
 
 class AnimationBase {
 	constructor() {
-		this.IdToken = 0;
+		this.IdToken = sIdTokenGenerator++;
 		this._AttachedGroup = null;
 		this.AnimationListenerObj = null;
 		this._AnimationClose = false;
@@ -11,10 +12,28 @@ class AnimationBase {
 		this._IsTextureAnim = false;
 	}
 
+	/**
+	 * 设置动画起始/结束的监听回调
+	 *
+	 * @public
+	 * @func SetAnimationListener
+	 * @memberof Forge.AnimationBase
+	 * @instance
+	 * @param {Forge.AnimationListener} listener    动画起始/结束的监听回调
+	 **/
 	SetAnimationListener(listener) {
 		this.AnimationListenerObj = listener;
 	};
 
+	/**
+	 * 追加动画起始/结束的监听回调
+	 *
+	 * @public
+	 * @func AddAnimationListener
+	 * @memberof Forge.AnimationBase
+	 * @instance
+	 * @param {Forge.AnimationListener} listener    动画起始/结束的监听回调
+	 **/
 	AddAnimationListener(listener) {
 		if (this.AnimationListenerObj) {
 			listener.AddInherit(this.AnimationListenerObj);
@@ -22,6 +41,15 @@ class AnimationBase {
 		this.SetAnimationListener(listener);
 	};
 
+	/**
+	 * 获得当前动画的启动/结束监听接口
+	 *
+	 * @public
+	 * @func GetAnimationListener
+	 * @memberof Forge.AnimationBase
+	 * @instance
+	 * @return {Forge.AnimationListener} 动画起始/结束的监听回调
+	 **/
 	GetAnimationListener() {
 		return this.AnimationListenerObj;
 	};
@@ -40,7 +68,7 @@ class AnimationBase {
 		if (this._AttachedGroup) {
 			var cancel_whole_group = true;
 			if (by_other_animation) {
-				cancel_whole_group = (by_other_animation._AttachedGroup !== this._AttachedGroup);
+				cancel_whole_group = (by_other_animation._AttachedGroup != this._AttachedGroup);
 			}
 
 			if (cancel_whole_group) {
@@ -50,6 +78,30 @@ class AnimationBase {
 		}
 	};
 
+	/**
+	 * 将当前动画加入动画组
+	 * hide public
+	 *
+	 * @func AttachToGroup
+	 * @memberof Forge.AnimationBase
+	 * @instance
+	 * @param {Forge.AnimationGroup} group	要加入的动画组
+	 **/
+	AttachToGroup(group) {
+		if (this._AttachedGroup != null) {
+			Forge.ThrowError("ERROR: In TransformAnimation.AttachToGroup(), animation already attached to other group");
+		}
+		this._AttachedGroup = group;
+	};
+
+	/**
+	 * 从动画组脱离
+	 * hide public
+	 *
+	 * @func RemoveFromGroup
+	 * @memberof Forge.AnimationBase
+	 * @instance
+	 **/
 	RemoveFromGroup() {
 		this._AttachedGroup = null;
 	};
@@ -61,11 +113,6 @@ class AnimationBase {
 
 	Start(layout_view) {
 		this._LayoutViewRef = layout_view;
-		if (layout_view && !this._IsTextureAnim) {
-			// Reset tranform matrix of layout view
-			layout_view.ClearAnimation();
-		}
-
 	};
 
 	SetCannotDisable(can_disable) {
@@ -81,8 +128,8 @@ class AnimationBase {
 	};
 
 	// hide public
-	OnEnd() {
-		if (this._LayoutViewRef) {
+	OnEnd(keep_animation) {
+		if (this._LayoutViewRef && !keep_animation) {
 			this._LayoutViewRef.DetachAnimation(this);
 			this._LayoutViewRef = null;
 		}
@@ -102,6 +149,13 @@ class AnimationBase {
 		}
 	};
 
+	// hide public
+	OnFinalProgress(progress) {
+		var listener = this.AnimationListenerObj;
+		if (listener && listener.OnAnimFinal) {
+			listener.OnAnimFinal(progress);
+		}
+	};
 }
 Forge.AnimationBase = AnimationBase;
 
