@@ -2,11 +2,37 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-02 16:37:51
+ * @LastEditTime: 2020-06-12 18:15:54
  * @Description: file content
  */
 import React from 'react';
 import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
+
+class HtmlParticleProxyView extends React.Component{
+    constructor(props) {
+        super(props);
+        this._Element;
+        this._ParticleViewId = -1;
+    }
+
+    render() {
+        let view_width = this.props.setting.deltaWidth === 0 ? 1 : 2 * this.props.setting.deltaWidth;
+        return <div ref={ele => this._Element = ele} style={{width: view_width, height: 1}}/>
+    }
+
+    componentDidMount() {
+        let view_width = this.props.setting.deltaWidth === 0 ? 1 : 2 * this.props.setting.deltaWidth;
+        let view_size = {
+            width: view_width,
+            height: 1
+        }
+        this._ParticleViewId = Forge.sParticleManager.addParticle(this.props.setting, this.props.pointImage, view_size, this._Element)
+    }
+
+    componentWillUnmount() {
+        Forge.sParticleManager.recycleView(this._ParticleViewId);
+    }
+}
 
 class JsvSpray extends React.Component {
     constructor(props) {
@@ -26,7 +52,7 @@ class JsvSpray extends React.Component {
             texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(this.props.pointRes));
         }
         let spray_view = new Forge.SprayView(texture_setting);
-        let add_num_per_frame = this.props.sprayStyle.addNumPerFrame ? this.props.sprayStyle.addNumPerFrame : 0.0005;
+        let add_num_per_frame = this.props.sprayStyle.addNumSpeed ? this.props.sprayStyle.addNumSpeed : 0.0005;
         let accelerate_x = typeof this.props.sprayStyle.accelerateX !== 'undefined' ? this.props.sprayStyle.accelerateX : 0;
         let accelerate_y = typeof this.props.sprayStyle.accelerateY !== 'undefined' ? this.props.sprayStyle.accelerateY : -100;
         spray_view.SetSprayInfo(
@@ -67,7 +93,7 @@ class JsvSpray extends React.Component {
     }
 
     render() {
-        if (Forge.SprayView) {
+        if (window.JsView) {
             this._releaseViewId();
             this._SpraViewId = this._buildForgeView();
             if (this._SpraViewId < 0) {
@@ -78,8 +104,9 @@ class JsvSpray extends React.Component {
                 )
             }
         } else {
-            //暂时不支持网页
-            return null
+            return (
+                <HtmlParticleProxyView pointImage={this.props.pointRes} setting={this.props.sprayStyle}/>
+            )
         }
     }
 

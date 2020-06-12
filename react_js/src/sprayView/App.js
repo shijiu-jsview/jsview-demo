@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 10:14:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-02 16:39:33
+ * @LastEditTime: 2020-06-12 18:29:21
  * @Description: file content
  */ 
 
@@ -12,6 +12,7 @@ import JsvSpray from '../jsview-utils/JsViewReactWidget/JsvSpray'
 import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import './App.css'
+import awesome from "./awesomeface.png"
 
 class MainScene extends FocusBlock{
     constructor(props) {
@@ -30,6 +31,7 @@ class MainScene extends FocusBlock{
             return true;
         } else if (ev.keyCode == 13) {
             this._Count++;
+            console.log("on ok");
             this.setState({
                 count: this._Count
             });
@@ -47,10 +49,11 @@ class MainScene extends FocusBlock{
             pointSizeMax: 30,
             speedMin: 1,
             speedMax: 7,
-            lifeMin: 500,
-            lifeMax: 1000,
+            lifeMin: 1000,
+            lifeMax: 2000,
             accelerateX: 0,
-            accelerateY: 0
+            accelerateY: 0,
+            addNumSpeed: 0.001
         }
 
         let spray_style2 = {
@@ -65,7 +68,8 @@ class MainScene extends FocusBlock{
             lifeMin: 1000,
             lifeMax: 3000,
             accelerateX: 0,
-            accelerateY: -100
+            accelerateY: -100,
+            addNumSpeed: 0.001
         }
 
         let spray_style3 = {
@@ -80,7 +84,8 @@ class MainScene extends FocusBlock{
             lifeMin: 1000,
             lifeMax: 3000,
             accelerateX: -50,
-            accelerateY: -120
+            accelerateY: -120,
+            addNumSpeed: 0.001
         }
         return(
             <div style={{left: 0, top: 0, width: 1920, height: 1080, backgroundColor: "#334C4C"}}>
@@ -93,7 +98,7 @@ class MainScene extends FocusBlock{
                     }
                 </div>
                 <div style={{left: 600, top: 400, width: 10, height:10, animation: "AnimRotate 3s linear infinite", backgroundColor: "#00FF00"}}>
-                    <JsvSpray pointRes="rgba(50,200,50,1)" sprayStyle={spray_style2}/>
+                    <JsvSpray pointRes="rgba(0, 255, 0, 1)" sprayStyle={spray_style2}/>
                 </div>
                 <div style={{left: 1000, top: 400, width: 100, height:5, animation: "AnimTranslate 10s linear infinite", backgroundColor: "#00FF00"}}>
                     <JsvSpray pointRes={window.location.origin + pointImg} sprayStyle={spray_style3}/>

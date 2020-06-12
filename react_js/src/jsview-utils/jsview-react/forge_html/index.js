@@ -20,5 +20,6 @@ import "./animation_base"
 import "./animation_proxy"
 import "./impact_sensor_manager"
 import "./render_bridge"
+import "./particle_view"
 
 console.log("Using JsView HTML Forge");
