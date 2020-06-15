@@ -13,8 +13,8 @@ class Texture {
         this._GL = gl_context;
         this._Loaded = false;
         this._OnLoad = onload;
-        this.TextureId;
-        this._TextureSource;
+        this.TextureId = null;
+        this._TextureSource = null;
     }
     
     _setGLTexture() {
@@ -60,7 +60,7 @@ class ImageTexutre extends Texture{
 
 class ColorCanvas{
     constructor() {
-        this._Canvas = originDocument.createElement("canvas");
+        this._Canvas = window.originDocument.createElement("canvas");
         this._Canvas.setAttribute("width", "1px");
         this._Canvas.setAttribute("height", "1px");
         this._Canvas.setAttribute("style", "position: absolute;");
@@ -202,25 +202,25 @@ class ParticleView{
         let cur_element = this._Element.jsvMainView.Element;
         let ele_width = pxToNum(cur_element.style.width);
         let ele_height = pxToNum(cur_element.style.height);
-        let total_transform = new WebKitCSSMatrix();
+        let total_transform = new window.WebKitCSSMatrix();
         while(cur_element.parentElement) {
             let style = getComputedStyle(cur_element);
             if (style.transform) {
                 let origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
                 if (origin_str) {
                     let list = pxToNum(origin_str);
-                    let translate1 = new WebKitCSSMatrix("translate(-" + list[0] + "px,-" + list[1] + "px)");
-                    let translate2 = new WebKitCSSMatrix("translate(" + list[0] + "px," + list[1] + "px)");
-                    let translate3 = new WebKitCSSMatrix("translate(" + cur_element.offsetLeft + "px," + cur_element.offsetTop + "px)");
-                    let transform = new WebKitCSSMatrix(style.transform);
+                    let translate1 = new window.WebKitCSSMatrix("translate(-" + list[0] + "px,-" + list[1] + "px)");
+                    let translate2 = new window.WebKitCSSMatrix("translate(" + list[0] + "px," + list[1] + "px)");
+                    let translate3 = new window.WebKitCSSMatrix("translate(" + cur_element.offsetLeft + "px," + cur_element.offsetTop + "px)");
+                    let transform = new window.WebKitCSSMatrix(style.transform);
                     total_transform = translate3.multiply(translate2.multiply(transform.multiply(translate1.multiply(total_transform))))
                 } else {
-                    total_transform = new WebKitCSSMatrix(style.transform).multiply(total_transform);
+                    total_transform = new window.WebKitCSSMatrix(style.transform).multiply(total_transform);
                 }
             }
             cur_element = cur_element.parentElement;
         }
-        let size_matrix = new WebKitCSSMatrix();
+        let size_matrix = new window.WebKitCSSMatrix();
         size_matrix.m11 = 0;
         size_matrix.m12 = 0;
         size_matrix.m14 = 1;
@@ -364,17 +364,17 @@ let MAX_PARTICLE_NUM = 100;
 class ParticleManager {
     constructor() {
         this._Inited = false;
-        this._Canvas;
-        this._GL;
-        this._GLProgram;
-        this._VBO;
+        this._Canvas = null;
+        this._GL = null;
+        this._GLProgram = null;
+        this._VBO = null;
         this._ParticleViewMap = {};
         this._LoopStarted = false;
         this._onDrawFrame = this._onDrawFrame.bind(this);
     }
     
     _initCanvas() {
-        this._Canvas = originDocument.createElement("canvas");
+        this._Canvas = window.originDocument.createElement("canvas");
         this._Canvas.setAttribute("width", window.innerWidth + "px");
         this._Canvas.setAttribute("height", window.innerHeight + "px");
         this._Canvas.setAttribute("style", "position: absolute;");

@@ -12,7 +12,6 @@ import JsvSpray from '../jsview-utils/JsViewReactWidget/JsvSpray'
 import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import './App.css'
-import awesome from "./awesomeface.png"
 
 class MainScene extends FocusBlock{
     constructor(props) {

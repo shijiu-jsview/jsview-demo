@@ -11,7 +11,7 @@ import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
 class HtmlParticleProxyView extends React.Component{
     constructor(props) {
         super(props);
-        this._Element;
+        this._Element = null;
         this._ParticleViewId = -1;
     }
 
