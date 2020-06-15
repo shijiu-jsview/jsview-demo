@@ -1,44 +1,8 @@
 import Forge from "../ForgeDefine"
 import AnimationProgress from "./animation_progress"
-import {getKeyFramesGroup} from "./dynamic_key_frames"
-
-function _ConvertTimingFunc(easing_info) {
-	let timing_function = "linear";
-	if (easing_info && typeof easing_info.T != "undefined") {
-		switch (easing_info.T) {
-			case Forge.EasingTypeIn:
-				timing_function = "ease-in";
-				break;
-			case Forge.EasingTypeOut:
-				timing_function = "ease-out";
-				break;
-			case Forge.EasingTypeInOut:
-				timing_function = "ease-in-out";
-				break;
-			case Forge.EasingTypeBezier:
-				timing_function = "cubic-bezier(" + easing_info.St.X1 + "," + easing_info.St.Y1 + "," + easing_info.St.X2 + "," + easing_info.St.Y2 + ")";
-				break;
-			case Forge.EasingTypeSteps:
-				timing_function = "steps(" + easing_info.St.S + "," + (easing_info.St.T == 0 ? "start" : "end") + ")";
-				break;
-			case Forge.EasingTypeBlink:
-			case Forge.EasingTypeDeceleration:
-			default:
-				break;
-		}
-	}
-	return timing_function;
-}
+import {convertTimingFunc, animationToStyle, getStaticFrameControl} from "./animation_keyframe"
 
 let sKeyFrameTokenGenerator = 0;
-
-let sKeyFrameControl = null;
-function _GetKeyFrameControl() {
-	if (sKeyFrameControl == null) {
-		sKeyFrameControl = getKeyFramesGroup();
-	}
-	return sKeyFrameControl;
-}
 
 Forge.AnimationDelegate = class extends Forge.AnimationBase {
 	constructor(type_name, duration, easing) {
@@ -83,7 +47,7 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	constructor(type, duration, easing) {
 		super(type, duration, easing);
-		this._KeyFrameName = null;
+		this._KeyFrameNameToRecycle = null;
 
 		let that = this;
 		this._OnEndEvent = (event) => {
@@ -105,40 +69,41 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	}
 
 	_EnableCssAnimation() {
-		this._KeyFrameName = this._BuildKeyFrame();
-		let anim_name = this._KeyFrameName;
-		let that = this;
-		let repeat = (this.repeatTimes === -1 ? "infinite" : this.repeatTimes);
-		let html_element = this._LayoutViewRef.Element;
-
-		let timing_func = "linear";
-		if (this.easing) {
-			timing_func = _ConvertTimingFunc(this.easing);
+		let animation = this._BuildKeyFrame();
+		if (animation.keyFrameString != null) {
+			getStaticFrameControl().insertRule(animation.keyFrameString);
+			this._KeyFrameNameToRecycle = animation.name;
 		}
+
+		let anim_name = animation.name;
+		let that = this;
+		let html_element = this._LayoutViewRef.Element;
 
 		// 创建Progress跟踪器
 		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0) {
 			this._Progress = new AnimationProgress(this._LayoutViewRef);
-			this._Progress.Start(this.duration, timing_func, this.delayedTime, repeat);
+			this._Progress.Start(this);
 		}
 
+		let style_animation = animationToStyle(this, anim_name);
+
 		//name duration timing-function delay iteration-count direction;
-		let style_anim = anim_name + " " + this.duration / 1000 + "s "
-			+ timing_func + " " + this.delayedTime / 1000 + "s "
-			+ repeat;
-		console.log("StartAnimation style_anim:", style_anim);
-
-		html_element.style.animation = style_anim;
-		html_element.addEventListener("animationend", this._OnEndEvent);
-
-		html_element.style.webkitAnimation = style_anim;
-		html_element.addEventListener("webkitAnimationEnd", this._OnEndEvent);
+		if (!window.jsvInAndroidWebView) {
+			html_element.style.animation = style_animation;
+			html_element.addEventListener("animationend", this._OnEndEvent);
+		} else {
+			html_element.style.webkitAnimation = style_animation;
+			html_element.addEventListener("webkitAnimationEnd", this._OnEndEvent);
+		}
 	}
 
 	_PerformAnimationEnd(on_end) {
 		// 清理OnEndListener监听，否则会重复收到
-		this._LayoutViewRef.Element.removeEventListener("animationend", this._OnEndEvent);
-		this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._OnEndEvent);
+		if (!window.jsvInAndroidWebView) {
+			this._LayoutViewRef.Element.removeEventListener("animationend", this._OnEndEvent);
+		} else {
+			this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._OnEndEvent);
+		}
 
 		if (this._Progress == null) {
 			// 无进度跟进需求，直接结束
@@ -155,7 +120,10 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		if ((this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0) {
-			this._DoKeepTransform(progress);
+			let frozen_transform = this._GetFrozenTransform(progress);
+			this._LayoutViewRef.ResetCssTransform(
+					frozen_transform.transform,
+					frozen_transform.transformOrigin);
 		}
 
 		// 注意: OnEnd处理放在transform制作之后
@@ -169,27 +137,23 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}).bind(this), 0);
 
 		// 回收KeyFrame
-		if (this._KeyFrameNeedRecycle()) {
-			_GetKeyFrameControl().removeRule(this._KeyFrameName);
+		if (this._KeyFrameNameToRecycle != null) {
+			getStaticFrameControl().removeRule(this._KeyFrameNameToRecycle);
+			this._KeyFrameNameToRecycle = null;
 		}
-		this._KeyFrameName = null;
 	}
 
 	// 由子类集成，创建动画对应的keyframe
 	_BuildKeyFrame() {
 		// Should override
+		// 返回 {name:KeyFrame名称, keyFrameString:null 或者 keyFrame内容(不为null时，动画结束时会被自动从cssRules中清理)};
 		console.warn("Warning:Should override and return keyframe name");
 	}
 
 	// 由子类集成，根据进度信息完成Keep Transform操作
-	_DoKeepTransform(progress) {
+	_GetFrozenTransform(progress) {
 		// should override
 		console.warn("Warning:Should override and keep view transform by ResetCssTransform()")
-	}
-
-	// 如果需要释放KeyFrame，重写此方法
-	_KeyFrameNeedRecycle() {
-		return false;
 	}
 }
 
@@ -209,21 +173,15 @@ Forge.TranslateAnimation = class extends Forge.KeyFrameAnimation {
 		let keyframe_string = "@keyframes " + keyframe_name + " {"
 				+ "0%{transform:translate3d(" + this.startX + "px," + this.startY + "px,0);}"
 				+ "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
-		_GetKeyFrameControl().insertRule(keyframe_string);
-		return keyframe_name;
+		return {name:keyframe_name, keyFrameString:keyframe_string};
 	}
 
 	// Override
-	_DoKeepTransform(progress) {
+	_GetFrozenTransform(progress) {
 		let x = Math.floor((this.endX - this.startX) * progress + this.startX);
 		let y = Math.floor((this.endY - this.startY) * progress + this.startY);
 		let transform = "translate3d(" + x + "px," + y + "px,0)";
-		this._LayoutViewRef.ResetCssTransform(transform, null);
-	}
-
-	// Override
-	_KeyFrameNeedRecycle() {
-		return true; // 需要KeyFrame自动释放
+		return {transform: transform, transformOrigin: null};
 	}
 }
 
@@ -316,7 +274,7 @@ Forge.CssKeyframeAnimation = class extends Forge.KeyFrameAnimation {
 			anim_name = anim_name.substr(0, anim_name.indexOf("{"));
 		}
 
-		return anim_name;
+		return {name:anim_name, keyFrameString:null};
 	}
 };
 
@@ -343,7 +301,7 @@ Forge.CssTransitionAnimation = class extends Forge.AnimationDelegate {
 			let timing_function = "linear";
 			let transition = transitions[i];
 			if (transition["tf"]) {
-				timing_function = _ConvertTimingFunc(transition["tf"]);
+				timing_function = convertTimingFunc(transition["tf"]);
 			}
 
 			transition_str = transition["name"] + " " + transition["dur"] / 1000 + "s "

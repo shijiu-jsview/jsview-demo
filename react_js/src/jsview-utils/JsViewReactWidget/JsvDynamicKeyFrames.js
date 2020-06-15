@@ -17,8 +17,28 @@ class KeyFrameStyleSheet {
 	}
 
 	insertRule(key_frame_string) {
+		if (window.jsvInAndroidWebView) {
+			// Convert keyframe => -webkit-keyframe
+			// Convert transform => -webkit-transform
+			// Convert transform-origin => -webkit-transform-origin
+			key_frame_string = key_frame_string.replace(/@keyframes/, "@-webkit-keyframes");
+			key_frame_string = key_frame_string.replace(/transform/g, "-webkit-transform");
+		}
+
 		let index = this._SS.cssRules.length;
 		this._SS.insertRule(key_frame_string, index);
+	}
+
+	hasRule(name) {
+		let css_rules_ref = this._SS.cssRules;
+		for (let i = css_rules_ref.length - 1; i >= 0; i--) {
+			if (css_rules_ref[i].name == name) {
+				// Found
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	removeRule(name) {

@@ -414,8 +414,12 @@ class LayoutViewBase {
         if (typeof this.TransformAnimationObj != "undefined" && this.TransformAnimationObj) {
             this.TransformAnimationObj.Cancel(anim);
             this.TransformAnimationObj = null;
-            this.Element.style.animation = null;
-            this.Element.style.webkitAnimation = null;
+
+            if (!window.jsvInAndroidWebView) {
+                this.Element.style.animation = null;
+            } else {
+                this.Element.style.webkitAnimation = null;
+            }
         }
         this.TransformAnimationObj = anim;
         if (!isNaN(delay) && delay > 0) {
@@ -433,7 +437,11 @@ class LayoutViewBase {
             }
             transitions += this.TransitionStore[transition_name];
         }
-        this.Element.style.transition = transitions;
+        if (!window.jsvInAndroidWebView) {
+            this.Element.style.transition = transitions;
+        } else {
+            this.Element.style.webkitTransition = transitions;
+        }
     }
 
     /**
@@ -448,8 +456,8 @@ class LayoutViewBase {
         if (typeof this.TransformAnimationObj != "undefined" && this.TransformAnimationObj) {
             this.TransformAnimationObj.Cancel();
             this.TransformAnimationObj = null;
-            this.Element.style.animation = null;
-            this.Element.style.webkitAnimation = null;
+
+            // 状态将在Animation触发的DetachAnimation中恢复，不需要在此手动恢复
         }
     };
 
@@ -530,17 +538,28 @@ class LayoutViewBase {
     DetachAnimation(anim) {
         if (this.TransformAnimationObj == anim) {
             this.TransformAnimationObj = null;
-            this.Element.style.animation = null;
-            this.Element.style.webkitAnimation = null;
-            this.Element.style.transition = null;
+
+            if (!window.jsvInAndroidWebView) {
+                this.Element.style.animation = null;
+                this.Element.style.transition = null;
+            } else {
+                this.Element.style.webkitAnimation = null;
+                this.Element.style.webkitTransition = null;
+            }
         }
     };
 
     ResetCssTransform(transform_string, transform_origin_string) {
         if (transform_string !== this._CssTransform || transform_origin_string != this._CssTransformOrigin) {
             console.log("ResetCssTransform transform_string:", transform_string);
-            this.Element.style.transform = transform_string;
-            this.Element.style.transformOrigin = transform_origin_string;
+            if (!window.jsvInAndroidWebView) {
+                this.Element.style.transform = transform_string;
+                this.Element.style.transformOrigin = transform_origin_string;
+            } else {
+                this.Element.style.webkitTransform = transform_string;
+                this.Element.style.webkitTransformOrigin = transform_origin_string;
+            }
+
             this._CssTransform = transform_string;
 	        this._CssTransformOrigin = transform_origin_string;
         }

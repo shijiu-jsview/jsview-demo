@@ -15,6 +15,16 @@ class KeyFrameStyleSheet {
 	}
 
 	insertRule(key_frame_string) {
+		if (window.jsvInAndroidWebView) {
+			// Convert keyframe => -webkit-keyframe
+			// Convert transform => webkitTransform
+			// Convert transformOrigin => webkitTransformOrigin
+			key_frame_string = key_frame_string.replace(/@keyframes/, "@-webkit-keyframes");
+			key_frame_string = key_frame_string.replace(/transform/g, "-webkit-transform");
+		}
+
+		// console.log("insertRule():key_frame_string=" + key_frame_string);
+
 		let index = this._SS.cssRules.length;
 		this._SS.insertRule(key_frame_string, index);
 	}

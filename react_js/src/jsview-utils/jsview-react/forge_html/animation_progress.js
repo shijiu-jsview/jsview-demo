@@ -1,4 +1,4 @@
-import {getKeyFramesGroup} from "./dynamic_key_frames"
+import {animationToStyle, getStaticFrameControl} from "./animation_keyframe"
 
 let is_char = char_code => (65 <= char_code && char_code <= 90) || (97 <= char_code && char_code <= 122);
 let is_num = char_code => 48 <= char_code && char_code <= 57;
@@ -39,18 +39,15 @@ let __parseTransform = (transform) => {
 	return null;
 }
 
-let sKeyFrameControl = null;
 function _EnsureKeyFramesRule() {
-	if (sKeyFrameControl == null) {
-		sKeyFrameControl = getKeyFramesGroup();
-	}
-	if (!sKeyFrameControl.hasRule("_AnimateProgress0")) {
+	let keyframe_control = getStaticFrameControl();
+	if (!keyframe_control.hasRule("_AnimateProgress0")) {
 		let animate_progress = "@keyframes _AnimateProgress0" +
 			"{0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(100px,0,0)}}";
-		sKeyFrameControl.insertRule(animate_progress);
+		keyframe_control.insertRule(animate_progress);
 		animate_progress = "@keyframes _AnimateProgress1" +
 			"{0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(100px,0,0)}}";
-		sKeyFrameControl.insertRule(animate_progress);
+		keyframe_control.insertRule(animate_progress);
 	}
 }
 
@@ -92,13 +89,12 @@ class AnimateProgress {
 		});
 	}
 
-	Start(time_ms, easing, delay, repeat) {
+	Start(host_animation) {
 		// 保证可用的Animation动画
 		_EnsureKeyFramesRule();
 		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2;
-		this._TracerDiv.style.animation = "_AnimateProgress" + (this._TracerDiv._ForgeProgressToken) + " "
-					+ (time_ms / 1000) + "s " + easing
-					+ " " + (delay / 1000) + "s " + repeat;
+		this._TracerDiv.style.animation = animationToStyle(host_animation,
+							"_AnimateProgress" + (this._TracerDiv._ForgeProgressToken));
 		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
