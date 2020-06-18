@@ -22,6 +22,7 @@ class ParticleView extends React.Component{
             particleNum: 100,
             deltaAngle: 30,
             deltaWidth: 100,
+            deltaHeight: 0,
             pointSizeMin: 6,
             pointSizeMax: 9,
             speedMin: 10,
@@ -29,7 +30,10 @@ class ParticleView extends React.Component{
             lifeMin: 500,
             lifeMax: 2000,
             accelerateX: 0,
-            accelerateY: -200
+            accelerateY: -200,
+            addNumSpeed: 0.001,
+            enableFade: true,
+            enableShrink: true
         }
         
         return(
