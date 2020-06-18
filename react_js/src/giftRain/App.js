@@ -214,7 +214,7 @@ class MainScene extends FocusBlock {
 
     _GetEffectAudio() {
         if (!this._DisableEffectSound) {
-            return (<audio ref={(ref) => {this._Audio = ref;}}/>);
+            return (<audio ref={(ref) => {this._Audio = ref;}} timeupdateless="true"/>);
         }
     }
 
@@ -292,9 +292,12 @@ class MainScene extends FocusBlock {
                     }
                 </div>
 
-                <audio key="AudioBg" src={ this._AudioBgUrl} ref={(ref) => {
-                    this._BgAudio = ref;
-                }}/>
+                <audio key="AudioBg"
+                       src={ this._AudioBgUrl}
+                       timeupdateless="true"
+                       ref={(ref) => {
+                            this._BgAudio = ref;
+                        }}/>
                 {effect_Audio}
             </div>
         )
