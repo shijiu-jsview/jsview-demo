@@ -50,10 +50,10 @@ let demoInfos = [
     },
     {
         "name": "小狗跨栏游戏",
-        "path": "/users/games",
+        "path": "/users/games1",
         "background":dog_bg,
         "icon":dog_icon,
-        "class": lazy(() => import('../tappingFlying/App').then(m => ({ default: m.SubApp }))),
+        "class": lazy(() => import('../games/tappingFlying/apps/dog/App').then(m => ({ default: m.SubApp }))),
     },
 ]
 

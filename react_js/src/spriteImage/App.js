@@ -24,62 +24,20 @@
 
 import React from 'react';
 import JsvSpriteImg from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
-import sprite from './images/sprite.png'
-import cat_run from './images/cat_run.png'
 import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
-let sprite_info = {
-    "frames": [
-
-        {
-            "frame": { "x": 0, "y": 0, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 512, "y": 0, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 1024, "y": 0, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 1536, "y": 0, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 0, "y": 256, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 512, "y": 256, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 1024, "y": 256, "w": 512, "h": 256 },
-        },
-        {
-            "frame": { "x": 1536, "y": 256, "w": 512, "h": 256 },
-        }
-    ],
-    "meta": {
-        "size": { "w": 2048, "h": 512 },
-    }
-}
-
-let static_info = {
-    "frames": [
-
-        {
-            "frame": { "x": 0, "y": 0, "w": 512, "h": 256 },
-        }
-    ],
-    "meta": {
-        "size": { "w": 2048, "h": 512 },
-    }
-}
+// 从JSON中加载精灵图的配置，该配置文件由工具 https://www.codeandweb.com/texturepacker 生成
+import spriteImage from './images/egg_break.png'
+import config_json from "./images/egg_break.json"
 
 class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
 
         this.state = {
-            stop: false
+            stop: false, // 配置动图还是静图
+            show: true
         }
     }
 
@@ -93,26 +51,75 @@ class MainScene extends FocusBlock {
         return false;
     }
 
-    renderContent() {
-        return (
-            <div style={{top: 20, left: 20}}>
-                <JsvSpriteImg
-                    spriteInfo={sprite_info}
-                    loop="infinite"
-                    viewSize={{ w: 1024, h: 512 }}
-                    duration={0.8}
-                    onAnimEnd={function () { console.log("anim end") }}
-                    stop={this.state.stop}
-                    imageUrl={cat_run} />
-                <div style={{left: 1050, top: 20}}>
-                    <JsvSpriteImg
-                        spriteInfo={static_info}
-                        viewSize={{ w: 256, h: 128 }}
-                        imageUrl={cat_run} />
-                </div>
-            </div>
-        )
+    _formatInfo() {
+        /*
+         * "frames": [
+         *      {
+         *          "source": {"x": XXXX,"y": XXXX,"w": XXXX,"h": XXXX},
+         *          "target": {"x": XXXX,"y": XXXX,"w": XXXX,"h": XXXX},
+         *      },
+         *      ...
+         *  ],
+         *  "meta": {
+         *      "size": { "w": XXXX, "h": XXXX},
+         *  }
+         */
 
+        let info = {
+            frames:[],
+            meta:{
+                size: config_json.meta.size,
+            }};
+
+        let frames_ref = info.frames;
+        let max_width = 0;
+        let max_height = 0;
+
+        for (let i = 0; i < config_json.frames.length; i++) {
+            let target = config_json.frames[i].spriteSourceSize;
+            frames_ref.push({
+                "target": target,
+                "source": config_json.frames[i].frame,
+            });
+            let sprite_with = target.x + target.w;
+            let sprite_height = target.y + target.h;
+            if (sprite_with > max_width) {
+                max_width = sprite_with;
+            }
+            if (sprite_height > max_height) {
+                max_height = sprite_height;
+            }
+        }
+
+        return {info:info, maxW:max_width, maxH:max_height };
+    }
+
+    renderContent() {
+        if (this.state.show) {
+            // 展示精灵图
+            let sprite_info = this._formatInfo();
+
+            /* 精灵图绘图区域尺寸，格式: {w:XXXXX, h:XXXX} */
+            let view_size = {
+                w: sprite_info.maxW,
+                h: sprite_info.maxH
+            };
+
+            let that = this;
+            return (<div style={{top: 20, left: 20}}>
+                <JsvSpriteImg
+                    spriteInfo={sprite_info.info}
+                    loop={10}
+                    viewSize={view_size}
+                    duration={0.8}
+                    onAnimEnd={function () { console.log("anim end");that.setState({show:false}) }}
+                    stop={this.state.stop}
+                    imageUrl={spriteImage} />
+            </div>);
+        } else {
+            // 清理精灵图，用于验证精灵图清理后，StyleSheet中cssRules的keyFrame清理工作能正常完成
+            return (<div/>);
+        }
     }
 }
 let App = createStandaloneApp(MainScene);

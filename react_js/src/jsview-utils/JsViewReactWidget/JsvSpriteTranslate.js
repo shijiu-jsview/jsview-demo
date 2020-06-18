@@ -1,13 +1,13 @@
-import React from 'react';
-import {Forge} from "../jsview-react/index_widget.js"
-import { JsvSpriteBase, SpriteControlBase } from "./JsvSpriteBase"
-import { TranslateAnimation as HtmlTranslate, TranslateStyle } from "./JsvAnimationDelegate"
 // JsvSpriteTranslate comes from JsView React Project
 
 /**
  * Component: JsvSpriteTranslate
  * @param {TranslateControl} Sprite动作控制器 必需
  */
+
+import React from 'react';
+import {Forge} from "../jsview-react/index_widget.js"
+import { JsvSpriteBase, SpriteControlBase } from "./JsvSpriteBase"
 
 class __SharedControl extends SpriteControlBase{
 	constructor() {
@@ -185,9 +185,12 @@ class __SharedControl extends SpriteControlBase{
 		if (!act_jump && animate_time == 0) {
 			console.log("Discard starting request for no distance");
 			return null; // failed to start
-		}
-
-		let anim = new this._AnimationClass(from_x, to_x, from_y, to_y, animate_time, null);
+        }
+        
+        let anim = new this._AnimationClass(from_x, to_x, from_y, to_y, animate_time, null);
+		if (typeof anim.SetStepsCount != "undefined") {
+			anim.SetStepsCount(Math.ceil(animate_time / 300)); // 每个动画分段时长为300毫秒左右
+        }
 		if (start_pos != 0) {
 			if (start_pos < 0) {
 				console.warn("Warning: start position out of repeating range");
@@ -195,7 +198,6 @@ class __SharedControl extends SpriteControlBase{
 				anim.SetStartPos(start_pos);
 			}
 		}
-
 		return anim;
 	}
 
@@ -275,36 +277,16 @@ class JsvTranslateControl extends __SharedControl {
 	}
 
 	_GetAnimationClass() {
-		return Forge.TranslateAnimation;
+		if (window.jsvInAndroidWebView) {
+			// Android webview 性能太低，采用StepAnimation的方式提高体验
+			return Forge.TranslateStepAnimation;
+		} else {
+			return Forge.TranslateAnimation;
+		}
 	}
 }
 
-class HtmlTranslateControl extends __SharedControl {
-	constructor() {
-        super();
-	}
-
-	_GetAnimationClass() {
-		return HtmlTranslate;
-	}
-
-    _GetTransform(valie_list) {
-    	return TranslateStyle.buildTransform( valie_list[0],  valie_list[1]);
-    }
-    
-    _GetCurrentValue() {
-    	let values_obj = TranslateStyle.getCurrentValue(this._SpriteDiv);
-	    return [values_obj.x, values_obj.y];
-    }
-
-	_WrapCallback(currents, callback) {
-		if (this._AnimationRef != null)
-			this._AnimationRef.recycle();
-		super._WrapCallback(currents, callback);
-	}
-}
-
-var TranslateControl = window.JsView ? JsvTranslateControl : HtmlTranslateControl;
+var TranslateControl = JsvTranslateControl;
 
 export {
 	JsvSpriteBase as JsvSpriteTranslate,

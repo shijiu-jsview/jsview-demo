@@ -36,6 +36,23 @@ import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
 import AudioBgUrl from "./audio/bgMusic-1.mp3";
 import createStandaloneApp from "../demoCommon/StandaloneApp"
+import {getKeyFramesGroup} from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames"
+
+function _EnableCss() {
+    let group = getKeyFramesGroup("giftRainCss");
+    if (!group.hasRule("scoreUp")) {
+        let score_up = "@keyframes scoreUp {"
+            + "from {transform: translate3d(0, 0px, 0);}"
+            + "to {transform: translate3d(0, -20px, 0);}}";
+
+        let rain_down = "@keyframes rainDown {"
+            + "from {transform: translate3d(0, -780px, 0);}"
+            + "to {transform: translate3d(0, 0px, 0);}}";
+
+        group.insertRule(score_up);
+        group.insertRule(rain_down);
+    }
+}
 
 class MainScene extends FocusBlock {
     constructor(props) {
@@ -74,6 +91,8 @@ class MainScene extends FocusBlock {
 
         this._TranslateControl = new TranslateControl();
         this._TranslateControl.speed(400);
+
+        _EnableCss();
     }
 
     _onImpactTracer(rain) {
@@ -195,7 +214,7 @@ class MainScene extends FocusBlock {
 
     _GetEffectAudio() {
         if (!this._DisableEffectSound) {
-            return (<audio ref={(ref) => {this._Audio = ref;}}/>);
+            return (<audio ref={(ref) => {this._Audio = ref;}} timeupdateless="true"/>);
         }
     }
 
@@ -273,9 +292,12 @@ class MainScene extends FocusBlock {
                     }
                 </div>
 
-                <audio key="AudioBg" src={ this._AudioBgUrl} ref={(ref) => {
-                    this._BgAudio = ref;
-                }}/>
+                <audio key="AudioBg"
+                       src={ this._AudioBgUrl}
+                       timeupdateless="true"
+                       ref={(ref) => {
+                            this._BgAudio = ref;
+                        }}/>
                 {effect_Audio}
             </div>
         )

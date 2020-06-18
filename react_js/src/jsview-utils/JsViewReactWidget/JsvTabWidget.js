@@ -205,7 +205,7 @@ class JsvTabWidget extends FdivWrapper{
                 width={ this.props.bodyStyle.width }
                 height={ this.props.bodyStyle.height }
                 padding={ this.props.bodyPadding }
-                direction={ this.direction } 
+                direction={ this.props.flowDirection }
                 dispatcher={ this._dispatcherMap.get("body_" + item.tabIndex) }
                 data={ this.props.bodyData[item.tabIndex] } 
                 onEdge = { onedge }

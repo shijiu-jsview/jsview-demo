@@ -3,8 +3,15 @@
  */
 import BackgroundUrl from "../images/background_1280.jpg"
 import BlueEggUrl from "../images/blue_egg.png"
+import BrokenBlueEggBack from "../images/blue_egg_back.png"
+import BrokenBlueEggFore from "../images/blue_egg_fore.png"
 import RedEggUrl from "../images/red_egg.png"
+import BrokenRedEggBack from "../images/red_egg_back.png"
+import BrokenRedEggFore from "../images/red_egg_fore.png"
 import YellowEggUrl from "../images/yellow_egg.png"
+import BrokenYellowEggBack from "../images/yellow_egg_back.png"
+import BrokenYellowEggFore from "../images/yellow_egg_fore.png"
+import Crack from "../images/crack.png"
 /*
 import HalfEggsUrl from "../images/egg_2.png"
 */
@@ -50,6 +57,10 @@ class PageTheme {
                             style: {
                                 left: 0, top: 93, width: 191, height: 252,
                             },
+                            crack: {
+                                size: {width: 191, height: 252},
+                                url: Crack
+                            }
                             /*halfStyle: {
                                 left: 0, top: 93, width: 191, height: 252,
                                 backgroundImage: HalfEggsUrl
@@ -65,6 +76,8 @@ class PageTheme {
                                 "hasSub": false,
                                 "id": 0,
                                 "eggUrl": BlueEggUrl,
+                                "brokenBack": BrokenBlueEggBack,
+                                "brokenFore": BrokenBlueEggFore
                             },
                             {
                                 "blocks": {
@@ -75,6 +88,8 @@ class PageTheme {
                                 "hasSub": false,
                                 "id": 1,
                                 "eggUrl": YellowEggUrl,
+                                "brokenBack": BrokenYellowEggBack,
+                                "brokenFore": BrokenYellowEggFore
                             },
                             {
                                 "blocks": {
@@ -85,6 +100,8 @@ class PageTheme {
                                 "hasSub": false,
                                 "id": 2,
                                 "eggUrl": RedEggUrl,
+                                "brokenBack": BrokenRedEggBack,
+                                "brokenFore": BrokenRedEggFore
                             },
                         ]
                     },
