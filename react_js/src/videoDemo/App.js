@@ -404,8 +404,8 @@ class MainScene extends FocusBlock {
 					onRateChange={this.handleRateChange}
 					onVolumeChange={this.handleVolumeChange}
 				/>
-				<div style={{ textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
-				<div style={{ textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
+				<div style={{ color:"#FF0000", textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
+				<div style={{ color:"#FF0000", textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
 
 				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
 
