@@ -185,12 +185,12 @@ class __SharedControl extends SpriteControlBase{
 		if (!act_jump && animate_time == 0) {
 			console.log("Discard starting request for no distance");
 			return null; // failed to start
-		}
-
-		let anim = new this._AnimationClass(from_x, to_x, from_y, to_y, animate_time, null);
+        }
+        
+        let anim = new this._AnimationClass(from_x, to_x, from_y, to_y, animate_time, null);
 		if (typeof anim.SetStepsCount != "undefined") {
-			anim.SetStepsCount(Math.floor(animate_time / 300)); // 每个动画分段时长为300毫秒左右
-		}
+			anim.SetStepsCount(Math.ceil(animate_time / 300)); // 每个动画分段时长为300毫秒左右
+        }
 		if (start_pos != 0) {
 			if (start_pos < 0) {
 				console.warn("Warning: start position out of repeating range");
@@ -198,7 +198,6 @@ class __SharedControl extends SpriteControlBase{
 				anim.SetStartPos(start_pos);
 			}
 		}
-
 		return anim;
 	}
 

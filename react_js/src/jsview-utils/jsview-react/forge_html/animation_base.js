@@ -238,11 +238,11 @@ class AnimationListener {
 					}
 				}
 			};
-			this.OnAnimFinal = function() {
-				if (that._OnAnimFinal) that._OnAnimFinal();
+			this.OnAnimFinal = function(progress) {
+				if (that._OnAnimFinal) that._OnAnimFinal(progress);
 				for (var i = 0; i < this._InheritListener.length; i++) {
 					if (this._InheritListener[i].OnAnimFinal) {
-						this._InheritListener[i].OnAnimFinal();
+						this._InheritListener[i].OnAnimFinal(progress);
 					}
 				}
 			};

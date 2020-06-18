@@ -7,7 +7,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-26 17:13:03
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-03 15:25:27
+ * @LastEditTime: 2020-06-17 15:18:28
  * @Description: file content
  */
 import Forge from "../ForgeDefine"
@@ -24,21 +24,21 @@ class Mat{
         return "[" + this.element[0] + "," + this.element[1] + "," + this.element[2] + "," + this.element[3] + "," + this.element[4] + "," + this.element[5] + "," + this.element[6] + "," + this.element[7] + "," + this.element[8] + "," + this.element[9] + "," + this.element[10] + "," + this.element[11] + "," + this.element[12] + "," + this.element[13] + "," + this.element[14] + "," + this.element[15] + "]"
     }
 
-	static multiply(m_1, m_2) {
-		if (m_1.column !== m_2.row) {
+	multiply(m_2) {
+		if (this.column !== m_2.row) {
 			throw("matrix multiply error");
 		}
 
 		let result = [];
-		for (let i = 0; i < m_1.row; i++) {
+		for (let i = 0; i < this.row; i++) {
 			for (let j = 0; j < m_2.column; j++) {
 				result[i + j * m_2.column] = 0;
-				for(let k = 0; k < m_1.column; k++) {
-					result[i + j * m_2.column] += (m_1.element[i + k * m_1.column] * m_2.element[k + j * m_2.column]);
+				for(let k = 0; k < this.column; k++) {
+					result[i + j * m_2.column] += (this.element[i + k * this.column] * m_2.element[k + j * m_2.column]);
 				}
 			}
 		}
-		return new Mat(m_1.row, m_2.column, result);
+		return new Mat(this.row, m_2.column, result);
 	}
 
 	static identity() {
@@ -158,7 +158,7 @@ let parseToMat4 = (transform) => {
 			param_list = [];
 		} else if (char_code == 41) { // )
 			param_list.push(parseFloat(param));
-			result = Mat.multiply(result, func_to_mat(func_name, param_list));
+			result = result.multiply(func_to_mat(func_name, param_list));
 			func_name = "";
 			mode = 0;
 		} else if (char_code == 44) { // ,
@@ -169,60 +169,49 @@ let parseToMat4 = (transform) => {
 	return result;
 }
 
-let parseTransformOrigin = t_o => {
-	let result = []
-	if (!t_o) return result;
-	let param = "";
-	for (let i = 0; i < t_o.length; i++) {
-		let char_code = t_o.charCodeAt(i);
-		if (is_num(char_code) || char_code == 46 || char_code == 45) {
-			param += t_o[i];
-		}
-
-		if (char_code == 32 || i == t_o.length - 1) {
-			result.push(parseFloat(param));
-			param = "";
-		}
-	}
-	return result;
+let pxToNum = px => {
+    if (px.indexOf(" ") >=0 ) {
+        let list = px.split(" ");
+        return list.map(str => parseInt(str.substr(0, str.length - 2)))
+    } else {
+        return parseInt(px.substr(0, px.length - 2))
+    }
 }
 
-let getPolygonPoint = ele => {
-	let style = getComputedStyle(ele);
-    let transform_str = style.transform ? style.transform : style.webkitTransform;
-    let origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
-    let origin = parseTransformOrigin(origin_str);
-	let transform_mat4 = parseToMat4(transform_str);
-	// TODO: 使用parent_bounding，临时解决对比div不在同一个父节点时出现的计算偏差问题
-    let parent_bounding = ele.parentElement?ele.parentElement.getBoundingClientRect():{left:0,top:0};
-    // console.log("parent_bounding " + parent_bounding.left + " " + parent_bounding.top);
-    // console.log("origin " + origin[0] + " " + origin[1]);
-    // console.log("style " + style.left + " " + style.top + " " + style.width + " " + style.height)
-	let x = parseFloat(style.left.substr(0, style.left.length - 2)) + parent_bounding.left;
-	let y = parseFloat(style.top.substr(0, style.top.length - 2)) + parent_bounding.top;
-	let width = parseFloat(style.width.substr(0, style.width.length - 2));
-    let height = parseFloat(style.height.substr(0, style.height.length - 2));
-    // console.log("p " + x + " " + y + " " + width + " " + height)
-	let points = [
-		x, y, 0, 1,
-		x + width, y, 0, 1,
-		x, y + height, 0, 1,
-		x + width, y + height, 0, 1
-	]
-
-	let translate_mat1 = Mat.translate(-x - origin[0], -y - origin[1], 0);
-	let translate_mat2 = Mat.translate(x + origin[0], y + origin[1], 0);
-	let m = Mat.multiply(translate_mat2, Mat.multiply(transform_mat4, translate_mat1));
-	let cur_points = Mat.multiply(m, new Mat(4, 4, points));
-	let result = [
-		cur_points.element[0], cur_points.element[1],
-		cur_points.element[4], cur_points.element[5],
-		cur_points.element[8], cur_points.element[9],
-		cur_points.element[12], cur_points.element[13]
-	];
-	// console.log("mat4 " + transform_str + " " + transform_mat4.toString())
-	// console.log("getPolygonPoint " + result[0] + "," + result[1] + "," +  result[2] + "," +  result[3] + "," +  result[4] + "," +  result[5] + "," +  result[6] + "," +  result[7])
-	return result
+let getTransform = (ele) => {
+    let cur_element = ele;
+    let ele_width = pxToNum(cur_element.style.width);
+    let ele_height = pxToNum(cur_element.style.height);
+    let total_transform = Mat.identity();
+    while(cur_element.parentElement) {
+        let style = getComputedStyle(cur_element);
+        let transform_str = style.transform ? style.transform : style.webkitTransform;
+        if (transform_str) {
+            let origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
+            let transform = parseToMat4(transform_str);
+            if (origin_str) {
+                let list = pxToNum(origin_str);
+                let translate1 = Mat.translate(-list[0], -list[1], 0);
+                let translate2 = Mat.translate(list[0], list[1], 0);
+                let translate3 = Mat.translate(cur_element.offsetLeft, cur_element.offsetTop, 0);
+                total_transform = translate3.multiply(translate2.multiply(transform.multiply(translate1.multiply(total_transform))))
+            } else {
+                total_transform = transform.multiply(total_transform);
+            }
+        }
+        cur_element = cur_element.parentElement;
+    }
+    let size_matrix = new Mat(4, 4, [
+        0, 0, 0, 1,
+        ele_width, 0, 0, 1,
+        0, ele_height, 0, 1,
+        ele_width, ele_height, 0, 1
+    ]);
+    total_transform = total_transform.multiply(size_matrix);
+    
+    let points = total_transform.element;
+    let result = [points[0], points[1], points[4], points[5], points[8], points[9], points[12], points[13]];
+    return result; 
 }
 
 class ImpactSensor{
@@ -244,7 +233,7 @@ class ImpactSensor{
 
 	TestCollision() {
         if (this._Recycled) { return; }
-		var intersected = gjk.intersect(getPolygonPoint(this._Element1), getPolygonPoint(this._Element2));
+		var intersected = gjk.intersect(getTransform(this._Element1), getTransform(this._Element2));
 		if (intersected) {
 			if (!this._Contacted) {
 				this._Contacted = true;
