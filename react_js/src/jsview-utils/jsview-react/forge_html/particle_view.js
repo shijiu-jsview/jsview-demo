@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-12 11:17:13
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-12 17:25:28
+ * @LastEditTime: 2020-06-18 16:51:24
  * @Description: file content
  */ 
 import Forge from "../ForgeDefine"
@@ -26,7 +26,8 @@ class Texture {
         //3.向target绑定纹理对象
         this._GL.bindTexture(this._GL.TEXTURE_2D, this.TextureId);
         //4.配置纹理参数
-        this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_MIN_FILTER, this._GL.LINEAR);
+        this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_MIN_FILTER, this._GL.NEAREST);
+        this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_MAG_FILTER, this._GL.LINEAR);
         //5.配置纹理图像
         this._GL.texImage2D(this._GL.TEXTURE_2D, 0, this._GL.RGBA, this._GL.RGBA, this._GL.UNSIGNED_BYTE, this._TextureSource);
     }
@@ -177,6 +178,7 @@ class ParticleView{
         this._ParticleNum = setting.particleNum;
         this._DeltaAngle = setting.deltaAngle / 180 * Math.PI;
         this._DeltaWidthFact = setting.deltaWidth / view_size.width;
+        this._DeltaHeightFact = setting.deltaHeight / view_size.height;
         this._PointSizeMin = setting.pointSizeMin;
         this._PointSizeMax = setting.pointSizeMax;
         this._SpeedMin = setting.speedMin;
@@ -186,6 +188,8 @@ class ParticleView{
         this._AddNumSpeed = setting.addNumSpeed;
         this._AcceletateX = setting.accelerateX;
         this._AcceletateY = setting.accelerateY;
+        this._EnableFade = setting.enableFade;
+        this._EnableShrink = setting.enableShrink;
         this._Texture = texture;
         this._Buffer = new Float32Array(this._ParticleNum * 7);
         this._AddedParticleNum = 0;
@@ -229,7 +233,7 @@ class ParticleView{
         size_matrix.m24 = 1;
         size_matrix.m31 = 0;
         size_matrix.m32 = ele_height;
-        size_matrix.m43 = 1;
+        size_matrix.m34 = 1;
         size_matrix.m41 = ele_width;
         size_matrix.m42 = ele_height;
         size_matrix.m44 = 1;
@@ -239,10 +243,11 @@ class ParticleView{
         return result; 
     }
 
-    _updateParticleInfo(index, edge_vector_x, edge_vector_y, center_vec_x, center_vec_y, angle, current) {
-        let random_width_fact = random(-this._DeltaWidthFact, this._DeltaWidthFact);
-        this._Buffer[index * 7] = random_width_fact * edge_vector_x + center_vec_x;
-        this._Buffer[index * 7 + 1] = random_width_fact * edge_vector_y + center_vec_y;
+    _updateParticleInfo(index, left_top_p, top_vec, left_vec, angle, current) {
+        let w_fact = random(0, 2 * this._DeltaWidthFact);
+        let h_fact = random(0, 2 * this._DeltaHeightFact);
+        this._Buffer[index * 7] = w_fact * top_vec[0] + h_fact * left_vec[0] + left_top_p[0];
+        this._Buffer[index * 7 + 1] = w_fact * top_vec[1] + h_fact * left_vec[1] + left_top_p[1];
         this._Buffer[index * 7 + 2] = angle + random(-this._DeltaAngle, this._DeltaAngle);
         this._Buffer[index * 7 + 3] = random(this._SpeedMin, this._SpeedMax);
         this._Buffer[index * 7 + 4] = current;
@@ -270,18 +275,17 @@ class ParticleView{
             }
         }
         let current = (Date.now() - this._StartTime) / 1000.0;
-        let edge_vx = source_position[2] - source_position[0];
-        let edge_vy = source_position[3] - source_position[1];
-        let center_x = (source_position[2] + source_position[0]) / 2.0;
-        let center_y = (source_position[3] + source_position[1]) / 2.0;
-        let length = Math.sqrt(edge_vx * edge_vx + edge_vy * edge_vy);
-        let per_vx = -edge_vy / length;
-        let per_vy = edge_vx / length;
+        let left_top_p = [source_position[0], source_position[1]];
+        let top_vec = [source_position[2] - source_position[0], source_position[3] - source_position[1]];
+        let left_vec = [source_position[4] - source_position[0], source_position[5] - source_position[1]];
+        let length = Math.sqrt(top_vec[0] * top_vec[0] + top_vec[1] * top_vec[1]);
+        let per_vx = -top_vec[1] / length;
+        let per_vy = top_vec[0] / length;
         let angle = per_vy > 0 ? Math.acos(per_vx) : 2 * Math.PI - Math.acos(per_vx);
         if (this._Type == 0) {
             if (this._AddedParticleNum < this._ParticleNum) {
                 for (let i = 0; i < this._ParticleNum; i++) {
-                    this._updateParticleInfo(i, edge_vx, edge_vy, center_x, center_y, angle, current);
+                    this._updateParticleInfo(i, left_top_p, top_vec, left_vec, angle, current);
                 }
                 this._AddedParticleNum = this._ParticleNum;
             } else {
@@ -302,14 +306,14 @@ class ParticleView{
                 if (this._AddedParticleNum + add_num > this._ParticleNum)
                     add_num = this._ParticleNum - this._AddedParticleNum;
                 for (let i = 0; i < add_num; i++) {
-                    this._updateParticleInfo(this._AddedParticleNum + i, edge_vx, edge_vy, center_x, center_y, angle, current);
+                    this._updateParticleInfo(this._AddedParticleNum + i, left_top_p, top_vec, left_vec, angle, current);
                 }
                 this._AddedParticleNum += add_num;
             } else {
                 //更新过期的粒子
                 for (let i = 0; i < this._ParticleNum; i++) {
                     if (this._Buffer[i * 7 + 4] + this._Buffer[i * 7 + 5] < current) {
-                        this._updateParticleInfo(i, edge_vx, edge_vy, center_x, center_y, angle, current);
+                        this._updateParticleInfo(i, left_top_p, top_vec, left_vec, angle, current);
                     }
                 }
             }
@@ -318,10 +322,33 @@ class ParticleView{
         gl.uniform1f(uTime, current);
         let uAccelerate = gl.getUniformLocation(program, 'uAccelerate');
         gl.uniform2f(uAccelerate, this._AcceletateX, this._AcceletateY);
+        let uEnableFade = gl.getUniformLocation(program, 'uEnableFade');
+        gl.uniform1i(uEnableFade, this._EnableFade ? 1 : 0);
+        let uEnableShrink = gl.getUniformLocation(program, 'uEnableShrink');
+        gl.uniform1i(uEnableShrink, this._EnableShrink ? 1 : 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this._Texture.TextureId);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, this._Buffer)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, this._Buffer);
+
+        let FSIZE = this._Buffer.BYTES_PER_ELEMENT;
+
+        let aPosition = gl.getAttribLocation(program, "aPosition");
+        gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, FSIZE * 7, 0);
+        gl.enableVertexAttribArray(aPosition);
+
+        let aSpeed = gl.getAttribLocation(program, "aSpeed");
+        gl.vertexAttribPointer(aSpeed, 2, gl.FLOAT, false, FSIZE * 7, FSIZE * 2);
+        gl.enableVertexAttribArray(aSpeed);
+
+        let aLife = gl.getAttribLocation(program, "aLife");
+        gl.vertexAttribPointer(aLife, 2, gl.FLOAT, false, FSIZE * 7, FSIZE * 4);
+        gl.enableVertexAttribArray(aLife);
+
+        let aPointSize = gl.getAttribLocation(program, "aPointSize");
+        gl.vertexAttribPointer(aPointSize, 1, gl.FLOAT, false, FSIZE * 7, FSIZE * 6);
+        gl.enableVertexAttribArray(aPointSize);
+        
         gl.drawArrays(gl.POINTS, 0, this._AddedParticleNum);
     }
 
@@ -339,14 +366,17 @@ let VERTEX_SHADER_SRC =
     +"attribute float aPointSize;"
     +"uniform float uTime;"
     +"uniform vec2 uAccelerate;"
+    +"uniform bool uEnableFade;"
+    +"uniform bool uEnableShrink;"
     +"varying float alpha;"
     +"void main() {"
     +"  float use_time = (uTime - aLife.x) / 10.0;"
     +"  float x = aSpeed.y * cos(aSpeed.x) * use_time + 0.5 * uAccelerate.x * use_time * use_time;"
     +"  float y = aSpeed.y * sin(aSpeed.x) * use_time + 0.5 * uAccelerate.y * use_time * use_time;"
     +"  float percent = (uTime - aLife.x) / aLife.y;"
-    +"  alpha = percent > 1.0 ? 0.0 : cos(1.57 * percent);"
-    +"  gl_PointSize = aPointSize;"
+    +"  percent = percent > 1.0 ? 0.0 : cos(1.57 * percent);"
+    +"  alpha = uEnableFade ? percent : 1.0;"
+    +"  gl_PointSize = uEnableShrink ? aPointSize * percent : aPointSize;"
     +"  gl_Position = vec4(x + aPosition.x, y + aPosition.y, 0.0, 1.0);"
     +"}"
 
@@ -360,7 +390,7 @@ let FRAGMENT_SHADER_SRC =
     +"}";
 
 let PARTICLE_VIEW_ID = 0;
-let MAX_PARTICLE_NUM = 100;
+let MAX_PARTICLE_NUM = 500;
 class ParticleManager {
     constructor() {
         this._Inited = false;
@@ -385,6 +415,7 @@ class ParticleManager {
             console.error("init webgl failed");
             return;
         }
+        console.log("webgl info: ", this._GL.getParameter(this._GL.VERSION), this._GL.getParameter(this._GL.SHADING_LANGUAGE_VERSION), this._GL.getParameter(this._GL.VENDOR));
         //编译着色器
         let  vertShader = this._GL.createShader(this._GL.VERTEX_SHADER);
         this._GL.shaderSource(vertShader, VERTEX_SHADER_SRC);
@@ -403,7 +434,7 @@ class ParticleManager {
         let FSIZE = buffer_array.BYTES_PER_ELEMENT;
         this._VBO = this._GL.createBuffer();
         this._GL.bindBuffer(this._GL.ARRAY_BUFFER, this._VBO);
-        this._GL.bufferData(this._GL.ARRAY_BUFFER, buffer_array, this._GL.STATIC_DRAW);
+        this._GL.bufferData(this._GL.ARRAY_BUFFER, buffer_array, this._GL.DYNAMIC_DRAW);
         
         let aPosition = this._GL.getAttribLocation(this._GLProgram, "aPosition");
         this._GL.vertexAttribPointer(aPosition, 2, this._GL.FLOAT, false, FSIZE * 7, 0);
@@ -426,6 +457,7 @@ class ParticleManager {
         this._GL.uniform1i(uTexture, 0);
     
         this._GL.enable(this._GL.BLEND);
+        this._GL.enable(this._GL.SAMPLE_ALPHA_TO_COVERAGE)
         this._GL.blendFunc(this._GL.ONE, this._GL.ONE_MINUS_SRC_ALPHA);
         this._Inited = true;
     }

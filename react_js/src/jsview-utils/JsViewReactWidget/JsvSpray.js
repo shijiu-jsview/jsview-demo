@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-12 18:15:54
+ * @LastEditTime: 2020-06-15 14:11:36
  * @Description: file content
  */
 import React from 'react';
@@ -17,14 +17,16 @@ class HtmlParticleProxyView extends React.Component{
 
     render() {
         let view_width = this.props.setting.deltaWidth === 0 ? 1 : 2 * this.props.setting.deltaWidth;
-        return <div ref={ele => this._Element = ele} style={{width: view_width, height: 1}}/>
+        let view_height = this.props.setting.deltaHeight === 0 ? 1 : 2 * this.props.setting.deltaHeight;
+        return <div ref={ele => this._Element = ele} style={{width: view_width, height: view_height}}/>
     }
 
     componentDidMount() {
         let view_width = this.props.setting.deltaWidth === 0 ? 1 : 2 * this.props.setting.deltaWidth;
+        let view_height = this.props.setting.deltaHeight === 0 ? 1 : 2 * this.props.setting.deltaHeight;
         let view_size = {
             width: view_width,
-            height: 1
+            height: view_height
         }
         this._ParticleViewId = Forge.sParticleManager.addParticle(this.props.setting, this.props.pointImage, view_size, this._Element)
     }
@@ -60,15 +62,17 @@ class JsvSpray extends React.Component {
             this.props.sprayStyle.particleNum,
             add_num_per_frame,
             this.props.sprayStyle.deltaAngle / 180 * 3.1415,
-            this.props.sprayStyle.deltaWidth,
+            this.props.sprayStyle.deltaWidth, this.props.sprayStyle.deltaHeight,
             this.props.sprayStyle.pointSizeMin, this.props.sprayStyle.pointSizeMax,
             this.props.sprayStyle.speedMin, this.props.sprayStyle.speedMax,
             this.props.sprayStyle.lifeMin, this.props.sprayStyle.lifeMax,
-            accelerate_x, accelerate_y
+            accelerate_x, accelerate_y,
+            this.props.sprayStyle.enableFade, this.props.sprayStyle.enableShrink
         );
         let view_width = this.props.sprayStyle.deltaWidth === 0 ? 1 : 2 * this.props.sprayStyle.deltaWidth;
+        let view_height = this.props.sprayStyle.deltaHeight === 0 ? 1 : 2 * this.props.sprayStyle.deltaHeight;
         return ForgeExtension.RootActivity.ViewStore.add(
-            new Forge.ViewInfo(spray_view, {x:0, y:0, width: view_width, height: 1})
+            new Forge.ViewInfo(spray_view, {x:0, y:0, width: view_width, height: view_height})
         );
     }
 
