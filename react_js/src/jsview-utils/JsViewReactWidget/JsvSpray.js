@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-15 14:11:36
+ * @LastEditTime: 2020-06-18 17:53:07
  * @Description: file content
  */
 import React from 'react';
@@ -54,7 +54,7 @@ class JsvSpray extends React.Component {
             texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(this.props.pointRes));
         }
         let spray_view = new Forge.SprayView(texture_setting);
-        let add_num_per_frame = this.props.sprayStyle.addNumSpeed ? this.props.sprayStyle.addNumSpeed : 0.0005;
+        let add_num_per_frame = this.props.sprayStyle.addNumSpeed ? this.props.sprayStyle.addNumSpeed : 0.001;
         let accelerate_x = typeof this.props.sprayStyle.accelerateX !== 'undefined' ? this.props.sprayStyle.accelerateX : 0;
         let accelerate_y = typeof this.props.sprayStyle.accelerateY !== 'undefined' ? this.props.sprayStyle.accelerateY : -100;
         spray_view.SetSprayInfo(

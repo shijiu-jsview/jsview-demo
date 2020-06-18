@@ -1,10 +1,33 @@
 /*
- * @Author: ChenChanghua
- * @Date: 2020-06-01 10:14:08
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-18 16:37:47
- * @Description: file content
- */ 
+ * 【界面概述】
+ * 展示精灵图的用法，包含动图和切图
+ *
+ * 【控件介绍】
+ * JsvSpray：粒子控件
+ *                  pointRes {string} (必需)粒子图案 可选值: url|#FFFFFF|rbga(255,0,0,1.0)
+ *                  sprayStyle {object}  (必需)粒子效果配置
+ * sprayStyle
+ *      type {int} (必需)喷射类型 0: 一次喷射 1: 持续喷射
+ *      particleNum {int} (必需)粒子个数
+ *      deltaAngle {int} (必需)粒子喷射角度范围。如设30则粒子喷射范围为div上边法向正负30度
+ *      deltaWidth {int} (必需)粒子喷射位置宽度范围
+ *      deltaHeight {int} (必需)粒子喷射位置高度范围
+ *      pointSizeMin {int} (必需)粒子尺寸下限(像素)
+ *      pointSizeMax {int} (必需)粒子尺寸上限(像素)
+ *      speedMin {float} (必需)粒子速度下限
+ *      speedMax {float} (必需)粒子速度上限
+ *      lifeMin {int} (必需)粒子生命周期下限(ms)
+ *      lifeMax {int} (必需)粒子生命周期上限(ms)
+ *      accelerateX {float} (必需)水平方向加速度
+ *      accelerateY {float} (必需)垂直方向加速度
+ *      addNumSpeed {float} 持续喷射时，起始粒子添加速度(个/ms), 默认为0.001
+ *      enableFade {boolean} 粒子淡出开关, 默认为false
+ *      enableShrink {boolean} 粒子缩小开关, 默认为false
+ *
+ * 【技巧说明】
+ * Q: 具体参数如何配置?
+ * A: sprayStyle的数值并不直观，需要在示例中调整参数来获得理想效果
+ */
 
 import React from 'react';
 import pointImg from './texture_32.png'
