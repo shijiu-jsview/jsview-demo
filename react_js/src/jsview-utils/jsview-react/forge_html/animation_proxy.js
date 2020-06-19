@@ -69,7 +69,8 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	}
 
 	_EnableCssAnimation() {
-		let animation = this._BuildKeyFrame();
+        let animation = this._BuildKeyFrame();
+        if (animation == null) return;
 		if (animation.keyFrameString != null) {
 			getStaticFrameControl().insertRule(animation.keyFrameString);
 			this._KeyFrameNameToRecycle = animation.name;
@@ -263,10 +264,10 @@ Forge.CssKeyframeAnimation = class extends Forge.KeyFrameAnimation {
 	// Override
 	_BuildKeyFrame() {
 		// Keyframe配置，支持设置给LayoutView.Element(div)即可
-		let keyframes = this._keyFramesSet;
+        let keyframes = this._keyFramesSet;
 		if (keyframes.indexOf("@keyframes") < 0 && keyframes.indexOf("@-webkit-keyframes") < 0) {
 			console.warn("Warning:keyframes array empty");
-			return;
+			return null;
 		}
 		let keyframes_list = keyframes.split(" ");
 		let anim_name = keyframes_list[1];
