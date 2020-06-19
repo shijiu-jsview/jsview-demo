@@ -4,7 +4,7 @@
  *
  * 【控件介绍】
  * JsvSpray：粒子控件
- *                  pointRes {string} (必需)粒子图案 可选值: url|#FFFFFF|rbga(255,0,0,1.0)
+ *                  pointRes {string} (必需)粒子图案 可选值: 绝对路径url|url(相对路径url)|#FFFFFF|rbga(255,0,0,1.0)
  *                  sprayStyle {object}  (必需)粒子效果配置
  * sprayStyle
  *      type {int} (必需)喷射类型 0: 一次喷射 1: 持续喷射
@@ -135,13 +135,13 @@ class MainScene extends FocusBlock{
             accelerateY: 0,
             addNumSpeed: 0.001,
             enableFade: true,
-            enableShrink: true
+            enableShrink: false
         }
         return(
             <div style={{left: 0, top: 0, width: 1920, height: 1080, backgroundColor: "#334C4C"}}>
                 <div style={{left: 200, top: 400, width: 100, height:100, backgroundColor: "#00FF00"}}>
                     {
-                        this.state.count > 0 ? <JsvSpray key={this.state.count} pointRes={window.location.origin + pointImg} sprayStyle={spray_style1}/> : null
+                        this.state.count > 0 ? <JsvSpray key={this.state.count} pointRes={`url(${pointImg})`} sprayStyle={spray_style1}/> : null
                     }
                     <div style={{left: 0, top: 110, width: 200, height: 30, color: "#00AA00", fontSize: "20px"}}>
                         按ok键显示爆炸效果
@@ -151,10 +151,10 @@ class MainScene extends FocusBlock{
                     <JsvSpray pointRes="rgba(0, 255, 0, 1)" sprayStyle={spray_style2}/>
                 </div>
                 <div style={{left: 1000, top: 400, width: 100, height:100, animation: "AnimTranslate 10s linear infinite", backgroundColor: "#00FF00"}}>
-                    <JsvSpray pointRes={window.location.origin + pointImg} sprayStyle={spray_style3}/>
+                    <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style3}/>
                 </div>
                 <div style={{left: 400, top: 20, width: 40, height:40, animation: "Cycle 3s linear infinite"}}>
-                    <JsvSpray pointRes={window.location.origin + pointImg} sprayStyle={spray_style4}/>
+                    <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style4}/>
                 </div>
                 <div style={{left: 400, top: 40, width: 500, height: 100, lineHeight: "100px", textAlign: "center", fontSize: "50px", color: "#FFFFFF"}}>
                     粒子效果

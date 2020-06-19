@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-12 11:17:13
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-18 16:51:24
+ * @LastEditTime: 2020-06-19 09:28:11
  * @Description: file content
  */ 
 import Forge from "../ForgeDefine"
@@ -46,16 +46,27 @@ Texture.COLOR = Symbol("Texture.COLOR");
 class ImageTexutre extends Texture{
     constructor(texture_manager, gl_context, onload, url) {
         super(texture_manager, gl_context, onload);
-        this.Url = url;
-        this._TextureSource = new Image();
-        this._TextureSource.onload = () => {
-            this._setGLTexture();
-            this._Loaded = true;
-            if (this._OnLoad) {
-                this._OnLoad();
+        if (url) {
+            let url_trim = url.trim();
+            if (url_trim.indexOf("http") === 0) {
+                this.Url = url_trim;
+            } else if (url_trim.indexOf("url") === 0) {
+                let index_1 = url_trim.indexOf("(");
+                let index_2 = url_trim.indexOf(")");
+                this.Url = url_trim.substring(index_1 + 1, index_2);
+            } else {
+                this.Url = url;
             }
+            this._TextureSource = new Image();
+            this._TextureSource.onload = () => {
+                this._setGLTexture();
+                this._Loaded = true;
+                if (this._OnLoad) {
+                    this._OnLoad();
+                }
+            }
+            this._TextureSource.src = this.Url;
         }
-        this._TextureSource.src = url;
     }
 }
 
