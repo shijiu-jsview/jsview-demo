@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-01 09:43:35
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-18 17:53:07
+ * @LastEditTime: 2020-06-19 09:33:55
  * @Description: file content
  */
 import React from 'react';
@@ -51,7 +51,14 @@ class JsvSpray extends React.Component {
         if (this.props.pointRes.trim().startsWith("#") || this.props.pointRes.trim().startsWith("rgba")) {
             texture_setting = new Forge.TextureSetting(texture_manager.GetColorTexture(this.props.pointRes));
         } else {
-            texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(this.props.pointRes));
+            let base_url = this.props.pointRes;
+            let image_url = base_url;
+            if (base_url && base_url.indexOf("http") == 0) {
+                image_url = base_url
+            } else if (window.JsView.React.UrlRef) {
+                image_url = new window.JsView.React.UrlRef(this.props.pointRes).href;
+            }
+            texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(image_url));
         }
         let spray_view = new Forge.SprayView(texture_setting);
         let add_num_per_frame = this.props.sprayStyle.addNumSpeed ? this.props.sprayStyle.addNumSpeed : 0.001;
