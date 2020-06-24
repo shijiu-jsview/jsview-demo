@@ -70,6 +70,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 
 	_EnableCssAnimation() {
 		let animation = this._BuildKeyFrame();
+		if (animation == null) return;
 		if (animation.keyFrameString != null) {
 			getStaticFrameControl().insertRule(animation.keyFrameString);
 			this._KeyFrameNameToRecycle = animation.name;
@@ -122,8 +123,8 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		if ((this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0) {
 			let frozen_transform = this._GetFrozenTransform(progress);
 			this._LayoutViewRef.ResetCssTransform(
-					frozen_transform.transform,
-					frozen_transform.transformOrigin);
+				frozen_transform.transform,
+				frozen_transform.transformOrigin);
 		}
 
 		// 注意: OnEnd处理放在transform制作之后
@@ -132,7 +133,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		// 进度信息要异步回调，模拟JsView native的场景
-		window.setTimeout((()=>{
+		window.setTimeout((()=> {
 			this.OnFinalProgress(progress);
 		}).bind(this), 0);
 
@@ -162,7 +163,7 @@ Forge.TranslateAnimation = class extends Forge.KeyFrameAnimation {
 		super("TL", duration, easing);
 
 		this.startX = start_x;
-		this.startY= start_y;
+		this.startY = start_y;
 		this.endX = end_x;
 		this.endY = end_y;
 	}
@@ -171,9 +172,9 @@ Forge.TranslateAnimation = class extends Forge.KeyFrameAnimation {
 	_BuildKeyFrame() {
 		let keyframe_name = "_ForgeAnim_TL_" + (sKeyFrameTokenGenerator++);
 		let keyframe_string = "@keyframes " + keyframe_name + " {"
-				+ "0%{transform:translate3d(" + this.startX + "px," + this.startY + "px,0);}"
-				+ "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
-		return {name:keyframe_name, keyFrameString:keyframe_string};
+			+ "0%{transform:translate3d(" + this.startX + "px," + this.startY + "px,0);}"
+			+ "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
+		return {name: keyframe_name, keyFrameString: keyframe_string};
 	}
 
 	// Override
@@ -255,7 +256,7 @@ Forge.OpacityAnimation = class extends Forge.AnimationDelegate {
 
 Forge.CssKeyframeAnimation = class extends Forge.KeyFrameAnimation {
 	constructor(keyframes_string, duration, easing,
-				width, height) {
+	            width, height) {
 		super("CK" /* [C]cs [K]eyframe */, duration, easing);
 		this._keyFramesSet = keyframes_string;
 	}
@@ -266,7 +267,7 @@ Forge.CssKeyframeAnimation = class extends Forge.KeyFrameAnimation {
 		let keyframes = this._keyFramesSet;
 		if (keyframes.indexOf("@keyframes") < 0 && keyframes.indexOf("@-webkit-keyframes") < 0) {
 			console.warn("Warning:keyframes array empty");
-			return;
+			return null;
 		}
 		let keyframes_list = keyframes.split(" ");
 		let anim_name = keyframes_list[1];
@@ -274,7 +275,7 @@ Forge.CssKeyframeAnimation = class extends Forge.KeyFrameAnimation {
 			anim_name = anim_name.substr(0, anim_name.indexOf("{"));
 		}
 
-		return {name:anim_name, keyFrameString:null};
+		return {name: anim_name, keyFrameString: null};
 	}
 };
 
@@ -297,7 +298,7 @@ Forge.CssTransitionAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		let transition_str = "";
-		for(let i =0; i<transitions.length; i++) {
+		for (let i = 0; i < transitions.length; i++) {
 			let timing_function = "linear";
 			let transition = transitions[i];
 			if (transition["tf"]) {
