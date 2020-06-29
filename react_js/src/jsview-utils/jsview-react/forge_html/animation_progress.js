@@ -39,18 +39,6 @@ let __parseTransform = (transform) => {
 	return null;
 }
 
-function _EnsureKeyFramesRule() {
-	let keyframe_control = getStaticFrameControl();
-	if (!keyframe_control.hasRule("_AnimateProgress0")) {
-		let animate_progress = "@keyframes _AnimateProgress0" +
-			"{0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(100px,0,0)}}";
-		keyframe_control.insertRule(animate_progress);
-		animate_progress = "@keyframes _AnimateProgress1" +
-			"{0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(100px,0,0)}}";
-		keyframe_control.insertRule(animate_progress);
-	}
-}
-
 function _BuildTracer(layout_view) {
 	let children = layout_view.Element.children;
 	let found_tracer = null;
@@ -74,10 +62,11 @@ function _BuildTracer(layout_view) {
 
 let sIdToken = 0;
 
-class AnimateProgress {
+class AnimationProgress {
 	constructor(layout_view) {
 		this._TracerDiv = _BuildTracer(layout_view);
 		this._IdToken = (sIdToken++);
+		this._KeyFrameName = null;
 
 		if (!this._TracerDiv.hasOwnProperty("_ForgeProgressToken")) {
 			this._TracerDiv._ForgeProgressToken = 0;
@@ -89,12 +78,19 @@ class AnimateProgress {
 		});
 	}
 
-	Start(host_animation) {
+	Start(host_animation, starter_progress) {
 		// 保证可用的Animation动画
-		_EnsureKeyFramesRule();
-		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2;
-		this._TracerDiv.style.animation = animationToStyle(host_animation,
-							"_AnimateProgress" + (this._TracerDiv._ForgeProgressToken));
+		if (this._KeyFrameName) {
+			console.error("Error: Asset!! should Stop before start");
+		}
+		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2
+		this._KeyFrameName = this._BuildTraceKeyFrame(
+				starter_progress,
+				this._IdToken,
+				this._TracerDiv._ForgeProgressToken);
+		this._TracerDiv.style.animation = animationToStyle(host_animation, this._KeyFrameName);
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
 		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
@@ -102,7 +98,15 @@ class AnimateProgress {
 	Stop() {
 		let progress = this.GetProgress();
 		this._TracerDiv.style.animation = null;
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
 		this._TracerDiv.removeEventListener("animationend", this._OnEndListener);
+
+		if (this._KeyFrameName) {
+			this._RemoveTraceKeyFrame(this._KeyFrameName);
+			this._KeyFrameName = null;
+		}
+
 		return progress;
 	}
 
@@ -121,6 +125,21 @@ class AnimateProgress {
 			return 1;
 		}
 	}
+
+	_BuildTraceKeyFrame(starter_progress/* 0~1 */, token, dynamic_count) {
+		let keyframe_name = "_AnimateProgress_" + token + "_" + dynamic_count;
+		let keyframe_control = getStaticFrameControl();
+		let animate_progress = "@keyframes " + keyframe_name
+			+ "{0%{transform:translate3d(" + Math.floor(starter_progress * 100) + ",0,0)}"
+			+ "100%{transform:translate3d(100px,0,0)}}";
+		keyframe_control.insertRule(animate_progress);
+		return keyframe_name;
+	}
+
+	_RemoveTraceKeyFrame(name) {
+		let keyframe_control = getStaticFrameControl();
+		keyframe_control.removeRule(name);
+	}
 }
 
-export default AnimateProgress;
+export default AnimationProgress;

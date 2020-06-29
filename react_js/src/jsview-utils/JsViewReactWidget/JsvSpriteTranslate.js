@@ -57,6 +57,7 @@ class __SharedControl extends SpriteControlBase{
 		return this;
 	}
 
+	// start_x, start_y，必须要在当前位置到target的范围之外，范围之内目前不支持
 	enableRepeatFrom(start_x, start_y) {
 		if (!this._ComfirmMode(0)) return;
 
