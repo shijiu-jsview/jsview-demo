@@ -59,6 +59,8 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 			event.stopPropagation();
 			that._PerformAnimationEnd(true);
 		}
+
+		this._CurrentEndEventFunc = null;
 	}
 
 	Start(layout_view) {
@@ -69,7 +71,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 			// 有启动偏移
 			this._EnableStarterAnimation();
 		} else {
-			this._EnableCssAnimation(this._BuildKeyFrame(), this._OnEndEvent);
+			this._EnableCssAnimation(this._BuildKeyFrame(), this._OnEndEvent, 0);
 		}
 	}
 
@@ -79,10 +81,11 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	}
 
 	_EnableStarterAnimation() {
+		let end_func = this._OnEndEvent;
 		if (this.repeatTimes != 1) {
 			// 有动画Repeat处理
 			let that = this;
-			let end_func = ()=>{
+			end_func = ()=> {
 				if (that._Progress != null) {
 					that._Progress.Stop();
 				}
@@ -91,27 +94,24 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 				if (that.repeatTimes > 0) {
 					that.repeatTimes -= 1;
 				}
-				that._EnableCssAnimation(that._BuildKeyFrame(), that._OnEndEvent);
+				that._EnableCssAnimation(that._BuildKeyFrame(), that._OnEndEvent, 0);
 			};
-
-			// 首次动画，repeat临时调成1次，在此动画结束后，再开始循环
-			let saved_repeat_time = this.repeatTimes;
-			let saved_duration = this.duration;
-			this.repeatTimes = 1;
-			this.duration = this.duration * (1 - this.enableStartPos);
-
-			this._EnableCssAnimation(this._BuildStarterKeyFrame(), end_func);
-
-			// 恢复存储值
-			this.repeatTimes = saved_repeat_time;
-			this.duration = saved_duration;
-		} else {
-			// 只执行一遍
-			this._EnableCssAnimation(this._BuildStarterKeyFrame(), this._OnEndEvent);
 		}
+
+		// 首次动画，repeat临时调成1次，在此动画结束后，再开始循环
+		let saved_repeat_time = this.repeatTimes;
+		let saved_duration = this.duration;
+		this.repeatTimes = 1;
+		this.duration = this.duration * (1 - this.enableStartPos);
+
+		this._EnableCssAnimation(this._BuildStarterKeyFrame(), end_func, this.enableStartPos);
+
+		// 恢复存储值
+		this.repeatTimes = saved_repeat_time;
+		this.duration = saved_duration;
 	}
 
-	_EnableCssAnimation(animation, on_end_func) {
+	_EnableCssAnimation(animation, on_end_func, start_position) {
 		if (animation == null) return;
 		if (animation.keyFrameString != null) {
 			getStaticFrameControl().insertRule(animation.keyFrameString);
@@ -125,7 +125,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		// 创建Progress跟踪器
 		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0) {
 			this._Progress = new AnimationProgress(this._LayoutViewRef);
-			this._Progress.Start(this, 0);
+			this._Progress.Start(this, start_position);
 		}
 
 		let style_animation = animationToStyle(this, anim_name);
@@ -138,14 +138,18 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 			html_element.style.webkitAnimation = style_animation;
 			html_element.addEventListener("webkitAnimationEnd", on_end_func);
 		}
+		this._CurrentEndEventFunc = on_end_func;
 	}
 
 	_PerformAnimationEnd(on_end) {
 		// 清理OnEndListener监听，否则会重复收到
-		if (!window.jsvInAndroidWebView) {
-			this._LayoutViewRef.Element.removeEventListener("animationend", this._OnEndEvent);
-		} else {
-			this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._OnEndEvent);
+		if (this._CurrentEndEventFunc != null) {
+			if (!window.jsvInAndroidWebView) {
+				this._LayoutViewRef.Element.removeEventListener("animationend", this._CurrentEndEventFunc);
+			} else {
+				this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._CurrentEndEventFunc);
+			}
+			this._CurrentEndEventFunc = null;
 		}
 
 		if (this._Progress == null) {

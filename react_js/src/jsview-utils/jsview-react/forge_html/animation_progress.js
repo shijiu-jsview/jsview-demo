@@ -130,7 +130,7 @@ class AnimationProgress {
 		let keyframe_name = "_AnimateProgress_" + token + "_" + dynamic_count;
 		let keyframe_control = getStaticFrameControl();
 		let animate_progress = "@keyframes " + keyframe_name
-			+ "{0%{transform:translate3d(" + Math.floor(starter_progress * 100) + ",0,0)}"
+			+ "{0%{transform:translate3d(" + Math.floor(starter_progress * 100) + "px,0,0)}"
 			+ "100%{transform:translate3d(100px,0,0)}}";
 		keyframe_control.insertRule(animate_progress);
 		return keyframe_name;
