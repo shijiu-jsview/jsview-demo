@@ -242,6 +242,12 @@ class LayoutViewBase {
         }
     }
 
+    EnableDivTouch(ele, setting) {
+        if (ele.reactEventHandlers && ele.reactEventHandlers.onClick) {
+            this.Element.onclick = ele.reactEventHandlers.onClick
+        }
+    }
+
     RemoveView(child_view_to_remove) {
         for (var i = 0; i < this.ChildViews.length; i++) {
             if (this.ChildViews[i] === child_view_to_remove) {
