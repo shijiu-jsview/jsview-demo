@@ -5,10 +5,12 @@ div{
   position: absolute;
   background-size: 100% 100%;
   white-space: pre-wrap;
+  pointer-events: none;
 }
 
 img{
   position: absolute;
+  pointer-events: none;
 }
 
 

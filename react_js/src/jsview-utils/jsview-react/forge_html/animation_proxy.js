@@ -66,7 +66,10 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	Start(layout_view) {
 		super.Start(layout_view);
 		// Keyframe动画启动时，清理transform，以保证动画行为正确
-		layout_view.ResetCssTransform(null, null);
+        layout_view.ResetCssTransform(null, null);
+        if (layout_view.Element) {
+            layout_view.Element.style.pointerEvents = "auto"
+        }
 		if (this.enableStartPos > 0) {
 			// 有启动偏移
 			this._EnableStarterAnimation();

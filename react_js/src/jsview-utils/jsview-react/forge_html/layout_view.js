@@ -244,7 +244,13 @@ class LayoutViewBase {
 
     EnableDivTouch(ele, setting) {
         if (ele.reactEventHandlers && ele.reactEventHandlers.onClick) {
-            this.Element.onclick = ele.reactEventHandlers.onClick
+            this.Element.onclick = (ev) => {
+                ele.reactEventHandlers.onClick();
+                if (ev.preventDefault) {
+                    ev.preventDefault()
+                }
+            }
+            this.Element.style.pointerEvents = "auto"
         }
     }
 
