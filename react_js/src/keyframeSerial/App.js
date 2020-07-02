@@ -32,9 +32,9 @@ class MainScene extends FocusBlock{
         this._KeyFrameControl = getKeyFramesGroup();
         this._ActiveKeyFrameName = null;
         this._CurrentOffsetX = 0;
-        this._LoopLeft = 5;
         this.state = {
             keyAnimation: null,
+            loopLeft:5
         };
     }
 
@@ -54,24 +54,22 @@ class MainScene extends FocusBlock{
             this._ActiveKeyFrameName = null;
         }
 
-        this._LoopLeft--;
-        if (this._LoopLeft == 0) {
-            console.log("OnEnd");
-            return;
+        let left_loop = this.state.loopLeft - 1;
+        if (left_loop > 0) {
+            this._ActiveKeyFrameName = "Frame" + (sAnimIndexToken++);
+            let keyframe = "@keyframes " + this._ActiveKeyFrameName + " {";
+            let origin_x = this._CurrentOffsetX;
+            this._CurrentOffsetX += 300;
+            keyframe += "0%{transform:translate3d(" + origin_x + "px,0px,0px)}";
+            keyframe += "100%{transform:translate3d(" + this._CurrentOffsetX + "px,0px,0px)}";
+            keyframe += "}";
+
+            this._KeyFrameControl.insertRule(keyframe);
         }
 
-        this._ActiveKeyFrameName = "Frame" + (sAnimIndexToken++);
-        let keyframe = "@keyframes " + this._ActiveKeyFrameName + " {";
-        let origin_x = this._CurrentOffsetX;
-        this._CurrentOffsetX += 300;
-        keyframe += "0%{transform:translate3d(" + origin_x + "px,0px,0px)}";
-        keyframe += "100%{transform:translate3d(" + this._CurrentOffsetX + "px,0px,0px)}";
-        keyframe += "}";
-
-        this._KeyFrameControl.insertRule(keyframe);
-
         this.setState({
-            keyAnimation: this._ActiveKeyFrameName + " 2s linear",
+            keyAnimation: (left_loop > 0 ? this._ActiveKeyFrameName + " 2s linear" : null),
+            loopLeft: left_loop,
         })
     }
 
@@ -86,11 +84,13 @@ class MainScene extends FocusBlock{
                 left: 30,
                 height: 50,
                 width: 50,
-                backgroundColor:"#0000FF",
+                color: "#FFFFFF",
+                fontSize: "20px",
+                backgroundColor:"#00F0F0",
                 animation: this.state.keyAnimation,
             }}
             onAnimationEnd={()=>{that._animateNext()}}
-        />)
+        >{this.state.loopLeft}</div>)
     }
 }
 
