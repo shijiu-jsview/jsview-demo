@@ -121,6 +121,11 @@ let demoInfos = [
         "path": "/users/particle",
         "class": lazy(() => import('../sprayView/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "动态KeyFrame",
+        "path": "/users/keyframeSerial",
+        "class": lazy(() => import('../keyframeSerial/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
