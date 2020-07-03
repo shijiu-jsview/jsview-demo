@@ -147,13 +147,13 @@ class MainScene extends FocusBlock{
                         按ok键显示爆炸效果
                     </div>
                 </div>
-                <div style={{left: 600, top: 400, width: 10, height:100, animation: "AnimRotate 3s linear infinite", backgroundColor: "#00FF00"}}>
+                <div style={{left: 600, top: 400, width: 10, height:100, animation: "SprayAnimRotate 3s linear infinite", backgroundColor: "#00FF00"}}>
                     <JsvSpray pointRes="rgba(0, 255, 0, 1)" sprayStyle={spray_style2}/>
                 </div>
-                <div style={{left: 1000, top: 400, width: 100, height:100, animation: "AnimTranslate 10s linear infinite", backgroundColor: "#00FF00"}}>
+                <div style={{left: 1000, top: 400, width: 100, height:100, animation: "SprayAnimTranslate 10s linear infinite", backgroundColor: "#00FF00"}}>
                     <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style3}/>
                 </div>
-                <div style={{left: 400, top: 20, width: 40, height:40, animation: "Cycle 3s linear infinite"}}>
+                <div style={{left: 400, top: 20, width: 40, height:40, animation: "SprayCycle 3s linear infinite"}}>
                     <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style4}/>
                 </div>
                 <div style={{left: 400, top: 40, width: 500, height: 100, lineHeight: "100px", textAlign: "center", fontSize: "50px", color: "#FFFFFF"}}>

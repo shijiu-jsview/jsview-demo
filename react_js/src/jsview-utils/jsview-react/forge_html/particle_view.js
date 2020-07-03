@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-12 11:17:13
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-06-19 09:28:11
+ * @LastEditTime: 2020-07-01 09:26:44
  * @Description: file content
  */ 
 import Forge from "../ForgeDefine"
@@ -75,7 +75,7 @@ class ColorCanvas{
         this._Canvas = window.originDocument.createElement("canvas");
         this._Canvas.setAttribute("width", "1px");
         this._Canvas.setAttribute("height", "1px");
-        this._Canvas.setAttribute("style", "position: absolute;");
+        this._Canvas.setAttribute("style", "position: absolute; pointer-events: none;");
         document.body.appendChild(this._Canvas);
 
         this._GL = this._Canvas.getContext("2d");
@@ -418,7 +418,7 @@ class ParticleManager {
         this._Canvas = window.originDocument.createElement("canvas");
         this._Canvas.setAttribute("width", window.innerWidth + "px");
         this._Canvas.setAttribute("height", window.innerHeight + "px");
-        this._Canvas.setAttribute("style", "position: absolute;");
+        this._Canvas.setAttribute("style", "position: absolute; pointer-events: none;");
         document.body.appendChild(this._Canvas);
 
         this._GL = this._Canvas.getContext('webgl');

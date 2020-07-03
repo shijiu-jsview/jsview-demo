@@ -126,18 +126,23 @@ class JsvSpriteImg extends React.Component{
 
         if (!frame_info_list) { return; }
         let anim_name_base = this._getAnimNameBase();
-        let frame_percent = 1 / (frame_info_list.length - 1);
+        let frame_percent = 1 / (frame_info_list.length);
         let anim_name_clip = anim_name_base + '-clip';
         let anim_name_image = anim_name_base + '-image'
         let image_keyframs = '@keyframes ' + anim_name_image + ' {'
         let clip_keyframs =  '@keyframes ' + anim_name_clip + ' {'
 
-        for (let i = 0; i < frame_info_list.length; i++) {
-            let item = frame_info_list[i];
+        for (let i = 0; i < frame_info_list.length + 1; i++) {
+            let item;
+            if (i !== frame_info_list.length) {
+                item = frame_info_list[i];
+            } else {
+                item = frame_info_list[0];
+            }
 
             // Header
             let header;
-            if (i != frame_info_list.length - 1) {
+            if (i != frame_info_list.length) {
                 header = parseFloat(frame_percent * i * 100).toFixed(2) + '% {';
             } else {
                 header = '100% {';
@@ -147,15 +152,15 @@ class JsvSpriteImg extends React.Component{
 
             if (item.source) {
                 const tr = _getTransformInfo(item.source, item.target, canvas_width, canvas_height);
+                let clip_trans = _createTransformStyle(tr.csw, tr.csh, tr.cx, tr.cy);
+                let image_trans = _createTransformStyle(tr.sw, tr.sh, tr.x, tr.y);
 
                 let tr_str = "";
-                tr_str = tr_str + "transform:" + _createTransformStyle(tr.csw, tr.csh, tr.cx, tr.cy)
-                        + ';transform-origin:left top;';
+                tr_str = tr_str + "transform:" + clip_trans + ';transform-origin:left top;';
                 clip_keyframs += tr_str;
 
                 tr_str = "";
-                tr_str = tr_str + "transform:" + _createTransformStyle(tr.sw, tr.sh, tr.x, tr.y)
-                        + ';transform-origin:left top;';
+                tr_str = tr_str + "transform:" + image_trans + ';transform-origin:left top;';
                 image_keyframs += tr_str;
             }
 
@@ -175,10 +180,6 @@ class JsvSpriteImg extends React.Component{
             this._KeyFrameNames.image = anim_name_image;
             this._KeyFrameNames.valid = true;
         }
-
-        // console.log("image transform=" + image_keyframs);
-        // console.log("clip transform=" + clip_keyframs);
-
         let cache = this._AnimateFrameCache;
 
         cache.clipAnimName = anim_name_base + '-clip';
@@ -215,17 +216,15 @@ class JsvSpriteImg extends React.Component{
     _AnalyzeProp() {
         if (this.props.spriteInfo.frames.length == 1 || this.props.stop) {
             // 单图模式
-            if (this._FrozeFrameCache.imageStyle.backgroundImage != this.props.imageUrl) {
-                // 解析图片信息
-                this._updateFrozeFrameCache(
-                    this.props.imageUrl,
-                    this.props.spriteInfo.frames,
-                    this.props.viewSize.w,
-                    this.props.viewSize.h,
-                    this.props.spriteInfo.meta.size.w,
-                    this.props.spriteInfo.meta.size.h
-                );
-            }
+            // 解析图片信息
+            this._updateFrozeFrameCache(
+                this.props.imageUrl,
+                this.props.spriteInfo.frames,
+                this.props.viewSize.w,
+                this.props.viewSize.h,
+                this.props.spriteInfo.meta.size.w,
+                this.props.spriteInfo.meta.size.h
+            );
 
             return {
                 clipStyle: this._FrozeFrameCache.clipStyle,
@@ -247,9 +246,9 @@ class JsvSpriteImg extends React.Component{
 
             // 使用duration和loop信息更新动画设定
             this._AnimateFrameCache.clipStyle.animation =
-                this._AnimateFrameCache.clipAnimName + " " + this.props.duration + "s steps(1,start) " + this.props.loop;
+            this._AnimateFrameCache.clipAnimName + " " + this.props.duration + "s steps(1,start) " + this.props.loop;
             this._AnimateFrameCache.imageStyle.animation =
-                this._AnimateFrameCache.imageAnimName + " " + this.props.duration + "s steps(1,start) " + this.props.loop;
+            this._AnimateFrameCache.imageAnimName + " " + this.props.duration + "s steps(1,start) " + this.props.loop;
 
             return {
                 clipStyle: this._AnimateFrameCache.clipStyle,
@@ -270,7 +269,6 @@ class JsvSpriteImg extends React.Component{
 
     render() {
         let transform_style = this._AnalyzeProp();
-
         return (
             <div id="canvas">
                 <div id="clip" style={{...transform_style.clipStyle}}>

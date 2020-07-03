@@ -81,7 +81,7 @@ class MainScene extends FocusBlock {
         let x = (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
         let y = (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
         return (
-            <div style={{backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * 1.05, height: (item.blocks.h - 10)* 1.05, color: "#FF0000", animation: "focusScale 0.2s"}}>
+            <div style={{backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * 1.05, height: (item.blocks.h - 10)* 1.05, color: "#FF0000", animation: "NinePatchDemo_FocusScale 0.2s"}}>
                 { item.content }
             </div>
         )
@@ -89,7 +89,7 @@ class MainScene extends FocusBlock {
 
     _RenderBlur(item, callback) {
         return (
-            <div style={{backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 0.2s"}}
+            <div style={{backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "NinePatchDemo_BlurScale 0.2s"}}
             onAnimationEnd={callback}>
                 { item.content }
             </div>
