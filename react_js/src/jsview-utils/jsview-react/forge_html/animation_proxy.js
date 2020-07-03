@@ -228,12 +228,12 @@ Forge.TranslateAnimation = class extends Forge.KeyFrameAnimation {
 	// Override
 	_BuildStarterKeyFrame() {
 		if (this.enableStartPos > 0) {
-			let start_x = (this.endX - this.StartX) * this.enableStartPos + this.StartX;
-			let start_y = (this.endY - this.StartY) * this.enableStartPos + this.StartY;
+			let start_x = (this.endX - this.startX) * this.enableStartPos + this.startX;
+			let start_y = (this.endY - this.startY) * this.enableStartPos + this.startY;
 			let keyframe_name = "_ForgeAnim_TL_" + (sKeyFrameTokenGenerator++);
 			let keyframe_string = "@keyframes " + keyframe_name + " {"
 				+ "0%{transform:translate3d(" + start_x + "px," + start_y + "px,0);}"
-				+ "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
+                + "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
 			return {name: keyframe_name, keyFrameString: keyframe_string};
 		} else {
 			console.error("Error: no enabled starter position");
