@@ -17,8 +17,8 @@ public class ViewLoader {
 	private JsView mJsView;
 	private long mLastKeyUpTime = 0;
 
-	private static final String sJsViewEngineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
-	private static final String sAppUrl = BuildConfig.APP_URL;
+	private String sJsViewEngineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
+	private String sAppUrl = BuildConfig.APP_URL;
 
 	public ViewLoader(Activity activity) {
 		mActivity = activity;
@@ -35,6 +35,18 @@ public class ViewLoader {
 
 		// 提前准备SDK, devtools 调试端口为9226
 		JsView.requestSdk(activity, 9226);
+	}
+
+	public void resetUrl(String forge_url, String app_url) {
+		sJsViewEngineUrl = forge_url == null || forge_url.isEmpty() ? sJsViewEngineUrl : forge_url;
+		sAppUrl = app_url == null || app_url.isEmpty() ? sAppUrl : app_url;
+	}
+
+	public void reloadUrl(String forge_url, String app_url) {
+		if (app_url != null && !app_url.isEmpty()) {
+			String forge_u = forge_url == null || forge_url.isEmpty() ? sJsViewEngineUrl : forge_url;
+			mJsView.loadUrl2(forge_u, app_url);
+		}
 	}
 
 	public void onKeyDownForDebugReload(KeyEvent event) {

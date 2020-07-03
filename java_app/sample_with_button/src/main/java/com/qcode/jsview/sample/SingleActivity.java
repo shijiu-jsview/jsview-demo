@@ -1,6 +1,10 @@
 package com.qcode.jsview.sample;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -22,14 +26,34 @@ public class SingleActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_main);
 
 		mViewLoader = new ViewLoader(this);
-
+		if (savedInstanceState != null) {
+			String forge_url = savedInstanceState.getString("forgeUrl", "");
+			String app_url = savedInstanceState.getString("appUrl", "");
+			mViewLoader.resetUrl(forge_url, app_url);
+		}
 		mViewLoader.startJsView();
 		// 创建"点击开始"按钮
 		//StarterButton.setupButton(this, mViewLoader);
+		registerReceiver();
+	}
+
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String forge_url = intent.getStringExtra("forgeUrl");
+			String app_url = intent.getStringExtra("appUrl");
+			Log.d(TAG, "receive broadcast " + forge_url + " " + app_url);
+			mViewLoader.reloadUrl(forge_url, app_url);
+		}
+	};
+
+	private void registerReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("com.qcast.jsviewDemo.resetUrl");
+		this.registerReceiver(mReceiver, filter);
 	}
 
 	@Override
