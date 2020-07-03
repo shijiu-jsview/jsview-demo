@@ -1,4 +1,4 @@
-@keyframes AnimTranslate {
+@keyframes SprayAnimTranslate {
     0% {
       transform: translate3d(0, 0, 0);
     }
@@ -16,7 +16,7 @@
     }
   }
   
-  @keyframes AnimRotate {
+  @keyframes SprayAnimRotate {
     from {
       transform: rotate3d(0, 0, 1, 0);
     }
@@ -25,7 +25,7 @@
     }
   }
 
-  @keyframes Translate{
+  @keyframes SprayTranslate{
       from{
           transform: translate3d(0,0,0);
       }
@@ -34,7 +34,7 @@
       }
   }
 
-  @keyframes Cycle{
+  @keyframes SprayCycle{
       0% {
           transform: translate3d(0,0,0);
       }
