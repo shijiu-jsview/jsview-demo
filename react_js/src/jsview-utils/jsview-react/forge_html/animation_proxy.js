@@ -19,9 +19,23 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 		this.repeatTimes = 1;
 		this.delayedTime = 0;
 		this.enableFlags = -1;//default invalid
+		this._InnerFlags = 0;
 		this.enableStartPos = 0;
 
 		this._Progress = null;
+	}
+
+	Start(layout_view) {
+		// 融合EnableFlags
+		if (this._InnerFlags != 0) {
+			if (this.enableFlags != -1) {
+				this.enableFlags |= this._InnerFlags;
+			} else {
+				this.enableFlags = this._InnerFlags;
+			}
+		}
+
+		super.Start(layout_view);
 	}
 
 	EnableDelay(delay) {
@@ -47,12 +61,26 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 		this.enableFlags = enable;
 		return this; // 支持链式操作
 	};
+
+	// Override
+	OnNewListener(listener) {
+		if (listener.OnAnimFinal) {
+			this._InnerFlags |= Forge.AnimationEnable.AckFinalProgress;
+		}
+
+		if (listener.OnAnimRepeat) {
+			this._InnerFlags |= Forge.AnimationEnable.AckRepeat;
+		}
+	}
 }
 
 Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	constructor(type, duration, easing) {
 		super(type, duration, easing);
 		this._KeyFrameNameToRecycle = null;
+
+		this._TestRepeat = this._TestRepeat.bind(this);
+		this._LatestProgressValue = 0;
 
 		let that = this;
 		this._OnEndEvent = (event) => {
@@ -97,6 +125,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 				if (that.repeatTimes > 0) {
 					that.repeatTimes -= 1;
 				}
+				this.OnRepeatEvent();
 				that._EnableCssAnimation(that._BuildKeyFrame(), that._OnEndEvent, 0);
 			};
 		}
@@ -126,9 +155,16 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		let html_element = this._LayoutViewRef.Element;
 
 		// 创建Progress跟踪器
-		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0) {
+		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0
+			|| (this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0
+			|| (this.enableFlags & Forge.AnimationEnable.AckRepeat) != 0) {
 			this._Progress = new AnimationProgress(this._LayoutViewRef);
 			this._Progress.Start(this, start_position);
+
+			if ((this.enableFlags & Forge.AnimationEnable.AckRepeat) != 0) {
+				this._LatestProgressValue = 0;
+				Forge.sRenderBridge.RegisterPerFrameCallback(this._TestRepeat);
+			}
 		}
 
 		let style_animation = animationToStyle(this, anim_name);
@@ -163,12 +199,17 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 			return;
 		}
 
+		if ((this.enableFlags & Forge.AnimationEnable.AckRepeat) != 0) {
+			Forge.sRenderBridge.UnregisterPerFrameCallback(this._TestRepeat);
+		}
+
 		let progress = this._Progress.Stop();
 		if (on_end) {
 			// 修正可能产生的进度为0.999的异常数值
 			progress = 1;
 		}
 
+		// 根据进度状态，保持动画最后状态
 		if ((this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0) {
 			let frozen_transform = this._GetFrozenTransform(progress);
 			this._LayoutViewRef.ResetCssTransform(
@@ -182,15 +223,26 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		// 进度信息要异步回调，模拟JsView native的场景
-		window.setTimeout((()=> {
-			this.OnFinalProgress(progress);
-		}).bind(this), 0);
+		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0) {
+			window.setTimeout((()=> {
+				this.OnFinalProgress(progress);
+			}).bind(this), 0);
+		}
 
 		// 回收KeyFrame
 		if (this._KeyFrameNameToRecycle != null) {
 			getStaticFrameControl().removeRule(this._KeyFrameNameToRecycle);
 			this._KeyFrameNameToRecycle = null;
 		}
+	}
+
+	_TestRepeat() {
+		let progress_value = this._Progress.GetProgress();
+		if (this._LatestProgressValue > progress_value) {
+			this.OnRepeatEvent();
+		}
+
+		this._LatestProgressValue = progress_value;
 	}
 
 	// 由子类集成，创建动画对应的keyframe
@@ -405,4 +457,5 @@ Forge.AnimationEnable = {
 	ReleaseAfterEndCallback: 1, // 0000 0000 0001
 	KeepTransform: 2, // 0000 0000 0010
 	AckFinalProgress: 4, // 0000 0000 0000 0100
+	AckRepeat: 8, // 0000 0000 0000 1000
 };

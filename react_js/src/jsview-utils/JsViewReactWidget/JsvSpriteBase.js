@@ -18,11 +18,17 @@ class JsvControl {
 		this._EndCallback = null;
 		this._Token = 0;
 		this._Repeat = false;
+		this._OnRepeatCallback = null;
 		this._SpriteView = null;
 	}
 
-	setRepeat(enable) {
+	setRepeat(enable, repeat_callback) {
         this._Repeat = enable;
+		if (enable) {
+			this._OnRepeatCallback = repeat_callback;
+		} else {
+			this._OnRepeatCallback = null;
+		}
         return this;
 	}
 
@@ -120,6 +126,14 @@ class JsvControl {
 			.OnFinalProgress((progress)=>{
 				that._OnPaused((repeat_starts != null ? repeat_starts : froms), memo_tos, progress);
 			});
+
+		if (this._OnRepeatCallback) {
+			listener.OnRepeat(()=>{
+				if (that._OnRepeatCallback) {
+					that._OnRepeatCallback();
+				}
+			});
+		}
 
 		anim.AddAnimationListener(listener);
 		anim.Enable(Forge.AnimationEnable.AckFinalProgress | Forge.AnimationEnable.KeepTransform);
