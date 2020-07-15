@@ -128,15 +128,15 @@ class JsvControl {
 			});
 
 		if (this._OnRepeatCallback) {
-			listener.OnRepeat(()=>{
+			listener.OnRepeat((times)=>{
 				if (that._OnRepeatCallback) {
-					that._OnRepeatCallback();
+					that._OnRepeatCallback(times);
 				}
 			});
 		}
 
 		anim.AddAnimationListener(listener);
-		anim.Enable(Forge.AnimationEnable.AckFinalProgress | Forge.AnimationEnable.KeepTransform);
+		anim.Enable(Forge.AnimationEnable.KeepTransform);
 		if(this._Repeat) {
             anim.EnableInfinite();
 		}

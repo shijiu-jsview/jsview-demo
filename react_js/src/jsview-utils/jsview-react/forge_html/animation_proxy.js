@@ -19,23 +19,9 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 		this.repeatTimes = 1;
 		this.delayedTime = 0;
 		this.enableFlags = -1;//default invalid
-		this._InnerFlags = 0;
 		this.enableStartPos = 0;
 
 		this._Progress = null;
-	}
-
-	Start(layout_view) {
-		// 融合EnableFlags
-		if (this._InnerFlags != 0) {
-			if (this.enableFlags != -1) {
-				this.enableFlags |= this._InnerFlags;
-			} else {
-				this.enableFlags = this._InnerFlags;
-			}
-		}
-
-		super.Start(layout_view);
 	}
 
 	EnableDelay(delay) {
@@ -58,18 +44,32 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 	}
 
 	Enable(enable) {
-		this.enableFlags = enable;
+		this._EnableFlagsInner(enable);
 		return this; // 支持链式操作
 	};
 
 	// Override
 	OnNewListener(listener) {
+		let new_flags = 0;
 		if (listener.OnAnimFinal) {
-			this._InnerFlags |= Forge.AnimationEnable.AckFinalProgress;
+			new_flags |= Forge.AnimationEnable.AckFinalProgress;
 		}
 
 		if (listener.OnAnimRepeat) {
-			this._InnerFlags |= Forge.AnimationEnable.AckRepeat;
+			new_flags |= Forge.AnimationEnable.AckRepeat;
+		}
+
+		if (new_flags != 0) {
+			this._EnableFlagsInner(new_flags);
+		}
+	}
+
+	_EnableFlagsInner(new_flags) {
+		if (this.enableFlags != -1) {
+			this.enableFlags |= new_flags;
+		} else {
+			// 首次设置
+			this.enableFlags = new_flags;
 		}
 	}
 }
