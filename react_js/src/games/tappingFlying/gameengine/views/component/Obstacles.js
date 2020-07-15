@@ -4,7 +4,7 @@
 import React from 'react';
 import {createImpactTracer, createImpactCallback} from '../../../../../jsview-utils/jsview-react/index_widget';
 import {JsvSpriteTranslate, TranslateControl} from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
-import JsvSpriteAnim from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim} from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import Game from "../../common/Game"
 
 import ScrollPage from "./ScrollPage"

@@ -1,5 +1,5 @@
 import React from 'react';
-import './JsvSpriteImg.css';
+import './JsvSpriteAnim.css';
 import {getKeyFramesGroup} from './JsvDynamicKeyFrames'
 
 function _getTransformInfo(source_obj, target_obj, canvas_width, canvas_height) {
@@ -35,8 +35,33 @@ function _createTransformStyle(w_scale, h_scale, x, y) {
     return output;
 }
 
+class SpriteController{
+    constructor() {
+        this._SpriteImage = null;
+        this.Used = false;
+    }
+
+    _setSpriteImg(sprite) {
+        this._SpriteImage = sprite;
+    }
+
+    start() {
+        if (!this.Used) { this.Used = true; }
+        if (this._SpriteImage) {
+            this._SpriteImage.start();
+        }
+    }
+
+    stop(end_frame) {
+        if (!this.Used) { this.Used = true; }
+        if (this._SpriteImage) {
+            this._SpriteImage.stop(end_frame);
+        }
+    }
+}
+
 let sAnimationToken = 0;
-class JsvSpriteImg extends React.Component{
+class JsvSpriteAnim extends React.Component{
     /**
      * @description: 属性说明
      *      spriteInfo {object}  (必需)精灵图配置信息
@@ -53,13 +78,17 @@ class JsvSpriteImg extends React.Component{
      *      imageUrl {string}  (必需)图片地址，另外，为了减小无效的解析处理，规定只有image的URL变更时才重新解析spriteInfo
      *      duration {float}  (动图必需)动图的时间
      *      onAnimEnd {function} 动图结束回调
-     *      stop {boolean} 停止动图，默认false
+     *      autostart {boolean} 启动动图，默认false
      *      loop {string} 动图的循环次数 infinite/数字，默认为infinite
      *      spriteName {string} 动图的名称，默认为null
+     *      controller {SpriteController} 控制动图start,stop的对象
      */
     constructor(props) {
         super(props);
-
+        if (this.props.controller) {
+            this.props.controller._setSpriteImg(this);
+            this.props.controller.Used = false;
+        }
         this._KeyFrameNames = {
             clip: null,
             image: null,
@@ -83,6 +112,31 @@ class JsvSpriteImg extends React.Component{
         };
 
         this._KeyFrameStyleSheet = getKeyFramesGroup("sprite-tag");
+        this.state = {
+            innerId: 0,
+            stopped: false,
+            stopFrame: "start",
+        }
+    }
+
+    stop(end_frame) {
+        if (this.props.spriteInfo.frames && this.props.spriteInfo.frames.length === 1) {
+            return;
+        }
+        this.setState({
+            stopped: true,
+            stopFrame: end_frame ? end_frame : "start",
+        })
+    }
+
+    start() {
+        if (this.props.spriteInfo.frames && this.props.spriteInfo.frames.length === 1) {
+            return;
+        }
+        this.setState({
+            innerId: this.state.innerId + 1,
+            stopped: false
+        })
     }
 
     _getAnimNameBase() {
@@ -94,9 +148,10 @@ class JsvSpriteImg extends React.Component{
                            source_width, source_height) {
         let cache = this._FrozeFrameCache;
 
+        let index = this.state.stopFrame === "start" ? 0 : frame_info_list.length - 1; 
         const tr = _getTransformInfo(
-            frame_info_list[0].source,
-            frame_info_list[0].target,
+            frame_info_list[index].source,
+            frame_info_list[index].target,
             canvas_width,
             canvas_height);
 
@@ -214,7 +269,8 @@ class JsvSpriteImg extends React.Component{
     }
 
     _AnalyzeProp() {
-        if (this.props.spriteInfo.frames.length == 1 || this.props.stop) {
+        let used = this.props.controller && this.props.controller.Used;
+        if (this.props.spriteInfo.frames.length == 1 || (!used && !this.props.autostart) || this.state.stopped) {
             // 单图模式
             // 解析图片信息
             this._updateFrozeFrameCache(
@@ -263,7 +319,9 @@ class JsvSpriteImg extends React.Component{
             || (this.props.onAnimEnd != next_props.onAnimEnd)
             || (this.props.duration != next_props.duration)
             || (this.props.loop != next_props.loop)
-            || (this.props.stop != next_props.stop)
+            || (this.props.autostart != next_props.autostart)
+            || this.state.innerId !== next_state.innerId
+            || this.state.stopped !== next_state.stopped
         );
     }
 
@@ -271,8 +329,8 @@ class JsvSpriteImg extends React.Component{
         let transform_style = this._AnalyzeProp();
         return (
             <div id="canvas">
-                <div id="clip" style={{...transform_style.clipStyle}}>
-                    <div id="image" style={{...transform_style.imageStyle}} onAnimationEnd={this.props.onAnimEnd}></div>
+                <div key={this.state.innerId} id="clip" style={{...transform_style.clipStyle}}>
+                    <div key={this.state.innerId} id="image" style={{...transform_style.imageStyle}} onAnimationEnd={this.props.onAnimEnd}></div>
                 </div>
             </div>
         )
@@ -284,11 +342,14 @@ class JsvSpriteImg extends React.Component{
     }
 }
 
-JsvSpriteImg.defaultProps = {
-    stop: false,
+JsvSpriteAnim.defaultProps = {
+    autostart: false,
     loop: 'infinite',
     onAnimEnd: function() {},
     duration: 0.5
 };
 
-export default JsvSpriteImg;
+export {
+    JsvSpriteAnim,
+    SpriteController
+};

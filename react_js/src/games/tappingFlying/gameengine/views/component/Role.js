@@ -2,7 +2,7 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import JsvSpriteAnim from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim} from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import {JsvSpriteTranslate, TranslateControl} from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 import {FocusBlock} from "../../../../../demoCommon/BlockDefine"
 import Game from "../../common/Game"
