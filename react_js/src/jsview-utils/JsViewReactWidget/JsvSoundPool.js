@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-07-17 11:09:01
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-07-20 09:36:44
+ * @LastEditTime: 2020-07-22 16:34:42
  * @Description: file content
  */ 
 
@@ -72,6 +72,7 @@ class AudioController{
 class JsvSoundPool{
     constructor(max) {
         this._SoundPool = new window.SoundPool(max);
+
         this._SoundIdMap = {};
         this._StreamIdMap = new Set();
     }
@@ -108,6 +109,7 @@ class JsvSoundPool{
     }
 
     release(controller) {
+        controller.stop();
         this._StreamIdMap.delete(controller);
         if (this._SoundIdMap[controller._Url]) {
             let item = this._SoundIdMap[controller._Url];
@@ -116,6 +118,10 @@ class JsvSoundPool{
                 this._SoundPool.unload(item.soundId);
             }
         }
+    }
+
+    destroy() {
+        this._SoundPool.release();
     }
 
     autoPaues() {
