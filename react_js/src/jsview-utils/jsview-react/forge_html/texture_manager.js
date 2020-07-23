@@ -380,7 +380,10 @@ class TextureManager {
 	}
 	GetRenderer() {
 		return Forge.sDeprecatedRenderer;
-	}
+    }
+    GetGifImage(url, is_forever, net_setting) {
+        return this.GetImage(url, is_forever, net_setting);
+    }
 	GetImage(url, is_forever, net_setting) {
 		//return this.GetImage2(url, is_forever, new Forge.RectArea(0, 0, 150, 150));
 		if (!url) {
