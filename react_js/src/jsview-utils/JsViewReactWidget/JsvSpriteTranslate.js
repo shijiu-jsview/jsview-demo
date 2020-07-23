@@ -184,8 +184,8 @@ class __SharedControl extends SpriteControlBase{
 		}
 
 		if (!act_jump && animate_time == 0) {
-			console.log("Discard starting request for no distance");
-			return null; // failed to start
+			console.warn("Discard starting request for no distance");
+			// 但动画仍然会执行，为了能正常触发回调
         }
 
 		let anim = null;
@@ -251,9 +251,8 @@ class __SharedControl extends SpriteControlBase{
 		}
 
 		if (time == 0) {
-			// no move
-			console.log("no moved");
-			return;
+			// no move，但动画仍然会执行，为了能正常触发回调
+			console.warn("no moved...");
 		}
 
 		// Update target memo
