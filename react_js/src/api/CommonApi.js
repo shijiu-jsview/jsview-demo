@@ -5,8 +5,8 @@ var TurntableRotate = "";
 var NineSquaredTranslateName = "translate_to";
 class CommonApi {
     static getShowMode() {
-        if (typeof window.jRuntime != "undefined" && typeof window.jRuntime.getShowMode != "undefined") {
-            return window.jRuntime.getShowMode();
+        if (typeof window.jDemoInterface != "undefined" && typeof window.jDemoInterface.getShowMode != "undefined") {
+            return window.jDemoInterface.getShowMode();
         }
         return "0";//0:demo, 1:activity
     }
