@@ -1,116 +1,73 @@
 package com.qcode.jsview.sample;
 
 import android.app.Activity;
-import android.os.SystemClock;
-import android.view.KeyEvent;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.content.Context;
+import android.util.Log;
 
 import com.qcode.jsview.JsView;
+import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
+import com.qcode.jsview.sample.submodule.JsViewRuntimeBridge;
+import com.qcode.jsview.sample.submodule.PageStatusListener;
+import com.qcode.jsview.sample.submodule.StartIntentParser;
+import com.qcode.jsview.sample.submodule.StartingImage;
 
 public class ViewLoader {
 	static private final String TAG = "ViewLoader";
 
-	private Activity mActivity;
-	private CoreSelector mCoreSelector;
-	private JsView mJsView;
-	private long mLastKeyUpTime = 0;
+	static public JsView loadJsView(
+			Activity host_activity,
+			StartIntentParser parsed_intent,
+			PageStatusListener status_listener) {
+		Context ctx = host_activity;
 
-	private String sJsViewEngineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
-	private String sAppUrl = BuildConfig.APP_URL;
-
-	public ViewLoader(Activity activity) {
-		mActivity = activity;
-
-		// 调用JsView.requestSdk前，可通过JsView.configEngineVersion来调整加载的Core的版本
-		mCoreSelector = new CoreSelector(activity);
-		int core_selected_revision = mCoreSelector.getSelectedRevision();
-		if (core_selected_revision != -1) {
-			// 参数1为指定Core的版本，如果未指定则使用APK自带的默认版本(aar-libs里面的版本)
-			// 参数2为JsEngine的地址，
-			// PS: JsEngine配合loadUrl使用，若使用loadUrl2加载界面，则此处JsEngine应设置成null
-			JsView.configEngineVersion("" + core_selected_revision, null);
+		// 若主JS的URL未设置，使用BuildConfig中配置的默认值
+		if (parsed_intent.jsUrl.isEmpty()) {
+			parsed_intent.jsUrl = BuildConfig.APP_URL;
+		}
+		// 若JS端API模块未设置，使用BuildConfig中配置的默认值
+		if (parsed_intent.engineUrl.isEmpty()) {
+			parsed_intent.engineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
 		}
 
-		// 提前准备SDK, devtools 调试端口为9226
-		JsView.requestSdk(activity, 9226);
-	}
+		/* 展示启动图 */
+		StartingImage.showStartingImage(
+				host_activity,
+				parsed_intent,
+				R.drawable.startup_icon,
+				R.id.PageLoad,
+				R.id.DummySurfaceContainer);
 
-	public void resetUrl(String forge_url, String app_url) {
-		sJsViewEngineUrl = forge_url == null || forge_url.isEmpty() ? sJsViewEngineUrl : forge_url;
-		sAppUrl = app_url == null || app_url.isEmpty() ? sAppUrl : app_url;
-	}
+		/* 加载SDK */
+		JsViewRequestSdkProxy.requestJsViewSdk(
+				host_activity,
+				parsed_intent.coreVersionRange, // 当无版本指定时，使用APK自带的版本启动
+				9226);
 
-	public void reloadUrl(String forge_url, String app_url) {
-		if (app_url != null && !app_url.isEmpty()) {
-			String forge_u = forge_url == null || forge_url.isEmpty() ? sJsViewEngineUrl : forge_url;
-			mJsView.loadUrl2(forge_u, app_url);
+		/* 并创建JsView */
+		JsView jsview = new JsView(host_activity);
+
+		/* 加载调试选项 */
+		DebugSettings.load(jsview);
+
+		/* TODO: 待补充: 创建引擎升级进度跟踪器 */
+
+		/* 加载Java穿透接口 JsDemoInterface */
+		jsview.addJavascriptInterface(new JsDemoInterface(ctx), "jDemoInterface");
+
+		/*
+		 * Java穿透给JS的JsViewRuntimeBridge
+		 * 建议所有容器都含有该接口，并命名为jJsvRuntime，方便形成统一的JS APP调用规范，提高应用的兼容性
+		 */
+		JsViewRuntimeBridge.enableBridge(host_activity, jsview, status_listener);
+
+		if (!parsed_intent.engineUrl.isEmpty()) {
+			// 使用接口JS和APP JS都可配置的接口
+			jsview.loadUrl2(parsed_intent.engineUrl, parsed_intent.jsUrl);
+		} else {
+			// 针对引擎JS和APP JS打包在一起的场景(非react js)，使用APP JS的路径来启动
+			jsview.loadUrl(parsed_intent.jsUrl);
 		}
-	}
 
-	public void onKeyDownForDebugReload(KeyEvent event) {
-		if (mJsView != null) {
-			// 双击菜单键进行view的reload操作
-			if (event.getKeyCode() != KeyEvent.KEYCODE_MENU || event.getAction() != KeyEvent.ACTION_DOWN) {
-				return;
-			}
-
-			long this_time_keyup = SystemClock.elapsedRealtime();
-			if (mLastKeyUpTime > 0 && this_time_keyup - mLastKeyUpTime < 500) {
-				Toast.makeText(mActivity, "页面重新加载...", Toast.LENGTH_LONG).show();
-				mJsView.reload();
-				mJsView.requestFocus();
-				return;
-			}
-			mLastKeyUpTime = this_time_keyup;
-		}
-	}
-
-	public boolean onKeyDownForCloseJsView(KeyEvent event) {
-		/* TODO 删除按钮后该代码注释掉
-		if (mJsView != null && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN) {
-				clearPreJsView();
-			}
-			return true;
-		}*/
-
-		return false;
-	}
-
-	public void startJsView() {
-		clearPreJsView();
-
-		// 创建JsView并加入到屏幕上
-		FrameLayout view = (FrameLayout)mActivity.findViewById(R.id.JsViewContainer);
-		mJsView = new JsView(mActivity);
-		mJsView.setBackgroundColor(0xFF0F0F0F);
-		view.addView(mJsView, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
-
-		// 加入Runtime接口
-		JsRuntimeInterface js_interface = new JsRuntimeInterface(mActivity);
-		mJsView.addJavascriptInterface(js_interface, "jRuntime"); // 在JS中以，jRuntime.XXXX()，进行调用其中接口
-
-		// 加入Core版本配置的接口
-		mCoreSelector.registerApi(mJsView);
-
-		DebugSettings.load(mJsView);
-
-		// JsView加载URL
-		mJsView.loadUrl2(
-				sJsViewEngineUrl,
-				// TODO: 此处改为react运行的主JS对应的地址，一版为 http://PC-IP:3000 下 /static/js/bundle.js
-				sAppUrl);
-		mJsView.requestFocus();
-	}
-
-	private void clearPreJsView() {
-		// 关闭JsView
-		FrameLayout container = (FrameLayout)mActivity.findViewById(R.id.JsViewContainer);
-		container.removeAllViews();
-		mJsView = null;
+		return jsview;
 	}
 }

@@ -16,76 +16,52 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.qcode.jsview.JsView;
+import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
+import com.qcode.jsview.sample.submodule.StartIntentParser;
 
 import java.util.List;
 
 public class SingleActivity extends Activity {
 	private static final String TAG = "SingleActivity";
-	private ViewLoader mViewLoader;
+
+	private ViewStack mViewStack = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mViewLoader = new ViewLoader(this);
-		if (savedInstanceState != null) {
-			String forge_url = savedInstanceState.getString("forgeUrl", "");
-			String app_url = savedInstanceState.getString("appUrl", "");
-			mViewLoader.resetUrl(forge_url, app_url);
-		}
-		mViewLoader.startJsView();
-		// 创建"点击开始"按钮
-		//StarterButton.setupButton(this, mViewLoader);
-		registerReceiver();
-	}
+		// 初始化View管理器
+		mViewStack = new ViewStack(this);
 
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String forge_url = intent.getStringExtra("forgeUrl");
-			String app_url = intent.getStringExtra("appUrl");
-			Log.d(TAG, "receive broadcast " + forge_url + " " + app_url);
-			mViewLoader.reloadUrl(forge_url, app_url);
-		}
-	};
-
-	private void registerReceiver() {
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("com.qcast.jsviewDemo.resetUrl");
-		this.registerReceiver(mReceiver, filter);
+		// 启动主界面
+		StartupProc.startWhenConnectReady(this,
+								getIntent(),
+								jsview -> mViewStack.activeView(jsview),
+								false);
 	}
 
 	@Override
-	public boolean onKeyDown(int keycode, KeyEvent event) {
-		boolean consume_back_key = false;
+	protected void onNewIntent(Intent intent) {
+		// 更新主界面，接受新的URL配置
+		StartupProc.startWhenConnectReady(this,
+								getIntent(),
+								jsview -> mViewStack.activeView(jsview),
+								true);
 
-		// 当JsView未使用按键时，通过返回键退出JsView
-		if (mViewLoader != null) {
-			consume_back_key = mViewLoader.onKeyDownForCloseJsView(event);
-		}
+		super.onNewIntent(intent);
+		setIntent(intent);
+	}
 
-		// 退出应用
-		if (!consume_back_key && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			Toast.makeText(getApplicationContext(), "退出应用", Toast.LENGTH_LONG).show();
-			this.finish();
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
-		}
-
-		// 双击菜单键对JsView进行reload，方便调试
-		if (mViewLoader != null) {
-			mViewLoader.onKeyDownForDebugReload(event);
-		}
-
-		return false;
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent key_event) {
+		DebugDevOption.onKeyEvent(key_event, this, mViewStack.currentView());
+		return super.dispatchKeyEvent(key_event);
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 		Log.d(TAG, "onStop");
-		System.exit(0);
-		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 }

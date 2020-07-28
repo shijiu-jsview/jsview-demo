@@ -2,4 +2,8 @@ rootProject.name = 'JsViewReactSample'
 
 include ':sample_with_button'
 
+// 调试JsView引擎内核时使用(OnDebugJsViewEngine)
+//apply from: "${rootProject.projectDir}/settings-import-jsview.gradle"
+
+
 
