@@ -58,14 +58,18 @@ public class StartIntentParser {
 			}
 		}
 
-		// 调试处理
-		jsUrl = "http://192.168.2.179:3000/static/js/bundle.js";
-		engineUrl = "http://192.168.2.179:8081/apps/home_js/imports/forge_all/es6_wrapper_react_index.list";
+		// 调试处理，调试时手动变化URL
+		loadDebugChange();
 	}
 
 	public boolean isSamePage(StartIntentParser other_intent_parser) {
 		return (other_intent_parser.jsUrl.equals(jsUrl)
 				&& other_intent_parser.engineUrl.equals(engineUrl)
 				&& other_intent_parser.loadParamJson.equals(loadParamJson));
+	}
+
+	private void loadDebugChange() {
+//		jsUrl = "http://192.168.2.179:3000/static/js/bundle.js";
+//		engineUrl = "http://192.168.2.179:8081/apps/home_js/imports/forge_all/es6_wrapper_react_index.list";
 	}
 }
