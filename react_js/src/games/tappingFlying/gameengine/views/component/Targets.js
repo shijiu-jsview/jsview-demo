@@ -98,6 +98,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteStaticInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.spriteStaticInfo.viewSize}
                                             duration={0.8}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
@@ -106,6 +107,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.spriteInfo.viewSize}
                                             duration={0.8}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
@@ -134,6 +136,7 @@ class Targets extends ScrollPage {
                             successEffectInfo ? <JsvSpriteAnim
                                 spriteInfo={successEffectInfo}
                                 loop="infinite"
+                                autostart={true}
                                 viewSize={successEffectInfo.viewSize}
                                 duration={successEffectInfo.frames.length / 15}
                                 imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/star_burst_big.png")})`}/>

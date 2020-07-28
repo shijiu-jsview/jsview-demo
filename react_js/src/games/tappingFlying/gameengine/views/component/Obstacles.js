@@ -37,6 +37,7 @@ class Obstacles extends ScrollPage {
         this._PauseX = 0;
         this._PauseY = 0;
         this._Control = new TranslateControl();
+        this._Control.allowFrameStepMode(true);
         this._Control.speed(this.props.scrollSpeed);
         this.obstacleTime = this.props.obstacleTime;
         this._InitDone = false;

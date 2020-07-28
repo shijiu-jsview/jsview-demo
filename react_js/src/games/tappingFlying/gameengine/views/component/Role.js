@@ -172,6 +172,7 @@ class Role extends FocusBlock {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.viewSize}
                                             duration={item.duration}
                                             imageUrl={item.imageUrl}/>
@@ -186,6 +187,7 @@ class Role extends FocusBlock {
                             <JsvSpriteAnim
                                 spriteInfo={clashObstacleDetailInfo}
                                 loop="infinite"
+                                autostart={true}
                                 viewSize={clashObstacleViewSize}
                                 duration={clashObstacle_duration}
                                 imageUrl={`url(${require("../../../"+Game.apppath+"/assets/atlas/" + clashObstacleConfig.value)})`}/>

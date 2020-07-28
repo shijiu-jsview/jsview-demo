@@ -18,6 +18,7 @@ class BackGround extends ScrollPage {
         console.log("BackGround constructor");
         super(props);
         this._TranslateControl = new TranslateControl();
+        this._TranslateControl.allowFrameStepMode(true);
         this._TranslateControl.speed(this.props.scrollSpeed).enableRepeatFrom(0,0);
         this._ScrollPage = 0;
         this._ScrollPageNums = this.props.scrollPageNums;
