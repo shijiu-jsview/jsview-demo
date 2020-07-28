@@ -9,3 +9,11 @@
 /captures
 .externalNativeBuild
 qcode-keystore
+
+# android studio build tmp files
+.cxx/
+.build-cache/
+proguardMapping.txt
+
+# JsView engine debug folder
+jsview_inner_command/
