@@ -11,6 +11,10 @@
  *                  onAnimEnd {fucntion} 动图结束回调
  *                  loop {string} 动图的循环次数 infinite/数字，默认为infinite
  *                  spriteName {string} 动图的名称，默认为null
+ *                  autostart{boolean} 是否自动播放动图
+ *                  controller {SpriteController} 控制动图的对象
+ *                      stop(end_frame) 停止动画 end_frame: "start", "end"
+ *                      start() 开始动画
  *   
  *
  * 【技巧说明】
@@ -34,7 +38,6 @@ class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
         this._Controller = new SpriteController();
-        window.controller = this._Controller
 
         this.state = {
             show: true
@@ -113,6 +116,7 @@ class MainScene extends FocusBlock {
                     viewSize={view_size}
                     duration={0.8}
                     controller={this._Controller}
+                    autostart={true}
                     onAnimEnd={function () { console.log("anim end");that.setState({show:false}) }}
                     imageUrl={spriteImage} />
             </div>);

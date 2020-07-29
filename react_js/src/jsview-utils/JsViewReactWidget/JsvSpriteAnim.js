@@ -36,6 +36,11 @@ function _createTransformStyle(w_scale, h_scale, x, y) {
 }
 
 class SpriteController{
+    /**
+     * 方法说明
+     *      start() 启动动图
+     *      stop(end_frame) 停止动图 end_frame: "start", "end"
+     */
     constructor() {
         this._SpriteImage = null;
         this.Used = false;
