@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-06-12 11:17:13
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-07-01 09:26:44
+ * @LastEditTime: 2020-07-29 16:20:53
  * @Description: file content
  */ 
 import Forge from "../ForgeDefine"
@@ -26,6 +26,8 @@ class Texture {
         //3.向target绑定纹理对象
         this._GL.bindTexture(this._GL.TEXTURE_2D, this.TextureId);
         //4.配置纹理参数
+        this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_WRAP_S, this._GL.CLAMP_TO_EDGE);
+        this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_WRAP_T, this._GL.CLAMP_TO_EDGE);
         this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_MIN_FILTER, this._GL.NEAREST);
         this._GL.texParameteri(this._GL.TEXTURE_2D, this._GL.TEXTURE_MAG_FILTER, this._GL.LINEAR);
         //5.配置纹理图像
