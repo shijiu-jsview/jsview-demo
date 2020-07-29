@@ -126,6 +126,11 @@ let demoInfos = [
         "path": "/users/keyframeSerial",
         "class": lazy(() => import('../keyframeSerial/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "SoundPool",
+        "path": "/users/soundPool",
+        "class": lazy(() => import('../soundPool/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
