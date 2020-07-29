@@ -125,7 +125,7 @@ class SoundPool {
                 console.log("http request succeed");
                 callback(0, xhr.response);
             } else {
-                console.error("download audio " + url + " failed.", status)
+                console.error("download audio " + url + " failed.", xhr.status)
                 callback(-1, null);
             }
         }
