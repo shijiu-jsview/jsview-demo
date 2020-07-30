@@ -1,0 +1,17 @@
+
+2020.7.06
+1. 解决window.JsView.React.DesignMap中displayScale对清晰度的调整无效的问题	
+关联文件:
+	react_js/src/index.js
+	react_js/src/main.js
+	react_js/node_modules/jsview-react/dist/jsviewreact.min.js
+	
+内容描述:
+	屏幕尺寸和清晰度的调整从main.js的如下处理：
+	window.JsView.React.DesignMap = {width:1280, displayScale:1.0}; // (可选配置)设置View坐标映射值，默认值也是1280, 1.0
+	移动到了index.js中，loadJsViewProxy()函数调用的第二个参数中。
+	并且width的属性名改为了更加易懂的screenWidth
+	
+	需要配合react_js/node_modules/jsview-react/dist/jsviewreact.min.js更新一起使用。
+	否则会出现在盒子的JsView运行环境中，无法进入界面的问题。
+	更新min.js文件的方法是进入react_js/patch_package/，执行update.sh
