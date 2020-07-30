@@ -6,8 +6,6 @@ import { FocusBlock } from "../../../demoCommon/BlockDefine"
 class TipsPage extends FocusBlock{
     constructor(props) {
         super(props);
-        this._onFocus = this._onFocus.bind(this);
-        this._onBlur = this._onBlur.bind(this);
         this._PageTheme = PageTheme.get().TipsPage;
         this.state = {
             visible: "hidden",
@@ -15,11 +13,11 @@ class TipsPage extends FocusBlock{
         }
     }
 
-    _onFocus() {
+    onFocus() {
         this.setState({visible: "visible"});
     }
 
-    _onBlur() {
+    onBlur() {
         this.setState({visible: "hidden"})
     }
 
@@ -37,11 +35,10 @@ class TipsPage extends FocusBlock{
 
     renderContent() {
         return (
-            <Fdiv branchName={this.props.branchName} onFocus={this._onFocus} onBlur={this._onBlur}
-                  style={{visibility:this.state.visible}}>
+            <div style={{visibility:this.state.visible}}>
                 <div style={this._PageTheme.bgStyle}/>
                 <div style={this._PageTheme.tips.style}>{this._PageTheme.tips.text}</div>
-            </Fdiv>
+            </div>
         )
     }
 

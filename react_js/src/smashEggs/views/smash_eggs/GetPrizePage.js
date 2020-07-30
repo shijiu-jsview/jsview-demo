@@ -4,8 +4,6 @@ import { FocusBlock } from "../../../demoCommon/BlockDefine"
 import PageTheme from "../../common/PageTheme"
 import ConstantVar from "../../common/ConstantVar"
 import {Button} from "../../common/CommonWidget";
-import InputPanel from "./InputPanel"
-import CommonApi from "../../common/CommonApi"
 class GetPrizePage extends FocusBlock {
     constructor(props) {
         super(props);
@@ -16,7 +14,7 @@ class GetPrizePage extends FocusBlock {
         this._Timer = null;
         this.state = {
             visible: "hidden",
-            focusBranchName: "InputPanel",
+            focusBranchName: "Confirm",
             tipsVisible:"hidden",
             tipsInfo:"",
             needCleanInput:false
@@ -35,12 +33,12 @@ class GetPrizePage extends FocusBlock {
     onFocus() {
         this.setState({
             visible: "visible",
-            focusBranchName: "InputPanel",
+            focusBranchName: "Confirm",
             tipsVisible:"hidden",
             tipsInfo:"",
             needCleanInput:false
         });
-        this.changeFocus("InputPanel");
+        this.changeFocus("Confirm");
         console.log("GetPrizePage _onFocus ");
         this._Timer = setTimeout(()=>{
             //2小时失效，退出到主页面
@@ -75,39 +73,9 @@ class GetPrizePage extends FocusBlock {
                     this.changeFocus("Return")
                 }
                 break;
-            case ConstantVar.KeyCode.Up:
-                if (this.state.focusBranchName === "Return"
-                    || this.state.focusBranchName === "Confirm") {
-                    this.setState({"focusBranchName":"InputPanel",tipsVisible:"hidden"});
-                    this.changeFocus("InputPanel")
-                }
-                break;
-            case ConstantVar.KeyCode.Down:
-                if (this.state.focusBranchName === "InputPanel") {
-                    this.setState({"focusBranchName":"Confirm"});
-                    this.changeFocus("Confirm");
-                }
-                break;
             case ConstantVar.KeyCode.Ok:
                 switch(this.state.focusBranchName) {
                     case "Confirm":
-                        let reqeustToken = ++this._RequestToken;
-                        let promise = CommonApi.postContactInfo(this._inputStr, this.props.data.id, this.props.account);
-                        promise.then((data) => {
-                            if (reqeustToken === this._RequestToken){
-                                if (this._GoTo) {
-                                    this._GoTo(ConstantVar.BranchName.GetPrizeFinishPage);
-                                }
-                            }
-                        })
-                            .catch((error) => {
-                                if(typeof error === "string") {
-                                    this.setState({"tipsInfo": error, tipsVisible: "inherit"})
-                                }
-                            })
-
-
-                        break;
                     case "Return":
                         if (this._GoTo) {
                             this._GoTo(ConstantVar.BranchName.SmashEggsPage, true);
@@ -130,22 +98,17 @@ class GetPrizePage extends FocusBlock {
     }
 
     renderContent() {
-        let data = this.props.data;
-        let prize = "";
-        if (data) {
-            if (data.prize_id<=ConstantVar.Prize.length) {
-                prize = ConstantVar.Prize[data.prize_id -1].prize;
-            }
+        let prize = this.props.data;
+        if (!prize) {
+            return null;
         }
         return (
             <div style={{visibility:this.state.visible}}>
                 <div style={this._PageTheme.bgStyle}/>
                 <div style={{...this._PageTheme.tipsInfo.style, ...{visibility: this.state.tipsVisible}}}>
                     {this.state.tipsInfo}</div>
-                <div style={this._PageTheme.title.style}>{this._PageTheme.title.text+"【"+prize+"】"}</div>
-                <div style={this._PageTheme.tips1.style}>{this._PageTheme.tips1.text}</div>
-                <div style={this._PageTheme.tips2.style}>{this._PageTheme.tips2.text}</div>
-                <InputPanel branchName="InputPanel" onEdge={this._onEdge} needCleanInput={this.state.needCleanInput}/>
+                <div style={this._PageTheme.title.style}>{this._PageTheme.title.text+"【"+prize.name+"】"}</div>
+                <div style={{...this._PageTheme.icon.style, backgroundImage:prize.image}}/>
                 <Button branchName="Confirm" theme={this._PageTheme.btn1} text={this._PageTheme.btn1.text} isFocus={this.state.focusBranchName === "Confirm"}/>
                 <Button branchName="Return" theme={this._PageTheme.btn2} text={this._PageTheme.btn2.text} isFocus={this.state.focusBranchName === "Return"}/>
             </div>

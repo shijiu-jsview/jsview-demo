@@ -1,135 +1,106 @@
-/**
- * Created by luocf on 2020/3/19.
- */
-//import axios from "axios"
-import {fetch} from "whatwg-fetch"
-import {Authentication, STBAppManager, gddxDomain, report, epgVersionname} from "./CommonDefine"
+import {
+    fetch
+} from "whatwg-fetch"
+import hex_md5 from "../common/MD5"
+import {uuid, getVersion} from "./commonData"
+const CryptoJS = require("crypto-js");
+
+const Encrypt = function (word, aseKey) {
+    let key = CryptoJS.enc.Utf8.parse(aseKey)
+    let data2 = CryptoJS.AES.encrypt(JSON.stringify(word), key, {
+        iv: CryptoJS.enc.Utf8.parse(aseKey.substr(0, 16)),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    })
+    return data2.toString()
+}
+
+const Decrypt = function (word, aseKey) {
+    let key = CryptoJS.enc.Utf8.parse(aseKey);
+    let decrypt = CryptoJS.AES.decrypt(word, key, {
+        iv: CryptoJS.enc.Utf8.parse(aseKey.substr(0, 16)),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    let decryptedStr = JSON.parse(decrypt.toString(CryptoJS.enc.Utf8));
+    return decryptedStr;
+}
+
 class CommonApi {
+    static ajax(func, method, score = null, ticket = null) {
+        return new Promise((resolve, reject) => {
+            let app_id = 'NZZvZWxBnEgG'
+            let mch_id = 'tYOUCC'
+            let account_id = uuid() || '1234567890' // uuid 默认1234567890
+            let key = 'UCtseuYyuGWr'
+            let stable = '%*$4r6h(K))2d*qcast*7j55f21!*&4MY^$'
+            let timestamp = new Date().getTime()
+            let md5 = hex_md5(key + stable + timestamp)
+            let aseKey = '$3r6h(K)2d7j21!^'
+            let data;
+            console.log('app_version:', getVersion());
+            data = {
+                app_id: app_id,
+                app_ver: getVersion(),
+                mch_id: mch_id,
+                timestamp: timestamp,
+                sign: md5,
+                account_id: account_id,
+                app_type: 'lottery',
+                func: func
+            }
+            let data2 = Encrypt(data, aseKey)
+            let data3 = encodeURIComponent(data2)
+            let url = `http://t.qcast.cn/qcast/entertainment/entrance.php?data=${data3}`.replace(/\s*/g, "")
+            // console.log(func,url)
+            fetch(url, {
+                method: method || 'GET',
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            }).then(response =>
+                response.text()
+            ).then(data => {
+                let res = Decrypt(data, aseKey)
+                console.log("ajax data:", func, res);
+                if (res.code === 0) {
+                    resolve(res.data);
+                } else {
+                    reject(res);
+                }
+            }).catch(error => {
+                console.log("ajax error:" + error);
+                reject(error);
+            })
+        })
+    }
+
+    static getTimes() {
+        //TODO 获取砸单次数接口
+        let times = CommonApi.ajax('times', "GET")
+        return times
+    }
+
+    static getInfo() {
+        //TODO 获取活动信息接口
+        let info = CommonApi.ajax('info', "GET")
+        return info
+    }
+
     static ifSupportActivity() {
         return true;
     }
 
-    static getUserId() {
-        return 'testUserId222';
-    }
-    static getUserToken() {
-        return 'testUserToken222';
-    }
-
-    static gotoStudy() {
-        CommonApi.reportLog('203002');
-    }
-
     static reportLog(eventcode, packagename) {
-        let userid = this.getUserId();
-        let currentSessionId = CommonApi.getQueryString('sessionid') || '';
-        console.log("reportLog userid:"+userid+", currentSessionId:"+currentSessionId);
-        let log = {
-            userid:userid,
-            versionname: epgVersionname,
-            eventcode: eventcode,
-            sessionid:currentSessionId,
-            version: '1.0',
-            logstamp: 96
-        };
-        if (packagename) {
-            log["packagename"] = packagename;
-        }
-        report(log);
-
-    }
-    static gotoBuy() {
-        CommonApi.reportLog("203001");
+        //TODO 上报log
     }
 
-    static isAlreadyBought() {
-        let user_id = this.getUserId();
-        let user_token = this.getUserToken();
-        return CommonApi.ajax({"action":"subscribe","userId":user_id,"userToken":user_token})
+    static hitEggs() {
+        //TODO 砸蛋接口
+        return CommonApi.ajax('luck', "GET")
     }
 
-    static isRemindedToday() {
-        let remind_day = localStorage.getItem("RemindDay");
-        let date = new Date();
-        let today = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate());
-        if (!remind_day) {
-            localStorage.setItem("RemindDay", today);
-            return false;
-        }
-
-        if (today === remind_day) {
-            return true;
-        } else {
-            localStorage.setItem("RemindDay", today);
-            return false;
-        }
-    }
-
-    static getTemplate() {
-        //深圳平台模版2.0
-        var typeArr2 = ["defaulthdcctv", "smarthomeszgx"];
-        //广信模版3.0
-        var typeArr3 = ["cnepgjsp", "CNEPG"];
-        if (Authentication && Authentication.CTCGetConfig && typeArr2.indexOf(Authentication.CTCGetConfig("templateName"))  !== -1) {
-            return 2;
-        } else if (Authentication && Authentication.CTCGetConfig && typeArr3.indexOf(Authentication.CTCGetConfig("templateName"))  !== -1) {
-            return 3;
-        } else {
-            //南传
-            return 1;
-        }
-    }
-
-    static getQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
-        var r = window.location.search.substr(1).match(reg)
-        if (r  !== null) {
-            return unescape(r[2])
-        }
-        return null
-    }
-
-    static ajax(postData) {
-        return new Promise((resolve, reject) => {
-            let post_data = JSON.stringify(postData);
-            console.log("ajax postData:" + post_data);
-            fetch('http://api.qcast.cn/qcast/utility/hiteggs/go.php', {
-                method: 'POST',
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, same-origin, *omit
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body:post_data
-            })
-                .then(response =>
-                    response.json()
-                )
-                .then(data => {
-                    console.log("ajax data:", data);
-                    if (data.code === 0) {
-                        resolve(data.data);
-                    } else {
-                        reject(data.msg);
-                    }
-                })
-                .catch(error => {
-                    console.log("ajax error:" + error);
-                    reject(error);
-                })
-        })
-    }
-
-    static hitEggs(account) {
-        return CommonApi.ajax({action: "hit", account: account});
-    }
-
-    static getActivityInfo(account) {
-        return CommonApi.ajax({action: "fetch", account: account});
-    }
-
-    static postContactInfo(contact, prize_id, account) {
-        return CommonApi.ajax({action: "update", account: account, contact: contact, id: prize_id});
+    static getPrizes() {
+        //TODO 获取奖品记录接口
+        return CommonApi.ajax('prizes', "GET")
     }
 
     static Clone(src_obj) {
