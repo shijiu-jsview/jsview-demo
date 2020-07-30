@@ -5,6 +5,7 @@
 	react_js/src/index.js
 	react_js/src/main.js
 	react_js/node_modules/jsview-react/dist/jsviewreact.min.js
+	react_js/src/jsview-utils/jsview-react/index_hook.js
 	
 内容描述:
 	屏幕尺寸和清晰度的调整从main.js的如下处理：
