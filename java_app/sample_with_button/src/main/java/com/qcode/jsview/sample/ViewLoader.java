@@ -74,7 +74,7 @@ public class ViewLoader {
 
 	// 创建引擎内核下载时的消息监听
 	static private JsView.JsViewReadyCallback buildCoreDownloadListener(Activity host_activity) {
-		DownloadCoreProgress.config("下载内核", "下载完毕", R.id.PageLoad);
+		DownloadCoreProgress.config("更新内核", "更新完毕", R.id.PageLoad);
 
 		return new JsView.JsViewReadyCallback() {
 			@Override
@@ -87,7 +87,7 @@ public class ViewLoader {
 			public void onDownloadProgress(
 					int max_steps, // 步骤总数
 					int current_step, // 当前的步骤
-					int downloadTotal, // 若该步骤有下载动作，为下载的总字节数，否则为0
+					int download_total, // 若该步骤有下载动作，为下载的总字节数，否则为0
 					int downloaded,    // 若该步骤有下载，为当前的下载字节数，否则为0
 					String info) {  // 该步骤的描述
 				// 当有下载动作时，开始有回调
@@ -96,7 +96,7 @@ public class ViewLoader {
 				float progress = 0.0f;
 
 				// 进度为以current step为大进度，下载进度为小进度整体构成总进度
-				progress = ((float)current_step + (downloadTotal != 0 ? (float)downloaded / downloadTotal : 0)) / (max_steps + 1);
+				progress = ((float)current_step + (download_total != 0 ? (float)downloaded / download_total : 0)) / (max_steps + 1);
 
 				DownloadCoreProgress.updateProgress(host_activity, progress);
 			}
