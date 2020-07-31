@@ -1,0 +1,4 @@
+react 反向代理配置方法：
+
+参照start.js文件中的【/*视九 hook start*/】【/*视九 hook end*/】包含部分内容
+追加到如下目录文件中：node_modules/react-scripts/scripts/start.js
