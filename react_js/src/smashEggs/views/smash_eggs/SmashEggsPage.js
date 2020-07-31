@@ -444,13 +444,20 @@ class SmashEggsPage extends FocusBlock {
             <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: this.state.data[0].brokenFore}}></div>
             <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: this.state.data[1].brokenFore}}></div>
             <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: this.state.data[2].brokenFore}}></div>
-            <div style={{
-                left: 0,
-                top: 0,
-                width: 1,
-                height: 1,
+            <div style={{left: 0, top: 0, width: 1, height: 1,
                 backgroundImage: this._PageTheme.SmashEggsPage.widget.egg.recovery.line.url
             }}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1,
+              backgroundImage: this._PageTheme.SmashEggsPage.widget.egg.light.url
+            }}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${GoldenCoin1})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${GoldenCoin2})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${RedPacket1})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${RedPacket2})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${Star1})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${Star2})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${Star3})`}}></div>
+            <div style={{left: 0, top: 0, width: 1, height: 1, backgroundImage: `url(${Star4})`}}></div>
         </div>)
     }
 
