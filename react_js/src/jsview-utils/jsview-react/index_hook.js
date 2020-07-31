@@ -21,7 +21,14 @@ function initDesignedMap(input_designed_map) {
 		}
 
 		// 设置播放器的屏幕坐标尺寸
-		Media.setDesignMapWidth(designMap.width);
+		if (window.JsView.setVideoDesignMapWidth) {
+			window.JsView.setVideoDesignMapWidth(designMap.width)
+		} else {
+			// 借助Audio标签设置基类BaseMedia的屏幕尺寸配置，绕开react的unref语法检测
+			if (Audio.setDesignMapWidth) {
+				Audio.setDesignMapWidth(designMap.width);
+			}
+		}
 
 		return designMap;
 	}
