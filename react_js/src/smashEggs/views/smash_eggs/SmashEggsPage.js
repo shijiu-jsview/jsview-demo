@@ -34,7 +34,7 @@ class ParticleView extends React.Component {
     render() {
         const spray_style = {
             type: 0,
-            particleNum: 8,
+            particleNum: 30,
             deltaAngle: 30,
             deltaWidth: 100,
             deltaHeight: 0,
