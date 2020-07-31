@@ -407,7 +407,7 @@ class SmashEggsPage extends FocusBlock {
         this._HammerAnimation = "swing-hammer 0.5s";
         let cur_time = Date.now();
         let start_time = new Date(this.props.info.start_time).getTime();
-        let end_time = new Date(this.props.info.end_time).getTime();
+        let end_time = new Date(this.props.info.end_time+" 24:00:00").getTime();
         if (cur_time >= start_time && cur_time <= end_time) {
             if (this._TotalSmashNums === 0) {
                 this.setState({smashInfo: "您的抽奖机会已用完，感谢参加本次活动～"})
