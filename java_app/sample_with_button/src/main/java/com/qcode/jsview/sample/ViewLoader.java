@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.qcode.jsview.JsView;
+import com.qcode.jsview.sample.submodule.DownloadCoreProgress;
 import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
 import com.qcode.jsview.sample.submodule.JsViewRuntimeBridge;
 import com.qcode.jsview.sample.submodule.PageStatusListener;
@@ -41,15 +42,15 @@ public class ViewLoader {
 		JsViewRequestSdkProxy.requestJsViewSdk(
 				host_activity,
 				parsed_intent.coreVersionRange, // 当无版本指定时，使用APK自带的版本启动
-				9226);
+				9226,
+				// 创建内核升级时的进度跟踪器
+				buildCoreDownloadListener(host_activity));
 
 		/* 并创建JsView */
 		JsView jsview = new JsView(host_activity);
 
 		/* 加载调试选项 */
 		DebugSettings.load(jsview);
-
-		/* TODO: 待补充: 创建引擎升级进度跟踪器 */
 
 		/* 加载Java穿透接口 JsDemoInterface */
 		jsview.addJavascriptInterface(new JsDemoInterface(ctx), "jDemoInterface");
@@ -69,5 +70,42 @@ public class ViewLoader {
 		}
 
 		return jsview;
+	}
+
+	// 创建引擎内核下载时的消息监听
+	static private JsView.JsViewReadyCallback buildCoreDownloadListener(Activity host_activity) {
+		DownloadCoreProgress.config("下载内核", "下载完毕", R.id.PageLoad);
+
+		return new JsView.JsViewReadyCallback() {
+			@Override
+			public void onVersionReady(int jsview_version) {
+				// 内核加载成功，此时若显示了内核升级进度条，则应该此时关闭
+				DownloadCoreProgress.hideProgress(host_activity);
+			}
+
+			@Override
+			public void onDownloadProgress(
+					int max_steps, // 步骤总数
+					int current_step, // 当前的步骤
+					int downloadTotal, // 若该步骤有下载动作，为下载的总字节数，否则为0
+					int downloaded,    // 若该步骤有下载，为当前的下载字节数，否则为0
+					String info) {  // 该步骤的描述
+				// 当有下载动作时，开始有回调
+				// 建议遇到current_step == 0时，开始展示内核升级的进度条
+
+				float progress = 0.0f;
+
+				// 进度为以current step为大进度，下载进度为小进度整体构成总进度
+				progress = ((float)current_step + (downloadTotal != 0 ? (float)downloaded / downloadTotal : 0)) / (max_steps + 1);
+
+				DownloadCoreProgress.updateProgress(host_activity, progress);
+			}
+
+			@Override
+			public void onVersionFailed(String info /* 错误信息 */) {
+				// 内核加载失败，此时若显示了内核升级进度条，则应该此时关闭
+				DownloadCoreProgress.hideProgress(host_activity);
+			}
+		};
 	}
 }

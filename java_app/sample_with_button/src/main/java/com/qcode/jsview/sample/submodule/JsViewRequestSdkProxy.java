@@ -20,7 +20,8 @@ abstract public class JsViewRequestSdkProxy {
 	// XXXX+
 	// XXXX-XXXX
 	// XXXX
-	static public void requestJsViewSdk(Context ctx, String core_version_range, int debug_port) {
+	static public void requestJsViewSdk(Context ctx, String core_version_range, int debug_port,
+	                                    JsView.JsViewReadyCallback ready_callback) {
 		if (!sSdkLoaded) {
 			if (tryInnerLoader(ctx, core_version_range, debug_port)) {
 				// 调试版本内核加载完成，进入内核调试模式
@@ -35,19 +36,7 @@ abstract public class JsViewRequestSdkProxy {
 				JsView.configEngineVersion(core_version, null);
 
 				// 开始加载内核
-				JsView.requestSdk(ctx, debug_port, new JsView.JsViewReadyCallback() {
-					@Override
-					public void onVersionReady(int ready_version) {
-						// 内核加载完成
-						Log.d(TAG, "onVersionReady ready_version=" + ready_version);
-					}
-
-					@Override
-					public void onVersionFailed() {
-						// 内核加载失败
-						Log.d(TAG, "onVersionFailed");
-					}
-				});
+				JsView.requestSdk(ctx, debug_port, ready_callback);
 
 				// 记录当前加载的内核版本，为needReboot()调用时作为判断依据
 				JsViewVersionUtils.recordCoreVersion(core_version);
