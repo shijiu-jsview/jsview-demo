@@ -180,13 +180,11 @@ class MainPage extends FocusBlock {
                     <Button branchName={ConstantVar.BranchName.LoginBtn} theme={this._PagetTheme.btnLogin} isFocus={this.state.focusBranchName === ConstantVar.BranchName.LoginBtn}></Button>
                     <div style={this._PagetTheme.userInfo.bg.style}>
                         <div style={this._PagetTheme.userInfo.title.style}>
-                            {this._PagetTheme.userInfo.title.value}
+                          {this.state.data?this.state.data.alias:this._PagetTheme.userInfo.title.value}
                         </div>
                         <div style={this._PagetTheme.userInfo.icon}/>
-                        {this.state.data ? <div style={this._PagetTheme.userInfo.subTitle.style}>
-                            {this.state.data.alias}
-                        </div> : <div style={this._PagetTheme.userInfo.subTitle.style}>
-                            {"未登录"}
+                        <div style={this._PagetTheme.userInfo.subTitle.style}>
+                          {this._PagetTheme.userInfo.title.value}
                         </div>}
                     </div>
 

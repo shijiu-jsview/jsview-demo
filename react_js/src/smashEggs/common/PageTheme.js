@@ -64,7 +64,7 @@ class PageTheme {
                             overflow: "hidden",
                             fontSize:50,color:"#FFFFFF",lineHeight:"66px",textAlign:"left",verticalAlign:"middle"
                         },
-                        value:"康佳集团"
+                        value:"----"
                     },
                     subTitle:{
                         style:{
@@ -72,6 +72,7 @@ class PageTheme {
                             overflow: "hidden",
                             fontSize:36,color:"#FFFFFF",lineHeight:"45px",textAlign:"left",verticalAlign:"middle",textOverflow: 'ellipsis',whiteSpace : 'nowrap'
                         },
+                        value:"xxxx"
                     },
                 },
                 "PrizeList":{

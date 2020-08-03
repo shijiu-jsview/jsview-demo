@@ -104,14 +104,14 @@ class RecoveryAnim extends React.Component {
                         width: this.props.w,
                         height: this.props.h,
                         clipPath: "inset(0px 0px 0px 0px)",
-                        animation: "recovery-clip 0.8s"
+                        animation: "recovery-clip 0.8s linear"
                     }} onAnimationEnd={this._onAnimEnd}>
                         <div style={{
                             top: 0,
                             width: this.props.w,
                             height: this.props.h,
                             backgroundImage: this.props.eggUrl,
-                            animation: "recovery-img 0.8s"
+                            animation: "recovery-img 0.8s linear"
                         }}/>
 
                     </div>
@@ -120,7 +120,7 @@ class RecoveryAnim extends React.Component {
                         top: -theme.line.viewSize.h / 2,
                         overflow: "hidden",
                         width: theme.line.viewSize.w, height: theme.line.viewSize.h,
-                        animation: "recovery-line 0.8s"
+                        animation: "recovery-line 0.8s linear"
                     }}>
 
                         <JsvSpriteAnim
