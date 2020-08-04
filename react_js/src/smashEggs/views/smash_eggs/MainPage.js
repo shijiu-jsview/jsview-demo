@@ -252,15 +252,13 @@ class MainPage extends FocusBlock {
         if (this._RoadMap == null) {
             this._RoadMap = {};
             this._RoadMap[ConstantVar.BranchName.SmashEggsPage] = {};
-            this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.LoginBtn;
+            this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;
             this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.PrizeList;
-            this._RoadMap[ConstantVar.BranchName.LoginBtn] = {};
-            this._RoadMap[ConstantVar.BranchName.LoginBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
-            this._RoadMap[ConstantVar.BranchName.LoginBtn][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.MyPrizeRecordBtn;
 
             this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn] = {};
-            this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.LoginBtn;
+            this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.SmashEggsPage;
             this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
+
             this._RoadMap[ConstantVar.BranchName.PrizeList] = {};
             this._RoadMap[ConstantVar.BranchName.PrizeList][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.SmashEggsPage;
             this._RoadMap[ConstantVar.BranchName.PrizeList][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;

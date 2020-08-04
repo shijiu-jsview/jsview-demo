@@ -3,8 +3,8 @@
  *
  */
 import React from 'react'
-import rewardBg from '../../images/reward.png'
-import bg from '../../images/tips_bg.png'
+import rewardBg from '../../images/reward.jpeg'
+import tips_bg from '../../images/tips_bg.png'
 import { uuid} from '../../common/commonData'
 import ConstantVar from '../../common/ConstantVar'
 import { FocusBlock } from '../../../demoCommon/BlockDefine'
@@ -49,101 +49,65 @@ class Reward extends FocusBlock {
   renderMessage () {
     if (this.state.redeem) {
       return (
-        <div style={{width: 796, height: 484, left: 240, top: 116, backgroundImage: bg}}>
-          <div style={{width: 784, height: 40, top: 75, lineHeight: 40, textAlign: 'center', fontSize: 40}}>提示</div>
-          <div style={{width: 784, height: 50, top: 157, lineHeight: 50, textAlign: 'center', fontSize: 50}}>
+        <div style={{width: 874, height: 606, left: (1280-874)/2, top: (720-606)/2, backgroundImage: tips_bg}}>
+          <div style={{width: 874, height: 50, top: 20, lineHeight: 50, textAlign: 'center', color:"#ffffff", fontSize: 50}}>提示</div>
+          <div style={{width: 874, height: 94, top: 215, lineHeight: 94, textAlign: 'center', color:"#ffffff",  fontSize: 70}}>
             你的奖励正在发放中,
           </div>
-          <div style={{width: 784, height: 50, top: 227, lineHeight: 50, textAlign: 'center', fontSize: 50}}>
+          <div style={{width: 874, height: 94, top: 309, lineHeight: 94, textAlign: 'center', color:"#ffffff",  fontSize: 70}}>
             请耐心等待。
           </div>
-          <div style={{width: 784, height: 30, top: 353, lineHeight: 30, textAlign: 'center', fontSize: 30}}>按【返回】键返回
+          <div style={{width: 874, height: 30, top: 562, lineHeight: 30, textAlign: 'center', color:"#ffffff", fontSize: 20}}>按【返回】键返回
           </div>
         </div>
       )
     } else {
       let time = this.state.time;//TODO
       return (
-        <div style={{width: 706, height: 672, left: 287, top: 24, backgroundImage: rewardBg}}>
-          <div style={{
-            width: 706,
-            height: 32,
-            top: 67,
-            lineHeight: 32,
-            color: '	#ff4e00',
-            fontSize: 32,
-            textAlign: 'center'
-          }}>我的奖品
+        <div style={{width: 1280, height: 720, left: 0, top: 0, backgroundImage: rewardBg}}>
+          <div style={{width: 672, height: 32, left: 698, top: 112}}>
+            <div style={{fontSize: 20, lineHeight: 32, width: 250, color:"#ffffff"}}>{'用户：' + this.state.account}</div>
           </div>
-          <div style={{width: 672, height: 38, left: 16, top: 126}}>
-            <div style={{fontSize: 20, lineHeight: 38, left: 42, width: 250}}>{'用户：' + this.state.account}</div>
-          </div>
-          <div style={{width: 672, height: 22, left: 16, top: 164}}>
-            <div style={{left: 42, fontSize: 15, lineHeight: 22, width: 672,}}>
+          <div style={{width: 672, height: 32, left: 698, top: 112+32}}>
+            <div style={{fontSize: 20, lineHeight: 32, width: 672, color:"#ffffff"}}>
               {'设备标识码：' + uuid()}
             </div>
           </div>
-          <div style={{width: 672, height: 22, left: 16, top: 188}}>
-            <div style={{left: 42, fontSize: 15, lineHeight: 22, width: 672,}}>
+          <div style={{width: 672, height: 32, left: 698, top: 112+32+32}}>
+            <div style={{fontSize: 20, lineHeight: 32, width: 672, color:"#ffffff"}}>
               {'您的获奖码为：' + this.state.key}
             </div>
           </div>
-          <div style={{width: 350, left: 50, top: 252, height: 62}}>
+          <div style={{width: 400, left: 119, top: 720-90, height: 62}}>
             <div style={{
-              width: 350,
-              height: 31,
-              top: 0,
-              lineHeight: 31,
+              width: 400,
+              height: 90,
+              lineHeight: 90,
               fontSize: 30,
               textAlign: 'center',
-              color: '#ff4e00'
-            }}>恭喜您获得
-            </div>
-            <div style={{
-              width: 350,
-              height: 31,
-              top: 40,
-              lineHeight: 31,
-              fontSize: 30,
-              textAlign: 'center',
-              color: '#ff4e00'
+              color: '#ffffff'
             }}>{this.state.reward}</div>
           </div>
-          <div style={{width: 150, height: 150, left: 499, top: 215, backgroundImage: this.state.rewardImgae}}></div>
+          <div style={{width: 400, height: 400, left: 119, top: 230, borderRadius:40, backgroundImage: this.state.rewardImgae}}></div>
 
-          <div style={{left: 28, top: 416, width: 672, height: 15}}>
-            <div style={{width: 40, height: 15, color: '#FF0000', fontSize: 15, fontWeight: 'bold', lineHeight: 15}}>
-              注意:
+          <div style={{left: 698, top: 580, width: 500, height: 64}}>
+            <div style={{left: 0, width: 500, height: 32, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>
+              1.领奖信息为领取奖励的唯一凭证，请勿外泄！
             </div>
-            <div style={{
-              left: 40,
-              width: 600,
-              height: 15,
-              fontSize: 15,
-              fontWeight: 'bold',
-              lineHeight: 15
-            }}>{'领奖信息仅在' + time + '18点前有效！'}</div>
-          </div>
-          <div style={{left: 28, top: 436, width: 672, height: 15}}>
-            <div style={{width: 40, height: 15, color: '#FF0000', fontSize: 15, fontWeight: 'bold', lineHeight: 15}}>
-              注意:
-            </div>
-            <div style={{left: 40, width: 600, height: 15, fontSize: 15, fontWeight: 'bold', lineHeight: 15}}>
-              领奖信息为领取奖励的唯一凭证，请勿外泄！非因本司导致的信息外泄，本司概不负责。
+            <div style={{left: 0, top:32,width: 500, height: 32, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>
+              2.非因本司导致的信息外泄，本司概不负责。
             </div>
           </div>
 
-          <div style={{width: 500, height: 167, top: 502, left: 0}}>
-            <div style={{width: 500, height: 25, left: 28, top: 14, textAlign: 'center', fontSize: 25, lineHeight: 25}}>
-              领奖说明
+          <div style={{width: 335, height: 167, top: 325, left: 698}}>
+            <div style={{width: 335, height: 32, left: 0, top: 0, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>1.将我的奖品界面拍下照片；</div>
+            <div style={{width: 335, height: 32, left: 0, top: 32, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>2.扫描右侧二维码关注微信公众号；
             </div>
-            <div style={{width: 472, height: 15, left: 28, top: 46, fontSize: 15, lineHeight: 15}}>1. 将我的奖品界面拍下照片；</div>
-            <div style={{width: 472, height: 15, left: 28, top: 81, fontSize: 15, lineHeight: 15}}>2. 扫描右侧二维码关注微信公众号；
+            <div style={{width: 335, height: 32, left: 0, top: 64, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>3.在公众号内点击人工客服，发送
             </div>
-            <div style={{width: 472, height: 15, left: 28, top: 116, fontSize: 15, lineHeight: 15}}>3.
-              在公众号内点击人工客服，发送【领奖】文字与您的奖品信息照片
+            <div style={{width: 335, height: 28, left: 8, top: 64+28, fontSize: 20, lineHeight: 28, color:"#ffffff"}}>【领奖】文字与您的奖品信息照片
             </div>
-            <div style={{width: 453, height: 15, left: 47, top: 138, fontSize: 15, lineHeight: 15}}>领取奖励。</div>
+            <div style={{width: 335, height: 28, left: 8, top: 64+28+28, fontSize: 20, lineHeight: 28, color:"#ffffff"}}>领取奖励。</div>
           </div>
         </div>
       )

@@ -166,16 +166,16 @@ class BreakAnim extends React.Component {
             const theme = this.props.theme;
             return (
                 <div>
+                    <div style={{
+                      left: (this.props.w - theme.light.size.width) / 2,
+                      top: (this.props.h - theme.light.size.height) / 2,
+                      width: theme.light.size.width,
+                      height: theme.light.size.height,
+                      backgroundImage: theme.light.url,
+                      animation: "recovery-light 0.5s infinite"
+                    }}></div>
                     <BrokenEgg w={this.props.w} h={this.props.h} backImg={this.props.backImg}
                                foreImg={this.props.foreImg}/>
-                    <div style={{
-                        left: (this.props.w - theme.light.size.width) / 2,
-                        top: (this.props.h - theme.light.size.height) / 2,
-                        width: theme.light.size.width,
-                        height: theme.light.size.height,
-                        backgroundImage: theme.light.url,
-                        animation: "recovery-light 0.5s infinite"
-                    }}></div>
                 </div>
             )
         } else {
