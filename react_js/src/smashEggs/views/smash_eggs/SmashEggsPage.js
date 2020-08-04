@@ -162,7 +162,7 @@ class BreakAnim extends React.Component {
     }
 
     _getView() {
-        if (this.state.crackEnd) {
+        if (this.state.crackEnd || this.props.needCrack) {
             const theme = this.props.theme;
             return (
                 <div>
@@ -340,7 +340,9 @@ class SmashEggsPage extends FocusBlock {
                 return <BreakAnim w={img_width} h={img_height} backImg={item.brokenBack} foreImg={item.brokenFore}
                                   theme={this._PageTheme.SmashEggsPage.widget.egg}
                                   crackImg={this._PageTheme.SmashEggsPage.widget.egg.crack.url} eggUrl={item.eggUrl}
+                                  needCrack={is_focus}
                                   onCrackEnd={this._CrackEnd}/>
+
             }
             case 3: {//复原中的蛋
                 //焦点项只对focusview做动画：
