@@ -29,16 +29,29 @@ const Decrypt = function (word, aseKey) {
 class CommonApi {
     static ajax(func, method, score = null, ticket = null) {
         return new Promise((resolve, reject) => {
-            let app_id = 'NZZvZWxBnEgG'
+            let app_id = 'MyZvQCxBnEgp'
             let mch_id = 'tYOUCC'
             let account_id = uuid() || '1234567890' // uuid 默认1234567890
-            let key = 'UCtseuYyuGWr'
+            let key = 'QCtseuYyuDID'
             let stable = '%*$4r6h(K))2d*qcast*7j55f21!*&4MY^$'
             let timestamp = new Date().getTime()
             let md5 = hex_md5(key + stable + timestamp)
             let aseKey = '$3r6h(K)2d7j21!^'
             let data;
             console.log('app_version:', getVersion());
+          if(ticket) {
+            data = {
+              app_id: app_id,
+              app_ver: getVersion(),
+              mch_id: mch_id,
+              timestamp: timestamp,
+              sign: md5,
+              account_id: account_id,
+              app_type: 'lottery',
+              func: func,
+              ticket: ticket
+            }
+          } else {
             data = {
                 app_id: app_id,
                 app_ver: getVersion(),
@@ -49,6 +62,7 @@ class CommonApi {
                 app_type: 'lottery',
                 func: func
             }
+          }
             let data2 = Encrypt(data, aseKey)
             let data3 = encodeURIComponent(data2)
             let url = `http://t.qcast.cn/qcast/entertainment/entrance.php?data=${data3}`.replace(/\s*/g, "")
@@ -94,16 +108,19 @@ class CommonApi {
     }
 
     static hitEggs() {
-        //TODO 砸蛋接口
         return CommonApi.ajax('luck', "GET")
     }
 
     static getPrizes() {
-        //TODO 获取奖品记录接口
         return CommonApi.ajax('prizes', "GET")
     }
 
-    static Clone(src_obj) {
+  static getTicket(prize_id) {
+    let ticket = CommonApi.ajax('ticket', 'GET', null, prize_id)
+    return ticket
+  }
+
+  static Clone(src_obj) {
         let target_obj = new Object();
         for (let o in src_obj) {
             target_obj[o] = src_obj[o];

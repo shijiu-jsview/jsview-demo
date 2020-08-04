@@ -46,8 +46,12 @@ class NoPrizePage extends FocusBlock {
     }
 
     renderContent() {
+        if (this.state.visible === "hidden") {
+            return null;
+        }
+        console.log("NoPrizePage renderContent");
         return (
-            <div style={{visibility:this.state.visible}}>
+            <div>
                 <div style={this._PageTheme.bgStyle}/>
                 <div style={this._PageTheme.title.style}>{this._PageTheme.title.text}</div>
                 <div style={this._PageTheme.tips.style}>{this._PageTheme.tips.text}</div>

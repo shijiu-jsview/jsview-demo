@@ -99,11 +99,12 @@ class GetPrizePage extends FocusBlock {
 
     renderContent() {
         let prize = this.props.data;
-        if (!prize) {
+        if (!prize || this.state.visible === "hidden") {
             return null;
         }
+        console.log("GetPrizePage renderContent");
         return (
-            <div style={{visibility:this.state.visible}}>
+            <div>
                 <div style={this._PageTheme.bgStyle}/>
                 <div style={{...this._PageTheme.tipsInfo.style, ...{visibility: this.state.tipsVisible}}}>
                     {this.state.tipsInfo}</div>

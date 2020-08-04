@@ -531,14 +531,14 @@ class PageTheme {
                     },
                     records:{
                         head:{
-                            account:{
+                            level:{
                                 style:{
                                     left:509,top:292-10,width:186,height:56,
                                     fontSize: 36, color: "rgba(255,255,255,0.8)", lineHeight: 56,
                                     textAlign: "center",
                                     verticalAlign: "middle",
                                 },
-                                text:"用户账号"
+                                text:"等级"
                             },
                             prize:{
                                 style:{
@@ -549,15 +549,6 @@ class PageTheme {
                                 },
                                 text:"奖品"
                             },
-                            phone:{
-                                style:{
-                                    left:1243,top:292-10,width:186,height:56,
-                                    fontSize: 36, color: "rgba(255,255,255,0.8)", lineHeight: 56,
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                },
-                                text:"手机号码"
-                            }
                         },
                         line:{
                             style:{
@@ -575,7 +566,8 @@ class PageTheme {
 
                             item:{
                                 width:(186+140)*3,height:80,
-                                account:{
+                                focusBg:"#feffc5",
+                                level:{
                                     style:{
                                         left:0,top:0,width:186+140,height:80,
                                         fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
@@ -584,35 +576,35 @@ class PageTheme {
                                     },
                                     focusStyle:{
                                         left:0,top:0,width:186+140,height:80,
-                                        fontSize: 30, color: "rgba(255,255,255,1.0)", lineHeight: 80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
                                 },
                                 prize:{
                                     style:{
-                                        left:186+140+10,top:0,width:186+140+70,height:80,
+                                        left:186+140,top:0,width:186+140+70,height:80,
                                         fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
                                     focusStyle:{
-                                        left:186+140+10,top:0,width:186+140+70,height:80,
-                                        fontSize: 30, color: "rgba(255,255,255,1.0)", lineHeight: 80,
+                                        left:186+140,top:0,width:186+140+70,height:80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
                                 },
-                                phone:{
+                                btnGet:{
                                     style:{
-                                        left:(186+140)*2+70,top:0,width:186+140,height:80,
+                                        left:(186+140)*2+70,top:0,width:186,height:80,
                                         fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
                                     focusStyle:{
-                                        left:(186+140)*2+70,top:0,width:186+140,height:80,
-                                        fontSize: 30, color: "rgba(255,255,255,1.0)", lineHeight: 80,
+                                        left:(186+140)*2+70,top:0,width:186,height:80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
@@ -645,7 +637,6 @@ class PageTheme {
                     left: 0, top: 0, width: 1920, height: 1080,
                     backgroundImage: SubPageBgUrl,
                 },
-
                 tips: {
                     style: {
                         left: 0, top: (1080-100)/2, width: 1920, height: 100,
