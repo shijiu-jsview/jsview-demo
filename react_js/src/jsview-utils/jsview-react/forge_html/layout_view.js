@@ -185,6 +185,7 @@ class LayoutViewBase {
         this._DebugCount = ++count;
         this.childZIndexCount = 0; // 计数器，统计子界面中有多少个设置了index的界面，用于优化AddView时的z-index调整处理
         this._IsChildOfRootView = false;
+        this._DetachFromSystemCallback = null;
         if (element_name === "root") {
             this.Element = window.originDocument.getElementById(element_name);
         } else if (element_name === "svg" || element_name === "path") {
@@ -269,6 +270,11 @@ class LayoutViewBase {
 
     _OnDetachFromSystem() {
         this._IsChildOfRootView = false;
+        if (this._DetachFromSystemCallback) {
+            this._DetachFromSystemCallback();
+        } else {
+            this.OnDettachFromSystem();
+        }
         for (var i = 0; i < this.ChildViews.length; i++) {
             let child_view = this.ChildViews[i];
             child_view._OnDetachFromSystem();
@@ -277,6 +283,26 @@ class LayoutViewBase {
 
         this._releaseViewResources();
     }
+ 
+    RegisterDetachCallback(callback) {
+        this._DetachFromSystemCallback = callback;
+    }
+
+    UnregisterDetachCallback() {
+        this._DetachFromSystemCallback = null;
+    }
+
+    /**
+	 * 按需重载的回调函数
+	 *
+	 * @public
+	 * @func OnDettachFromSystem
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+	 **/
+	OnDettachFromSystem() {
+		// Override if needed
+	};
 
     _releaseViewResources() {
         // Stop animation
