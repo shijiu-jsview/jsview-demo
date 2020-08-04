@@ -162,7 +162,7 @@ class BreakAnim extends React.Component {
     }
 
     _getView() {
-        if (this.state.crackEnd || this.props.needCrack) {
+        if (this.state.crackEnd || !this.props.needCrack) {
             const theme = this.props.theme;
             return (
                 <div>
