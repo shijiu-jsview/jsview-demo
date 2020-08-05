@@ -38,43 +38,22 @@ class PageTheme {
                         verticalAlign: "top",
                     },
                 },
-                "btnLogin":{
-                    style:{
-                        left:75,top:60,width:148,height:148,
-                        backgroundColor:"rgba(0,0,0,0.5)",borderRadius:74,
-                    },
-                    focusStyle:{
-                        left:75,top:60,width:148,height:148,
-                        backgroundColor:"#FFFFFF",borderRadius:74,
-                    }
+              userInfo:{
+                bg:{
+                  style:{
+                    left:60,top: 36, width: 360, height: 84,
+                    backgroundColor: "rgba(0,0,0,0.2)",
+                    borderRadius: 42,
+                  },
                 },
-                "userInfo":{
-                    bg:{
-                        style:{
-                            left:75+148+15,top:80,width:220,height:74,
-                        },
-                    },
-                    icon:{
-                        left:0,top:66,width:46,height:46,
-                        backgroundColor:"#f0ef29",borderRadius:23,
-                    },
-                    title:{
-                        style:{
-                            left:0,top:0,width:220,height:66,
-                            overflow: "hidden",
-                            fontSize:50,color:"#FFFFFF",lineHeight:"66px",textAlign:"left",verticalAlign:"middle"
-                        },
-                        value:"----"
-                    },
-                    subTitle:{
-                        style:{
-                            left:46+15,top:66,width:220,height:45,
-                            overflow: "hidden",
-                            fontSize:36,color:"#FFFFFF",lineHeight:"45px",textAlign:"left",verticalAlign:"middle",textOverflow: 'ellipsis',whiteSpace : 'nowrap'
-                        },
-                        value:"xxxx"
-                    },
+                text:{
+                  style:{
+                    left:0,top:0,width:360,height:84,
+                    overflow: "hidden",
+                    fontSize:42,color:"#FFFFFF",lineHeight:"84px",textAlign:"center",verticalAlign:"middle",textOverflow: 'ellipsis',whiteSpace : 'nowrap'
+                  },
                 },
+              },
                 "PrizeList":{
                     style:{
                         left:1453-27,top:528,width:411,height:465,

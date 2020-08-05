@@ -78,7 +78,7 @@ class MyPrizeRecordPage extends FocusBlock {
       case ConstantVar.KeyCode.Back:
       case ConstantVar.KeyCode.Back2:
         if (this._GoTo) {
-          this._GoTo(ConstantVar.BranchName.MyPrizeRecordBtn)
+          this._GoTo(ConstantVar.BranchName.SmashEggsPage)
         }
         break
       default:

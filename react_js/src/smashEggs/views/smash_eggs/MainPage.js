@@ -10,7 +10,6 @@ import ConstantVar from "../../common/ConstantVar"
 import {FocusBlock} from "../../../demoCommon/BlockDefine"
 import Rules from "./Rules"
 import PrizeList from "./PrizeList"
-import {Button} from "../../common/CommonWidget";
 class MainPage extends FocusBlock {
     constructor(props) {
         super(props);
@@ -46,6 +45,7 @@ class MainPage extends FocusBlock {
         }
         //防止页面切换闪烁，隐藏主页内容
         this.setState({
+            focusBranchName:branchName,
             mainPageContainerVisible: mainPageContainerVisible,
         });
         this.changeFocus(branchName);
@@ -177,17 +177,11 @@ class MainPage extends FocusBlock {
                         ...this._PagetTheme.bgStyle,
                         backgroundImage: this.props.info ? `url(${this.props.info.bg_url})` : null
                     }}></div>
-                    <Button branchName={ConstantVar.BranchName.LoginBtn} theme={this._PagetTheme.btnLogin} isFocus={this.state.focusBranchName === ConstantVar.BranchName.LoginBtn}></Button>
                     <div style={this._PagetTheme.userInfo.bg.style}>
-                        <div style={this._PagetTheme.userInfo.title.style}>
-                          {this.state.data?this.state.data.alias:this._PagetTheme.userInfo.title.value}
-                        </div>
-                        <div style={this._PagetTheme.userInfo.icon}/>
-                        <div style={this._PagetTheme.userInfo.subTitle.style}>
-                          {this._PagetTheme.userInfo.title.value}
-                        </div>}
+                      {this.state.data ? <div style={this._PagetTheme.userInfo.text.style}>
+                        {"游客：" + this.state.data.alias}
+                      </div> : null}
                     </div>
-
                     <ActivityBtn branchName={ConstantVar.BranchName.MyPrizeRecordBtn} btnTheme={this._PagetTheme.btn}
                                  isFocus={ConstantVar.BranchName.MyPrizeRecordBtn === this.state.focusBranchName}
                                  text={btn_theme.myrecord.text}/>
