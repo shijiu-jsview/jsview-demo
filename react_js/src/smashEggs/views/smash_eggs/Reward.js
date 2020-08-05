@@ -88,7 +88,7 @@ class Reward extends FocusBlock {
               color: '#ffffff'
             }}>{this.state.reward}</div>
           </div>
-          <div style={{width: 400, height: 400, left: 119, top: 230, borderRadius:40, backgroundImage: this.state.rewardImgae}}></div>
+          <div style={{width: 400, height: 400, left: 119, top: 230, borderRadius:20, backgroundImage: this.state.rewardImgae}}></div>
 
           <div style={{left: 698, top: 580, width: 500, height: 64}}>
             <div style={{left: 0, width: 500, height: 32, fontSize: 20, lineHeight: 32, color:"#ffffff"}}>
