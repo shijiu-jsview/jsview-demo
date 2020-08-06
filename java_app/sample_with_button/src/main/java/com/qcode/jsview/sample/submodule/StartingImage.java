@@ -28,41 +28,31 @@ public class StartingImage {
 		preventScreenBlink(activity, noblink_res_id);
 		FrameLayout page_load = (FrameLayout) activity.findViewById(container_res_id);
 
-		// 创建启动图并添加到容器中
-		ImageView image_view = new ImageView(activity);
-		image_view.setScaleType(ImageView.ScaleType.FIT_XY);
-		page_load.addView(image_view, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
 		if (intent.startImageUrl != null && !intent.startImageUrl.isEmpty()) {
+			// 创建启动图并添加到容器中
+			ImageView image_view = new ImageView(activity);
+			image_view.setScaleType(ImageView.ScaleType.FIT_XY);
+			page_load.addView(image_view, new FrameLayout.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
 			// 展示启动图
 			Glide.with(activity.getApplicationContext())
 					.load(intent.startImageUrl)
 					.into(image_view);
-		} else {
+		} else if (default_res_id != 0){
 			// 使用默认启动图
+			ImageView image_view = new ImageView(activity);
+			image_view.setScaleType(ImageView.ScaleType.FIT_XY);
+			page_load.addView(image_view, new FrameLayout.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+			// 展示启动图
 			image_view.setImageResource(default_res_id);
 		}
 	}
 
 	static public void hideStartingImage(Activity activity, int container_res_id) {
 		FrameLayout page_load = (FrameLayout) activity.findViewById(container_res_id);
-
-		try {
-			ImageView image_view = (ImageView)page_load.getChildAt(0);
-			Drawable drawable = image_view.getDrawable();
-
-			if (drawable != null && drawable instanceof BitmapDrawable) {
-				BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-				Bitmap bitmap = bitmapDrawable.getBitmap();
-				if (bitmap != null && !bitmap.isRecycled()) {
-					bitmap.recycle();
-				}
-			}
-		} catch (Exception e) {
-			Log.d(TAG, "Warning:failed to recycle start-up image");
-		}
-
 		page_load.removeAllViews();
 	}
 
