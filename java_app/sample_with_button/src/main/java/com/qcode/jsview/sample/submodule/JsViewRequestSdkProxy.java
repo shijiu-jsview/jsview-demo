@@ -1,5 +1,6 @@
 package com.qcode.jsview.sample.submodule;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ abstract public class JsViewRequestSdkProxy {
 	// XXXX+
 	// XXXX-XXXX
 	// XXXX
-	static public void requestJsViewSdk(Context ctx, String core_version_range, int debug_port,
+	static public void requestJsViewSdk(Application ctx, String core_version_range, int debug_port,
 	                                    JsView.JsViewReadyCallback ready_callback) {
 		if (!sSdkLoaded) {
 			if (tryInnerLoader(ctx, core_version_range, debug_port)) {
@@ -56,16 +57,16 @@ abstract public class JsViewRequestSdkProxy {
 		return JsViewVersionUtils.needReboot(ctx, intent.coreVersionRange);
 	}
 
-	private static boolean tryInnerLoader(Context ctx, String core_version_range, int debug_port) {
+	private static boolean tryInnerLoader(Application app, String core_version_range, int debug_port) {
 		// 请忽略以下代码 :-)
 		// 这只是为了便利JsView内核开发人员调试的小模块...
 
 		try {
-			ClassLoader class_loader = ctx.getClassLoader();
+			ClassLoader class_loader = app.getClassLoader();
 			Class<?> class_ref = class_loader.loadClass("com.qcode.jsview_inner_command.JsViewInnerLoader");
 
-			Method method = class_ref.getDeclaredMethod("loadSdk", Context.class, String.class, int.class);
-			boolean load_success = (boolean)(method.invoke(null, ctx, core_version_range, debug_port));
+			Method method = class_ref.getDeclaredMethod("loadSdk", Application.class, String.class, int.class);
+			boolean load_success = (boolean)(method.invoke(null, app, core_version_range, debug_port));
 
 			return load_success;
 		} catch (Exception e) {

@@ -40,7 +40,7 @@ public class ViewLoader {
 
 		/* 加载SDK */
 		JsViewRequestSdkProxy.requestJsViewSdk(
-				host_activity,
+				host_activity.getApplication(),
 				parsed_intent.coreVersionRange, // 当无版本指定时，使用APK自带的版本启动
 				9226,
 				// 创建内核升级时的进度跟踪器
