@@ -9,6 +9,7 @@ import {
 import Home from './Homepage'
 import { FdivRoot, FdivRouter } from "../jsview-utils/jsview-react/index_widget.js"
 import { globalHistory } from '../demoCommon/RouterHistory';
+import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
 
 let demoInfos = [
     {
@@ -197,6 +198,9 @@ class DemoApp extends React.Component {
 
     componentDidMount() {
         this._FocusControl.changeFocus("/main");
+
+        // 调试接口，对接JSCenter平台去掉启动图的处理
+        JSBridge.indicateHomePageLoadDone();
     }
 }
 

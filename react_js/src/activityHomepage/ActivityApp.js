@@ -19,6 +19,8 @@ import ninesquared_bg from "./images/ninesquared_bg.jpg"
 import ninesquared_icon from "./images/ninesquared_icon.jpg"
 import dog_bg from "./images/dog_bg.jpg"
 import dog_icon from "./images/dog_icon.jpg"
+import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
+
 let demoInfos = [
     {
         "name": "红包雨",
@@ -113,6 +115,9 @@ class ActivityApp extends React.Component {
 
     componentDidMount() {
         this._FocusControl.changeFocus("/main");
+
+        // 调试接口，对接JSCenter平台去掉启动图的处理
+        JSBridge.indicateHomePageLoadDone();
     }
 }
 
