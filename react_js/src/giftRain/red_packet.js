@@ -3,8 +3,67 @@
  */
 import React, {Component} from 'react';
 import {createImpactTracer, createImpactCallback} from '../jsview-utils/jsview-react/index_widget';
+import {JsvSpriteTranslate, TranslateControl} from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 
+class SpriteTranslate extends Component {
+  constructor(props) {
+    super(props);
+    let control = new TranslateControl();
+    control.speed(720/this.props.item.duration);
+    control.allowFrameStepMode(true);
+    this._Control = control;
+  }
 
+  _onDestroy=()=>{
+    if (this.props.onDestory) {
+      this.props.onDestory(this.props.item.key);
+    }
+	}
+
+  _InitItemEle(item, ele) {
+    if (ele && !item.ele) {
+      item.ele = ele;
+      if (this.props.MoneyBag) {
+        let giftrain_sensor = createImpactTracer(this.props.MoneyBag, ele, createImpactCallback(
+          () => {
+            this.props.onImpactTracer(item);//
+            this._onDestroy();
+          },
+          () => {
+
+          })
+        );
+        item.sensor = giftrain_sensor;
+      }
+    }
+  }
+
+  render () {
+    let item = this.props.item
+    return (
+			<div>
+				<JsvSpriteTranslate key={'translate' + item.key}
+														style={{left: item.left, top: item.top, width: item.width, height: item.height}}
+														control={this._Control}>
+					<div key={"bg"+item.key} ref={ele => this._InitItemEle(item, ele)}
+							 style={{
+                 backgroundImage: `url(${item.src})`, left: 0, top: 0, width: item.width, height: item.height,
+               }}/>
+				</JsvSpriteTranslate>
+			</div>
+    )
+  }
+
+  componentDidMount() {
+    this._Control.targetY(720).start(()=>{
+      this._onDestroy();
+		})
+  }
+
+  componentWillUnmount() {
+
+  }
+}
 class RedPacket extends Component {
 	constructor(props) {
 		super(props);
@@ -21,7 +80,6 @@ class RedPacket extends Component {
 		this._GameTimerID = null;
 		this._IsRunning = false;
 		this._Count = 0;
-
 	}
 
 	componentDidMount() {
@@ -49,26 +107,28 @@ class RedPacket extends Component {
 		let ret_obj ="";
 		for (let i = 0; i < total_num; i++) {
 			let random_index = Math.floor(Math.random() * 3);
-			let duration = 2 + Math.floor(Math.random() * 2) + "s";
+			let duration = 2 + Math.floor(Math.random() * 2);
 			let index = ++this._Index;
 			let left = 300+Math.floor(Math.random() * (1280-500));
-			let top = 720;
+			let top = -20;
+
 			switch (random_index) {
 				case 0:
-					ret_obj = {key: index.toString(), type:0,src: this._RedImage, left: left, top:top,width: 87, height: 118, duration: duration
+					ret_obj = {key: index.toString(), type:0,src: this._RedImage, left: left, top:top,width: 87, height: 118,duration:duration,
 					};
 					break;
 				case 1:
-					ret_obj = {key: index.toString(), type:1,src: this._BigRedImage, left: left, top:top,width: 210, height: 114, duration: duration
+					ret_obj = {key: index.toString(),  type:1,src: this._BigRedImage, left: left, top:top,width: 210, height: 114,duration:duration,
 					};
 					break;
 				case 2:
-					ret_obj = {key: index.toString(), type:2,src: this._BoomImage, left: left, top:top, width: 100, height: 116, duration: duration
+					ret_obj = {key: index.toString(), type:2,src: this._BoomImage, left: left, top:top, width: 100, height: 116,duration:duration
 					};
 					break;
 				default:
 					break;
 			}
+
 			console.log("initRandomItemList ret_obj:",ret_obj);
 			this.state.itemList.push(ret_obj);
 		}
@@ -108,7 +168,7 @@ class RedPacket extends Component {
 		}
 	}
 
-	_RemoveItem(key) {
+	_RemoveItem=(key)=> {
 		let itemList = this.state.itemList;
         console.log("_RemoveItem in itemList.length:", itemList.length);
 		for(let i=0; i<itemList.length;i++) {
@@ -143,26 +203,6 @@ class RedPacket extends Component {
 		}, delay)
 	}
 
-    _InitItemEle(item, ele) {
-		if (ele && !item.ele) {
-            item.ele = ele;
-            if (this.props.MoneyBag) {
-                let giftrain_sensor = createImpactTracer(this.props.MoneyBag, ele, createImpactCallback(
-                    () => {
-                        this.onImpactTracer(item);//
-                        if (this._IsRunning === true) {
-                            this._RemoveItem(item.key);
-                        }
-                    },
-                    () => {
-
-                    })
-                );
-                item.sensor = giftrain_sensor;
-			}
-
-		}
-	}
 	render() {
 		const itemList = this.state.itemList;
 		console.log("render itemList.length:", itemList.length);
@@ -176,17 +216,8 @@ class RedPacket extends Component {
 					itemList.map((item) => {
                         console.log("render item:", item.key);
 						return (
-							<div key={item.key} ref={ele => this._InitItemEle(item, ele)}
-								 style={{backgroundImage:`url(${item.src})`, left: item.left, top:item.top, width: item.width,
-								height: item.height,
-									 animation: "rainDown " + item.duration + " linear",
-							}} onAnimationEnd={()=>{
-
-                                if (this._IsRunning === true) {
-                                	console.log("onAnimationEnd item.key:"+item.key);
-                                    this._RemoveItem(item.key);
-                                }
-							}}/>
+							<SpriteTranslate MoneyBag={this.props.MoneyBag} onImpactTracer={this.onImpactTracer}
+															 onDestory={this._RemoveItem} key={'spritetranslate' + item.key} item={item}/>
 						)
 					})
 				}
