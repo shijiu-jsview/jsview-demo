@@ -109,6 +109,9 @@ public class JsViewRuntimeBridge {
 				class_name = CurActivityInfo.getNextActivityName();
 			}
 			Intent intent = new Intent();
+			if (engine_url == null || engine_url.trim().isEmpty()) {
+				engine_url = mHostJsView.getEngineUrl();
+			}
 			Log.d(TAG, "start sub tab " + engine_url + " " + app_url + " " + start_img_url + "  " + jsview_version + " " + class_name);
 			ComponentName component_name = new ComponentName(mContext.getPackageName(), class_name);
 			intent.setComponent(component_name);
