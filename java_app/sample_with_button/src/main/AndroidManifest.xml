@@ -19,6 +19,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".subactivities.SubActivity0"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true">
+        </activity>
+
+        <activity android:name=".subactivities.SubActivity1"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true"
+            android:process=":sub1">
+        </activity>
+        <activity android:name=".subactivities.SubActivity2"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true"
+            android:process=":sub2">
+        </activity>
+        <activity android:name=".subactivities.SubActivity3"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true"
+            android:process=":sub3">
+        </activity>
+        <activity android:name=".subactivities.SubActivity4"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true"
+            android:process=":sub4">
+        </activity>
+        <activity android:name=".subactivities.SubActivity5"
+            android:screenOrientation="landscape"
+            android:theme="@style/SplashThemeType0"
+            android:hardwareAccelerated="true"
+            android:process=":sub5">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>

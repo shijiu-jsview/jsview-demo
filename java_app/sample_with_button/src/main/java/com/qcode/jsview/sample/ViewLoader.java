@@ -1,10 +1,11 @@
 package com.qcode.jsview.sample;
 
 import android.app.Activity;
-import android.content.Context;
+import android.os.Process;
 import android.util.Log;
 
 import com.qcode.jsview.JsView;
+import com.qcode.jsview.sample.submodule.CurActivityInfo;
 import com.qcode.jsview.sample.submodule.DownloadCoreProgress;
 import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
 import com.qcode.jsview.sample.submodule.JsViewRuntimeBridge;
@@ -19,8 +20,6 @@ public class ViewLoader {
 			Activity host_activity,
 			StartIntentParser parsed_intent,
 			PageStatusListener status_listener) {
-		Context ctx = host_activity;
-
 		// 若主JS的URL未设置，使用BuildConfig中配置的默认值
 		if (parsed_intent.jsUrl.isEmpty()) {
 			parsed_intent.jsUrl = BuildConfig.APP_URL;
@@ -31,18 +30,21 @@ public class ViewLoader {
 		}
 
 		/* 展示启动图 */
+		int default_res = parsed_intent.isSub ? 0 : R.drawable.startup_icon;
 		StartingImage.showStartingImage(
 				host_activity,
 				parsed_intent,
-				R.drawable.startup_icon,
+				default_res,
 				R.id.PageLoad,
 				R.id.DummySurfaceContainer);
 
 		/* 加载SDK */
+		int port = CurActivityInfo.sDevPortBase++;
+		Log.d(TAG, "port:" + port + " pid:" + Process.myPid() + " js:" + parsed_intent.jsUrl);
 		JsViewRequestSdkProxy.requestJsViewSdk(
 				host_activity.getApplication(),
 				parsed_intent.coreVersionRange, // 当无版本指定时，使用APK自带的版本启动
-				9226,
+				port,
 				// 创建内核升级时的进度跟踪器
 				buildCoreDownloadListener(host_activity));
 
@@ -53,7 +55,7 @@ public class ViewLoader {
 		DebugSettings.load(jsview);
 
 		/* 加载Java穿透接口 JsDemoInterface */
-		jsview.addJavascriptInterface(new JsDemoInterface(ctx), "jDemoInterface");
+		jsview.addJavascriptInterface(new JsDemoInterface(host_activity), "jDemoInterface");
 
 		/*
 		 * Java穿透给JS的JsViewRuntimeBridge

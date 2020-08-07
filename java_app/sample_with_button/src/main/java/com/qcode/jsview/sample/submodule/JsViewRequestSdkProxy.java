@@ -15,7 +15,7 @@ abstract public class JsViewRequestSdkProxy {
 	private static boolean sSdkLoaded = false;
 
 	// 内核调试模式是否启动的标识
-	private static boolean sEnableEngineCodeDebug = true;
+	private static boolean sEnableEngineCodeDebug = false;
 
 	// core_version_range格式(内核指定的格式)
 	// XXXX+

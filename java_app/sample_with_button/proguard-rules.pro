@@ -139,3 +139,6 @@ public static ** valueOf(java.lang.String);
 -keep public class com.bumptech.glide.** { public *; }
 -keep public class net.grandcentrix.tray.** { public *; }
 -keep public class okhttp3.** { public *; }
+
+-keepclassmembers class com.qcode.jsview.sample.subactivities.SubActivity{}
+-keepclassmembers class * extends com.qcode.jsview.sample.subactivities.SubActivity{}

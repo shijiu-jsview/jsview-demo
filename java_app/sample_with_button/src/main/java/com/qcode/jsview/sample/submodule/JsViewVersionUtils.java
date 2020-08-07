@@ -94,7 +94,14 @@ public class JsViewVersionUtils {
 		String core_version = parseVersion(ctx, version_range);
 		if (core_version.equals(sLoadedVersion))
 			return false;
-
 		return true;
+	}
+
+	public static String getCoreVersion() {
+		return sLoadedVersion;
+	}
+
+	public static boolean needResetCore(Context ctx, String version_range) {
+		return needReboot(ctx, version_range);
 	}
 }

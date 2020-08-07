@@ -1,7 +1,9 @@
 package com.qcode.jsview.sample.submodule;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,6 +14,8 @@ import android.webkit.JavascriptInterface;
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.utils.MD5Util;
 import com.qcode.jsview.sample.utils.Mac;
+
+import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
 
 public class JsViewRuntimeBridge {
 	private static final String TAG = "JsViewRuntimeBridge";
@@ -45,10 +49,6 @@ public class JsViewRuntimeBridge {
 		new Handler(Looper.getMainLooper()).post(()->{
 			Activity host_activity = (Activity)mContext;
 			host_activity.finish();
-
-			// 清理进程，保证干净退出
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
 		});
 	}
 
@@ -99,5 +99,31 @@ public class JsViewRuntimeBridge {
 	public String getAndroidId() {
 		String android_id = Settings.System.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 		return android_id;
+	}
+
+	@JavascriptInterface
+	public void openBlank(String engine_url, String app_url, String start_img_url, String jsview_version) {
+		try {
+			String class_name = CurActivityInfo.getCurActivityName();
+			if (CurActivityInfo.sActivityCount >= 2 || jsview_version != null && !jsview_version.isEmpty() && needResetCore(mContext, jsview_version)) {
+				class_name = CurActivityInfo.getNextActivityName();
+			}
+			Intent intent = new Intent();
+			Log.d(TAG, "start sub tab " + engine_url + " " + app_url + " " + start_img_url + "  " + jsview_version + " " + class_name);
+			ComponentName component_name = new ComponentName(mContext.getPackageName(), class_name);
+			intent.setComponent(component_name);
+			intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+			if (jsview_version == null || jsview_version.isEmpty()) {
+				jsview_version = JsViewVersionUtils.getCoreVersion();
+			}
+			intent.putExtra("CORE", jsview_version);
+			intent.putExtra("JSURL", app_url);
+			intent.putExtra("ENGINEJS", engine_url);
+			intent.putExtra("STARTIMG", start_img_url);
+			intent.putExtra("ISSUB", true);
+			mContext.startActivity(intent);
+		} catch (Exception e) {
+			Log.d(TAG, "error", e);
+		}
 	}
 }

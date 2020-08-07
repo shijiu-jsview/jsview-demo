@@ -21,18 +21,17 @@ import com.qcode.jsview.sample.utils.TimerInterval;
 public class StartupProc {
 	private static final String TAG = "StartupProc";
 
-	interface Listener {
+	public interface Listener {
 		public void onViewCreated(JsView jsview);
 	}
 
-	static void startWhenConnectReady(
+	public static void startWhenConnectReady(
 						Activity host_activity,
 						Intent starter_intent,
 						Listener listener,
 						boolean from_on_new_intent) {
 		/* 解析启动参数 */
 		StartIntentParser parsed_intent = new StartIntentParser(starter_intent);
-
 		// 当OnNewIntent时，若发现已加载的JsView版本与要求的Sdk版本不一致时，重启进程
 		if (from_on_new_intent) {
 			if (JsViewRequestSdkProxy.needReboot(host_activity, parsed_intent)) {

@@ -11,6 +11,7 @@ public class StartIntentParser {
 	public String loadParamJson = "";
 	public String startImageUrl = "";
 	public String coreVersionRange = "";
+	public boolean isSub = false;
 
 	public StartIntentParser(Intent intent) {
 		// 可选：JsView 内核版本指定范围，若不指定，则会使用当前AAR携带的版本
@@ -56,6 +57,11 @@ public class StartIntentParser {
 			if (start_img_url != null) {
 				startImageUrl = start_img_url;
 			}
+		}
+
+		if (intent.hasExtra("ISSUB")) {
+			isSub = intent.getBooleanExtra("ISSUB", false);
+			Log.d(TAG, "ISSUB:" + isSub);
 		}
 
 		// 调试处理，调试时手动变化URL

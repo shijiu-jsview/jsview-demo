@@ -12,11 +12,11 @@ public class ViewStack {
 		mHostActivity = host_activity;
 	}
 
-	void activeView(JsView view) {
+	public void activeView(JsView view) {
 		mCurrentView = view;
 	}
 
-	JsView currentView() {
+	public JsView currentView() {
 		return mCurrentView;
 	}
 }
