@@ -132,6 +132,11 @@ let demoInfos = [
         "path": "/users/soundPool",
         "class": lazy(() => import('../soundPool/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "SubTab",
+        "path": "/users/subTab",
+        "class": lazy(() => import('../subTab/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
@@ -158,10 +163,14 @@ class DemoApp extends React.Component {
     constructor(props) {
         super(props);
         this._FocusControl = null;
-
         this._NavigateHome = (()=>{
-            globalHistory.goBack();
-            this._FocusControl.changeFocus("/main");
+            if (globalHistory.length > 1) {
+                globalHistory.goBack();
+                this._FocusControl.changeFocus("/main");
+                return true;
+            } else {
+                return false;
+            }
         }).bind(this);
 
         this.state = {
@@ -197,7 +206,12 @@ class DemoApp extends React.Component {
     }
 
     componentDidMount() {
-        this._FocusControl.changeFocus("/main");
+        console.log("cchtest cur path " + globalHistory.location.pathname)
+        if (globalHistory.location.pathname && globalHistory.location.pathname.indexOf("/users") >= 0) {
+            this._FocusControl.changeFocus(globalHistory.location.pathname);
+        } else {
+            this._FocusControl.changeFocus("/main");
+        }
 
         // 调试接口，对接JSCenter平台去掉启动图的处理
         JSBridge.indicateHomePageLoadDone();
