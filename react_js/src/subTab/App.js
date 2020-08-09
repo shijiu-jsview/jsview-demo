@@ -322,11 +322,17 @@ class MainScene extends FocusBlock{
     }
 
     _buttonOnClick(item) {
-        let url = "http://192.168.0.50:8080/res/big_image.jpg";
+    	let start_image = ""; // 设置为""，则不显示启动图
+        // let start_image = "http://192.168.0.50:8080/res/big_image.jpg";
+
+	    let engine_js = ""; // 设置为""，则表示使用和当前页面一样的engine js
+
         if (item.name == "打开1") {
-            jJsvRuntimeBridge.openBlank("", window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), "", "");
+        	let core_version = ""; // 设置为""，表示使用当前页面一样的core
+            jJsvRuntimeBridge.openBlank(engine_js, window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
         } else {
-            jJsvRuntimeBridge.openBlank("", window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), "", this.state.text);
+	        let core_version = this.state.text;
+            jJsvRuntimeBridge.openBlank(engine_js, window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
         }
     }
 
