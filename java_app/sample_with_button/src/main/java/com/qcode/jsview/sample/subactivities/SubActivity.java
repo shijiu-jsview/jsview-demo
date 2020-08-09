@@ -6,16 +6,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.DebugDevOption;
 import com.qcode.jsview.sample.R;
 import com.qcode.jsview.sample.StartupProc;
-import com.qcode.jsview.sample.ViewStack;
 import com.qcode.jsview.sample.submodule.CurActivityInfo;
 
 abstract public class SubActivity extends Activity {
 	private static final String TAG = "SubActivity";
 
-	private ViewStack mViewStack = null;
+	// reload调试处理的View对象
+	private JsView mDebugDevTargetView = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +26,10 @@ abstract public class SubActivity extends Activity {
 		CurActivityInfo.onActivityCreate();
 		setContentView(R.layout.activity_main);
 
-		// 初始化View管理器
-		mViewStack = new ViewStack(this);
-
 		// 启动主界面
 		StartupProc.startWhenConnectReady(this,
 				getIntent(),
-				jsview -> mViewStack.activeView(jsview),
+				jsview -> mDebugDevTargetView = jsview,
 				false);
 	}
 
@@ -41,7 +39,7 @@ abstract public class SubActivity extends Activity {
 		// 更新主界面，接受新的URL配置
 		StartupProc.startWhenConnectReady(this,
 				getIntent(),
-				jsview -> mViewStack.activeView(jsview),
+				jsview -> mDebugDevTargetView = jsview,
 				true);
 
 		super.onNewIntent(intent);
@@ -50,7 +48,7 @@ abstract public class SubActivity extends Activity {
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent key_event) {
-		DebugDevOption.onKeyEvent(key_event, this, mViewStack.currentView());
+		DebugDevOption.onKeyEvent(key_event, this, mDebugDevTargetView);
 		return super.dispatchKeyEvent(key_event);
 	}
 

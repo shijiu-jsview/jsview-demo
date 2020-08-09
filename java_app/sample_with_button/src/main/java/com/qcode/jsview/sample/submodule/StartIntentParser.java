@@ -11,6 +11,8 @@ public class StartIntentParser {
 	public String loadParamJson = "";
 	public String startImageUrl = "";
 	public String coreVersionRange = "";
+
+	// isSub: 内部参数，在JsViewRuntimeBridge.openBlank时设定，用来控制不显示默认启动图
 	public boolean isSub = false;
 
 	public StartIntentParser(Intent intent) {
@@ -75,6 +77,7 @@ public class StartIntentParser {
 	}
 
 	private void loadDebugChange() {
+//		coreVersionRange = "461";
 //		jsUrl = "http://192.168.2.179:3000/static/js/bundle.js";
 //		engineUrl = "http://192.168.2.179:8081/apps/home_js/imports/forge_all/es6_wrapper_react_index.list";
 	}

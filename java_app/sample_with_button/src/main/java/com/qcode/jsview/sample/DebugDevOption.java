@@ -22,6 +22,11 @@ public class DebugDevOption {
 			return;
 		}
 
+		if (current_jsview == null) {
+			// 调试目标JsView还没初始化完毕
+			return;
+		}
+
 		long this_time_keyup = SystemClock.elapsedRealtime();
 		if (sLastKeyUpTime > 0 && this_time_keyup - sLastKeyUpTime < 500) {
 			showDevOptionsDialog(ctx, current_jsview);

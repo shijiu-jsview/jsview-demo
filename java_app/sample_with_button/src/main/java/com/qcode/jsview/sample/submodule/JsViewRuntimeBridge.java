@@ -42,20 +42,16 @@ public class JsViewRuntimeBridge {
 		mPageStatusListener = page_listener;
 	}
 
-	// JS接口: 关闭当前应用并推出进程
+	// JS接口: 退出当前页面
 	@JavascriptInterface
-	public void shutdownApp() {
+	public void closePage() {
+		Log.d(TAG, "closePage...");
+
 		// 放入主线程完成
 		new Handler(Looper.getMainLooper()).post(()->{
 			Activity host_activity = (Activity)mContext;
 			host_activity.finish();
 		});
-	}
-
-	// JS接口: 退出当前JsView
-	@JavascriptInterface
-	public void closeJsView() {
-		Log.d(TAG, "closeJsView...");
 	}
 
 	// JS接口: 从JS发出界面加载完成的通知，可以触发隐藏启动图的动作
@@ -101,6 +97,11 @@ public class JsViewRuntimeBridge {
 		return android_id;
 	}
 
+	// JS接口: 在新Activity中开启新JsView页面
+	// 若内核相同则在本进程开启activity，若内核不同则开启新进程
+	// =============================
+	// 若不需要此功能，可不用合并如下文件:
+	// subactivities/*
 	@JavascriptInterface
 	public void openBlank(String engine_url, String app_url, String start_img_url, String jsview_version) {
 		try {
