@@ -4,6 +4,7 @@ import createStandaloneApp from "../demoCommon/StandaloneApp"
 import {FocusBlock} from "../demoCommon/BlockDefine"
 import {SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
+import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
 
 let CONST_ITEM_WIDTH = 200;
 let CONST_ITEM_HEIGHT = 50;
@@ -288,10 +289,10 @@ class MainScene extends FocusBlock{
             if (this._NavigateHome) {
                 let result = this._NavigateHome();
                 if (!result) {
-                    jJsvRuntimeBridge.shutdownApp()
+                    jJsvRuntimeBridge.closePage()
                 }
             } else {
-                jJsvRuntimeBridge.shutdownApp()
+                jJsvRuntimeBridge.closePage()
             }
             return true;
         }
