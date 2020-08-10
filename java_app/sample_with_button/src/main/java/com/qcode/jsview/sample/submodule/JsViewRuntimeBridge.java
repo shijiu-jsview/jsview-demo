@@ -106,7 +106,7 @@ public class JsViewRuntimeBridge {
 	public void openBlank(String engine_url, String app_url, String start_img_url, String jsview_version) {
 		try {
 			String class_name = CurActivityInfo.getCurActivityName();
-			if (CurActivityInfo.sActivityCount >= 2 || jsview_version != null && !jsview_version.isEmpty() && needResetCore(mContext, jsview_version)) {
+			if (jsview_version != null && !jsview_version.isEmpty() && needResetCore(mContext, jsview_version)) {
 				class_name = CurActivityInfo.getNextActivityName();
 			}
 			Intent intent = new Intent();
