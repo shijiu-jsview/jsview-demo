@@ -10,10 +10,10 @@ let CONST_ITEM_WIDTH = 200;
 let CONST_ITEM_HEIGHT = 50;
 let BUTTON_DATA = [
     {
-        'name': '打开1'
+        'name': '二级页面1'
     },
     {
-        'name': "打开2"
+        'name': "二级页面2"
     }
 ]
 class Button extends FocusBlock{
@@ -325,14 +325,22 @@ class MainScene extends FocusBlock{
     	let start_image = ""; // 设置为""，则不显示启动图
         // let start_image = "http://192.168.0.50:8080/res/big_image.jpg";
 
-	    let engine_js = ""; // 设置为""，则表示使用和当前页面一样的engine js
+        let engine_js = ""; // 设置为""，则表示使用和当前页面一样的engine js
+        
+        let index = window.location.href.indexOf("?");
+        let url;
+        if (index >= 0) {
+            url = window.location.href.substring(0, index);
+        } else {
+            url = window.location.href;
+        }
 
-        if (item.name == "打开1") {
+        if (item.name == "二级页面1") {
         	let core_version = ""; // 设置为""，表示使用当前页面一样的core
-            jJsvRuntimeBridge.openBlank(engine_js, window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
         } else {
 	        let core_version = this.state.text;
-            jJsvRuntimeBridge.openBlank(engine_js, window.location.href + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
         }
     }
 
@@ -349,7 +357,7 @@ class MainScene extends FocusBlock{
                 </div>
                 <div style={{left: 400, top: 150, color: "#000000", fontSize: 30}}>
                     {
-                        "打开1: 使用与当前相同版本的jsview\n\打开2: 使用不同版本的jsview\n  "
+                        "二级页面1: 使用与当前相同版本的jsview\n\二级页面2: 使用不同版本的jsview\n  "
                     }
                 </div>
                 <div style={{left: 400, top: 250, color: "#000000", fontSize: 30}}>
@@ -361,8 +369,10 @@ class MainScene extends FocusBlock{
                 <div style={{left: 400, top: 330, color: "#000000", fontSize: 30}}>
                     {"启动subtab的jsview版本: " + this.state.text}
                 </div>
+                <div style={{left: 400, top: 370, width: 800, height: 200, color: "#000000", fontSize: 30}}>
+                    {window.location.href}
+                </div>
             </div>
-            
         )
     }
 }
