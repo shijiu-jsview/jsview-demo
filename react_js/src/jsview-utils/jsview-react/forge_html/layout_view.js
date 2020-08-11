@@ -243,6 +243,11 @@ class LayoutViewBase {
         }
     }
 
+    SetZIndex(z_index) {
+        this.Element.style.zIndex = z_index;
+        this.zIndex = z_index;
+    }
+
     EnableDivTouch(ele, setting) {
         if (ele.reactEventHandlers && ele.reactEventHandlers.onClick) {
             this.Element.onclick = (ev) => {
