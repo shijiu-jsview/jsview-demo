@@ -2,7 +2,7 @@ import { createMemoryHistory, createHashHistory } from 'history';
 
 class HistoryProxy {
 	constructor(type /* reserved */) {
-		this._HistoryRef;
+		this._HistoryRef = null;
 
 		if (!!window.JsView) {
 			this._HistoryRef = createMemoryHistory();
