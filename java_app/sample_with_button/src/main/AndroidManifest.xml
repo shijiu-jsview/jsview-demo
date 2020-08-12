@@ -6,6 +6,7 @@
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:logo="@drawable/icon"
+        android:usesCleartextTraffic="true"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
         android:label="${LABEL_NAME}">
 
