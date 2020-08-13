@@ -8,7 +8,6 @@ public class StartIntentParser {
 
 	public String jsUrl = "";
 	public String engineUrl = "";
-	public String loadParamJson = "";
 	public String startImageUrl = "";
 	public String coreVersionRange = "";
 
@@ -31,15 +30,6 @@ public class StartIntentParser {
 			Log.d(TAG, "JSURL:" + js_url);
 			if (js_url != null) {
 				jsUrl = js_url;
-			}
-		}
-
-		// 可选：传递给JS的参数，这些参数将会变成URL后的?Key=Value，出现在JS的window.location.href的信息中
-		if (intent.hasExtra("PARAM")) {
-			String load_param = intent.getStringExtra("PARAM");
-			Log.d(TAG, "PARAM:" + load_param);
-			if (load_param != null) {
-				loadParamJson = load_param;
 			}
 		}
 
