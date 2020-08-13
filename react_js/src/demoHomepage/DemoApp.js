@@ -8,8 +8,10 @@ import {
 } from "react-router-dom";
 import Home from './Homepage'
 import { FdivRoot, FdivRouter } from "../jsview-utils/jsview-react/index_widget.js"
-import { globalHistory } from '../demoCommon/RouterHistory';
 import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
+
+import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+let globalHistory = getGlobalHistory();
 
 let demoInfos = [
     {
@@ -181,7 +183,7 @@ class DemoApp extends React.Component {
     render() {
         return (
             <FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
-                <Router history={globalHistory} >
+                <Router history={globalHistory.getReference()} >
                     <React.Suspense fallback={<div></div>}>
                         <Switch>
                             {

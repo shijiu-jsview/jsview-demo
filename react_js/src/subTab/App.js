@@ -337,10 +337,10 @@ class MainScene extends FocusBlock{
 
         if (item.name == "二级页面1") {
         	let core_version = ""; // 设置为""，表示使用当前页面一样的core
-            jJsvRuntimeBridge.openBlank(engine_js, url + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/subTab", start_image, core_version);
         } else {
 	        let core_version = this.state.text;
-            jJsvRuntimeBridge.openBlank(engine_js, url + "?target=/users/subTab&subCount=" + (this._SubCount + 1), start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/subTab", start_image, core_version);
         }
     }
 

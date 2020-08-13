@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import Home from './Homepage'
 import { FdivRoot, FdivRouter } from "../jsview-utils/jsview-react/index_widget.js"
-import { globalHistory } from '../demoCommon/RouterHistory';
 import giftrain_bg from "./images/giftrain_bg.jpg";
 import giftrain_icon from "./images/giftrain_icon.jpg"
 import smash_eggs_bg from "./images/smash_eggs_bg.jpg"
@@ -20,6 +19,9 @@ import ninesquared_icon from "./images/ninesquared_icon.jpg"
 import dog_bg from "./images/dog_bg.jpg"
 import dog_icon from "./images/dog_icon.jpg"
 import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
+
+import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+let globalHistory = getGlobalHistory();
 
 let demoInfos = [
     {

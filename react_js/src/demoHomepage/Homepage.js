@@ -8,7 +8,8 @@
 
 import React from 'react';
 import {Router, FdivRoot, Fdiv,FdivWrapper, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
-import {globalHistory} from '../demoCommon/RouterHistory';
+import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+let globalHistory = getGlobalHistory();
 
 let CONST_ITEM_WIDTH = 300;
 let CONST_ITEM_HEIGHT = 100;
@@ -23,7 +24,6 @@ class Home extends FdivWrapper {
 	}
 
     _onClick(item) {
-        console.log(globalHistory)
         globalHistory.push(item.path);
         this.changeFocus(item.path, true);
     }
