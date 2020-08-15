@@ -135,9 +135,14 @@ let demoInfos = [
         "class": lazy(() => import('../soundPool/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        "name": "SubTab",
+        "name": "子页面启动",
         "path": "/users/subTab",
         "class": lazy(() => import('../subTab/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        "name": "滚动的长图片",
+        "path": "/users/LongImage",
+        "class": lazy(() => import('../longImage/App').then(m => ({ default: m.SubApp }))),
     },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
