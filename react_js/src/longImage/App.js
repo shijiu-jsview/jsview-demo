@@ -6,7 +6,9 @@
  * SimpleWidget：见simpleMetrowidget
  * 
  * 【技巧说明】
- *
+ * Q: 如何让图片的高度自适应？
+ * A: 使用img元素，并且style中高度不设置即可
+ *    通过element.clientHeight获取渲染后的自动高度，以决定滚动轴的总高度
  */
 
 import React from 'react';
