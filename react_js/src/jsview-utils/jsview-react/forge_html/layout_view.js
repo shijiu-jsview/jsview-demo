@@ -687,6 +687,13 @@ class LayoutViewBase {
     EnableAutoHeight() {
         this._AutoHeight = true;
     }
+
+    // 功能: 标识本LayoutView要根据自身Texture加载完成后，根据Texture的尺寸重新Resize
+    // 当enable后，无论尺寸设成多少，同步给Native的界面尺寸都会固定为(1,1)，
+    // 以保证View会被渲染，从而防止Texture由于不在界面上不会加载的处理生效，同时小尺寸不会被注意
+    WaitTextureToResize() {
+        // TODO: js模式不需要处理
+    }
 }
 LayoutViewBase.DivId = 0;
 // Static variable
