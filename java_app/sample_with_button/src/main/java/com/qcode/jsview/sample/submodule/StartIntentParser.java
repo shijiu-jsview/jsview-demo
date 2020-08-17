@@ -62,8 +62,7 @@ public class StartIntentParser {
 
 	public boolean isSamePage(StartIntentParser other_intent_parser) {
 		return (other_intent_parser.jsUrl.equals(jsUrl)
-				&& other_intent_parser.engineUrl.equals(engineUrl)
-				&& other_intent_parser.loadParamJson.equals(loadParamJson));
+				&& other_intent_parser.engineUrl.equals(engineUrl));
 	}
 
 	private void loadDebugChange() {
