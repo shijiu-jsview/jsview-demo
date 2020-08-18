@@ -1,0 +1,36 @@
+@keyframes myRotate {
+    from {
+        transform: rotate3d(0, 1, 0, 0);
+    }
+    to{
+        transform: rotate3d(0, 1, 0, 720deg);
+    }
+}
+
+@keyframes eggRotate {
+    from {
+        transform: rotate3d(0, 0, 1, 180deg);
+    }
+    to{
+        transform: rotate3d(0, 0, 1, 0);
+    }
+}
+
+@keyframes myTranslateZ {
+    from {
+        transform: translate3d(0,0,0);
+    }
+    to{
+        transform: translate3d(0,0,100px);
+    }
+}
+
+@keyframes myScaleZ {
+    from {
+        transform: scale3d(1,1,1.0);
+    }
+    to{
+        transform: scale3d(1,1,3.0);
+    }
+}
+

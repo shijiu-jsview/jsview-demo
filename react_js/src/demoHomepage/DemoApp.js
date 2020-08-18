@@ -149,6 +149,11 @@ let demoInfos = [
         "path": "/users/hashHistoryLike",
         "class": lazy(() => import('../hashHistoryLike/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "翻牌游戏",
+        "path": "/users/flipCard",
+        "class": lazy(() => import('../flipCard/App').then(m => ({ default: m.SubApp }))),
+    }
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;

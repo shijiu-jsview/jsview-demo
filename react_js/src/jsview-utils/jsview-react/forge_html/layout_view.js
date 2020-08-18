@@ -182,6 +182,9 @@ class LayoutViewBase {
         this.ChildViews = []; // TODO: 为了节省内存，将改成按需求生成
         // Z-index
         this.zIndex = 0;
+        this._Perspective = 0;
+        this._PerspectiveAnchor = [0.5, 0.5];
+        this._BackfaceVisibility = 1;
         this._DebugCount = ++count;
         this.childZIndexCount = 0; // 计数器，统计子界面中有多少个设置了index的界面，用于优化AddView时的z-index调整处理
         this._IsChildOfRootView = false;
@@ -246,6 +249,46 @@ class LayoutViewBase {
     SetZIndex(z_index) {
         this.Element.style.zIndex = z_index;
         this.zIndex = z_index;
+    }
+
+    /**
+	 * Perspective距离<br>
+	 *
+	 * hide public
+	 * @func SetPerspective
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+	 * @param {int} distance 观察点距离view的值, 最大为2^16 - 1
+	 **/
+    SetPerspective(distance, origin) {
+        this.Element.style.perspective = distance + "px";
+        this.Element.style.webkitPerspective = distance + "px";
+        this.Element.style.perspectiveOrigin = origin;
+        this.Element.style.webkitPerspectiveOrigin = origin;
+        this._Perspective = distance;
+        this._PerspectiveOrigin = origin
+    }
+
+    /**
+	 * 背面是否可见<br>
+	 *
+	 * hide public
+	 * @func SetBackfaceVisibility
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+     * @param {boolean} visible 可见性
+	 **/
+    SetBackfaceVisibility(visible) {
+        console.log("set back face", visible);
+        this.Element.style.backfaceVisibility = visible ? "visible" : "hidden";
+        this.Element.style.webkitBackfaceVisibility = visible ? "visible" : "hidden";
+        console.log("back face style " + this.Element.style.backfaceVisibility);
+        this._BackfaceVisibility = visible ? 1 : 0;
+    }
+
+    SetTransformStyle(transform_style) {
+        this.Element.style.transformStyle = transform_style;
+        this._TransformStyle = transform_style;
     }
 
     EnableDivTouch(ele, setting) {
