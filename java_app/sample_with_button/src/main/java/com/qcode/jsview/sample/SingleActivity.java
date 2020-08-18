@@ -32,7 +32,7 @@ public class SingleActivity extends Activity {
 	protected void onNewIntent(Intent intent) {
 		// 更新主界面，接受新的URL配置
 		StartupProc.startWhenConnectReady(this,
-								getIntent(),
+								intent,
 								jsview -> mDebugDevTargetView = jsview,
 								true);
 

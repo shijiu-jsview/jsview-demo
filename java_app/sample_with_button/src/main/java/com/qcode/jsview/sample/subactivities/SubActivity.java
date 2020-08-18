@@ -38,7 +38,7 @@ abstract public class SubActivity extends Activity {
 		Log.d(TAG + activityIndex(), "onNewIntent");
 		// 更新主界面，接受新的URL配置
 		StartupProc.startWhenConnectReady(this,
-				getIntent(),
+				intent,
 				jsview -> mDebugDevTargetView = jsview,
 				true);
 
