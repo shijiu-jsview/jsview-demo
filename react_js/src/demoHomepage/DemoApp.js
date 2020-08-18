@@ -144,6 +144,11 @@ let demoInfos = [
         "path": "/users/LongImage",
         "class": lazy(() => import('../longImage/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "Hash方式路由切换",
+        "path": "/users/hashHistoryLike",
+        "class": lazy(() => import('../hashHistoryLike/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
