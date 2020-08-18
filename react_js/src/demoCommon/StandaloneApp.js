@@ -14,7 +14,7 @@ function createStandaloneApp(main_scene_component) {
 		}
 
 		render() {
-			let scene = React.createElement(main_scene_component, {branchName:"MySelf"});
+			let scene = React.createElement(main_scene_component, {branchName:"/MySelf", standAlone:true});
 			return (<FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
 				{scene}
 			</FdivRouter>);

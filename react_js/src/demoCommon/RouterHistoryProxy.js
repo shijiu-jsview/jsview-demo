@@ -4,7 +4,7 @@ import {jJsvRuntimeBridge} from "./JsvRuntimeBridge"
 class HistoryProxy {
 	constructor(type /* reserved */) {
 		this._HistoryRef = null;
-		this._ListenCB = [];
+		this._ListenCB = new Set();
 
 		if (!!window.JsView) {
 			let set = {};
@@ -29,8 +29,8 @@ class HistoryProxy {
 					));
 					console.log("History:url change to:", window.location.href);
 
-					for (let cb_idx in this._ListenCB) {
-						this._ListenCB[cb_idx](location, action);
+					for (let cb of this._ListenCB) {
+						cb(location, action);
 					}
 				});
 			}
@@ -45,9 +45,14 @@ class HistoryProxy {
 
 	listen(listen_callback) {
 		if (!!window.JsView && typeof listen_callback === "function") {
-			this._ListenCB.push(listen_callback);
+			this._ListenCB.add(listen_callback);
+
+			// unlisten
+			return ()=>{
+				this._ListenCB.delete(listen_callback);
+			}
 		} else {
-			this._HistoryRef.listen(listen_callback);
+			return this._HistoryRef.listen(listen_callback);
 		}
 	}
 
@@ -95,6 +100,8 @@ function getGlobalHistory() {
 	if (sGlobalHistory === null) {
 		initWithType("hash"); // 默认使用hash的location.href解析和locatoin.herf的更新模式
 	}
+
+	window.sLudlHistory = sGlobalHistory;
 
 	return sGlobalHistory;
 }
