@@ -63,7 +63,7 @@ class LongImageScroll extends FocusBlock{
                 <div style={{overflow: "hidden", ...style}}>
                     <img ref={(ele) => {this._Element = ele}}
                          src={imageSrc}
-                         style={{top: this.state.textY, width: style.width, objectFit:"contain"}} />
+                         style={{top: this.state.textY, width: style.width}} />
                 </div>
                 <Scroll top={this.state.scrollY} scrollStyle={scrollStyle} scrollBlockStyle={scrollBlockStyle}/>
             </React.Fragment>
