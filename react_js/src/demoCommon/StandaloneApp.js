@@ -21,7 +21,7 @@ function createStandaloneApp(main_scene_component) {
 		}
 
 		componentDidMount() {
-			this._FocusControl.changeFocus("MySelf", true);
+			this._FocusControl.changeFocus("/MySelf", true);
 			jJsvRuntimeBridge.notifyPageLoaded();
 		}
 	}
