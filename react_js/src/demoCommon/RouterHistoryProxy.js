@@ -7,18 +7,29 @@ class HistoryProxy {
 		this._ListenCB = new Set();
 
 		if (!!window.JsView) {
-			let set = {};
-
+            let set = {};
+            
 			if (type === "hash") {
-				if (window.location.href.indexOf("#") < 0) {
-					// 未设置hash定位，追加hash根的显示
-					window.location.applyUrlInfo(new window.JsView.React.UrlRef(window.location.href + "#/", true));
-				} else {
-					// 从window.location.hash中还原hash entries
-					set["initialEntries"] = [
-						window.location.hash.substring(1),  // 去除#
-					];
-				}
+                let saved_info = null;
+                if (typeof window.jJsvInnerUtils !== "undefined" && typeof window.jJsvInnerUtils.getPageInfo !== "undefined") {
+                    saved_info = window.jJsvInnerUtils.getPageInfo(window.location.href);
+                }
+                if (saved_info) {
+                    let arr = JSON.parse(saved_info);
+                    set["initialEntries"] = arr;
+                    set["initialIndex"] = arr.length - 1
+                } else {
+                    if (window.location.href.indexOf("#") < 0) {
+                        // 未设置hash定位，追加hash根的显示
+                        window.location.applyUrlInfo(new window.JsView.React.UrlRef(window.location.href + "#/", true));
+                    } else {
+                        // 从window.location.hash中还原hash entries
+                        set["initialEntries"] = [
+                            window.location.hash.substring(1),  // 去除#
+                        ];
+                    }
+                }
+
 				this._HistoryRef = createMemoryHistory(set);
 				this._HistoryRef.listen((location, action) => {
 					// 模拟hashHistory行为

@@ -15,14 +15,26 @@ import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.utils.MD5Util;
 import com.qcode.jsview.sample.utils.Mac;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
 
 public class JsViewRuntimeBridge {
 	private static final String TAG = "JsViewRuntimeBridge";
-
+	private class UrlInfo{
+		String engineUrl;
+		String appUrl;
+	}
 	private Context mContext = null;
 	private JsView mHostJsView = null;
 	private PageStatusListener mPageStatusListener = null;
+
+	private Stack<UrlInfo> mUrlStack = new Stack<>();
 
 	// 启用Java->JS功能接口，在JS端的调用接口为 jJsvRuntimeBridge.XXXXX()
 	public static void enableBridge(Activity host_activity, JsView host_jsview, PageStatusListener page_listener) {
@@ -49,8 +61,13 @@ public class JsViewRuntimeBridge {
 
 		// 放入主线程完成
 		new Handler(Looper.getMainLooper()).post(()->{
-			Activity host_activity = (Activity)mContext;
-			host_activity.finish();
+			if (!mUrlStack.empty()) {
+				UrlInfo url = mUrlStack.pop();
+				mHostJsView.loadUrl2(url.engineUrl, url.appUrl);
+			} else {
+				Activity host_activity = (Activity) mContext;
+				host_activity.finish();
+			}
 		});
 	}
 
@@ -95,6 +112,20 @@ public class JsViewRuntimeBridge {
 	public String getAndroidId() {
 		String android_id = Settings.System.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 		return android_id;
+	}
+
+	@JavascriptInterface
+	public void openSelf(String from_url, String to_url, String engine_url) {
+		if (engine_url == null || engine_url.trim().isEmpty()) {
+			engine_url = mHostJsView.getEngineUrl();
+		}
+		UrlInfo url_info = new UrlInfo();
+		url_info.appUrl = from_url;
+		url_info.engineUrl = mHostJsView.getEngineUrl();
+		mUrlStack.push(url_info);
+
+		Log.d(TAG, "openSelf " + from_url + " " + to_url + " " + engine_url);
+		mHostJsView.loadUrl2(engine_url, to_url);
 	}
 
 	// JS接口: 在新Activity中开启新JsView页面

@@ -87,7 +87,7 @@ class MainScene extends FocusBlock{
 		return(
 			<React.Fragment>
 				<div key="background" style={{width:1280, height:1080, backgroundColor:"rgb(222,211,140)"}} />
-				<div style={{top: 80, left: 40, width: 1200, height:50, lineHeight:50, fontSize:20}}>
+				<div style={{top: 40, left: 40, width: 1200, height:200, fontSize:20}}>
 					{"当前URL:" + this.state.displayUrl}
 				</div>
 				<div key="split-line" style={{top:150, left:40, height:3, width: 1200, backgroundColor:"#00F000"}} />

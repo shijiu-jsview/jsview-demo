@@ -279,6 +279,8 @@ class MainScene extends FocusBlock{
                 } catch(e) {}
             }
         }
+        
+
         this.state = {
             text: ""
         }
@@ -369,7 +371,7 @@ class MainScene extends FocusBlock{
                 <div style={{left: 400, top: 330, color: "#000000", fontSize: 30}}>
                     {"启动subtab的jsview版本: " + this.state.text}
                 </div>
-                <div style={{left: 400, top: 370, width: 800, height: 200, color: "#000000", fontSize: 30}}>
+                <div style={{left: 400, top: 370, width: 400, backgroundColor: "#FFFFFF", color: "#000000", fontSize: 30}}>
                     {window.location.href}
                 </div>
             </div>
