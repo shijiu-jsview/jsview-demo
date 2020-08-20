@@ -153,7 +153,7 @@ let demoInfos = [
         "name": "翻牌游戏",
         "path": "/users/flipCard",
         "class": lazy(() => import('../flipCard/App').then(m => ({ default: m.SubApp }))),
-    }
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
@@ -197,33 +197,34 @@ class DemoApp extends React.Component {
 
     render() {
         return (
-            <FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
-                <Router history={globalHistory.getReference()} >
-                    <React.Suspense fallback={<div></div>}>
-                        <Switch>
-                            {
-                                demoInfos.map((item, index) => {
-                                    return (
-                                        <Route key={index} path={item.path}>
-                                            <item.class branchName={item.path} navigateHome={this._NavigateHome} />
-                                        </Route>)
-                                })
-                            }
-                            <Route path="/">
-                                <HomePageProxy callback={(v) => { this.setState({"homepageDisplay": v})}}/>
-                            </Route>
-                        </Switch>
-                    </React.Suspense>
-                </Router>
-                <div style={{"visibility": this.state.homepageDisplay}}>
-                    <Home branchName="/main" data={demoInfos} />
-                </div>
-            </FdivRouter>
+            <div style={{width: 1920, height: 1080, backgroundColor: "#000000"}}>
+                <FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
+                    <Router history={globalHistory.getReference()} >
+                        <React.Suspense fallback={<div></div>}>
+                            <Switch>
+                                {
+                                    demoInfos.map((item, index) => {
+                                        return (
+                                            <Route key={index} path={item.path}>
+                                                <item.class branchName={item.path} navigateHome={this._NavigateHome} />
+                                            </Route>)
+                                    })
+                                }
+                                <Route path="/">
+                                    <HomePageProxy callback={(v) => { this.setState({"homepageDisplay": v})}}/>
+                                </Route>
+                            </Switch>
+                        </React.Suspense>
+                    </Router>
+                    <div style={{"visibility": this.state.homepageDisplay}}>
+                        <Home branchName="/main" data={demoInfos} />
+                    </div>
+                </FdivRouter>
+            </div>
         )
     }
 
     componentDidMount() {
-        console.log("cchtest cur path " + globalHistory.location.pathname)
         if (globalHistory.location.pathname && globalHistory.location.pathname.indexOf("/users") >= 0) {
             this._FocusControl.changeFocus(globalHistory.location.pathname);
         } else {

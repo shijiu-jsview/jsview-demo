@@ -2,13 +2,14 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-13 17:00:41
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-05-11 11:08:12
+ * @LastEditTime: 2020-08-20 18:11:04
  * @Description: file content
  */
 
 import React from 'react';
 import {Router, FdivRoot, Fdiv,FdivWrapper, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
 import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
 let globalHistory = getGlobalHistory();
 
 let CONST_ITEM_WIDTH = 300;
@@ -58,30 +59,37 @@ class Home extends FdivWrapper {
 	// 直接集成自FdivWrapper的场合，使用renderContent而不是render进行布局
 	renderContent() {
         return (
-            <div style={{top: 10, left: 10}}>
+            <React.Fragment>
+                <div style={{fontSize: "20px", color: "#FFFFFF"}}>{window.location.href}</div>
+                <div style={{top: 20, left: 10}}>
                     <SimpleWidget 
                       width={ 1280 } 
-                      height={ 720 } 
+                      height={ 700 } 
                       direction={ VERTICAL } 
                       data={ this.props.data } 
                       renderItem={ this._RenderItem }
                       renderFocus={ this._RenderFocus }
                       onClick={ this._onClick }
                       measures={ this._Measures }
-                      padding={{top: 10, left: 10}}
+                      padding={{top: 10, left: 10, right: 10, buttom: 10}}
                       branchName={ "home_page" }
                       onWidgetMount={ this._onWidgetMount }
                     />
-            </div>
+                </div>
+            </React.Fragment>
         )
 	}
 
 	onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            jJsvRuntimeBridge.closePage()
+            return true;
+        }
 		return false;
 	}
 
 	onKeyUp(ev) {
-		return false;
+		return true;
 	}
 
 	onDispatchKeyDown(ev) {
