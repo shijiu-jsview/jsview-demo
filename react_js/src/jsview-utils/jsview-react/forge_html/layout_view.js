@@ -459,10 +459,12 @@ class LayoutViewBase {
                     this.Element.style.backgroundColor = resource_info.Set.Clr;
                 } else if (resource_info.Nam === "VPLY") {
                     let video_el = resource_info.Set.Hdl;
-                    if (this.LayoutParams) {
-                        video_el.style.width = this.LayoutParams.Width + "px";
-                        video_el.style.height = this.LayoutParams.Height + "px";
-                    }
+
+                    // 在Forge html状态，video的显示尺寸由父元素决定
+                    video_el.style.width = "100%";
+                    video_el.style.height = "100%";
+                    video_el.style.objectFit = "fill";
+
                     this.Element.appendChild(video_el);
                 }
             }
@@ -671,20 +673,6 @@ class LayoutViewBase {
             }
             if (this.LayoutParams.Height) {
                 this.Element.style.height = this.LayoutParams.Height + "px";
-            }
-            //设置内含video标签大小
-            let texture_setting = this.TextureSetting;
-            if (texture_setting && texture_setting.Texture.RenderTexture && texture_setting.Texture.RenderTexture._SyncingResourceInfo) {
-                let render_texture = texture_setting.Texture.RenderTexture;
-                let resource_info = render_texture._SyncingResourceInfo;
-                if (resource_info.Nam === "VPLY") {
-                    let video_el = resource_info.Set.Hdl;
-                    if (this.LayoutParams) {
-                        video_el.style.width = this.LayoutParams.Width + "px";
-                        video_el.style.height = this.LayoutParams.Height + "px";
-                    }
-                    this.Element.appendChild(video_el);
-                }
             }
         } else {
             Forge.ThrowError("ResetLayoutParams(): new params is null");
@@ -903,8 +891,13 @@ class ClipView extends Forge.LayoutView {
         let clip_top = y;
         let clip_right = this.LayoutParams.Width - clip_left - width;
         let clip_bottom = this.LayoutParams.Height - clip_top - height;
-        this.Element.style.overflow = "hidden";
-        this.Element.style.clipPath = "inset(" + clip_top + "px " + clip_right + "px " + clip_bottom + "px " + clip_left + "px)";
+        if (use_scissors) {
+            this.Element.style.overflow = "hidden";
+            this.Element.style.clipPath = "inset(" + clip_top + "px " + clip_right + "px " + clip_bottom + "px " + clip_left + "px)";
+        } else {
+            this.Element.style.overflow = "visible";
+            this.Element.style.clipPath = "unset";
+        }
     };
 }
 Forge.ClipView = ClipView;
