@@ -1,0 +1,26 @@
+ext {
+    loadRevision()
+    jsvExt2 = {}
+
+	// 必填: 修改工程中jsview工程相对于主build.gradle的位置
+    jsvExt2.jsviewProjectDir = "$rootProject.projectDir/../jsview-project"
+
+	// 选填
+    jsvExt2.versionName = rootProject.properties['com.qcode.versionName']
+    jsvExt2.versionCode = rootProject.properties['com.qcode.versionCode'] as Integer
+    println "versionCode = $rootProject.ext.jsvExt2.versionCode"
+    println "versionName = $rootProject.ext.jsvExt2.versionName"
+
+	// 选填
+    jsvExt2.compileSdkVersion = 26
+    jsvExt2.minSdkVersion = 19
+    jsvExt2.targetSdkVersion = jsvExt2.compileSdkVersion
+}
+
+apply from: "$rootProject.ext.jsvExt2.jsviewProjectDir/jsview/android/build-common.gradle"
+
+def loadRevision() {
+    ext.set('com.qcode.codeRevision', '99999')
+    ext.set('com.qcode.versionCode', '102099999')
+    ext.set('com.qcode.versionName', '1.2.99999')
+}

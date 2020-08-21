@@ -186,13 +186,27 @@ class JsvTabWidget extends FdivWrapper{
         })
     }
 
-    _frameOnItemFocus(item, enter_rect) {
+    _frameOnItemFocus(item, pre_rect, query) {
         let pre_focus = this.state.curId;
         this.setState({curId: item.tabIndex}, () => {
             this._updateTabItem([pre_focus, this.state.curId]);
+            let slide_to_id = 0;
+            let slide_anchor = "start"
+            if (pre_rect && (pre_rect.direction == EdgeDirection.left || pre_rect.direction == EdgeDirection.top)) {
+                slide_to_id = this.props.bodyData[item.tabIndex].length - 1;
+                slide_anchor = "end";
+            }
+            let slide_info = {
+                type: SWidgetDispatcher.Type.slideToItem,
+                data: {
+                    id: slide_to_id,
+                    type: slide_anchor
+                }
+            }
+            this._dispatcherMap.get("body_" + item.tabIndex).dispatch(slide_info);
             let focus_info = {
                 type: SWidgetDispatcher.Type.setFocusRect,
-                data: enter_rect
+                data: pre_rect
             };
             this._dispatcherMap.get("body_" + item.tabIndex).dispatch(focus_info);
             this.changeFocus(this.props.branchName + "/body" + item.tabIndex);

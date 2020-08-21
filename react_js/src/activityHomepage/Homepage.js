@@ -7,10 +7,12 @@
  */
 import React from 'react';
 import {FdivWrapper, SimpleWidget, HORIZONTAL, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
-import {globalHistory} from '../demoCommon/RouterHistory';
 import "./homepage.css"
 import shadow_big_img from "./images/shadow_big.png"
 import shadow_small_img from "./images/shadow_small.png"
+import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+let globalHistory = getGlobalHistory();
+
 const PingPongBg = ({animation, background, preBackground, animationEnd}) => {
     if (preBackground) {
         return (<div>

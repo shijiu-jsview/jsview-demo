@@ -11,6 +11,7 @@ class RenderBridge {
         };
 
         this._FrameLoopFunc = null;
+		this._CallbacksPerFrame = new Set();
 
 		this._WillSwapCallbacks = new Map();
 		this._DoWillSwapCallback = this._OnWillSwap.bind(this); // 提前声明WillSwapCallback函数对象，提高调用速度
@@ -29,13 +30,28 @@ class RenderBridge {
     }
 
     _OnAnimation() {
-        Forge.sImpactSensorManager.TestCollision();
+    	let keep_loop = false;
 
-	    // Check if need continue frame loop
-	    let keep_loop = false;
-	    if (Forge.sImpactSensorManager.HasTrace()) {
-		    keep_loop = true;
+	    // 碰撞检测
+    	if (Forge.sImpactSensorManager.HasTrace()) {
+		    Forge.sImpactSensorManager.TestCollision();
+
+		    // Check if need continue frame loop
+		    if (Forge.sImpactSensorManager.HasTrace()) {
+			    keep_loop = true;
+		    }
 	    }
+
+	    // 进度Repeat检测
+		if (this._CallbacksPerFrame.size > 0) {
+			for (let callback of this._CallbacksPerFrame) {
+				callback();
+			}
+			// 再次检测，因为可能在callback中触发了队列个数变化
+			if (this._CallbacksPerFrame.size > 0) {
+				keep_loop = true;
+			}
+		}
 
 	    if (keep_loop) {
 		    window.requestAnimationFrame(this._FrameLoopFunc);
@@ -97,6 +113,14 @@ class RenderBridge {
 
 	_OnWillSwap(callback) {
 		callback();
+	}
+
+	RegisterPerFrameCallback(callback) {
+		this._CallbacksPerFrame.add(callback);
+	}
+
+	UnregisterPerFrameCallback(callback) {
+		this._CallbacksPerFrame.delete(callback);
 	}
 }
 Forge.RenderBridge = RenderBridge;

@@ -5,7 +5,7 @@ import React from 'react';
 import "./Target.css"
 import {createImpactTracer, createImpactCallback} from '../../../../../jsview-utils/jsview-react/index_widget';
 import {JsvSpriteTranslate, TranslateControl} from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
-import JsvSpriteAnim from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim} from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import Game from "../../common/Game"
 
 import ScrollPage from "./ScrollPage"
@@ -98,6 +98,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteStaticInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.spriteStaticInfo.viewSize}
                                             duration={0.8}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
@@ -106,6 +107,7 @@ class Targets extends ScrollPage {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.spriteInfo.viewSize}
                                             duration={0.8}
                                             imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/" + this.targetConfig.value)})`}/>
@@ -134,6 +136,7 @@ class Targets extends ScrollPage {
                             successEffectInfo ? <JsvSpriteAnim
                                 spriteInfo={successEffectInfo}
                                 loop="infinite"
+                                autostart={true}
                                 viewSize={successEffectInfo.viewSize}
                                 duration={successEffectInfo.frames.length / 15}
                                 imageUrl={`url(${require("../../../" + Game.apppath + "/assets/atlas/star_burst_big.png")})`}/>

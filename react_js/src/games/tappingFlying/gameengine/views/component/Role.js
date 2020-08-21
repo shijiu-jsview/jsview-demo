@@ -2,7 +2,7 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import JsvSpriteAnim from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim} from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import {JsvSpriteTranslate, TranslateControl} from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 import {FocusBlock} from "../../../../../demoCommon/BlockDefine"
 import Game from "../../common/Game"
@@ -172,6 +172,7 @@ class Role extends FocusBlock {
                                         <JsvSpriteAnim
                                             spriteInfo={item.spriteInfo}
                                             loop="infinite"
+                                            autostart={true}
                                             viewSize={item.viewSize}
                                             duration={item.duration}
                                             imageUrl={item.imageUrl}/>
@@ -186,6 +187,7 @@ class Role extends FocusBlock {
                             <JsvSpriteAnim
                                 spriteInfo={clashObstacleDetailInfo}
                                 loop="infinite"
+                                autostart={true}
                                 viewSize={clashObstacleViewSize}
                                 duration={clashObstacle_duration}
                                 imageUrl={`url(${require("../../../"+Game.apppath+"/assets/atlas/" + clashObstacleConfig.value)})`}/>

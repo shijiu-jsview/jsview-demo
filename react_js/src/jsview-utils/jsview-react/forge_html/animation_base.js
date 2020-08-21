@@ -23,6 +23,7 @@ class AnimationBase {
 	 **/
 	SetAnimationListener(listener) {
 		this.AnimationListenerObj = listener;
+		this.OnNewListener(listener);
 	};
 
 	/**
@@ -38,8 +39,14 @@ class AnimationBase {
 		if (this.AnimationListenerObj) {
 			listener.AddInherit(this.AnimationListenerObj);
 		}
-		this.SetAnimationListener(listener);
+
+		this.AnimationListenerObj = listener;
+		this.OnNewListener(listener);
 	};
+
+	OnNewListener(listener) {
+		// Can override if needed
+	}
 
 	/**
 	 * 获得当前动画的启动/结束监听接口
@@ -142,6 +149,14 @@ class AnimationBase {
 	};
 
 	// hide public
+	OnRepeatEvent() {
+		var listener = this.AnimationListenerObj;
+		if (listener && listener.OnAnimRepeat) {
+			listener.OnAnimRepeat();
+		}
+	}
+
+	// hide public
 	OnViewHide() {
 		var listener = this.AnimationListenerObj;
 		if (listener && listener.OnViewNoVisible) {
@@ -181,6 +196,8 @@ class AnimationListener {
 		this._OnViewNoVisible = on_view_hide;
 		this.OnAnimFinal = null;
 		this._OnAnimFinal = null;
+		this.OnAnimRepeat = null;
+		this._OnAnimRepeat = null;
 		this._AttachedGroup = null;
 		this._InheritListener = [];
 	}
@@ -200,6 +217,11 @@ class AnimationListener {
 		return this;
 	}
 
+	OnRepeat(on_repeat) {
+		this.OnAnimRepeat = this._OnAnimRepeat = on_repeat;
+		return this;
+	}
+
 	/**
 	 * 添加继承的监听者，当本监听接口被调用后，会继续调用继承者的监听接口
 	 *
@@ -216,33 +238,41 @@ class AnimationListener {
 			var that = this;
 			this.OnAnimationStart = function() {
 				if (that._OnAnimationStart) that._OnAnimationStart();
-				for (var i = 0; i < this._InheritListener.length; i++) {
-					if (this._InheritListener[i].OnAnimationStart) {
-						this._InheritListener[i].OnAnimationStart();
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnAnimationStart) {
+						that._InheritListener[i].OnAnimationStart();
 					}
 				}
 			};
 			this.OnAnimationEnd = function(normal_end) {
 				if (that._OnAnimationEnd) that._OnAnimationEnd(normal_end);
-				for (var i = 0; i < this._InheritListener.length; i++) {
-					if (this._InheritListener[i].OnAnimationEnd) {
-						this._InheritListener[i].OnAnimationEnd(normal_end);
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnAnimationEnd) {
+						that._InheritListener[i].OnAnimationEnd(normal_end);
 					}
 				}
 			};
 			this.OnViewNoVisible = function() {
 				if (that._OnViewNoVisible) that._OnViewNoVisible();
-				for (var i = 0; i < this._InheritListener.length; i++) {
-					if (this._InheritListener[i].OnViewNoVisible) {
-						this._InheritListener[i].OnViewNoVisible();
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnViewNoVisible) {
+						that._InheritListener[i].OnViewNoVisible();
 					}
 				}
 			};
 			this.OnAnimFinal = function(progress) {
 				if (that._OnAnimFinal) that._OnAnimFinal(progress);
-				for (var i = 0; i < this._InheritListener.length; i++) {
-					if (this._InheritListener[i].OnAnimFinal) {
-						this._InheritListener[i].OnAnimFinal(progress);
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnAnimFinal) {
+						that._InheritListener[i].OnAnimFinal(progress);
+					}
+				}
+			};
+			this.OnAnimRepeat = function() {
+				if (that._OnAnimRepeat) that._OnAnimRepeat();
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnAnimRepeat) {
+						that._InheritListener[i].OnAnimRepeat();
 					}
 				}
 			};

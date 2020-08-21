@@ -2,28 +2,35 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-13 17:00:41
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-05-11 11:08:12
+ * @LastEditTime: 2020-08-20 20:12:40
  * @Description: file content
  */
 
 import React from 'react';
-import {Router, FdivRoot, Fdiv,FdivWrapper, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
-import {globalHistory} from '../demoCommon/RouterHistory';
+import {FdivWrapper, SimpleWidget, VERTICAL, SWidgetDispatcher} from "../jsview-utils/jsview-react/index_widget.js"
+import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
+import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
+let globalHistory = getGlobalHistory();
 
 let CONST_ITEM_WIDTH = 300;
 let CONST_ITEM_HEIGHT = 100;
+
+let HomepageInfo = {
+    curFocus: -1
+}
+
 class Home extends FdivWrapper {
 	constructor(prop) {
         super(prop);
         this._Measures = this._Measures.bind(this);
         this._RenderItem = this._RenderItem.bind(this);
         this._RenderFocus = this._RenderFocus.bind(this);
-        this._onWidgetMount = this._onWidgetMount.bind(this);
         this._onClick = this._onClick.bind(this);
+        this._onItemFocus = this._onItemFocus.bind(this);
+        this._Dispatcher = new SWidgetDispatcher();
 	}
 
     _onClick(item) {
-        console.log(globalHistory)
         globalHistory.push(item.path);
         this.changeFocus(item.path, true);
     }
@@ -51,37 +58,45 @@ class Home extends FdivWrapper {
         )
     }
 
-    _onWidgetMount() {
-        // this.changeFocus("widget1")
+    _onItemFocus(item, pre_edge, query) {
+        HomepageInfo.curFocus = query.id;
     }
 
 	// 直接集成自FdivWrapper的场合，使用renderContent而不是render进行布局
 	renderContent() {
         return (
-            <div style={{top: 10, left: 10}}>
+            <React.Fragment>
+                <div style={{fontSize: "20px", color: "#FFFFFF"}}>{window.location.href}</div>
+                <div style={{top: 20, left: 10}}>
                     <SimpleWidget 
                       width={ 1280 } 
-                      height={ 720 } 
+                      height={ 700 } 
+                      dispatcher={this._Dispatcher}
                       direction={ VERTICAL } 
                       data={ this.props.data } 
                       renderItem={ this._RenderItem }
                       renderFocus={ this._RenderFocus }
                       onClick={ this._onClick }
                       measures={ this._Measures }
-                      padding={{top: 10, left: 10}}
+                      padding={{top: 10, left: 10, right: 10, buttom: 10}}
+                      onItemFocus={this._onItemFocus}
                       branchName={ "home_page" }
-                      onWidgetMount={ this._onWidgetMount }
                     />
-            </div>
+                </div>
+            </React.Fragment>
         )
 	}
 
 	onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            jJsvRuntimeBridge.closePage()
+            return true;
+        }
 		return false;
 	}
 
 	onKeyUp(ev) {
-		return false;
+		return true;
 	}
 
 	onDispatchKeyDown(ev) {
@@ -93,6 +108,20 @@ class Home extends FdivWrapper {
 	}
 
 	onFocus() {
+        if (HomepageInfo.curFocus >= 0) {
+            this._Dispatcher.dispatch({
+                type: SWidgetDispatcher.Type.setFocusId,
+                data: HomepageInfo.curFocus
+            });
+            this._Dispatcher.dispatch({
+                type: SWidgetDispatcher.Type.slideToItem,
+                data: {
+                    id: HomepageInfo.curFocus,
+                    type: "end"
+                }
+            })
+            HomepageInfo.curFocus = -1;
+        }
         this.changeFocus("home_page")
 	}
 

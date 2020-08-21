@@ -41,6 +41,7 @@ class MainScene extends FocusBlock {
 			play_state: this._autoPlay ? "pause" : "play",
 			focus_id: 0,
             currentTime:0,
+			objectFitIdx:0,
 		}
 		this.video = null; // the html5 video
 		this.play = this.play.bind(this);
@@ -71,6 +72,44 @@ class MainScene extends FocusBlock {
 		this.handleVolumeChange = this.handleVolumeChange.bind(this);
 		this.handleDurationChange = this.handleDurationChange.bind(this);
 		this.handleProgress = throttle(this.handleProgress.bind(this), 250);
+
+		this._ObjectFitData = [
+			{
+				name: "contain-horizontal",
+				objectFit: "contain",
+				width: 1200,
+			},
+			{
+				name: "contain-vertical",
+				objectFit: "contain",
+				width: 400,
+			},
+			{
+				name: "fill",
+				objectFit: "fill",
+				width: 1200,
+			},
+			{
+				name: "none-horizontal",
+				objectFit: "none",
+				width: 1200,
+			},
+			{
+				name: "none-vertical",
+				objectFit: "none",
+				width: 400,
+			},
+			{
+				name: "cover-horizontal",
+				objectFit: "cover",
+				width: 1200,
+			},
+			{
+				name: "cover-vertical",
+				objectFit: "cover",
+				width: 400,
+			},
+		];
 	}
 	// get playback rate
 	get playbackRate() {
@@ -289,7 +328,7 @@ class MainScene extends FocusBlock {
 	// Fires when the current
 	// playback position has changed
 	handleTimeUpdate(...args) {
-		console.log("handleTimeUpdate")
+		// console.log("handleTimeUpdate")
 		this.setState({currentTime:this.video.currentTime});
 	}
 
@@ -329,6 +368,8 @@ class MainScene extends FocusBlock {
 					case 2:
 						this.replay(5);
 						break;
+					case 3:
+						this._ToggleObjectFitChange();
 				}
 				break;
 			case 39:
@@ -340,6 +381,9 @@ class MainScene extends FocusBlock {
 						this.setState({ focus_id: 2 });
 						break;
 					case 2:
+						this.setState({ focus_id: 3 });
+						break;
+					case 3:
 						break;
 				}
 				break;
@@ -352,6 +396,9 @@ class MainScene extends FocusBlock {
 						break;
 					case 2:
 						this.setState({ focus_id: 1 });
+						break;
+					case 3:
+						this.setState({ focus_id: 2 });
 						break;
 				}
 				break;
@@ -372,47 +419,63 @@ class MainScene extends FocusBlock {
 		return item;
 	}
 
+	_RefVideo = (ele)=>{
+		console.log("video:", ele);
+		this.video = ele;
+	}
+
 	renderContent() {
+		let object_fit_set = this._ObjectFitData[this.state.objectFitIdx];
+
 		return (
-			<div style={{ top: 0, left: 0 }} >
-				<video style={{ top: 50, left: (1280 - 800) / 2, width: 800, height: 500 }}
-					src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
-					ref={(c) => {
-						console.log("video:", c);
-						this.video = c;
-					}}
-					onLoadStart={this.handleLoadStart}
-					onWaiting={this.handleWaiting}
-					onCanPlay={this.handleCanPlay}
-					onCanPlayThrough={this.handleCanPlayThrough}
-					onPlaying={this.handlePlaying}
-					onEnded={this.handleEnded}
-					onSeeking={this.handleSeeking}
-					onSeeked={this.handleSeeked}
-					onPlay={this.handlePlay}
-					onPause={this.handlePause}
-					onProgress={this.handleProgress}
-					onDurationChange={this.handleDurationChange}
-					onError={this.handleError}
-					onSuspend={this.handleSuspend}
-					onAbort={this.handleAbort}
-					onEmptied={this.handleEmptied}
-					onStalled={this.handleStalled}
-					onLoadedMetadata={this.handleLoadedMetaData}
-					onLoadedData={this.handleLoadedData}
-					onTimeUpdate={this.handleTimeUpdate}
-					onRateChange={this.handleRateChange}
-					onVolumeChange={this.handleVolumeChange}
-				/>
-				<div style={{ color:"#FF0000", textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
-				<div style={{ color:"#FF0000", textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
+			<React.Fragment>
+				<div style={{ top: 0, left: 0, width:1280, height:720, backgroundColor:"rgb(222,211,140)"}} >
+					<video style={{
+						top:50,
+						left:(1280 - object_fit_set.width) / 2,
+						width: object_fit_set.width,
+						height: 500,
+						objectFit:object_fit_set.objectFit,
+						backgroundColor:"rgb(200,100,100)"}}
+						src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
+						ref={this._RefVideo}
+						onLoadStart={this.handleLoadStart}
+						onWaiting={this.handleWaiting}
+						onCanPlay={this.handleCanPlay}
+						onCanPlayThrough={this.handleCanPlayThrough}
+						onPlaying={this.handlePlaying}
+						onEnded={this.handleEnded}
+						onSeeking={this.handleSeeking}
+						onSeeked={this.handleSeeked}
+						onPlay={this.handlePlay}
+						onPause={this.handlePause}
+						onProgress={this.handleProgress}
+						onDurationChange={this.handleDurationChange}
+						onError={this.handleError}
+						onSuspend={this.handleSuspend}
+						onAbort={this.handleAbort}
+						onEmptied={this.handleEmptied}
+						onStalled={this.handleStalled}
+						onLoadedMetadata={this.handleLoadedMetaData}
+						onLoadedData={this.handleLoadedData}
+						onTimeUpdate={this.handleTimeUpdate}
+						onRateChange={this.handleRateChange}
+						onVolumeChange={this.handleVolumeChange}
+					/>
+					<div style={{ color:"#FF0000", textAlign: "right", fontSize: "24px", left: (1280 - 800) / 2 + 800+20, top: 550, width: 60, height: 40}}>{parseInt(this.state.currentTime)}</div>
+					<div style={{ color:"#FF0000", textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 800+20+60, top: 550, width: 60, height: 40}}>{"/"+(this.video?parseInt(this.video.duration):0)}</div>
 
-				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
+					<div style={{ color:"#FF0000", textAlign: "left", fontSize: "24px", left: (1280 - 800) / 2 + 640, top: 600, width: 300, height: 40}}>{object_fit_set.name}</div>
 
-				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 1 ? "#FFFF00" : "#a8a8a8"}` }}>forward</div>
+					<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 0 ? "#FFFF00" : "#a8a8a8"}` }}>{this.state.play_state}</div>
 
-				<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 2 ? "#FFFF00" : "#a8a8a8"}` }}>replay</div>
-			</div>
+					<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 1 ? "#FFFF00" : "#a8a8a8"}` }}>forward</div>
+
+					<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140 * 2, top: 600, width: 120, height: 40, backgroundColor: `${this.state.focus_id == 2 ? "#FFFF00" : "#a8a8a8"}` }}>replay</div>
+
+					<div style={{ textAlign: "center", fontSize: "30px", left: (1280 - 800) / 2 + 140 * 3, top: 600, width: 150, height: 40, backgroundColor: `${this.state.focus_id == 3 ? "#FFFF00" : "#a8a8a8"}` }}>ObjectFit</div>
+				</div>
+			</React.Fragment>
 		)
 	}
 
@@ -424,6 +487,12 @@ class MainScene extends FocusBlock {
         console.log("Video App componentDidMount in");
 
     }
+
+	_ToggleObjectFitChange() {
+		this.setState({
+			objectFitIdx: ((this.state.objectFitIdx + 1) % this._ObjectFitData.length)
+		});
+	}
 }
 let App = createStandaloneApp(MainScene);
 

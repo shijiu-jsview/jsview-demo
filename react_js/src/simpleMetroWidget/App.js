@@ -81,6 +81,8 @@ import './App.css';
 import { SimpleWidget, HORIZONTAL, SlideStyle} from "../jsview-utils/jsview-react/index_widget.js"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import createStandaloneApp from "../demoCommon/StandaloneApp"
+import borderImgPath from "./border.png"
+import {JsvSquareNinePatch} from "../jsview-utils/JsViewReactWidget/JsvNinePatch"
 
 let homePageData = [
     {
@@ -168,7 +170,17 @@ class MainScene extends FocusBlock {
         this._RenderItem = this._RenderItem.bind(this);
         this._RenderFocus = this._RenderFocus.bind(this);
         this._RenderBlur = this._RenderBlur.bind(this);
-        this._onWidgetMount = this._onWidgetMount.bind(this);
+        this._OnClick = this._OnClick.bind(this);
+        this._OnItemFocus = this._OnItemFocus.bind(this);
+        this._OnEdge = this._OnEdge.bind(this);
+        this.state = {
+            focusStyle: {
+                x: 0,
+                y: 0,
+                w: 0,
+                h: 0
+            }
+        }
     }
 
     _Measures(item) {
@@ -204,6 +216,22 @@ class MainScene extends FocusBlock {
         )
     }
 
+    _OnItemFocus(item, pre_dege, query) {
+        let position = query.queryPosition(query.id);
+        let width = (item.blocks.w - 10) * (1 / 0.9);
+        let height = (item.blocks.h - 10) * (1 / 0.9);
+        let x = ((item.blocks.w - 10) - width) / 2;
+        let y = ((item.blocks.h - 10) - height) / 2;
+        this.setState({
+            focusStyle: {
+                x: x + position.xPos,
+                y: y + position.yPos,
+                w: width,
+                h: height
+            }
+        })
+    }
+
     onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
             if (this._NavigateHome) {
@@ -213,31 +241,51 @@ class MainScene extends FocusBlock {
         return true;
     }
 
+    _OnClick() {
+
+    }
+
+    _OnEdge(info) {
+        console.log("SimpleWidget onEdge", info)
+    }
+
+    onFocus() {
+        console.log("cchtest onfocus")
+        this.changeFocus(this.props.branchName + "/widget1")
+    }
+
     renderContent() {
         return (
             <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
+                <div style={{top: 120, left: 50}}>
                 <SimpleWidget
-                    top={120}
-                    left={50}
                     width={1280}
                     height={520}
                     padding={{left: 20, top: 20, right: 20, bottom: 20}}
                     direction={HORIZONTAL}
                     data={homePageData}
-                    onClick={(item) => {console.log("onclick" + item.content)}}
+                    onClick={this._OnClick}
                     renderBlur={this._RenderBlur}
                     renderItem={this._RenderItem}
                     renderFocus={this._RenderFocus}
                     measures={this._Measures}
                     branchName={this.props.branchName + "/widget1"}
-                    onWidgetMount={this._onWidgetMount}
+                    onItemFocus={this._OnItemFocus}
+                    onEdge={this._OnEdge}
                 />
+                <div style={{top: 20, left: 20}}>
+                    <JsvSquareNinePatch
+                        style={{ top: this.state.focusStyle.y, left: this.state.focusStyle.x, width: this.state.focusStyle.w, height: this.state.focusStyle.h}}
+                        imageUrl={ borderImgPath }
+                        imageWidth={ 81 }
+                        contentWidth={ 21 }
+                        borderOutset={ 10 }
+                        animTime={ 0.2 }
+                        />
+                </div>
+                </div>   
             </div>
         )
-    }
-
-    _onWidgetMount() {
-        this.changeFocus(this.props.branchName + "/widget1")
     }
 }
 

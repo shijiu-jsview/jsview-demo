@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { FdivRouter } from "../jsview-utils/jsview-react/index_widget.js"
+import {jJsvRuntimeBridge} from "./JsvRuntimeBridge"
 
 function createStandaloneApp(main_scene_component) {
 	return class extends React.Component {
@@ -13,14 +14,15 @@ function createStandaloneApp(main_scene_component) {
 		}
 
 		render() {
-			let scene = React.createElement(main_scene_component, {branchName:"MySelf"});
+			let scene = React.createElement(main_scene_component, {branchName:"/MySelf", standAlone:true});
 			return (<FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
 				{scene}
 			</FdivRouter>);
 		}
 
 		componentDidMount() {
-			this._FocusControl.changeFocus("MySelf", true);
+			this._FocusControl.changeFocus("/MySelf", true);
+			jJsvRuntimeBridge.notifyPageLoaded();
 		}
 	}
 }

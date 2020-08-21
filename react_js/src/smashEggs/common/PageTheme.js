@@ -1,7 +1,6 @@
 /**
  * Created by luocf on 2020/3/19.
  */
-import BackgroundUrl from "../images/background_1280.jpg"
 import BlueEggUrl from "../images/blue_egg.png"
 import BrokenBlueEggBack from "../images/blue_egg_back.png"
 import BrokenBlueEggFore from "../images/blue_egg_fore.png"
@@ -20,8 +19,9 @@ import HammerFocusUrl from "../images/hammer_focus.png"
 
 import BtnFocusUrl from "../images/btn_focus_bg.png"
 import SubPageBgUrl from "../images/subpage_bg.png"
-import TipsIconBgUrl from "../images/activity_tips_icon.png"
 import ResultLineUrl from "../images/prize_result_line.png"
+import RecoryLine from "../images/line.png"
+import RecoryLight from "../images/light.png"
 
 class PageTheme {
     static get() {
@@ -29,7 +29,70 @@ class PageTheme {
             "MainPage": {
                 "bgStyle": {
                     left: 0, top: 0, width: 1920, height: 1080,
-                    backgroundImage: BackgroundUrl
+                },
+                "Rules":{
+                    style:{
+                        left:62*1.5,top:350*1.5,width:236*1.5,height:301*1.5,
+                        fontSize: 16*1.5, color: "#ffffff", lineHeight: 22*1.5,
+                        textAlign: "left",
+                        verticalAlign: "top",
+                    },
+                },
+              userInfo:{
+                bg:{
+                  style:{
+                    left:60,top: 36, width: 360, height: 84,
+                    backgroundColor: "rgba(0,0,0,0.2)",
+                    borderRadius: 42,
+                  },
+                },
+                text:{
+                  style:{
+                    left:0,top:0,width:360,height:84,
+                    overflow: "hidden",
+                    fontSize:42,color:"#FFFFFF",lineHeight:"84px",textAlign:"center",verticalAlign:"middle",textOverflow: 'ellipsis',whiteSpace : 'nowrap'
+                  },
+                },
+              },
+                "PrizeList":{
+                    style:{
+                        left:1453-27,top:528,width:411,height:465,
+                    },
+                    widget:{
+                        width:411,height:465,
+                        padding:{
+                            left:27,top:5,right:18*1.5,bottom:5,
+                        },
+                        item:{
+                            w:356,h:111,
+                            bg:{
+                                backgroundColor:"#33334f",
+                                width:356, height:90,
+                                borderRadius:3,
+                            },
+                            bgBorder:{
+                                left:-2,top:-2,
+                                backgroundColor:"#fafafa",
+                                width:360, height:94,
+                                borderRadius:3,
+                            },
+                            icon:{
+                                width:75, height:75,
+                                left:21,top:8,
+                                borderRadius:3,
+                            },
+                            title:{
+                                left:81*1.5,top:(60-22)*1.5/2,width:(238-81)*1.5,height:22*1.5,
+                                overflow: "hidden",
+                                fontSize:16*1.5,color:"#FFFFFF",lineHeight:"33px",textAlign:"left",verticalAlign:"middle",textOverflow: 'ellipsis',whiteSpace : 'nowrap'
+                            },
+                            level:{
+                                left:184*1.5,top:0,width:54*1.5,height:24*1.5,
+                                backgroundColor:"#FFC80C", borderRadius:2*1.5,
+                                fontSize:16*1.5,color:"#811002",lineHeight:"36px",textAlign:"center",verticalAlign:"middle",
+                            }
+                        },
+                    }
                 },
                 "SmashEggsPage": {
                     style: {
@@ -60,11 +123,39 @@ class PageTheme {
                             crack: {
                                 size: {width: 191, height: 252},
                                 url: Crack
+                            },
+                            light:{
+                                size: {width: 310, height: 316},
+                                url:  `url(${RecoryLight})`
+                            },
+                            recovery: {
+                                line: {
+                                    detailInfo: {
+                                        frames: [
+                                            {
+                                                "source": {"x": 0, "y": 0, "w": 241, "h": 118},
+                                                "target": {"x": 0, "y": 0, "w": 241, "h": 118},
+                                            },
+                                            {
+                                                "source": {"x": 241, "y": 0, "w": 241, "h": 118},
+                                                "target": {"x": 0, "y": 0, "w": 241, "h": 118},
+                                            },
+                                            {
+                                                "source": {"x": 0, "y": 118, "w": 241, "h": 118},
+                                                "target": {"x": 0, "y": 0, "w": 241, "h": 118},
+                                            },
+                                            {
+                                                "source": {"x": 241, "y": 118, "w": 241, "h": 118},
+                                                "target": {"x": 0, "y": 0, "w": 241, "h": 118},
+                                            }],
+                                        meta: {
+                                            size: {"w": 482, "h": 236},
+                                        }
+                                    },
+                                    viewSize: {w: 241, h: 118},
+                                    url: `url(${RecoryLine})`
+                                },
                             }
-                            /*halfStyle: {
-                                left: 0, top: 93, width: 191, height: 252,
-                                backgroundImage: HalfEggsUrl
-                            }*/
                         },
                         data: [
                             {
@@ -75,6 +166,7 @@ class PageTheme {
                                 "focusable": true,
                                 "hasSub": false,
                                 "id": 0,
+                                "smashState":0,
                                 "eggUrl": BlueEggUrl,
                                 "brokenBack": BrokenBlueEggBack,
                                 "brokenFore": BrokenBlueEggFore
@@ -87,6 +179,7 @@ class PageTheme {
                                 "focusable": true,
                                 "hasSub": false,
                                 "id": 1,
+                                "smashState":0,
                                 "eggUrl": YellowEggUrl,
                                 "brokenBack": BrokenYellowEggBack,
                                 "brokenFore": BrokenYellowEggFore
@@ -99,6 +192,7 @@ class PageTheme {
                                 "focusable": true,
                                 "hasSub": false,
                                 "id": 2,
+                                "smashState":0,
                                 "eggUrl": RedEggUrl,
                                 "brokenBack": BrokenRedEggBack,
                                 "brokenFore": BrokenRedEggFore
@@ -135,7 +229,7 @@ class PageTheme {
                     "myrecord": {
                         style: {left: 1640, top: 36},
                         focusStyle: {left: 1600, top: 30},
-                        text: "我的中奖纪录",
+                        text: "我的中奖记录",
                     },
                     "getdiscount": {
                         style: {left: 646},
@@ -197,6 +291,11 @@ class PageTheme {
                             verticalAlign: "middle",
                         },
                         text:"恭喜您，获得"
+                    },
+                    icon:{
+                        style:{
+                            left:(1920-400)/2,top:(1080-400)/2,width:400,height:400,
+                        },
                     },
                     tipsInfo:{
                         style:{
@@ -370,7 +469,7 @@ class PageTheme {
                             verticalAlign: "middle",
                             backgroundColor: "rgba(255,255,255,0.2)"
                         },
-                        text:"确认提交"
+                        text:"确认"
                     },
                     btn2: {
                         focusStyle:{
@@ -382,40 +481,6 @@ class PageTheme {
                             textAlign: "center",
                             verticalAlign: "middle",
                             backgroundColor: "rgba(255,255,255,0.2)",
-                        },
-                        text:"返回"
-                    }
-                },
-                "GetPrizeFinishPage":{
-                    bgStyle:{
-                        left:0,top:0,width:1920,height:1080,
-                        backgroundImage:SubPageBgUrl,
-                    },
-                    title:{
-                        style:{
-                            left:852,top:166-10,width:216,height:74,
-                            fontSize: 54, color: "#ffffff", lineHeight: 74,
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                        },
-                        text:"礼品发放"
-                    },
-                    tips:{
-                        style:{
-                            left:691,top:429-10,width:540,height:56,
-                            fontSize: 36, color: "#ffffff", lineHeight: 56,
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                        },
-                        text:"填写成功，请耐心等待礼品发放！"
-                    },
-                    btn:{
-                        style:{
-                            left:789,top:869,width:343,height:92,
-                            fontSize: 40, color: "#047E8D", lineHeight: 92,
-                            textAlign: "center",
-                            verticalAlign: "middle",
-                            backgroundColor:"#ffffff"
                         },
                         text:"返回"
                     }
@@ -445,14 +510,14 @@ class PageTheme {
                     },
                     records:{
                         head:{
-                            account:{
+                            level:{
                                 style:{
                                     left:509,top:292-10,width:186,height:56,
                                     fontSize: 36, color: "rgba(255,255,255,0.8)", lineHeight: 56,
                                     textAlign: "center",
                                     verticalAlign: "middle",
                                 },
-                                text:"用户账号"
+                                text:"等级"
                             },
                             prize:{
                                 style:{
@@ -463,15 +528,6 @@ class PageTheme {
                                 },
                                 text:"奖品"
                             },
-                            phone:{
-                                style:{
-                                    left:1243,top:292-10,width:186,height:56,
-                                    fontSize: 36, color: "rgba(255,255,255,0.8)", lineHeight: 56,
-                                    textAlign: "center",
-                                    verticalAlign: "middle",
-                                },
-                                text:"手机号码"
-                            }
                         },
                         line:{
                             style:{
@@ -481,34 +537,53 @@ class PageTheme {
                         },
                         content:{
                             container:{
-                                width:(186+140)*3,height:80*3,
+                                width:(186+140)*3,height:80*6,
                                 style:{
-                                    left:509-70,top:379,width:(186+140)*3,height:80*3,
+                                    left:509-70,top:379,width:(186+140)*3,height:80*6,
                                 }
                             },
 
                             item:{
                                 width:(186+140)*3,height:80,
-                                account:{
+                                focusBg:"#feffc5",
+                                level:{
                                     style:{
                                         left:0,top:0,width:186+140,height:80,
                                         fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
-                                },
-                                prize:{
-                                    style:{
-                                        left:186+140+10,top:0,width:186+140+70,height:80,
-                                        fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
+                                    focusStyle:{
+                                        left:0,top:0,width:186+140,height:80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
                                 },
-                                phone:{
+                                prize:{
                                     style:{
-                                        left:(186+140)*2+70,top:0,width:186+140,height:80,
+                                        left:186+140,top:0,width:186+140+70,height:80,
                                         fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    focusStyle:{
+                                        left:186+140,top:0,width:186+140+70,height:80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                },
+                                btnGet:{
+                                    style:{
+                                        left:(186+140)*2+70,top:0,width:186,height:80,
+                                        fontSize: 30, color: "rgba(255,255,255,0.8)", lineHeight: 80,
+                                        textAlign: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    focusStyle:{
+                                        left:(186+140)*2+70,top:0,width:186,height:80,
+                                        fontSize: 30, color: "rgba(0,0,0,1.0)", lineHeight: 80,
                                         textAlign: "center",
                                         verticalAlign: "middle",
                                     },
@@ -525,6 +600,13 @@ class PageTheme {
                             verticalAlign: "middle",
                             backgroundColor:"#ffffff"
                         },
+                        focusStyle:{
+                            left:789,top:869,width:343,height:92,
+                            fontSize: 40, color: "#ffffff", lineHeight: 92,
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                            backgroundColor:"#047E8D"
+                        },
                         text:"返回"
                     }
                 }
@@ -534,7 +616,6 @@ class PageTheme {
                     left: 0, top: 0, width: 1920, height: 1080,
                     backgroundImage: SubPageBgUrl,
                 },
-
                 tips: {
                     style: {
                         left: 0, top: (1080-100)/2, width: 1920, height: 100,

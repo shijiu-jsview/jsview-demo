@@ -5,6 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "core-js": "3.6.4",
+    "crypto-js": "4.0.0",
     "jsview-react": "file:./patch_package/jsview-react",
     "md5": "2.2.1",
     "qr.js": "0.0.0",

@@ -131,7 +131,7 @@ class MainScene extends FocusBlock {
                     </div>
                 </div>
                 <div style={{...TitleFont, color: 'rgba(255, 0, 0, 1)',
-                    top:650, left:900,
+                    top:680, left:900,
                     width:280, height:20}}>
                     》》按上下左右键可调整视图位置《《
                 </div>

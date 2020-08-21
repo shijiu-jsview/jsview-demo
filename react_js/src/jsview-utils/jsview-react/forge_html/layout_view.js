@@ -182,9 +182,13 @@ class LayoutViewBase {
         this.ChildViews = []; // TODO: 为了节省内存，将改成按需求生成
         // Z-index
         this.zIndex = 0;
+        this._Perspective = 0;
+        this._PerspectiveAnchor = [0.5, 0.5];
+        this._BackfaceVisibility = 1;
         this._DebugCount = ++count;
         this.childZIndexCount = 0; // 计数器，统计子界面中有多少个设置了index的界面，用于优化AddView时的z-index调整处理
         this._IsChildOfRootView = false;
+        this._DetachFromSystemCallback = null;
         if (element_name === "root") {
             this.Element = window.originDocument.getElementById(element_name);
         } else if (element_name === "svg" || element_name === "path") {
@@ -242,6 +246,51 @@ class LayoutViewBase {
         }
     }
 
+    SetZIndex(z_index) {
+        this.Element.style.zIndex = z_index;
+        this.zIndex = z_index;
+    }
+
+    /**
+	 * Perspective距离<br>
+	 *
+	 * hide public
+	 * @func SetPerspective
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+	 * @param {int} distance 观察点距离view的值, 最大为2^16 - 1
+	 **/
+    SetPerspective(distance, origin) {
+        this.Element.style.perspective = distance + "px";
+        this.Element.style.webkitPerspective = distance + "px";
+        this.Element.style.perspectiveOrigin = origin;
+        this.Element.style.webkitPerspectiveOrigin = origin;
+        this._Perspective = distance;
+        this._PerspectiveOrigin = origin
+    }
+
+    /**
+	 * 背面是否可见<br>
+	 *
+	 * hide public
+	 * @func SetBackfaceVisibility
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+     * @param {boolean} visible 可见性
+	 **/
+    SetBackfaceVisibility(visible) {
+        console.log("set back face", visible);
+        this.Element.style.backfaceVisibility = visible ? "visible" : "hidden";
+        this.Element.style.webkitBackfaceVisibility = visible ? "visible" : "hidden";
+        console.log("back face style " + this.Element.style.backfaceVisibility);
+        this._BackfaceVisibility = visible ? 1 : 0;
+    }
+
+    SetTransformStyle(transform_style) {
+        this.Element.style.transformStyle = transform_style;
+        this._TransformStyle = transform_style;
+    }
+
     EnableDivTouch(ele, setting) {
         if (ele.reactEventHandlers && ele.reactEventHandlers.onClick) {
             this.Element.onclick = (ev) => {
@@ -269,6 +318,11 @@ class LayoutViewBase {
 
     _OnDetachFromSystem() {
         this._IsChildOfRootView = false;
+        if (this._DetachFromSystemCallback) {
+            this._DetachFromSystemCallback();
+        } else {
+            this.OnDettachFromSystem();
+        }
         for (var i = 0; i < this.ChildViews.length; i++) {
             let child_view = this.ChildViews[i];
             child_view._OnDetachFromSystem();
@@ -277,6 +331,26 @@ class LayoutViewBase {
 
         this._releaseViewResources();
     }
+ 
+    RegisterDetachCallback(callback) {
+        this._DetachFromSystemCallback = callback;
+    }
+
+    UnregisterDetachCallback() {
+        this._DetachFromSystemCallback = null;
+    }
+
+    /**
+	 * 按需重载的回调函数
+	 *
+	 * @public
+	 * @func OnDettachFromSystem
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+	 **/
+	OnDettachFromSystem() {
+		// Override if needed
+	};
 
     _releaseViewResources() {
         // Stop animation
@@ -385,10 +459,12 @@ class LayoutViewBase {
                     this.Element.style.backgroundColor = resource_info.Set.Clr;
                 } else if (resource_info.Nam === "VPLY") {
                     let video_el = resource_info.Set.Hdl;
-                    if (this.LayoutParams) {
-                        video_el.style.width = this.LayoutParams.Width + "px";
-                        video_el.style.height = this.LayoutParams.Height + "px";
-                    }
+
+                    // 在Forge html状态，video的显示尺寸由父元素决定
+                    video_el.style.width = "100%";
+                    video_el.style.height = "100%";
+                    video_el.style.objectFit = "fill";
+
                     this.Element.appendChild(video_el);
                 }
             }
@@ -598,20 +674,6 @@ class LayoutViewBase {
             if (this.LayoutParams.Height) {
                 this.Element.style.height = this.LayoutParams.Height + "px";
             }
-            //设置内含video标签大小
-            let texture_setting = this.TextureSetting;
-            if (texture_setting && texture_setting.Texture.RenderTexture && texture_setting.Texture.RenderTexture._SyncingResourceInfo) {
-                let render_texture = texture_setting.Texture.RenderTexture;
-                let resource_info = render_texture._SyncingResourceInfo;
-                if (resource_info.Nam === "VPLY") {
-                    let video_el = resource_info.Set.Hdl;
-                    if (this.LayoutParams) {
-                        video_el.style.width = this.LayoutParams.Width + "px";
-                        video_el.style.height = this.LayoutParams.Height + "px";
-                    }
-                    this.Element.appendChild(video_el);
-                }
-            }
         } else {
             Forge.ThrowError("ResetLayoutParams(): new params is null");
         }
@@ -655,6 +717,13 @@ class LayoutViewBase {
      **/
     EnableAutoHeight() {
         this._AutoHeight = true;
+    }
+
+    // 功能: 标识本LayoutView要根据自身Texture加载完成后，根据Texture的尺寸重新Resize
+    // 当enable后，无论尺寸设成多少，同步给Native的界面尺寸都会固定为(1,1)，
+    // 以保证View会被渲染，从而防止Texture由于不在界面上不会加载的处理生效，同时小尺寸不会被注意
+    WaitTextureToResize() {
+        // TODO: js模式不需要处理
     }
 }
 LayoutViewBase.DivId = 0;
@@ -822,8 +891,13 @@ class ClipView extends Forge.LayoutView {
         let clip_top = y;
         let clip_right = this.LayoutParams.Width - clip_left - width;
         let clip_bottom = this.LayoutParams.Height - clip_top - height;
-        this.Element.style.overflow = "hidden";
-        this.Element.style.clipPath = "inset(" + clip_top + "px " + clip_right + "px " + clip_bottom + "px " + clip_left + "px)";
+        if (use_scissors) {
+            this.Element.style.overflow = "hidden";
+            this.Element.style.clipPath = "inset(" + clip_top + "px " + clip_right + "px " + clip_bottom + "px " + clip_left + "px)";
+        } else {
+            this.Element.style.overflow = "visible";
+            this.Element.style.clipPath = "unset";
+        }
     };
 }
 Forge.ClipView = ClipView;

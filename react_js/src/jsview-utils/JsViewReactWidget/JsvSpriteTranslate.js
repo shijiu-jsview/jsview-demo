@@ -18,8 +18,12 @@ class __SharedControl extends SpriteControlBase{
 		this._VerlocityInit = 0; // 初始速度
 		this._AccAlongX = true; // true 延X轴加速， false 延Y轴加速
 		this._AnimationRef = null;
+		this._AllowFrameStep = false; // 是否可以使用FrameStep模式,该模式下为了保证动画的平滑性，动画总运行时间会超过设定时间
+	}
 
-		this._AnimationClass = this._GetAnimationClass();
+	allowFrameStepMode(allow) {
+		this._AllowFrameStep = allow;
+		return this;
 	}
 
 	selectMode(mode) {
@@ -58,10 +62,10 @@ class __SharedControl extends SpriteControlBase{
 	}
 
 	// start_x, start_y，必须要在当前位置到target的范围之外，范围之内目前不支持
-	enableRepeatFrom(start_x, start_y) {
+	enableRepeatFrom(start_x, start_y, repeat_callback) {
 		if (!this._ComfirmMode(0)) return;
 
-		this.setRepeat(true);
+		this.setRepeat(true, repeat_callback);
 		this._RepeatStart[0] = start_x;
 		this._RepeatStart[1] = start_y;
 		return this;
@@ -128,10 +132,6 @@ class __SharedControl extends SpriteControlBase{
 		return this;
 	}
 
-	_GetAnimationClass() {
-		console.warn("Should override");
-	}
-
 	_ComfirmMode(mode) {
 		if (this._Mode != mode) {
 			console.error("Error: mode error");
@@ -184,14 +184,35 @@ class __SharedControl extends SpriteControlBase{
 		}
 
 		if (!act_jump && animate_time == 0) {
-			console.log("Discard starting request for no distance");
-			return null; // failed to start
+			console.warn("Discard starting request for no distance");
+			// 但动画仍然会执行，为了能正常触发回调
         }
-        
-        let anim = new this._AnimationClass(from_x, to_x, from_y, to_y, animate_time, null);
-		if (typeof anim.SetStepsCount != "undefined") {
-			anim.SetStepsCount(Math.ceil(animate_time / 300)); // 每个动画分段时长为300毫秒左右
+
+		let anim = null;
+        if ((from_x == to_x || from_y == to_y) && !act_jump
+	            && this._AllowFrameStep && window.JsView) {
+        	// 单轴动画时，使用Frame animation来提升平滑性
+	        console.log("Using frame translate animation");
+	        let position_from = 0;
+            let position_target = 0;
+	        let affect_x = true;
+	        if (from_x != to_x) {
+	        	// X轴方向上的移动
+		        position_from = from_x;
+		        position_target = to_x;
+		        affect_x = true;
+	        } else {
+		        // Y轴方向上的移动
+		        position_from = from_y;
+		        position_target = to_y;
+		        affect_x = false;
+	        }
+	        anim = new Forge.TranslateFrameAnimation(position_from, position_target, this._Speed, affect_x);
+        } else {
+        	// 创建普通的平移动画
+	        anim = new Forge.TranslateAnimation(from_x, to_x, from_y, to_y, animate_time, null);
         }
+
 		if (start_pos != 0) {
 			if (start_pos < 0) {
 				console.warn("Warning: start position out of repeating range");
@@ -230,9 +251,8 @@ class __SharedControl extends SpriteControlBase{
 		}
 
 		if (time == 0) {
-			// no move
-			console.log("no moved");
-			return;
+			// no move，但动画仍然会执行，为了能正常触发回调
+			console.warn("no moved...");
 		}
 
 		// Update target memo
@@ -253,7 +273,7 @@ class __SharedControl extends SpriteControlBase{
 		// 	+ " time=" + time
 		// );
 
-		return new this._AnimationClass(current_array[0], target_x, current_array[1], target_y, time,
+		return new Forge.TranslateAnimation(current_array[0], target_x, current_array[1], target_y, time,
 			(is_acc_up ? Forge.Easing.Circular.In : Forge.Easing.Circular.Out));
 	}
 
@@ -275,15 +295,6 @@ class __SharedControl extends SpriteControlBase{
 class JsvTranslateControl extends __SharedControl {
 	constructor() {
 		super();
-	}
-
-	_GetAnimationClass() {
-		if (window.jsvInAndroidWebView) {
-			// Android webview 性能太低，采用StepAnimation的方式提高体验
-			return Forge.TranslateStepAnimation;
-		} else {
-			return Forge.TranslateAnimation;
-		}
 	}
 }
 

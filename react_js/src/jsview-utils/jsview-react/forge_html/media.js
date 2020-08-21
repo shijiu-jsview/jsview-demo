@@ -305,8 +305,17 @@ class OffscreenVideoPlayer extends BaseMedia {
         }
         this._ResourceTerminater = null;
     }
+
     onPlatformDestroy() {
 
+    }
+
+    get videoHeight() {
+        return this.Ele.videoHeight;
+    }
+
+    get videoWidth() {
+        return this.Ele.videoWidth;
     }
 }
 

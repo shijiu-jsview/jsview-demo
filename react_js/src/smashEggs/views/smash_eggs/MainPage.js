@@ -3,13 +3,13 @@ import {Fdiv, EdgeDirection} from "../../../jsview-utils/jsview-react/index_widg
 import SmashEggsPage from "./SmashEggsPage";
 import MyPrizeRecordPage from "./MyPrizeRecordPage";
 import GetPrizePage from "./GetPrizePage";
-import GetPrizeFinishPage from "./GetPrizeFinishPage";
 import NoPrizePage from "./NoPrizePage"
 import PageTheme from "../../common/PageTheme"
 import CommonApi from "../../common/CommonApi";
 import ConstantVar from "../../common/ConstantVar"
-import { FocusBlock } from "../../../demoCommon/BlockDefine"
-
+import {FocusBlock} from "../../../demoCommon/BlockDefine"
+import Rules from "./Rules"
+import PrizeList from "./PrizeList"
 class MainPage extends FocusBlock {
     constructor(props) {
         super(props);
@@ -17,28 +17,27 @@ class MainPage extends FocusBlock {
         this._doSmashEggs = this._doSmashEggs.bind(this);
         this._goTo = this._goTo.bind(this);
         this._PagetTheme = PageTheme.get().MainPage;
-        this._UserId = CommonApi.getUserId();
         this._TotalSmash = 3;
         this._RoadMap = null;
         this._KeyLockSwitch = false;
         this.state = {
             visible: "hidden",
             data: null,
+            prizerecord: null,
             prize: null,
             focusBranchName: null,
-            mainPageContainerVisible:"inherit"
+            mainPageContainerVisible: "inherit"
         }
     }
 
     _goTo(branchName, need_update_page) {
         //返回到主页面
         let mainPageContainerVisible = "inherit"
-        console.log("_goToHome , branchName:"+branchName);
-        switch(branchName){
+        console.log("_goToHome , branchName:" + branchName);
+        switch (branchName) {
             case ConstantVar.BranchName.MyPrizeRecordPage:
             case ConstantVar.BranchName.NoPrizePage:
             case ConstantVar.BranchName.GetPrizePage:
-            case ConstantVar.BranchName.GetPrizeFinishPage:
                 mainPageContainerVisible = "hidden";
                 break;
             default:
@@ -46,26 +45,27 @@ class MainPage extends FocusBlock {
         }
         //防止页面切换闪烁，隐藏主页内容
         this.setState({
-                mainPageContainerVisible: mainPageContainerVisible,
-            });
+            focusBranchName:branchName,
+            mainPageContainerVisible: mainPageContainerVisible,
+        });
         this.changeFocus(branchName);
         if (need_update_page) {
-           this._updatePageData();
+            this._updatePageData(this.state.data);
         }
     }
 
     _onEdge(edge_info) {
         if (edge_info.direction === EdgeDirection.top) {
             this._UpdateFocus(ConstantVar.KeyCode.Up);
+        } else if (edge_info.direction === EdgeDirection.left) {
+            this._UpdateFocus(ConstantVar.KeyCode.Left);
+        } else if (edge_info.direction === EdgeDirection.right) {
+            this._UpdateFocus(ConstantVar.KeyCode.Right);
         }
     }
 
     _InitPage(data) {
-        let focusBranchName = ConstantVar.BranchName.GetDiscountBtn;
-        //先确定焦点 & 初始化按钮的style
-        if (this.props.AlreadyPurchased) {
-            focusBranchName = ConstantVar.BranchName.SmashEggsPage;
-        }
+        let focusBranchName = ConstantVar.BranchName.SmashEggsPage;
         console.log("_InitPage, data:", data);
         this.changeFocus(focusBranchName);
         this.setState(
@@ -95,13 +95,13 @@ class MainPage extends FocusBlock {
 
     onFocus() {
         console.log("MainPage onFocus");
-        let promise = CommonApi.getActivityInfo(this._UserId);
+        let promise = CommonApi.getTimes();//TODO 获取抽奖次数
         promise.then(data => {
             //焦点设置
             this._InitPage(data);
         }).catch(error => {
             console.log("MainPage data fetch error", error);
-            this._InitPage([]);
+            this._InitPage({alias: "", total: 0});
         })
     }
 
@@ -110,9 +110,11 @@ class MainPage extends FocusBlock {
     }
 
     onDispatchKeyDown(ev) {
-        if (this._KeyLockSwitch) { return true; }
-		return false;
-	}
+        if (this._KeyLockSwitch) {
+            return true;
+        }
+        return false;
+    }
 
     onKeyDown(ev) {
         let key_use = false;
@@ -127,7 +129,6 @@ class MainPage extends FocusBlock {
             case ConstantVar.KeyCode.Back:
             case ConstantVar.KeyCode.Back2:
                 switch (this.state.focusBranchName) {
-                    case ConstantVar.BranchName.GetPrizeFinishPage:
                     case ConstantVar.BranchName.GetPrizePage:
                     case ConstantVar.BranchName.NoPrizePage:
                         this.changeFocus(ConstantVar.BranchName.SmashEggsPage);
@@ -144,20 +145,17 @@ class MainPage extends FocusBlock {
             case ConstantVar.KeyCode.Ok:
                 switch (this.state.focusBranchName) {
                     case ConstantVar.BranchName.MyPrizeRecordBtn:
-                        this.changeFocus(ConstantVar.BranchName.MyPrizeRecordPage);
+                        let promise = CommonApi.getPrizes();
+                        promise.then((data) => {
+                            this.setState({prizerecord: data})
+                            this.changeFocus(ConstantVar.BranchName.MyPrizeRecordPage);
+                        }).catch((error) => {
+                            console.log("goto prizes record error:" + error);
+                            //TODO toast 显示
+                            this.setState({prizerecord: []})
+                            this.changeFocus(ConstantVar.BranchName.MyPrizeRecordPage);
+                        })
                         key_use = true;
-                        break;
-                    case ConstantVar.BranchName.GetDiscountBtn:
-                        // start app
-                        CommonApi.gotoBuy();
-                        key_use = true;
-                        break;
-                    case ConstantVar.BranchName.EnterStudyingBtn:
-                        // start app
-                        CommonApi.gotoStudy();
-                        key_use = true;
-                        break;
-                    default:
                         break;
                 }
                 break;
@@ -173,100 +171,97 @@ class MainPage extends FocusBlock {
         console.log("this.state.prize:", this.state.prize);
         return (
             <div style={{visibility: this.state.visible}}>
-                <Fdiv style={{visibility:this.state.mainPageContainerVisible}}>
-                    <div style={this._PagetTheme.bgStyle}></div>
-                    <ActivityBtn branchName={ConstantVar.BranchName.GetDiscountBtn} btnTheme={this._PagetTheme.btn}
-                                 isFocus={ConstantVar.BranchName.GetDiscountBtn === this.state.focusBranchName}
-                                 text={btn_theme.getdiscount.text} hasGetDiscountBtn={!this.props.AlreadyPurchased}/>
-                    <ActivityBtn branchName={ConstantVar.BranchName.EnterStudyingBtn} btnTheme={this._PagetTheme.btn}
-                                 isFocus={ConstantVar.BranchName.EnterStudyingBtn === this.state.focusBranchName}
-                                 text={btn_theme.enterstudying.text} hasGetDiscountBtn={!this.props.AlreadyPurchased}/>
+
+                <Fdiv style={{visibility: this.state.mainPageContainerVisible}}>
+                    <div style={{
+                        ...this._PagetTheme.bgStyle,
+                        backgroundImage: this.props.info ? `url(${this.props.info.bg_url})` : null
+                    }}></div>
+                    <div style={this._PagetTheme.userInfo.bg.style}>
+                      {this.state.data ? <div style={this._PagetTheme.userInfo.text.style}>
+                        {"游客：" + this.state.data.alias}
+                      </div> : null}
+                    </div>
                     <ActivityBtn branchName={ConstantVar.BranchName.MyPrizeRecordBtn} btnTheme={this._PagetTheme.btn}
                                  isFocus={ConstantVar.BranchName.MyPrizeRecordBtn === this.state.focusBranchName}
-                                 text={btn_theme.myrecord.text} hasGetDiscountBtn={!this.props.AlreadyPurchased}/>
+                                 text={btn_theme.myrecord.text}/>
                     <SmashEggsPage branchName="SmashEggsPage" activityData={this.state.data} onEdge={this._onEdge}
-                                   doSmashEggs={this._doSmashEggs} alreadyPurchased={this.props.AlreadyPurchased} onLockKey={(value) => {this._KeyLockSwitch = value}}/>
+                                   doSmashEggs={this._doSmashEggs} info={this.props.info}
+                                   onLockKey={(value) => {
+                                       this._KeyLockSwitch = value
+                                   }}/>
+                    <Rules theme={this._PagetTheme.Rules} info={this.props.info}/>
+                    <PrizeList branchName={ConstantVar.BranchName.PrizeList} info={this.props.info} onEdge={this._onEdge}/>
                 </Fdiv>
-                <MyPrizeRecordPage branchName="MyPrizeRecordPage" data={this.state.data} goTo={ this._goTo}/>
-                <NoPrizePage branchName="NoPrizePage" goTo={ this._goTo}/>
-                <GetPrizePage branchName="GetPrizePage" data={this.state.prize} goTo={ this._goTo} account={this._UserId}/>
-                <GetPrizeFinishPage branchName="GetPrizeFinishPage" goTo={ this._goTo}/>
+                {this.state.data?<div>
+                    <MyPrizeRecordPage branchName="MyPrizeRecordPage" data={this.state.prizerecord} info={this.props.info} account={this.state.data.alias} goTo={ this._goTo}/>
+                    <NoPrizePage branchName="NoPrizePage" goTo={ this._goTo}/>
+                    <GetPrizePage branchName="GetPrizePage" data={this.state.prize} goTo={ this._goTo}
+                                  info={this.props.info}/>
+                </div>:null}
+
             </div>
         )
     }
 
     componentDidMount() {
         console.log("MainPage componentDidMount");
-
     }
+
     componentWillUnMount() {
         console.log("MainPage componentWillUnMount");
     }
-    _updatePageData() {
+
+    _updatePageData(data) {
         //砸蛋后更新数据
-        let promise = CommonApi.getActivityInfo(this._UserId);
-        promise.then(data => {
-            this.setState({data: data})
-        }).catch(error => {
-            console.log("MainPage data fetch error", error);
-        })
+        this.setState({data: data})
     }
 
     _doSmashEggs() {
-        let promise = CommonApi.hitEggs(this._UserId);
+        let promise = CommonApi.hitEggs();//TODO 砸蛋接口对接
         promise.then(data => {
             console.log("_doSmashEggs, data:", data);
-            if (data.prize_id === ConstantVar.NoPrize) {
-                this.changeFocus(ConstantVar.BranchName.NoPrizePage);
-                this._updatePageData();
-            } else {
-                if (data.prize_id < ConstantVar.Prize.length) {
-                    this.setState({prize: data})
-                    this.changeFocus(ConstantVar.BranchName.GetPrizePage);
-                } else {
-                    console.log("_doSmashEggs the prize not exist, prize_id:" + data.prize_id);
+            let prize = null;
+            for (let i = 0; i < this.props.info.prize_info.length; i++) {
+                let prize_info = this.props.info.prize_info[i];
+                if (prize_info.prize_id === data.prize_id) {
+                    prize = prize_info;
+                    break;
                 }
             }
+            if (prize) {
+                this.setState({prize: prize})
+                this.changeFocus(ConstantVar.BranchName.GetPrizePage);
+            } else {
+                this.changeFocus(ConstantVar.BranchName.NoPrizePage);
+            }
+            this._updatePageData({...this.state.data, total:data.total});
+        }).catch(error => {
+            console.log("_doSmashEggs, error:", error);
+            this.changeFocus(ConstantVar.BranchName.NoPrizePage);
         })
-            .catch(error => {
-                console.log("_doSmashEggs, error:", error);
-            })
     }
 
     _ensureRoadMap() {
         if (this._RoadMap == null) {
             this._RoadMap = {};
-            if (this.props.AlreadyPurchased) {
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn] = {};
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.MyPrizeRecordBtn;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn] = {};
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.EnterStudyingBtn;
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.EnterStudyingBtn;
-                this._RoadMap[ConstantVar.BranchName.SmashEggsPage] = {};
-                this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.EnterStudyingBtn;
-            } else {
-                this._RoadMap[ConstantVar.BranchName.GetDiscountBtn] = {};
-                this._RoadMap[ConstantVar.BranchName.GetDiscountBtn][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.EnterStudyingBtn;
-                this._RoadMap[ConstantVar.BranchName.GetDiscountBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn] = {};
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.GetDiscountBtn;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.MyPrizeRecordBtn;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;
-                this._RoadMap[ConstantVar.BranchName.EnterStudyingBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn] = {};
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.EnterStudyingBtn;
-                this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.EnterStudyingBtn;
-                this._RoadMap[ConstantVar.BranchName.SmashEggsPage] = {};
-                this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.GetDiscountBtn;
-            }
+            this._RoadMap[ConstantVar.BranchName.SmashEggsPage] = {};
+            this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;
+            this._RoadMap[ConstantVar.BranchName.SmashEggsPage][ConstantVar.KeyCode.Right] = ConstantVar.BranchName.PrizeList;
+
+            this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn] = {};
+            this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.SmashEggsPage;
+            this._RoadMap[ConstantVar.BranchName.MyPrizeRecordBtn][ConstantVar.KeyCode.Down] = ConstantVar.BranchName.SmashEggsPage;
+
+            this._RoadMap[ConstantVar.BranchName.PrizeList] = {};
+            this._RoadMap[ConstantVar.BranchName.PrizeList][ConstantVar.KeyCode.Left] = ConstantVar.BranchName.SmashEggsPage;
+            this._RoadMap[ConstantVar.BranchName.PrizeList][ConstantVar.KeyCode.Up] = ConstantVar.BranchName.MyPrizeRecordBtn;
         }
     }
 }
 export default MainPage;
 
-const ActivityBtn = ({branchName, text, btnTheme, isFocus, hasGetDiscountBtn}) => {
+const ActivityBtn = ({branchName, text, btnTheme, isFocus}) => {
     //根据branchName获取theme
     let forgroundStyle = null;
     let backgroundStyle = null;
@@ -274,45 +269,13 @@ const ActivityBtn = ({branchName, text, btnTheme, isFocus, hasGetDiscountBtn}) =
     let backgroundFocusStyle = null;
 
     switch (branchName) {
-        case ConstantVar.BranchName.GetDiscountBtn:{
-            if (hasGetDiscountBtn) {
-                let theme_name = "getdiscount";
-                forgroundStyle = {...btnTheme.common.normalStyle, ...btnTheme[theme_name].style};
-                backgroundStyle = {...btnTheme.common.normalBgStyle, ...btnTheme[theme_name].style};
+        case ConstantVar.BranchName.MyPrizeRecordBtn: {
+            let theme_name = "myrecord";
+            forgroundStyle = {...btnTheme.common.normalStyle, ...btnTheme[theme_name].style};
+            backgroundStyle = {...btnTheme.common.normalBgStyle, ...btnTheme[theme_name].style};
 
-                forgroundFocusStyle = {...btnTheme.common.focusStyle, ...btnTheme[theme_name].focusStyle};
-                backgroundFocusStyle = {...btnTheme.common.focusBgStyle, ...btnTheme[theme_name].focusStyle}
-            }
-            break;
-        }
-        case ConstantVar.BranchName.MyPrizeRecordBtn:{
-                let theme_name = "myrecord";
-                forgroundStyle = {...btnTheme.common.normalStyle, ...btnTheme[theme_name].style};
-                backgroundStyle = {...btnTheme.common.normalBgStyle, ...btnTheme[theme_name].style};
-
-                forgroundFocusStyle = {...btnTheme.common.focusStyle, ...btnTheme[theme_name].focusStyle};
-                backgroundFocusStyle = {...btnTheme.common.focusBgStyle, ...btnTheme[theme_name].focusStyle}
-            break;
-        }
-        case ConstantVar.BranchName.EnterStudyingBtn: {
-            let theme_name = "enterstudying";
-            let enter_study_theme = btnTheme[theme_name].style;
-            let btn_theme = btnTheme.common.normalStyle;
-            let btn_bg_theme = btnTheme.common.normalBgStyle;
-            if (!hasGetDiscountBtn) {
-                enter_study_theme = btnTheme[theme_name].centerStyle;
-            }
-            backgroundStyle = {...btn_bg_theme, ...enter_study_theme};
-            forgroundStyle = {...btn_theme, ...enter_study_theme};
-
-            enter_study_theme = btnTheme[theme_name].focusStyle;
-            btn_theme = btnTheme.common.focusStyle;
-            if (!hasGetDiscountBtn) {
-                enter_study_theme = btnTheme[theme_name].centerFocusStyle;
-            }
-            btn_bg_theme = btnTheme.common.focusBgStyle;
-            forgroundFocusStyle = {...btn_theme, ...enter_study_theme};
-            backgroundFocusStyle = {...btn_bg_theme, ...enter_study_theme};
+            forgroundFocusStyle = {...btnTheme.common.focusStyle, ...btnTheme[theme_name].focusStyle};
+            backgroundFocusStyle = {...btnTheme.common.focusBgStyle, ...btnTheme[theme_name].focusStyle}
             break;
         }
         default:
@@ -320,14 +283,14 @@ const ActivityBtn = ({branchName, text, btnTheme, isFocus, hasGetDiscountBtn}) =
     }
 
     if (backgroundStyle) {
-        console.log("branchName:"+branchName+", forgroundStyle:", forgroundStyle);
+        console.log("branchName:" + branchName + ", forgroundStyle:", forgroundStyle);
         return (
             <Fdiv key={branchName} branchName={branchName}>
-                <div key="normal" style={{visibility:isFocus?"hidden":"inherit"}}>
+                <div key="normal" style={{visibility: isFocus ? "hidden" : "inherit"}}>
                     <div style={backgroundStyle}></div>
                     <div style={forgroundStyle}>{text}</div>
                 </div>
-                <div key="focus" style={{visibility:isFocus?"inherit":"hidden"}}>
+                <div key="focus" style={{visibility: isFocus ? "inherit" : "hidden"}}>
                     <div style={backgroundFocusStyle}></div>
                     <div style={forgroundFocusStyle}>{text}</div>
                 </div>

@@ -2,7 +2,6 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import JsvSpriteAnim from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
 import Game from "../../common/Game"
 class NumberCount extends React.Component  {
     /**

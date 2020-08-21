@@ -139,3 +139,7 @@ public static ** valueOf(java.lang.String);
 -keep public class com.bumptech.glide.** { public *; }
 -keep public class net.grandcentrix.tray.** { public *; }
 -keep public class okhttp3.** { public *; }
+
+# 保持SubActivity完整包名，在启动SubTab处理时，包名是以SubActivity为基础进行拼接的
+-keep public class com.qcode.jsview.sample.subactivities.SubActivity {}
+-keep public class * extends com.qcode.jsview.sample.subactivities.SubActivity {}

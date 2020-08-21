@@ -4,6 +4,7 @@
 import "../ForgeDefine"
 import "./PlatformUtils"
 import "./media"
+import "./sound_pool"
 import "./console_log"
 import "./rect_utils"
 import "./text_utils"

@@ -1,6 +1,6 @@
 import React from 'react';
 import "./App.css"
-import JsvSpriteAnim from './../../../../../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim} from './../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import ProgressBar from "../../views/component/ProgressBar"
 import Game from "../../common/Game"
 import GameAppBase from "../base/GameAppBase"

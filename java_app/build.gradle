@@ -28,4 +28,5 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-apply from: "build-debug.gradle" //调试用，需要注释掉
+// 调试JsView引擎内核时使用(OnDebugJsViewEngine)
+//apply from: "$rootProject.projectDir/build-jsview-env.gradle"

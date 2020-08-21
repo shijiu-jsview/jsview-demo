@@ -9,9 +9,12 @@
  *                  imageUrl {string}  (必需)图片地址
  *                  duration {float}  (动图必需)动图的时间
  *                  onAnimEnd {fucntion} 动图结束回调
- *                  stop {boolean} 停止动图，默认false
  *                  loop {string} 动图的循环次数 infinite/数字，默认为infinite
  *                  spriteName {string} 动图的名称，默认为null
+ *                  autostart{boolean} 是否自动播放动图
+ *                  controller {SpriteController} 控制动图的对象
+ *                      stop(end_frame) 停止动画 end_frame: "start", "end"
+ *                      start() 开始动画
  *   
  *
  * 【技巧说明】
@@ -23,7 +26,7 @@
  */
 
 import React from 'react';
-import JsvSpriteImg from '../jsview-utils/JsViewReactWidget/JsvSpriteImg'
+import {JsvSpriteAnim, SpriteController} from '../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import createStandaloneApp from "../demoCommon/StandaloneApp"
 import { FocusBlock } from "../demoCommon/BlockDefine"
 
@@ -34,9 +37,9 @@ import config_json from "./images/egg_break.json"
 class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
+        this._Controller = new SpriteController();
 
         this.state = {
-            stop: false, // 配置动图还是静图
             show: true
         }
     }
@@ -107,13 +110,14 @@ class MainScene extends FocusBlock {
 
             let that = this;
             return (<div style={{top: 20, left: 20}}>
-                <JsvSpriteImg
+                <JsvSpriteAnim
                     spriteInfo={sprite_info.info}
                     loop={10}
                     viewSize={view_size}
                     duration={0.8}
+                    controller={this._Controller}
+                    autostart={true}
                     onAnimEnd={function () { console.log("anim end");that.setState({show:false}) }}
-                    stop={this.state.stop}
                     imageUrl={spriteImage} />
             </div>);
         } else {
