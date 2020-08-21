@@ -55,6 +55,9 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
+if(!!process.env.REACT_APP_INDEX_JS) {
+    paths.appIndexJs = process.env.REACT_APP_INDEX_JS;
+}
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
