@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-13 17:00:41
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-08-24 16:21:02
+ * @LastEditTime: 2020-08-24 19:46:38
  * @Description: file content
  */
 
@@ -117,7 +117,8 @@ class Home extends FdivWrapper {
                 type: SWidgetDispatcher.Type.slideToItem,
                 data: {
                     id: HomepageInfo.curFocus,
-                    type: "end"
+                    type: "end",
+                    doAnim: false
                 }
             })
             HomepageInfo.curFocus = -1;

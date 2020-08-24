@@ -268,18 +268,12 @@ class MainScene extends FocusBlock{
         this._SubCount = 0;
         let search = window.location.search;
         if (search) {
-            let i = search.indexOf("subCount");
-            if (i >= 0) {
-                let index1 = search.indexOf("=", i);
-                let index2 = search.indexOf("&", i);
-                index2 = index2 < 0 ? search.length : index2;
-                let c = search.substring(index1 + 1, index2);
-                try {
-                    this._SubCount = parseInt(c);
-                } catch(e) {}
-            }
+            var reg = /subCount=(\d*)/
+            reg.test(search);
+            try {
+               this._SubCount = parseInt(RegExp.$1);
+            } catch(e) {}
         }
-        
 
         this.state = {
             text: ""
@@ -329,20 +323,14 @@ class MainScene extends FocusBlock{
 
         let engine_js = ""; // 设置为""，则表示使用和当前页面一样的engine js
         
-        let index = window.location.href.indexOf("?");
-        let url;
-        if (index >= 0) {
-            url = window.location.href.substring(0, index);
-        } else {
-            url = window.location.href;
-        }
+        let url = window.location.origin + window.location.pathname;
 
         if (item.name == "二级页面1") {
         	let core_version = ""; // 设置为""，表示使用当前页面一样的core
-            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/subTab", start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/openBlank", start_image, core_version);
         } else {
 	        let core_version = this.state.text;
-            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/subTab", start_image, core_version);
+            jJsvRuntimeBridge.openBlank(engine_js, url + "?subCount=" + (this._SubCount + 1) + "#/users/openBlank", start_image, core_version);
         }
     }
 
