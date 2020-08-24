@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-04-13 17:00:41
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-08-20 20:12:40
+ * @LastEditTime: 2020-08-24 16:21:02
  * @Description: file content
  */
 
@@ -66,11 +66,11 @@ class Home extends FdivWrapper {
 	renderContent() {
         return (
             <React.Fragment>
-                <div style={{fontSize: "20px", color: "#FFFFFF"}}>{window.location.href}</div>
-                <div style={{top: 20, left: 10}}>
+                <div style={{fontSize: "20px", width: 1280, height: 70, color: "#FFFFFF"}}>{window.location.href}</div>
+                <div style={{top: 70, left: 10}}>
                     <SimpleWidget 
                       width={ 1280 } 
-                      height={ 700 } 
+                      height={ 630 } 
                       dispatcher={this._Dispatcher}
                       direction={ VERTICAL } 
                       data={ this.props.data } 

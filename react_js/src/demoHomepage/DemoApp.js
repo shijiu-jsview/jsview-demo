@@ -167,20 +167,6 @@ for (let item of demoInfos) {
     index = index == color.length - 1 ? 0 : index + 1;
 }
 
-class HomePageProxy extends React.Component{
-    render() {
-        return(<div></div>);
-    }
-
-    componentWillMount() {
-        this.props.callback("visible")
-    }
-
-    componentWillUnmount() {
-        this.props.callback("hidden")
-    }
-}
-
 class DemoApp extends React.Component {
     constructor(props) {
         super(props);
