@@ -253,21 +253,41 @@ class QRCodeSVG extends Component {
             );
         }
         const fgPath = generatePath(cells, margin);
-        return (
-            <div>
-                <jsvsvg
-                    type="qrcode"
-                    shapeRendering="crispEdges"
-                    height={size}
-                    width={size}
-                    viewBox={`0 0 ${numCells} ${numCells}`}
-                    {...otherProps}>
-                    <jsvpath fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`}/>
-                    <jsvpath fill={fgColor} d={fgPath}/>
-                </jsvsvg>
-                {image}
-            </div>
-        );
+
+        if (!!window.JsvDisableReactWrapper) {
+            return (
+                <div>
+                    <svg
+                        type="qrcode"
+                        shapeRendering="crispEdges"
+                        height={size}
+                        width={size}
+                        viewBox={`0 0 ${numCells} ${numCells}`}
+                        {...otherProps}>
+                        <path fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`}/>
+                        <path fill={fgColor} d={fgPath}/>
+                    </svg>
+                    {image}
+                </div>
+            );
+        } else {
+            // 含有react wrapper的场合，需要为dom标签加上jsv前缀以绕开Wrapper
+            return (
+                <div>
+                    <jsvsvg
+                        type="qrcode"
+                        shapeRendering="crispEdges"
+                        height={size}
+                        width={size}
+                        viewBox={`0 0 ${numCells} ${numCells}`}
+                        {...otherProps}>
+                        <jsvpath fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`}/>
+                        <jsvpath fill={fgColor} d={fgPath}/>
+                    </jsvsvg>
+                    {image}
+                </div>
+            );
+        }
     }
     componentWillUnmount() {
         if (this._InnerViewId != -1) {
