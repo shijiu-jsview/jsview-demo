@@ -139,6 +139,20 @@ class QRCodeSVG extends Component {
         return {x, y, h, w};
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        let pre_image = this.props.imageSettings;
+        let new_image = nextProps.imageSettings;
+        let image_changed = !((!pre_image && !new_image) || (pre_image && new_image && pre_image.src == new_image.src && pre_image.height == new_image.height && pre_image.width == new_image.width))
+
+        return nextProps.value !== this.props.value
+        || nextProps.size !== this.props.size
+        || nextProps.level !== this.props.level
+        || nextProps.bgColor !== this.props.bgColor
+        || nextProps.fgColor !== this.props.fgColor
+        || nextProps.includeMargin !== this.props.includeMargin
+        || image_changed;
+    }
+
     render() {
         if (!!window.JsView) {
             return this.jsvQRcode();
