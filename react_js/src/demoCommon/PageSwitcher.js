@@ -1,4 +1,5 @@
 import {getGlobalHistory} from './RouterHistoryProxy';
+import {jJsvRuntimeBridge} from './JsvRuntimeBridge'
  
 let history = getGlobalHistory();
 class PageSwitcher{
@@ -8,8 +9,9 @@ class PageSwitcher{
 	 * 原标签形式打开二级页面
 	 * @func openSelf
 	 * @memberof PageSwitcher
-     * @param {string} url 应用代码的url
+     * @param {string} jsview_url 应用代码的url
 	 * @param {string} engine_url forge引擎的url, 缺省表示使用当前的forge引擎
+	 * @param {string} html_url html的url
 	 **/
     static openSelf(jsview_url, engin_url, html_url) {
         if (window.JsView) {
@@ -26,7 +28,7 @@ class PageSwitcher{
                 }
             }
         } else {
-            console.log("open self in html.", url)
+            console.log("open self in html.", html_url)
             if (html_url && jsview_url !== window.location.href) {
                 window.location.href = html_url;
             }
