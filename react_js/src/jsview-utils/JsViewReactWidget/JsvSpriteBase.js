@@ -16,6 +16,7 @@ class JsvControl {
 		this._StartSwitcher = false;
 		this._PausedCallback = null;
 		this._EndCallback = null;
+		this._NextEndCallback = null;
 		this._Token = 0;
 		this._Repeat = false;
 		this._OnRepeatCallback = null;
@@ -33,7 +34,7 @@ class JsvControl {
 	}
 
 	start(end_callback) {
-		this._EndCallback = end_callback;
+		this._NextEndCallback = end_callback;
 		this._StartSwitcher = true;
 		this._Jumping = false;
 		this._StateMachineNext();
@@ -41,8 +42,9 @@ class JsvControl {
 
 	pause(paused_callback) {
 		// 执行pause动作时，相当于取消start()动作，所以EndCallback同时也应该被取消
-		if (this._EndCallback != null) {
+		if (this._EndCallback != null || this._NextEndCallback != null) {
 			this._EndCallback = null;
+			this._NextEndCallback = null;
 		}
 
 		// 根据当前状态，已经处于Pause则直接回调，否则发送pause指令
@@ -103,6 +105,10 @@ class JsvControl {
 	}
 
 	_StartAnimation() {
+		// 当动画开始后才进行回调设置，防止Pause过程中直接调用了新设置进的回调
+		this._EndCallback = this._NextEndCallback;
+		this._NextEndCallback = null;
+
 		let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
 		let tos = this._Target;
 		let repeat_starts = (this._Repeat ? [...this._RepeatStart] : null);
