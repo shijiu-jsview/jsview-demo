@@ -372,15 +372,17 @@ class LayoutViewBase {
     }
 
     _ResetTextStyle(resource_info) {
-
         this.Element.textContent = resource_info.Set.ST;
         this.Element.style.overflow = "hidden";
         if (resource_info.Set.AT) {
             let attr_json = JSON.parse(resource_info.Set.AT);
             this.Element.style.textOverflow = attr_json.TO;
+			this.Element.style.wordBreak = "normal";
             if (attr_json.WW == "none") {
                 this.Element.style.whiteSpace = "nowrap";
-            }
+            } else if (attr_json.WW) {
+				this.Element.style.wordWrap = attr_json.WW.replace("_", "-");
+			}
         }
         if (resource_info.Set.RA) {
             let react_json = JSON.parse(resource_info.Set.RA);

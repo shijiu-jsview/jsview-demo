@@ -443,7 +443,6 @@ Forge.CssTransitionAnimation = class extends Forge.AnimationDelegate {
 				event.stopPropagation();
 				that.OnEnd(true);
 			});
-			layout_view.Element.style.webkitTransition = transitions;
 			layout_view.Element.addEventListener("webkitTransitionEnd", (event) => {
 				event.stopPropagation();
 				that.OnEnd(true);
