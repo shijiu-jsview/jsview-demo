@@ -34,7 +34,10 @@ class JsvControl {
 	}
 
 	start(end_callback) {
+		// 取消旧的Callback
 		this._NextEndCallback = end_callback;
+		this._EndCallback = null;
+
 		this._StartSwitcher = true;
 		this._Jumping = false;
 		this._StateMachineNext();
