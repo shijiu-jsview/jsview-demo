@@ -71,15 +71,11 @@ class JsvControl {
     }
     
     enableStepFps() {
-        if (BridgeRemote_SetStepFpsSwitch) {
-            BridgeRemote_SetStepFpsSwitch(true);
-        }
+        Forge.sRenderBridge.SetStepFpsSwitch(true);
     }
 
     disableStepFps() {
-        if (BridgeRemote_SetStepFpsSwitch) {
-            BridgeRemote_SetStepFpsSwitch(false);
-        }
+        Forge.sRenderBridge.SetStepFpsSwitch(false);
     }
 
 	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
