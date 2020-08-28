@@ -159,6 +159,12 @@ let demoInfos = [
         "path": "/users/openSelf",
         "class": lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
     },
+	{
+		"name": "Scroller",
+		"path": "/users/scroller",
+		"class": lazy(() => import('../scroller/App').then(m => ({ default: m.SubApp }))),
+	},
+
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
