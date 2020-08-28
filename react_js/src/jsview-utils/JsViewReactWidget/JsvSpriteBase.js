@@ -68,7 +68,19 @@ class JsvControl {
 		this._Jumping = true;
 		this._StartSwitcher = true;
 		this._StateMachineNext();
-	}
+    }
+    
+    enableStepFps() {
+        if (BridgeRemote_SetStepFpsSwitch) {
+            BridgeRemote_SetStepFpsSwitch(true);
+        }
+    }
+
+    disableStepFps() {
+        if (BridgeRemote_SetStepFpsSwitch) {
+            BridgeRemote_SetStepFpsSwitch(false);
+        }
+    }
 
 	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
 		console.warn("Should Override");
