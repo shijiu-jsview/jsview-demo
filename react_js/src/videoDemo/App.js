@@ -430,13 +430,20 @@ class MainScene extends FocusBlock {
 		return (
 			<React.Fragment>
 				<div style={{ top: 0, left: 0, width:1280, height:720, backgroundColor:"rgb(222,211,140)"}} >
+					<div style={{
+						top:50,
+						left:(1280 - object_fit_set.width) / 2,
+						width: object_fit_set.width,
+						height: 500,
+						backgroundColor:"rgb(200,100,100)"
+					}} />
 					<video style={{
 						top:50,
 						left:(1280 - object_fit_set.width) / 2,
 						width: object_fit_set.width,
 						height: 500,
 						objectFit:object_fit_set.objectFit,
-						backgroundColor:"rgb(200,100,100)"}}
+						borderRadius: '0 80px 160px 240px'}}
 						src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
 						ref={this._RefVideo}
 						onLoadStart={this.handleLoadStart}
