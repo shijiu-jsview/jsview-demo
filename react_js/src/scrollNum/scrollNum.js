@@ -46,11 +46,11 @@ class ScrollPanel extends React.Component {
 			<div key="scroller-num"
 				 style={{
 					 ...this.props.textStyle,
-					 width: this.props.textStyle.fontSize,//显示多行
+					 width: this.props.textStyle.fontSize * 0.6,//显示多行
 					 height: this.height * 20,
 					 lineHeight: this.height + 'px',
 					 visibility: this.state.scrollNumVisible,
-					 left: (this.width - this.props.textStyle.fontSize) / 2,
+					 left: (this.width - this.props.textStyle.fontSize * 0.6) / 2,
 					 top: this.state.innerDivTop,
 					 wordBreak: 'normal',
 					 wordWrap: 'break-word',
@@ -127,7 +127,7 @@ class ScrollPanel extends React.Component {
 	}
 }
 
-class Scroller extends React.Component {
+class ScrollNum extends React.Component {
 	constructor (props) {
 		super(props)
 		this.oldCountArray = []
@@ -199,7 +199,7 @@ class Scroller extends React.Component {
 		// Start building UI
 		let table = []
 		var separatorCount = 0
-		if (this.props.separatorType !== Scroller.SEPARATOR.NONE) {
+		if (this.props.separatorType !== ScrollNum.SEPARATOR.NONE) {
 			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
 		}
 		var indWidth = Math.floor(this.width / (maxLength + separatorCount))
@@ -216,7 +216,7 @@ class Scroller extends React.Component {
 
 	innerInit = (table, maxLength) => {
 		var separatorCount = 0
-		if (this.props.separatorType !== Scroller.SEPARATOR.NONE) {
+		if (this.props.separatorType !== ScrollNum.SEPARATOR.NONE) {
 			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
 		}
 		var tr = []
@@ -231,7 +231,7 @@ class Scroller extends React.Component {
 			var td = <div key={'scroller_td_' + i}
 						  style={{left: left}}>{this.createScrollPanel(this.propsInner, i)}</div>
 			tr.push(td)
-			if (this.props.separatorType != Scroller.SEPARATOR.NONE &&
+			if (this.props.separatorType != ScrollNum.SEPARATOR.NONE &&
 				((i + 1) < maxLength) &&
 				(i + 1) % this.props.separatorType === 0) {
 				left -= this.propsInner.width
@@ -290,19 +290,19 @@ class Scroller extends React.Component {
 	}
 
 	componentDidMount () {
-		// console.log('Scroller componentDidMount')
+		// console.log('ScrollNum componentDidMount')
 	}
 
 	componentWillUnmount () {
-		// console.log('Scroller componentWillUnmount')
+		// console.log('ScrollNum componentWillUnmount')
 	}
 }
-Scroller.SEPARATOR = {
+ScrollNum.SEPARATOR = {
 	NONE: 0,
 	THOUSAND: 3
 }
 
-Scroller.propTypes = {
+ScrollNum.propTypes = {
 	value: PropTypes.number, // 初始值
 	interval: PropTypes.number, // 滚动时长,单位：ms
 	width: PropTypes.number, // 滚动条宽度
@@ -312,14 +312,14 @@ Scroller.propTypes = {
 	textStyle: PropTypes.object //文字样式
 }
 
-Scroller.defaultProps = {
+ScrollNum.defaultProps = {
 	value: 0,
 	interval: 5000,
 	width: 400,
 	height: 100,
 	separator: '',
 	textAlign: 'center',
-	separatorType: Scroller.SEPARATOR.NONE,
+	separatorType: ScrollNum.SEPARATOR.NONE,
 	textStyle: {
 		color: 'rgba(255,255,255,1.0)',
 		backgroundColor: 'rgba(0,0,0,0)',
@@ -330,4 +330,4 @@ Scroller.defaultProps = {
 	}
 }
 
-export default Scroller
+export default ScrollNum

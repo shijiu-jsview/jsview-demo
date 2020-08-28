@@ -160,9 +160,9 @@ let demoInfos = [
         "class": lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
     },
 	{
-		"name": "Scroller",
-		"path": "/users/scroller",
-		"class": lazy(() => import('../scroller/App').then(m => ({ default: m.SubApp }))),
+		"name": "ScrollNum",
+		"path": "/users/scrollNum",
+		"class": lazy(() => import('../scrollNum/App').then(m => ({ default: m.SubApp }))),
 	},
 
 ]
