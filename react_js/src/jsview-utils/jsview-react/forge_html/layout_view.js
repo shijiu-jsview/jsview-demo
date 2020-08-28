@@ -858,9 +858,6 @@ class LayoutViewBase {
         target_ele.style.height = frame_height + "px";
         target_ele.style.objectFit = object_fit_str;
 
-        // Debug only
-        window.DebugObjectFitView = this;
-
         return clip_layout;
     }
 
