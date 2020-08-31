@@ -127,7 +127,7 @@ class ScrollPanel extends React.Component {
 	}
 }
 
-class ScrollNum extends React.Component {
+class JsvScrollNum extends React.Component {
 	constructor (props) {
 		super(props)
 		this.oldCountArray = []
@@ -199,7 +199,7 @@ class ScrollNum extends React.Component {
 		// Start building UI
 		let table = []
 		var separatorCount = 0
-		if (this.props.separatorType !== ScrollNum.SEPARATOR.NONE) {
+		if (this.props.separatorType !== JsvScrollNum.SEPARATOR.NONE) {
 			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
 		}
 		var indWidth = Math.floor(this.width / (maxLength + separatorCount))
@@ -216,7 +216,7 @@ class ScrollNum extends React.Component {
 
 	innerInit = (table, maxLength) => {
 		var separatorCount = 0
-		if (this.props.separatorType !== ScrollNum.SEPARATOR.NONE) {
+		if (this.props.separatorType !== JsvScrollNum.SEPARATOR.NONE) {
 			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
 		}
 		var tr = []
@@ -231,7 +231,7 @@ class ScrollNum extends React.Component {
 			var td = <div key={'scroller_td_' + i}
 						  style={{left: left}}>{this.createScrollPanel(this.propsInner, i)}</div>
 			tr.push(td)
-			if (this.props.separatorType != ScrollNum.SEPARATOR.NONE &&
+			if (this.props.separatorType != JsvScrollNum.SEPARATOR.NONE &&
 				((i + 1) < maxLength) &&
 				(i + 1) % this.props.separatorType === 0) {
 				left -= this.propsInner.width
@@ -290,19 +290,19 @@ class ScrollNum extends React.Component {
 	}
 
 	componentDidMount () {
-		// console.log('ScrollNum componentDidMount')
+		// console.log('JsvScrollNum componentDidMount')
 	}
 
 	componentWillUnmount () {
-		// console.log('ScrollNum componentWillUnmount')
+		// console.log('JsvScrollNum componentWillUnmount')
 	}
 }
-ScrollNum.SEPARATOR = {
+JsvScrollNum.SEPARATOR = {
 	NONE: 0,
 	THOUSAND: 3
 }
 
-ScrollNum.propTypes = {
+JsvScrollNum.propTypes = {
 	value: PropTypes.number, // 初始值
 	interval: PropTypes.number, // 滚动时长,单位：ms
 	width: PropTypes.number, // 滚动条宽度
@@ -312,14 +312,14 @@ ScrollNum.propTypes = {
 	textStyle: PropTypes.object //文字样式
 }
 
-ScrollNum.defaultProps = {
+JsvScrollNum.defaultProps = {
 	value: 0,
 	interval: 5000,
 	width: 400,
 	height: 100,
 	separator: '',
 	textAlign: 'center',
-	separatorType: ScrollNum.SEPARATOR.NONE,
+	separatorType: JsvScrollNum.SEPARATOR.NONE,
 	textStyle: {
 		color: 'rgba(255,255,255,1.0)',
 		backgroundColor: 'rgba(0,0,0,0)',
@@ -330,4 +330,4 @@ ScrollNum.defaultProps = {
 	}
 }
 
-export default ScrollNum
+export default JsvScrollNum

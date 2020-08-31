@@ -1,7 +1,7 @@
 import React from 'react'
 import createStandaloneApp from '../demoCommon/StandaloneApp'
 import { FocusBlock } from '../demoCommon/BlockDefine'
-import ScrollNum from './scrollNum'
+import JsvScrollNum from '../jsview-utils/JsViewReactWidget/JsvScrollNum'
 class MainScene extends FocusBlock {
 	constructor (props) {
 		super(props)
@@ -45,13 +45,13 @@ class MainScene extends FocusBlock {
 	renderContent () {
 		return <div>
 			<div style={{left: 200, top: 200, width: 400, height: 50, backgroundColor: 'rgba(255,255,255,0.5)'}}>
-				<ScrollNum
+				<JsvScrollNum
 					ref={this._initNormalScrollerRef}
 					value={0}
 					interval={500}
 					width={400}
 					height={50}
-					separatorType={ScrollNum.SEPARATOR.NONE}
+					separatorType={JsvScrollNum.SEPARATOR.NONE}
 					separator={''}/>
 			</div>
 		</div>
