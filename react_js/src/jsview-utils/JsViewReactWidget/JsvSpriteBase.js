@@ -69,14 +69,14 @@ class JsvControl {
 		this._StartSwitcher = true;
 		this._StateMachineNext();
     }
-    
-    enableStepFps() {
-        Forge.sRenderBridge.SetStepFpsSwitch(true);
-    }
 
-    disableStepFps() {
-        Forge.sRenderBridge.SetStepFpsSwitch(false);
-    }
+	startFpsTesting() {
+		Forge.sRenderBridge.SetStepFpsSwitch(true);
+	}
+
+	stopFpsTesting() {
+		Forge.sRenderBridge.SetStepFpsSwitch(false);
+	}
 
 	_WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump) {
 		console.warn("Should Override");
