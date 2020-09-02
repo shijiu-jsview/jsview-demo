@@ -164,6 +164,11 @@ let demoInfos = [
 		"path": "/users/scrollNum",
 		"class": lazy(() => import('../scrollNum/App').then(m => ({ default: m.SubApp }))),
 	},
+	{
+		"name": "TextBox",
+		"path": "/users/TextBox",
+		"class": lazy(() => import('../textBox/App').then(m => ({ default: m.SubApp }))),
+	},
 
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
