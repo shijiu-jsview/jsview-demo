@@ -4,7 +4,7 @@ import {FocusBlock} from "../demoCommon/BlockDefine"
 import {SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL} from "../jsview-utils/jsview-react/index_widget.js"
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
 import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
-import {OpenPage} from "../demoCommon/OpenPageSwitcher"
+import {PageSwitcher} from "../demoCommon/PageSwitcher"
 
 class MainScene extends FocusBlock{
     constructor(props) {
@@ -30,7 +30,7 @@ class MainScene extends FocusBlock{
             } else {
                 url = window.location.href;
             }
-            OpenPage.openSelf("http://cdn.release.51vtv.cn/JsViewExportDemo/release_build/391/homepage/static/js/main.jsv.b6406306.js#/");
+            PageSwitcher.openSelf("http://cdn.release.51vtv.cn/JsViewExportDemo/release_build/391/homepage/static/js/main.jsv.b6406306.js#/", null);
             return true;
         }
         return false;

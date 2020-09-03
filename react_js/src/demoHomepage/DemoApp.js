@@ -149,36 +149,28 @@ let demoInfos = [
         "path": "/users/flipCard",
         "class": lazy(() => import('../flipCard/App').then(m => ({ default: m.SubApp }))),
     },
-    // {
-    //     "name": "子页面启动(openBlank)",
-    //     "path": "/users/openBlank",
-    //     "class": lazy(() => import('../openBlank/App').then(m => ({ default: m.SubApp }))),
-    // },
-    // {
-    //     "name": "子页面启动(openSelf)",
-    //     "path": "/users/openSelf",
-    //     "class": lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
-    // },
+    {
+        "name": "子页面启动(openBlank)",
+        "path": "/users/openBlank",
+        "class": lazy(() => import('../openBlank/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        "name": "子页面启动(openSelf)",
+        "path": "/users/openSelf",
+        "class": lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
+    },
+	{
+		"name": "ScrollNum",
+		"path": "/users/scrollNum",
+		"class": lazy(() => import('../scrollNum/App').then(m => ({ default: m.SubApp }))),
+	},
+
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
 for (let item of demoInfos) {
     item.color = color[index];
     index = index == color.length - 1 ? 0 : index + 1;
-}
-
-class HomePageProxy extends React.Component{
-    render() {
-        return(<div></div>);
-    }
-
-    componentWillMount() {
-        this.props.callback("visible")
-    }
-
-    componentWillUnmount() {
-        this.props.callback("hidden")
-    }
 }
 
 class DemoApp extends React.Component {

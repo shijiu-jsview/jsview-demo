@@ -189,6 +189,8 @@ class LayoutViewBase {
         this.childZIndexCount = 0; // 计数器，统计子界面中有多少个设置了index的界面，用于优化AddView时的z-index调整处理
         this._IsChildOfRootView = false;
         this._DetachFromSystemCallback = null;
+        this.Element = null;
+        this.InnerChildElement = null; // 例如video element
         if (element_name === "root") {
             this.Element = window.originDocument.getElementById(element_name);
         } else if (element_name === "svg" || element_name === "path") {
@@ -202,6 +204,8 @@ class LayoutViewBase {
 
         this.TransformAnimationObj = null;
         this._TextureAnimationObj = null;
+
+        this._ObjectFitTestCache = null;
     }
 
     Init(texture_setting) {
@@ -372,15 +376,17 @@ class LayoutViewBase {
     }
 
     _ResetTextStyle(resource_info) {
-
         this.Element.textContent = resource_info.Set.ST;
         this.Element.style.overflow = "hidden";
         if (resource_info.Set.AT) {
             let attr_json = JSON.parse(resource_info.Set.AT);
             this.Element.style.textOverflow = attr_json.TO;
+			this.Element.style.wordBreak = "normal";
             if (attr_json.WW == "none") {
                 this.Element.style.whiteSpace = "nowrap";
-            }
+            } else if (attr_json.WW) {
+				this.Element.style.wordWrap = attr_json.WW.replace("_", "-");
+			}
         }
         if (resource_info.Set.RA) {
             let react_json = JSON.parse(resource_info.Set.RA);
@@ -423,7 +429,8 @@ class LayoutViewBase {
     }
 
     _SetBorderRadius(mask_setting) {
-        this.Element.style.borderRadius = mask_setting._TopLeft + "px " +
+        let target_element = (this.InnerChildElement ? this.InnerChildElement : this.Element);
+        target_element.style.borderRadius = mask_setting._TopLeft + "px " +
             mask_setting._TopRight + "px " +
             mask_setting._BottomRight + "px " +
             mask_setting._BottomLeft + "px";
@@ -441,15 +448,14 @@ class LayoutViewBase {
     ResetTexture(texture_setting) {
         this.TextureSetting = texture_setting;
         if (texture_setting) {
-            if (texture_setting.MaskSetting) {
-                if (texture_setting.MaskSetting._MaskType === "CORNER") {
-                    this._SetBorderRadius(texture_setting.MaskSetting);
-                }
-            }
-
             if (texture_setting.Texture.Source) {
-                this.Element.style.backgroundImage = 'url(' + texture_setting.Texture.Source + ')';
-                this.Element.style.backgroundSize = "100% 100%";
+                if (this.Element.tagName === "IMG") {
+                    // 图片元素，设置url到src中
+                    this.Element.src = texture_setting.Texture.Source;
+                } else {
+                    this.Element.style.backgroundImage = 'url(' + texture_setting.Texture.Source + ')';
+                    this.Element.style.backgroundSize = "100% 100%";
+                }
             } else if (texture_setting.Texture.RenderTexture && texture_setting.Texture.RenderTexture._SyncingResourceInfo) {
                 let render_texture = texture_setting.Texture.RenderTexture;
                 let resource_info = render_texture._SyncingResourceInfo;
@@ -466,6 +472,13 @@ class LayoutViewBase {
                     video_el.style.objectFit = "fill";
 
                     this.Element.appendChild(video_el);
+                    this.InnerChildElement = video_el;
+                }
+            }
+
+            if (texture_setting.MaskSetting) {
+                if (texture_setting.MaskSetting._MaskType === "CORNER") {
+                    this._SetBorderRadius(texture_setting.MaskSetting);
                 }
             }
         }
@@ -653,6 +666,10 @@ class LayoutViewBase {
         }
     }
 
+    ResetTextureCssTransform(transform_string, transform_origin_string) {
+        this.ResetCssTransform(transform_string, transform_origin_string);
+    }
+
     /****************************************
      * View getter
      */
@@ -722,8 +739,140 @@ class LayoutViewBase {
     // 功能: 标识本LayoutView要根据自身Texture加载完成后，根据Texture的尺寸重新Resize
     // 当enable后，无论尺寸设成多少，同步给Native的界面尺寸都会固定为(1,1)，
     // 以保证View会被渲染，从而防止Texture由于不在界面上不会加载的处理生效，同时小尺寸不会被注意
-    WaitTextureToResize() {
-        // TODO: js模式不需要处理
+    WaitTextureToResize(enable) {
+        // js模式下为控制显示和隐藏
+        this.Element.style.visibility = (enable ? "hidden" : "visible");
+    }
+
+    // 根据object fit，调整texture在view中的显示位置
+    // 当view的宽/高，单项为0时，可以进行内容的自适应扩展
+    ApplyObjectFit(frame_width, frame_height, texture_width, texture_height, object_fit, object_fit_define) {
+        if (this._ObjectFitTestCache === null) {
+            // 创建检测结果的缓存，用于加快检测速度
+            this._ObjectFitTestCache = {
+                frameWidth: NaN,
+                frameHeight: NaN,
+                textureWidth: NaN,
+                textureHeight: NaN,
+                objectFit: null,
+                clipLayout: null
+            };
+        }
+
+        let test_cache = this._ObjectFitTestCache;
+
+        if (test_cache.frameWidth === frame_width
+            && test_cache.objectFit === object_fit
+            && test_cache.frameHeight === frame_height
+            && test_cache.textureWidth === texture_width
+            && test_cache.textureHeight === texture_height) {
+            return test_cache.clipLayout;
+        }
+
+        let clip_layout = { x:0, y:0, width:frame_width, height:frame_height, overflow: false };
+
+        // Flush cache, 放在判断处理调整viewSize之前进行cache
+        test_cache.frameWidth = frame_width;
+        test_cache.frameHeight = frame_height;
+        test_cache.textureWidth = texture_width;
+        test_cache.textureHeight = texture_height;
+        test_cache.objectFit = object_fit;
+        test_cache.clipLayout = clip_layout;
+
+        let expect_size = { width:0, height:0 };
+
+        let frame_ratio = frame_width / frame_height;
+        let texture_ratio = texture_width / texture_height;
+
+        if(!texture_ratio) {
+            console.error("Error:Texture size is 0!")
+            return clip_layout;
+        }
+
+        if(frame_width === 0 || frame_height === 0) {
+            if(frame_width === 0 && frame_height === 0) {
+                // frame没有size的场合
+                return clip_layout;
+            }
+
+            // 调整frame width 和 frame height，并计算新的frame ratio
+            if (frame_width === 0) {
+                frame_width = frame_height * texture_ratio;
+            } else {
+                // frame height === 0
+                frame_height = frame_width / texture_ratio;
+            }
+            frame_ratio = frame_width / frame_height;
+        }
+
+        let object_fit_str = "";
+
+        switch(object_fit) {
+            case object_fit_define.FILL:
+                expect_size.width = frame_width;
+                expect_size.height = frame_height;
+                object_fit_str = "fill";
+                break;
+            case object_fit_define.NONE:
+                expect_size.width = texture_width;
+                expect_size.height = texture_height;
+                object_fit_str = "none";
+                break;
+            case object_fit_define.COVER:
+                expect_size = this._StretchSize(frame_width, frame_height, texture_ratio, texture_ratio < frame_ratio);
+                object_fit_str = "cover";
+                break;
+            case object_fit_define.SCALEDOWN:
+                // 使用contain和none之间尺寸小的一个。
+                let refer_width = (texture_ratio > frame_ratio); // use object-fit.contain
+                if(frame_width > texture_width
+                    && frame_height > texture_height) { // use object-fit.none
+                    refer_width = (texture_ratio < frame_ratio); // use object-fit.contain
+                }
+                expect_size = this._StretchSize(frame_width, frame_height, texture_ratio, refer_width);
+                object_fit_str = "scaledown";
+                break;
+            case object_fit_define.CONTAIN:
+                expect_size = this._StretchSize(frame_width, frame_height, texture_ratio, texture_ratio > frame_ratio);
+                // console.warn("Element.JsvFitViewLayout() expect_size=" + JSON.stringify(expect_size));
+                object_fit_str = "contain";
+                break;
+            default:
+                throw Error("Unexpected object-fit.");
+        }
+
+        // format expect size
+        expect_size.width = Math.floor(expect_size.width);
+        expect_size.height = Math.floor(expect_size.height);
+
+        // 计算可视区域
+        clip_layout.width = Math.min(expect_size.width, frame_width);
+        clip_layout.height = Math.min(expect_size.height, frame_height);
+        clip_layout.x = Math.floor((frame_width - clip_layout.width) / 2);
+        clip_layout.y = Math.floor((frame_height - clip_layout.height) / 2);
+        clip_layout.overflow = (expect_size.width > frame_width || expect_size > frame_height);
+
+        // element设置object fit
+        let target_ele = (this.InnerChildElement ? this.InnerChildElement : this.Element);
+        target_ele.style.width = frame_width + "px";
+        target_ele.style.height = frame_height + "px";
+        target_ele.style.objectFit = object_fit_str;
+
+        return clip_layout;
+    }
+
+    _StretchSize(origin_width, origin_height, ratio, refer_width) {
+        let stretchSize = { width: 0, height: 0 };
+
+        if (!!refer_width) {
+            stretchSize.width = origin_width;
+            stretchSize.height = origin_width / ratio;
+        } else {
+            stretchSize.height = origin_height;
+            stretchSize.width = origin_height * ratio;
+        }
+
+        return stretchSize;
     }
 }
 LayoutViewBase.DivId = 0;

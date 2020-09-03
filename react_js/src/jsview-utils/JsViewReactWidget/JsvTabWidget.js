@@ -174,6 +174,13 @@ class JsvTabWidget extends FdivWrapper{
             curId: queryObj.id
         }, () => {
             this._updateTabItem([pre_id, queryObj.id], this.state.curId);
+            this._dispatcherMap.get("body").dispatch({
+                type: SWidgetDispatcher.Type.slideToItem,
+                data: {
+                    id: this.state.curId,
+                    type: "start"
+                }
+            });
             if (pre_id !== this.state.curId) {
                 this._dispatcherMap.get("body_" + this.state.curId).dispatch({
                     type: SWidgetDispatcher.Type.slideToItem,
@@ -191,22 +198,25 @@ class JsvTabWidget extends FdivWrapper{
         this.setState({curId: item.tabIndex}, () => {
             this._updateTabItem([pre_focus, this.state.curId]);
             let slide_to_id = 0;
-            let slide_anchor = "start"
+            let slide_anchor = "start";
+            let slide_do_anim = true;
             if (pre_rect && (pre_rect.direction == EdgeDirection.left || pre_rect.direction == EdgeDirection.top)) {
                 slide_to_id = this.props.bodyData[item.tabIndex].length - 1;
                 slide_anchor = "end";
+                slide_do_anim = false;
             }
             let slide_info = {
                 type: SWidgetDispatcher.Type.slideToItem,
                 data: {
                     id: slide_to_id,
-                    type: slide_anchor
+                    type: slide_anchor,
+                    doAnim: slide_do_anim
                 }
             }
             this._dispatcherMap.get("body_" + item.tabIndex).dispatch(slide_info);
             let focus_info = {
                 type: SWidgetDispatcher.Type.setFocusRect,
-                data: pre_rect
+                data: pre_rect,
             };
             this._dispatcherMap.get("body_" + item.tabIndex).dispatch(focus_info);
             this.changeFocus(this.props.branchName + "/body" + item.tabIndex);
@@ -295,8 +305,7 @@ class JsvTabWidget extends FdivWrapper{
                     renderItem={ this._frameRenderItem }
                     measures={ this._frameMeasures }
                     initFocusId={ this.props.initFocusId }
-                    data={ this.state.frameData }
-                    baseAnchor={{id : this.state.curId, type: "start"}}/>
+                    data={ this.state.frameData }/>
             </div>
         )
     }

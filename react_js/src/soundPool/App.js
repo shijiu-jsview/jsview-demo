@@ -1,10 +1,16 @@
 /*
- * @Author: ChenChanghua
- * @Date: 2020-07-17 18:18:49
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-07-29 10:43:17
- * @Description: file content
- */ 
+ * 【界面概述】
+ * 展示精灵图的用法，包含动图和切图
+ *
+ * 【控件介绍】
+ * JsvSoundPool: 效果音控件
+ *
+ * 【技巧说明】
+ * Q: 注意事项
+ * A: 1.JsvSoundPool只支持文件较小的效果音，背景音请放在audio标签播放
+ *    2.退出时注意释放JsvSoundPool
+ */
+
 import React from 'react';
 import { FocusBlock } from "../demoCommon/BlockDefine"
 import createStandaloneApp from "../demoCommon/StandaloneApp"

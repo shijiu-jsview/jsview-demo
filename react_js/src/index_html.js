@@ -4,6 +4,8 @@ import {loadJsViewProxy,initEntry,confirmEntry} from './jsview-utils/jsview-reac
 
 import startApp from "./main"
 
+window.JsvDisableReactWrapper = true; // 设置标识位，有部分高阶组件根据此标识位决定元素的搭建方式
+
 initEntry();
 
 // 异步根据端的信息，加载JsView或者Html wrapper框架

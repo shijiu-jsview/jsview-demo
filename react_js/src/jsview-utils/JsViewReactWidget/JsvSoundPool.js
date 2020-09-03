@@ -1,11 +1,6 @@
-/*
- * @Author: ChenChanghua
- * @Date: 2020-07-17 11:09:01
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-07-22 16:27:24
- * @Description: file content
- */ 
-
+/**
+ * @description: 控制音频的对象
+ */
 class AudioController{
     constructor(soundPool, soundId, url) {
         this._SoundPool = soundPool;
@@ -20,6 +15,9 @@ class AudioController{
         this._Priority = 0;
     }
 
+    /**
+     * @description: 播放音频
+     */
     play() {
         if (this._StreamId !== -1) {
             this._SoundPool.stop(this._StreamId);
@@ -27,18 +25,31 @@ class AudioController{
         this._StreamId = this._SoundPool.play(this._SoundId, this._LeftVolume, this._RightVolume, this._Priority, this._Loop, this._Rate);
     }
 
+    /**
+     * @description: 暂停音频(Android4.0不支持)
+     */
     pause() {
         this._SoundPool.pause(this._StreamId);
     }
 
+    /**
+     * @description: 恢复播放音频(Android4.0不支持)
+     */
     resume() {
         this._SoundPool.resume(this._StreamId);
     }
 
+    /**
+     * @description: 停止音频(Android4.0不支持)
+     */
     stop() {
         this._SoundPool.stop(this._StreamId);
     }
 
+    /**
+     * @description: 设置播放速度
+     * @param {float} rate 播放的倍率
+     */
     setRate(rate) {
         this._Rate = rate;
         if (this._Streamid != -1) {
@@ -46,6 +57,11 @@ class AudioController{
         }
     }
 
+    /**
+     * @description: 设置音量
+     * @param {float} leftVolume 左声道音量
+     * @param {float} rightVolume 右声道音量
+     */
     setVolume(leftVolume, rightVolume) {
         this._LeftVolume = leftVolume;
         this._RightVolume =  rightVolume;
@@ -54,6 +70,10 @@ class AudioController{
         }
     }
 
+    /**
+     * @description: 设置循环次数, 注意: 循环一次表示总共播两次
+     * @param {int} loop 循环次数
+     */
     setLoop(loop) {
         this._Loop = loop;
         if (this._StreamId != -1) {
@@ -61,6 +81,10 @@ class AudioController{
         }
     }
 
+    /**
+     * @description: 设置优先级
+     * @param {int} priority 优先级
+     */
     setPriority(priority) {
         this._Priority = priority;
         if (this._StreamId != -1) {
@@ -76,6 +100,13 @@ class JsvSoundPool{
         this._StreamIdMap = new Set();
     }
 
+    /**
+     * @description: 准备音频资源
+     * @param {string} url 音频url
+     * @param {string} netSetting http请求配置
+     * @param {int} priority 优先级
+     * @param {function} callback 资源加载完成回调 function(int state, AudioController controller) {}
+     */
     request(url, netSetting, priority, callback) {
         let realUrl;
         if (window.JsView) {
@@ -107,6 +138,10 @@ class JsvSoundPool{
         }
     }
 
+    /**
+     * @description: 释放音频资源
+     * @param {AudioController} controller 控制句柄
+     */
     release(controller) {
         controller.stop();
         this._StreamIdMap.delete(controller);
@@ -119,14 +154,23 @@ class JsvSoundPool{
         }
     }
 
+    /**
+     * @description: 销毁SoundPool
+     */
     destroy() {
         this._SoundPool.release();
     }
 
+    /**
+     * @description: 全部暂停
+     */
     autoPaues() {
         this._SoundPool.autoPause();
     }
 
+    /**
+     * @description: 全部开始
+     */
     autoResume() {
         this._SoundPool.autoResume();
     }
