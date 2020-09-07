@@ -19,17 +19,34 @@ import JsvTextBox from '../jsview-utils/JsViewReactWidget/JsvTextBox'
 class MainScene extends FocusBlock {
 	constructor (props) {
 		super(props)
+		this.state = {
+			offsetX:0,
+			offsetY:0
+		};
 	}
 
-	onKeyDown (ev) {
-		if (ev.keyCode === 10000 || ev.keyCode === 27) {
+	onKeyDown(ev) {
+		//console.log("Get key code=" + ev.keyCode);
+		if (ev.keyCode === 37) {
+			// 'Left' key down
+			this.setState({offsetX: this.state.offsetX + 30})
+		} else if (ev.keyCode === 39) {
+			// 'Right' key down
+			this.setState({offsetX: this.state.offsetX - 30})
+		} else if (ev.keyCode === 38) {
+			// 'Up' key down
+			this.setState({offsetY: this.state.offsetY + 30})
+		} else if (ev.keyCode === 40) {
+			// 'Down' key down
+			this.setState({offsetY: this.state.offsetY - 30})
+		} else if (ev.keyCode == 27 || ev.keyCode === 10000) {
 			if (this._NavigateHome) {
-				this._NavigateHome()
+				this._NavigateHome();
 			}
-			return true
 		}
-		return false
+		return true;
 	}
+
 
 	componentWillUnmount () {
 
@@ -38,22 +55,240 @@ class MainScene extends FocusBlock {
 	componentDidMount () {
 
 	}
-
-	renderContent () {
+	_RenderLeftContent() {
 		const text =
 			`静夜思 --唐李白
 床前明月光，疑是地上霜；
 举头望明月，低头思故乡。`
-		return <JsvTextBox verticalAlign="middle"
-						   style={{
-							   left: 0, top: 0, width: 500, height: 600,
-							   backgroundColor: 'rgba(255,255,0,0.5)',
-							   fontSize: 30,
-							   textAlign: 'center',
-							   lineHeight: '40px'
-						   }}>
-			{text}
-		</JsvTextBox>
+		return  (<div style={{top: 50}}>
+			<div style={{left:0,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体向上对齐、文字居左显示
+			</div>
+			<JsvTextBox verticalAlign="top"
+						style={{
+							left: 0, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'left',
+							lineHeight: '60px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:410,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直居中对齐、文字水平居左显示
+			</div>
+			<JsvTextBox verticalAlign="middle"
+						style={{
+							left: 410, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'left',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:820,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向下对齐、文字水平居左显示
+			</div>
+			<JsvTextBox verticalAlign="bottom"
+						style={{
+							left: 820, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'left',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:1240,top:-50,width:500,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向上对齐、文字水平居左显示、行高80px
+			</div>
+			<JsvTextBox verticalAlign="top"
+						style={{
+							left: 1240, top: 0, width: 500, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'left',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+		</div>)
+	}
+	_RenderCenterContent() {
+		const text =
+			`静夜思 --唐李白
+床前明月光，疑是地上霜；
+举头望明月，低头思故乡。`
+		return  (<div style={{top: 400}}>
+			<div style={{left:0,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向上对齐、文字水平居中显示
+			</div>
+			<JsvTextBox verticalAlign="top"
+						style={{
+							left: 0, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'center',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:410,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直居中对齐、文字水平居中显示
+			</div>
+			<JsvTextBox verticalAlign="middle"
+						style={{
+							left: 410, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'center',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:820,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向下对齐、文字水平居中显示
+			</div>
+			<JsvTextBox verticalAlign="bottom"
+						style={{
+							left: 820, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'center',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+
+			<div style={{left:1240,top:-50,width:500,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直居中对齐、文字水平居中显示、行高80px
+			</div>
+			<JsvTextBox verticalAlign="middle"
+						style={{
+							left: 1240, top: 0, width: 500, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'center',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+		</div>)
+	}
+	_RenderRightContent() {
+		const text =
+			`静夜思 --唐李白
+床前明月光，疑是地上霜；
+举头望明月，低头思故乡。`
+		return (<div style={{top: 750}}>
+			<div style={{left:0,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向上对齐、文字水平居右显示
+			</div>
+			<JsvTextBox verticalAlign="top"
+						style={{
+							left: 0, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'right',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:410,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直居中对齐、文字水平居右显示
+			</div>
+			<JsvTextBox verticalAlign="middle"
+						style={{
+							left: 410, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'right',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:820,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向下对齐、文字水平居右显示
+			</div>
+			<JsvTextBox verticalAlign="bottom"
+						style={{
+							left: 820, top: 0, width: 400, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'right',
+							lineHeight: '40px'
+						}}>
+				{text}
+			</JsvTextBox>
+
+			<div style={{left:1240,top:-50,width:500,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向下对齐、文字水平居右显示、行高80px
+			</div>
+			<JsvTextBox verticalAlign="bottom"
+						style={{
+							left: 1240, top: 0, width: 500, height: 300,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'right',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+		</div>)
+	}
+	_RenderOneLineContent() {
+		const text = 'abcdefghigk'
+		return (<div style={{top: 750+300+50}}>
+			<div style={{left:0,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向上对齐、文字水平居左显示
+			</div>
+			<JsvTextBox verticalAlign="top"
+						style={{
+							left: 0, top: 0, width: 400, height: 80,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'left',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:410,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直居中对齐、文字水平居中显示
+			</div>
+			<JsvTextBox verticalAlign="middle"
+						style={{
+							left: 410, top: 0, width: 400, height: 80,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'center',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+			<div style={{left:820,top:-50,width:400,height:50,fontSize: 20, textAlign: 'left', lineHeight:'50px', backgroundColor:"#00ff00"}}>
+				整体垂直向下对齐、文字水平居右显示
+			</div>
+			<JsvTextBox verticalAlign="bottom"
+						style={{
+							left: 820, top: 0, width: 400, height: 80,
+							backgroundColor: 'rgba(255,255,0,0.5)',
+							fontSize: 30,
+							textAlign: 'right',
+							lineHeight: '80px'
+						}}>
+				{text}
+			</JsvTextBox>
+
+		</div>)
+	}
+	renderContent () {
+		return( <div key="ContentArea" style={{top:this.state.offsetY, left:this.state.offsetX}}>
+			{this._RenderLeftContent()}
+			{this._RenderCenterContent()}
+			{this._RenderRightContent()}
+			{this._RenderOneLineContent()}
+		</div>)
 	}
 }
 let App = createStandaloneApp(MainScene)
