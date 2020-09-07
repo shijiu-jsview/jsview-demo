@@ -1090,7 +1090,7 @@ class NinePatchView extends Forge.LayoutView {
             }
             if (texture_setting.Texture.Source) {
                 let texture_width = texture_setting.Texture.RenderTexture.Width;
-                let texture_height = texture_setting.Texture.RenderTexture.Width;
+                let texture_height = texture_setting.Texture.RenderTexture.Height;
                 let slice_left = this._HorizontalRepeats[0];
                 let slice_right = texture_width - this._HorizontalRepeats[1] - slice_left;
                 let slice_top = this._VerticalRepeats[0];
