@@ -168,6 +168,11 @@ let demoInfos = [
 		"name": "TextBox",
 		"path": "/users/TextBox",
 		"class": lazy(() => import('../textBox/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+		"name": "文字缩放",
+		"path": "/users/textScale",
+		"class": lazy(() => import('../textScale/App').then(m => ({ default: m.SubApp }))),
 	},
 
 ]
