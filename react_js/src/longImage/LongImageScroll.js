@@ -56,6 +56,11 @@ class LongImageScroll extends FocusBlock{
         return false;
     }
 
+    _OnLoad = ()=>{
+        // 图片加载完成的回调
+        console.log("Image loaded!");
+    };
+
     renderContent() {
         let {branchName, imageSrc, style, scrollStyle, scrollBlockStyle, ...others} = this.props;
         return(
@@ -63,7 +68,9 @@ class LongImageScroll extends FocusBlock{
                 <div style={{overflow: "hidden", ...style}}>
                     <img ref={(ele) => {this._Element = ele}}
                          src={imageSrc}
-                         style={{top: this.state.textY, width: style.width}} />
+                         style={{top: this.state.textY, width: style.width}}
+                         onLoad={this._OnLoad}
+                    />
                 </div>
                 <Scroll top={this.state.scrollY} scrollStyle={scrollStyle} scrollBlockStyle={scrollBlockStyle}/>
             </React.Fragment>
