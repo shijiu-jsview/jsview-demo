@@ -31,11 +31,11 @@ class MainScene extends FocusBlock {
 
 	componentDidMount () {
 		if (this._NormalScrollerRef) {
-			let num = 100;
+			let num = 10000;
 			this._NormalScrollerRef.start(num);
 			this._UpdateTimer = setInterval(() => {
 				if (num < 1000000) {
-					num += 12345;
+					num += 456;
 					this._NormalScrollerRef.scrollTo(num)
 				}
 			}, 2000);
@@ -44,12 +44,12 @@ class MainScene extends FocusBlock {
 
 	renderContent () {
 		return <div>
-			<div style={{left: 200, top: 200, width: 400, height: 50, backgroundColor: 'rgba(255,255,255,0.5)'}}>
+			<div style={{left: 200, top: 200, width: 200, height: 50, backgroundColor: 'rgba(255,255,255,0.5)'}}>
 				<JsvScrollNum
 					ref={this._initNormalScrollerRef}
 					value={0}
-					interval={500}
-					width={400}
+					interval={1000}
+					itemWidth={30}
 					height={50}
 					separatorType={JsvScrollNum.SEPARATOR.NONE}
 					separator={''}/>

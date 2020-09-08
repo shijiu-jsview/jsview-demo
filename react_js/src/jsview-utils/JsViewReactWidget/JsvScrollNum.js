@@ -136,8 +136,8 @@ class JsvScrollNum extends React.Component {
 		this.propsInner = {...props}
 		this.beginNum = this.props.value
 		this.endNum = this.beginNum
-		this.width = this.props.width
 		let table = this.init(this.beginNum, this.endNum)
+		this._RefreshTimer = null;
 		this.state = {
 			table: table,
 		}
@@ -202,8 +202,7 @@ class JsvScrollNum extends React.Component {
 		if (this.props.separatorType !== JsvScrollNum.SEPARATOR.NONE) {
 			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
 		}
-		var indWidth = Math.floor(this.width / (maxLength + separatorCount))
-		this.propsInner.width = indWidth //Set the width property
+		this.propsInner.width = this.props.itemWidth //Set the width property
 		this.innerInit(table, maxLength)
 		return table
 	}
@@ -264,7 +263,7 @@ class JsvScrollNum extends React.Component {
 			this.setState({
 				table: table,
 			}, () => {
-				setTimeout(() => {
+				this._RefreshTimer = setTimeout(() => {
 					this.refresh()
 				}, 1)
 			})
@@ -288,13 +287,19 @@ class JsvScrollNum extends React.Component {
 			}
 		}
 	}
-
+	_ClearTimer() {
+		if (this._RefreshTimer) {
+			clearTimeout(this._RefreshTimer);
+			this._RefreshTimer = null;
+		}
+	}
 	componentDidMount () {
 		// console.log('JsvScrollNum componentDidMount')
 	}
 
 	componentWillUnmount () {
 		// console.log('JsvScrollNum componentWillUnmount')
+		this._ClearTimer();
 	}
 }
 JsvScrollNum.SEPARATOR = {
@@ -305,7 +310,7 @@ JsvScrollNum.SEPARATOR = {
 JsvScrollNum.propTypes = {
 	value: PropTypes.number, // 初始值
 	interval: PropTypes.number, // 滚动时长,单位：ms
-	width: PropTypes.number, // 滚动条宽度
+	itemWidth: PropTypes.number, // 滚动条文字宽度
 	height: PropTypes.number, // 滚动条高度
 	separatorType: PropTypes.number, // 分隔符类型
 	separator: PropTypes.string, // 分隔符
@@ -315,7 +320,7 @@ JsvScrollNum.propTypes = {
 JsvScrollNum.defaultProps = {
 	value: 0,
 	interval: 5000,
-	width: 400,
+	itemWidth: 40,
 	height: 100,
 	separator: '',
 	textAlign: 'center',
