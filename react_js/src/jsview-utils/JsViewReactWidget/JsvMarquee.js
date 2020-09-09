@@ -74,7 +74,7 @@ class JsvMarquee extends React.Component {
             if (!this._KeyFrameStyleSheet.hasRule(name2)) {
                 this._KeyFrameStyleSheet.insertRule(step2);
             }
-            this._KeyFrameNames.step1 = name1,
+            this._KeyFrameNames.step1 = name1;
             this._KeyFrameNames.step2 = name2;
     }
 
