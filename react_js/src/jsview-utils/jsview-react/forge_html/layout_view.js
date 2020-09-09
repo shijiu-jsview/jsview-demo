@@ -422,8 +422,8 @@ class LayoutViewBase {
             if (font_json.Al) {
                 this.Element.style.textAlign = font_json.Al;
             }
-            if (font_json.Ve) {
-                this.Element.style.verticalAlign = font_json.Ve;
+            if (font_json.Vaa) {
+                this.Element.style.verticalAlign = font_json.Vaa;
             }
         }
     }

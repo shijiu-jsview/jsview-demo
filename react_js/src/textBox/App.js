@@ -70,7 +70,7 @@ class MainScene extends FocusBlock {
 							backgroundColor: 'rgba(255,255,0,0.5)',
 							fontSize: 30,
 							textAlign: 'left',
-							lineHeight: '60px'
+							lineHeight: '40px'
 						}}>
 				{text}
 			</JsvTextBox>
@@ -174,7 +174,8 @@ class MainScene extends FocusBlock {
 						}}>
 				{text}
 			</JsvTextBox>
-		</div>)
+        </div>
+        )
 	}
 	_RenderRightContent() {
 		const text =

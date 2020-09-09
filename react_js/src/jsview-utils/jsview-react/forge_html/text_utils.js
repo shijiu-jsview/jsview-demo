@@ -1,7 +1,7 @@
 import Forge from "../ForgeDefine"
 class TextUtils {
 	StringWithFont(_str,_size,_font,_alignment,_vertical_align, _text_color, _italic,
-												  _bold, _shadow, _stroke_width)
+												  _bold, _shadow, _stroke_width, _vertical_area_align)
 	{
 		if(!_size) _size = TextUtils._sDefaultFontSize;
 		if(!_font) _font = TextUtils._sDefaultFont;
@@ -18,6 +18,7 @@ class TextUtils {
 		if(!_vertical_align) _vertical_align = "middle";
 		if(!_text_color) _text_color = TextUtils._sDefaultFontColor;
         if(!_shadow) _shadow = null;
+        if(!_vertical_area_align) _vertical_area_align = "top";
 		//LogM("_str=" + _str + " _size=" + _size + " _font=" + _font + " text_color=" + _text_color);
         if(!_stroke_width) _stroke_width = -1;
 		return {
@@ -32,7 +33,9 @@ class TextUtils {
 			textColour:_text_color,
 			backgroundColour:TextUtils._sDefaultBackgroundColor,
 			enableBlend:true,
-            shadow:_shadow};
+            shadow:_shadow,
+            vertical_area_align: _vertical_area_align,
+        };
 	}
 
 	TextAttr(_text_overflow, _word_wrap)
