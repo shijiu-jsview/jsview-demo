@@ -26,7 +26,12 @@ class URL {
             value = document.location.origin + value;
         }
         if (value.startsWith('./') === true) {
-            value = document.location.origin + value.substring(1);
+            let index = document.location.pathname.lastIndexOf("/");
+            let path = "";
+            if (index > 0) {
+                path = document.location.pathname.substring(0, index);
+            }
+            value = document.location.origin + path + value.substring(1);
         }
 
         this.href = value;
