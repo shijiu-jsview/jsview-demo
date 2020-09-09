@@ -104,7 +104,8 @@ class ScrollPanel extends React.Component {
 		})
 	}
 
-	_onTransitionEnd = () => {
+	_onTransitionEnd = (event) => {
+		event.stopPropagation();
 		// console.log('_onTransitionEnd, this.endNum:' + this.endNum + ', index:' + this.index + ', _TestKey:' + this._TestKey)
 		let moveTop = -this.props.height * (this.endNum)
 		var transformProperty = 'translate3d(0,' + moveTop + 'px,0)'
@@ -185,11 +186,10 @@ class JsvScrollNum extends React.Component {
 		}
 		// Do necessary padding
 		var diff = Math.abs(beginLength - endLength)
-		var maxLength = Math.max(beginLength, endLength)
+		var itemCount = Math.max(beginLength, endLength)
 		if (beginLength > endLength) {
-			for (var i = 1; i <= diff; ++i) {
-				this.newCountArray.unshift('0')
-			}
+			itemCount = Math.min(beginLength, endLength);
+			this.oldCountArray = this.oldCountArray.slice(diff, beginLength);
 		} else if (beginLength < endLength) {
 			for (var i = 1; i <= diff; ++i) {
 				this.oldCountArray.unshift('0')
@@ -198,12 +198,8 @@ class JsvScrollNum extends React.Component {
 
 		// Start building UI
 		let table = []
-		var separatorCount = 0
-		if (this.props.separatorType !== JsvScrollNum.SEPARATOR.NONE) {
-			separatorCount = parseInt((maxLength - 1) / this.props.separatorType)
-		}
 		this.propsInner.width = this.props.itemWidth //Set the width property
-		this.innerInit(table, maxLength)
+		this.innerInit(table, itemCount)
 		return table
 	}
 
