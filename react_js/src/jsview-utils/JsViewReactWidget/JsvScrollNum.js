@@ -30,6 +30,7 @@ class ScrollPanel extends React.Component {
 					 style={{
 						 width: this.width,
 						 height: this.height,
+						 transform:"translate3d(0,0,0)",
 						 ...this.props.textStyle,
 					 }}>
 			<div key="lastNum"

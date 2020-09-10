@@ -283,7 +283,7 @@ class TextViewEx {
             text_view.Init(new Forge.TextureSetting(text_texture.texture, null, null, true));
             text_view.SetId("Text-"+t_StringWithFont.str);
 
-			if (t_StringWithFont.vertical_align == "middle" || t_StringWithFont.vertical_align == "bottom") {
+			if (t_StringWithFont.vertical_area_align == "middle" || t_StringWithFont.vertical_area_align == "bottom") {
 				text_view.Element.style.display = "table-cell";
 				text_view.Element.style.position = "static";
 				parent_view.Element.style.display = "table";
