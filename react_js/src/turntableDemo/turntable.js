@@ -163,7 +163,7 @@ class Turntable extends FocusBlock{
                 <div style={{
                     position: 'absolute',
                     top: 660,
-                    left: 900,
+                    left: 800,
                     width: 740,
                     height: 100,
                     color: "#0916ff",
