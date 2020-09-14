@@ -2,7 +2,6 @@ import React, {Component} from "react"
 import PropTypes from "prop-types"
 import QRCodeImpl from 'qr.js/lib/QRCode'
 import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
-import { URL } from "../jsview-react/jsv_hook_wrapper"
 
 const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
 function convertStr(str) {
@@ -189,9 +188,9 @@ class QRCodeSVG extends Component {
         if (imageSettings && calculatedImageSettings) {
         	let url = imageSettings.src
 			if(typeof(url) === "string") {
-				url = new URL(imageSettings.src);
+				url = new window.JsView.React.UrlRef(imageSettings.src).href;
 			}
-            let img_texture = texture_manager.GetImage(url.href);
+            let img_texture = texture_manager.GetImage(url);
             let img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
             view.AddView(img_view, new Forge.LayoutParams({x:calculatedImageSettings.x,y:calculatedImageSettings.y,
                 width:calculatedImageSettings.w,height:calculatedImageSettings.h}))
