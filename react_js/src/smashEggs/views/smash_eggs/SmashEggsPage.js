@@ -420,7 +420,13 @@ class SmashEggsPage extends FocusBlock {
                     this.props.onLockKey(true);
                 }
                 data[item.id] = new_item;
-                this.setState({smashInfo: "", data: data})
+                this.setState({smashInfo: "", data: data}, () => {
+                    let info = {
+                        type: SWidgetDispatcher.Type.updateItem,
+                        data: [item.id]
+                    };
+                    this._Dispatcher.dispatch(info);
+                })
             }
         } else if (cur_time < start_time) {
             this.setState({smashInfo: "活动暂未开始，敬请期待"})
