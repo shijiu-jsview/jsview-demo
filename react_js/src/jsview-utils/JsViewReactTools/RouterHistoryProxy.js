@@ -95,6 +95,19 @@ class HistoryProxy {
 			this._HistoryRef.goBack();
 		}
 	}
+
+	go(...args) {
+		if (!!window.JsView) {
+			if (args.length > 0 && args[0] === -1) {
+				// 支持go(-1)特定处理
+				this._HistoryRef.goBack();
+			} else {
+				console.error("Error: JsView history NOT support go")
+			}
+		} else {
+			this._HistoryRef.go(...args);
+		}
+	}
 }
 
 let sGlobalHistory = null;
