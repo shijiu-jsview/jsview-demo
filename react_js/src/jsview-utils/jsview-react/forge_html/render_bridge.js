@@ -85,7 +85,7 @@ class RenderBridge {
 	RequestSwap() {
         if (!this._OnRequesting) {
             this._OnRequesting = true;
-            this._SwapTimer = Forge.PersistTimer.setTimeout(this._DoRequestSwap.bind(this), 0);
+            Promise.resolve().then(this._DoRequestSwap.bind(this));
         }
 	}
 
@@ -103,10 +103,6 @@ class RenderBridge {
 	InstantPerformSwap() {
         if (this._OnRequesting) {
             this._OnRequesting = false;
-            if (this._SwapTimer > 0) {
-                Forge.PersistTimer.clearTimeout(this._SwapTimer);
-                this._SwapTimer = -1;
-            }
             this._DoRequestSwap(false);
         }
 	}
