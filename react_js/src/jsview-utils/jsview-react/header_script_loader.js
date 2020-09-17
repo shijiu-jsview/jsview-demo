@@ -16,7 +16,17 @@ function alterUrl(origin_url, js_sub_path) {
 			ret = path_header + origin_url.substring(1);
 		} else {
 			// start with '/'
-			ret = path_header + origin_url;
+			// remove protocal
+			let host_parser = main_js_path;
+			idx = host_parser.indexOf('://');
+			let protocol = (idx > 0 ? host_parser.substring(0, idx) : "");
+			host_parser = (idx > 1 ? host_parser.substring(idx + 3) : "");
+
+			// Get host
+			idx = host_parser.indexOf('/');
+			let host = (idx > 0 ? host_parser.substring(0, idx) : "");
+
+			ret = protocol + "://" + host + origin_url;
 		}
 
 		return ret;
@@ -46,7 +56,7 @@ class LoadingScriptElement {
 			let url_href = alterUrl(this.src, this._JsSubPath);
 			console.log("load script with url=" + url_href);
 			var _this = this;
-			window.JsView.runJsWithUrl(url_href, false, (is_success, err_code)=>{
+			window.JsView.runJsWithUrl(url_href, false, (is_success, err_code)=> {
 				_this.onLoadResult(is_success, err_code);
 			});
 		}
@@ -87,7 +97,7 @@ class LoadingDocument {
 
 	createElement(name) {
 		console.log("HeaderDocument.createElement() name=" + name);
-		switch(name) {
+		switch (name) {
 			case "script":
 				return new LoadingScriptElement(this._JsSubPath);
 			default:
