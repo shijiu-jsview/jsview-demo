@@ -1,4 +1,4 @@
-import { createMemoryHistory, createHashHistory } from 'history';
+import {createMemoryHistory, createHashHistory} from 'history';
 import {jJsvRuntimeBridge} from "./JsvRuntimeBridge"
 
 class HistoryProxy {
@@ -14,28 +14,28 @@ class HistoryProxy {
 		this.go = this.go.bind(this);
 
 		if (!!window.JsView) {
-            let set = {};
-            
+			let set = {};
+
 			if (type === "hash") {
-                let saved_info = null;
-                if (typeof window.jJsvInnerUtils !== "undefined" && typeof window.jJsvInnerUtils.getPageInfo !== "undefined") {
-                    saved_info = window.jJsvInnerUtils.getPageInfo(window.location.href);
-                }
-                if (saved_info) {
-                    let arr = JSON.parse(saved_info);
-                    set["initialEntries"] = arr;
-                    set["initialIndex"] = arr.length - 1
-                } else {
-                    if (window.location.href.indexOf("#") < 0) {
-                        // 未设置hash定位，追加hash根的显示
-                        window.location.applyUrlInfo(new window.JsView.React.UrlRef(window.location.href + "#/", true));
-                    } else {
-                        // 从window.location.hash中还原hash entries
-                        set["initialEntries"] = [
-                            window.location.hash.substring(1),  // 去除#
-                        ];
-                    }
-                }
+				let saved_info = null;
+				if (typeof window.jJsvInnerUtils !== "undefined" && typeof window.jJsvInnerUtils.getPageInfo !== "undefined") {
+					saved_info = window.jJsvInnerUtils.getPageInfo(window.location.href);
+				}
+				if (saved_info) {
+					let arr = JSON.parse(saved_info);
+					set["initialEntries"] = arr;
+					set["initialIndex"] = arr.length - 1
+				} else {
+					if (window.location.href.indexOf("#") < 0) {
+						// 未设置hash定位，追加hash根的显示
+						window.location.applyUrlInfo(new window.JsView.React.UrlRef(window.location.href + "#/", true));
+					} else {
+						// 从window.location.hash中还原hash entries
+						set["initialEntries"] = [
+							window.location.hash.substring(1),  // 去除#
+						];
+					}
+				}
 
 				this._HistoryRef = createMemoryHistory(set);
 				this._HistoryRef.listen((location, action) => {
@@ -66,7 +66,7 @@ class HistoryProxy {
 			this._ListenCB.add(listen_callback);
 
 			// unlisten
-			return ()=>{
+			return ()=> {
 				this._ListenCB.delete(listen_callback);
 			}
 		} else {

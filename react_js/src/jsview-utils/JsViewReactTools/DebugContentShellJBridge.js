@@ -1,4 +1,3 @@
-
 class BridgeProxy {
 	constructor() {
 

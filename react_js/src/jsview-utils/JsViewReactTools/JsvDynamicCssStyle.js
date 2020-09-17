@@ -63,7 +63,7 @@ function getCssStyleGroup() {
 
 	let style_sheets_ref = ss[0]; // 使用第0个作为动态css rule的加入点
 
-	return  new CssStyleSheet(style_sheets_ref);
+	return new CssStyleSheet(style_sheets_ref);
 }
 
 export {

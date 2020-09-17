@@ -1,5 +1,5 @@
 import React from 'react';
-import { FdivRouter } from "../jsview-react/index_widget.js"
+import {FdivRouter} from "../jsview-react/index_widget.js"
 import {jJsvRuntimeBridge} from "./JsvRuntimeBridge"
 
 function createStandaloneApp(main_scene_component) {
@@ -10,8 +10,10 @@ function createStandaloneApp(main_scene_component) {
 		}
 
 		render() {
-			let scene = React.createElement(main_scene_component, {branchName:"/MySelf", standAlone:true});
-			return (<FdivRouter controlRef={(ref) => { this._FocusControl = ref }}>
+			let scene = React.createElement(main_scene_component, {branchName: "/MySelf", standAlone: true});
+			return (<FdivRouter controlRef={(ref) => {
+				this._FocusControl = ref
+			}}>
 				{scene}
 			</FdivRouter>);
 		}

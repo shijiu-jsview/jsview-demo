@@ -1,5 +1,5 @@
 import React from 'react';
-import { FdivWrapper } from "../jsview-react/index_widget.js"
+import {FdivWrapper} from "../jsview-react/index_widget.js"
 
 // 继承的写法，FdivWrapper集成于React.Component，以此为基础再次继承
 // changeFocus接口，在FdivWrapper中，可以直接调用

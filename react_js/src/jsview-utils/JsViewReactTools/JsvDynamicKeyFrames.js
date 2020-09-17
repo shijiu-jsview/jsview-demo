@@ -87,7 +87,7 @@ function getKeyFramesGroup(anchor_tag) {
 		style_sheets_ref = ss[0];
 	}
 
-	return  new KeyFrameStyleSheet(style_sheets_ref);
+	return new KeyFrameStyleSheet(style_sheets_ref);
 }
 
 export {

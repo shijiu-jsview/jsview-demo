@@ -1,6 +1,5 @@
-
 function build_api(name) {
-	return (...args)=>{
+	return (...args)=> {
 		if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge[name] == "function") {
 			return window.jJsvRuntimeBridge[name](...args);
 		}
@@ -16,8 +15,8 @@ let bridge = {
 	getWireMac: build_api("getWireMac"),
 	getWifiMac: build_api("getWifiMac"),
 	getUUID: build_api("getUUID"),
-    getAndroidId: build_api("getAndroidId"),
-    openSelf: build_api("openSelf"),
+	getAndroidId: build_api("getAndroidId"),
+	openSelf: build_api("openSelf"),
 };
 
 
