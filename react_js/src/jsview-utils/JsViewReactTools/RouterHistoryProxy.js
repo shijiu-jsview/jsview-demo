@@ -6,6 +6,13 @@ class HistoryProxy {
 		this._HistoryRef = null;
 		this._ListenCB = new Set();
 
+		// 解决react-router中，直接保存接口后，直接调用会崩溃的问题
+		this.listen = this.listen.bind(this);
+		this.push = this.push.bind(this);
+		this.replace = this.replace.bind(this);
+		this.goBack = this.goBack.bind(this);
+		this.go = this.go.bind(this);
+
 		if (!!window.JsView) {
             let set = {};
             
@@ -97,16 +104,7 @@ class HistoryProxy {
 	}
 
 	go(...args) {
-		if (!!window.JsView) {
-			if (args.length > 0 && args[0] === -1) {
-				// 支持go(-1)特定处理
-				this._HistoryRef.goBack();
-			} else {
-				console.error("Error: JsView history NOT support go")
-			}
-		} else {
-			this._HistoryRef.go(...args);
-		}
+		this._HistoryRef.go(...args);
 	}
 }
 
