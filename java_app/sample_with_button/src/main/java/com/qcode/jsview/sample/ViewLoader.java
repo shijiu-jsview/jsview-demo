@@ -3,6 +3,7 @@ package com.qcode.jsview.sample;
 import android.app.Activity;
 import android.os.Process;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.submodule.CurActivityInfo;
@@ -107,6 +108,8 @@ public class ViewLoader {
 			public void onVersionFailed(String info /* 错误信息 */) {
 				// 内核加载失败，此时若显示了内核升级进度条，则应该此时关闭
 				DownloadCoreProgress.hideProgress(host_activity);
+
+				Toast.makeText(host_activity, "Error:No valid SDK!(errMsg " + info + ")", Toast.LENGTH_LONG).show();
 			}
 		};
 	}
