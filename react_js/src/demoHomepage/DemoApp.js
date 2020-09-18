@@ -165,12 +165,12 @@ let demoInfos = [
 		"class": lazy(() => import('../scrollNum/App').then(m => ({ default: m.SubApp }))),
 	},
 	{
-		"name": "TextBox",
+		"name": "多行文字区域内对齐",
 		"path": "/users/TextBox",
 		"class": lazy(() => import('../textBox/App').then(m => ({ default: m.SubApp }))),
     },
     {
-		"name": "文字缩放",
+		"name": "文字清晰度自适应描画区域",
 		"path": "/users/textScale",
 		"class": lazy(() => import('../textScale/App').then(m => ({ default: m.SubApp }))),
 	},
