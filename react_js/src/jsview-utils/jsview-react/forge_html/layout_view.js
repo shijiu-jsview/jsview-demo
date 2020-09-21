@@ -292,6 +292,7 @@ class LayoutViewBase {
 
     SetTransformStyle(transform_style) {
         this.Element.style.transformStyle = transform_style;
+        this.Element.style.webkitTransformStyle = transform_style;
         this._TransformStyle = transform_style;
     }
 

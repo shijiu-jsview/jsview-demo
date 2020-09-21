@@ -7,11 +7,29 @@
     }
 }
 
+@-webkit-keyframes flip {
+    from {
+        -webkit-transform: rotate3d(0, 1, 0, 0deg);
+    }
+    to{
+        -webkit-transform: rotate3d(0, 1, 0, 180deg);
+    }
+}
+
 @keyframes flipBack {
     from {
         transform: rotate3d(0, 1, 0, 0deg);
     }
     to{
         transform: rotate3d(0, 1, 0, -180deg);
+    }
+}
+
+@-webkit-keyframes flipBack {
+    from {
+        -webkit-transform: rotate3d(0, 1, 0, 0deg);
+    }
+    to{
+        -webkit-transform: rotate3d(0, 1, 0, -180deg);
     }
 }
