@@ -173,6 +173,11 @@ let demoInfos = [
 		"name": "文字清晰度自适应描画区域",
 		"path": "/users/textScale",
 		"class": lazy(() => import('../textScale/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+		"name": "图片预加载",
+		"path": "/users/preload",
+		"class": lazy(() => import('../preload/App').then(m => ({ default: m.SubApp }))),
 	},
 
 ]
