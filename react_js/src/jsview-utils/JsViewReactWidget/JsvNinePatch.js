@@ -6,9 +6,14 @@ import React from 'react';
     imageWidth { int } 图片的宽 (必须)
     contentWidth { int } 图片延展区域的宽 (必须)
     borderOutset { int } 边框向外扩展的大小
+    waitForInit { boolean } 尺寸为0时是否昂起描画
 */
 class SquareNinePatch extends React.Component{
     render() {
+        if(this.props.waitForInit && (!this.props.style || this.props.style.width === 0 || this.props.style.height === 0)) {
+            return null;
+        }
+
         let transition = null;
         if (this.props.animTime) {
             transition = `left ${this.props.animTime}s, top ${this.props.animTime}s, width ${this.props.animTime}s, height ${this.props.animTime}s`
@@ -27,6 +32,7 @@ SquareNinePatch.defaultProps = {
     top: 0,
     left: 0,
     borderOutset: 0,
+    waitForInit: true,
 }
 
 export{

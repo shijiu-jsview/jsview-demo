@@ -9,6 +9,9 @@
  * Q: 如何让图片的高度自适应？
  * A: 使用img元素，并且style中高度不设置即可
  *    通过element.clientHeight获取渲染后的自动高度，以决定滚动轴的总高度
+ *
+ * Q: 如何知道图片加载完成？
+ * A: 为img标签追加OnLoad回调函数来接收图片加载完成的消息
  */
 
 import React from 'react';

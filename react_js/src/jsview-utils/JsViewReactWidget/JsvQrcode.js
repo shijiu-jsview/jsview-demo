@@ -186,7 +186,11 @@ class QRCodeSVG extends Component {
         view = new Forge.LayoutView(new Forge.TextureSetting(qrcode_texture));
         let calculatedImageSettings = this.getImageSettings(this.props);
         if (imageSettings && calculatedImageSettings) {
-            let img_texture = texture_manager.GetImage(imageSettings.src);
+        	let url = imageSettings.src
+			if(typeof(url) === "string") {
+				url = new window.JsView.React.UrlRef(imageSettings.src).href;
+			}
+            let img_texture = texture_manager.GetImage(url);
             let img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
             view.AddView(img_view, new Forge.LayoutParams({x:calculatedImageSettings.x,y:calculatedImageSettings.y,
                 width:calculatedImageSettings.w,height:calculatedImageSettings.h}))

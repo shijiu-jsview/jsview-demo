@@ -1,6 +1,8 @@
 /**
  * @description: 控制音频的对象
  */
+
+ let supportSoundPool = !!window.SoundPool;
 class AudioController{
     constructor(soundPool, soundId, url) {
         this._SoundPool = soundPool;
@@ -95,6 +97,7 @@ class AudioController{
 
 class JsvSoundPool{
     constructor(max) {
+        if (!supportSoundPool) return;
         this._SoundPool = new window.SoundPool(max);
         this._SoundIdMap = {};
         this._StreamIdMap = new Set();
@@ -108,6 +111,12 @@ class JsvSoundPool{
      * @param {function} callback 资源加载完成回调 function(int state, AudioController controller) {}
      */
     request(url, netSetting, priority, callback) {
+        if (!supportSoundPool) {
+            callback(-1, null);
+            console.log("not support sound pool.");
+            return;
+        }
+
         let realUrl;
         if (window.JsView) {
             //jsview上
@@ -143,6 +152,7 @@ class JsvSoundPool{
      * @param {AudioController} controller 控制句柄
      */
     release(controller) {
+        if (!supportSoundPool) return;
         controller.stop();
         this._StreamIdMap.delete(controller);
         if (this._SoundIdMap[controller._Url]) {
@@ -158,6 +168,7 @@ class JsvSoundPool{
      * @description: 销毁SoundPool
      */
     destroy() {
+        if (!supportSoundPool) return;
         this._SoundPool.release();
     }
 
@@ -165,6 +176,7 @@ class JsvSoundPool{
      * @description: 全部暂停
      */
     autoPaues() {
+        if (!supportSoundPool) return;
         this._SoundPool.autoPause();
     }
 
@@ -172,6 +184,7 @@ class JsvSoundPool{
      * @description: 全部开始
      */
     autoResume() {
+        if (!supportSoundPool) return;
         this._SoundPool.autoResume();
     }
 }

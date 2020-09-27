@@ -29,6 +29,7 @@
  *          onDispatchKeyUp(ev) 同上
  *          onFocus(ev) 同上
  *          onBlur(ev) 同上
+ *          setControl(control_ref) 接受control对象，control对象含有changeFocus接口
  *          changeFocus(branchName) 同上
  *          注意: render()函数没有被renderContent()函数替代
  *
@@ -40,7 +41,8 @@
  * Q: 如何进行焦点切换？
  * A: 首先为子焦点设置branchName属性，当需要进行焦点切换的时候，调用FDiv类中的this.changeFocus()接口，
  *    传入目标的branchName，即可进行焦点切换。在同一个FdivRouter节点的所有Fdiv，只要指定对方的branchName，就可以进行切换。
- *    不限制切换目标是自己的子节点、兄弟节点或者是父几点。一般一个场景定义一个FdivRouter
+ *    不限制切换目标是自己的子节点、兄弟节点或者是父几点。一般一个场景定义一个FdivRouter。
+ *    在enableFocusable的场景，通过重载setControl接口，获得control对象，通过该对象的 changeFocus()接口来进行焦点切换。
  *
  * Q: changeFocus的第二个参数keepChildFocus的作用是什么？
  * A: 使用场景举例：

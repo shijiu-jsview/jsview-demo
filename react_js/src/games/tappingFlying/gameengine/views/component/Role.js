@@ -65,19 +65,21 @@ class Role extends FocusBlock {
     //主角入场
     enter() {
         console.log("Role enter");
-        this.setState({
-            roleSpriteLeft:parseInt(this.props.worldSize.width / 4 + this.offsetX),
-        });
+        setTimeout(()=>{
+			this.setState({
+				roleSpriteLeft:parseInt(this.props.worldSize.width / 4 + this.offsetX),
+			});
+		}, 0)
     }
 
     //主角出场
     exit() {
         this._IsPlaying = false;
         console.log("Role exit");
-        this.setState({
-            roleSpriteLeft:this.props.worldSize.width+this.props.rolesList[0].viewSize.w,
-            roleSpriteName:"role"
-        })
+		this.setState({
+			roleSpriteLeft:this.props.worldSize.width+this.props.rolesList[0].viewSize.w,
+			roleSpriteName:"role"
+		})
     }
 
     fly() {

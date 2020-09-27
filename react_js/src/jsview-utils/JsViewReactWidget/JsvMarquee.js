@@ -1,5 +1,6 @@
 import React from 'react';
 import './JsvMarquee.css';
+import {getKeyFramesGroup} from './JsvDynamicKeyFrames'
 
 // JsvMarquee comes from JsView React Project
 
@@ -17,21 +18,25 @@ class JsvMarquee extends React.Component {
 		super(props);
 		this._textRef = React.createRef();
 		this._text = props.text;
-		this._timerId = null;
+        this._timerId = null;
+        this._KeyFrameStyleSheet = getKeyFramesGroup("marquee-tag");
+        this._rollTimeId = -1;
+        this._KeyFrameNames = {
+            step1: null,
+            step2: null,
+        }
 
 		this.state = {
-			container_inner: {
-				left: 0,
-				width: props.width,
-				animation: null,
-			}
+            left: 0,
+            width: props.width,
+            animation: null,
+            count: 0,
 		}
 	}
 
 	componentDidMount() {
-		var _this = this;
 		this._timerId = setTimeout(() => {
-			_this._startAnimation();
+			this._startAnimation();
 		}, 1000);
 	}
 
@@ -40,26 +45,56 @@ class JsvMarquee extends React.Component {
 			clearTimeout(this._timerId);
 			this._timerId = null;
 		}
-	}
+    }
+    
+    _initKeyFrameAnim() {
+        const text_width = this._textRef.current.clientWidth;
+        let name1 = `step1-${text_width}-${this.props.width}`;
+            let step1 = `@keyframes ${name1} {
+                from{
+                    transform:translate3d(0,0,0);
+                }
+                to{
+                    transform:translate3d(${-text_width}px,0,0);
+                }
+            }`;
+            let name2 = `step2-${text_width}-${this.props.width}`;
+            let step2 = `@keyframes ${name2} {
+                from{
+                    transform:translate3d(${this.props.width}px,0,0)
+                }
+                to{
+                    transform:translate3d(0,0,0)
+                }
+            }`;
+
+            if (!this._KeyFrameStyleSheet.hasRule(name1)) {
+                this._KeyFrameStyleSheet.insertRule(step1);
+            }
+            if (!this._KeyFrameStyleSheet.hasRule(name2)) {
+                this._KeyFrameStyleSheet.insertRule(step2);
+            }
+            this._KeyFrameNames.step1 = name1;
+            this._KeyFrameNames.step2 = name2;
+    }
 
 	_startAnimation() {
-		const text_width = this._textRef.current.clientWidth;
+        const text_width = this._textRef.current.clientWidth;
 		if (text_width > this.props.width) {
+            this._initKeyFrameAnim();
 			let overflowWidth = text_width;
 			let container_left = 0;
-			const duration = Math.ceil(5 * text_width / this.props.width);
+			const duration = Math.ceil(text_width / 60);
 			this.setState({
-				container_inner: {
-					left: container_left,
-					width: overflowWidth,
-					animation:"marqueeFirst " + duration + "s linear"
-				}
+				left: container_left,
+                width: overflowWidth,
+                animation: this._KeyFrameNames.step1 + " " + duration + "s linear",
+                count: 0,
 			});
-		}
+        }
 	}
 
 	render() {
-		let container_inner = this.state.container_inner;
 		return (
 			<div key="container"
 			     style={{
@@ -71,24 +106,38 @@ class JsvMarquee extends React.Component {
 			     }}>
 				<div key="slider"
 				     style={{
-					     left: container_inner.left,
+					     left: this.state.left,
 					     top: 0,
-					     width: container_inner.width,
+					     width: this.state.width,
 					     height: 100,
-					     animation: container_inner.animation
+					     animation: this.state.animation
 				     }}
 				     onAnimationEnd={
 					     () => {
-						     console.log("onAnimationEnd ");
-						     const text_width = this._textRef.current.clientWidth;
-						     const duration = Math.ceil(5 * text_width / this.props.width+ 2.5) ;
-						     this.setState({
-							     container_inner: {
-								     left: this.props.width,
-								     width: this.props.width + text_width,
-								     animation: "marqueeInfinite " + duration + "s infinite linear"
-							     }
-						     });
+                            const text_width = this._textRef.current.clientWidth;
+                             if (this.state.count % 2 === 0) {
+                                let duration = Math.ceil(this.props.width / 60);
+                                 this.setState({
+                                     animation: this._KeyFrameNames.step2 + " " + duration + "s linear",
+                                     count: this.state.count + 1,
+                                 });
+                             } else {
+                                 this._rollTimeId = setTimeout(() => {
+                                    let duration = Math.ceil(text_width / 60);
+                                    this.setState({
+                                        animation: this._KeyFrameNames.step1 + " " + duration + "s linear",
+                                        count: this.state.count + 1,
+                                    });
+                                 }, 1000);
+                             }
+                             console.log("onAnimationEnd "); 
+						    //  const text_width = this._textRef.current.clientWidth;
+						    //  const duration = Math.ceil(5 * text_width / this.props.width + 2.5) ;
+						    //  this.setState({
+                            //     left: this.props.width,
+                            //     width: this.props.width + text_width,
+                            //     animation: "marqueeInfinite " + duration + "s infinite linear 5s"
+						    //  });
 					     }
 				     }>
 					<div key="text" ref={this._textRef} style={{

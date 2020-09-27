@@ -292,6 +292,7 @@ class LayoutViewBase {
 
     SetTransformStyle(transform_style) {
         this.Element.style.transformStyle = transform_style;
+        this.Element.style.webkitTransformStyle = transform_style;
         this._TransformStyle = transform_style;
     }
 
@@ -422,8 +423,8 @@ class LayoutViewBase {
             if (font_json.Al) {
                 this.Element.style.textAlign = font_json.Al;
             }
-            if (font_json.Ve) {
-                this.Element.style.verticalAlign = font_json.Ve;
+            if (font_json.Vaa) {
+                this.Element.style.verticalAlign = font_json.Vaa;
             }
         }
     }
@@ -1090,7 +1091,7 @@ class NinePatchView extends Forge.LayoutView {
             }
             if (texture_setting.Texture.Source) {
                 let texture_width = texture_setting.Texture.RenderTexture.Width;
-                let texture_height = texture_setting.Texture.RenderTexture.Width;
+                let texture_height = texture_setting.Texture.RenderTexture.Height;
                 let slice_left = this._HorizontalRepeats[0];
                 let slice_right = texture_width - this._HorizontalRepeats[1] - slice_left;
                 let slice_top = this._VerticalRepeats[0];

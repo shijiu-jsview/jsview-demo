@@ -23,5 +23,6 @@ import "./steps_animation"
 import "./impact_sensor_manager"
 import "./render_bridge"
 import "./particle_view"
+import "./react_utils"
 
 console.log("Using JsView HTML Forge");

@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import ReactDOM from 'react-dom';
 import {SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle, FdivWrapper} from "../jsview-react/index_widget.js"
 
 let directionPair = {}
@@ -313,7 +314,9 @@ class JsvTabWidget extends FdivWrapper{
     componentDidMount() {
         if (this.props.onWidgetMount) {
             Promise.resolve().then(() => {
-                this.props.onWidgetMount();
+                ReactDOM.unstable_batchedUpdates(()=>{
+                    this.props.onWidgetMount();
+                });
             })
         }
     }

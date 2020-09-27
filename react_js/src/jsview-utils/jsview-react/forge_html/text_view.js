@@ -16,7 +16,7 @@ class TextViewParams {
         let layout_view = new Forge.LayoutView();
         let renderer = layout_view.GetRenderer();
 		this._Renderer = renderer;
-        this.StringWithFont = Forge.sTextUtils.StringWithFont("", 0, undefined, "center", "middle", undefined, false, false, undefined);
+        this.StringWithFont = Forge.sTextUtils.StringWithFont("", 0, undefined, "center", "middle", undefined, false, false, undefined, undefined, "top");
         this.RectArea =  new Forge.RectArea(0, 0, 0, 0);//default w:0, h:0
         this.TextAttr = Forge.sTextUtils.TextAttr("ellipsis", "none");
         this.Marquee = null;//{repetition: "infinite", direction: "left", speed: "normal" };
@@ -32,7 +32,7 @@ class TextViewParams {
         this.StringWithFont = string_with_font;//renderer.StringWithFont
         return this;
     };
-	SetFontStyle(_size_or_set,_font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width) {
+	SetFontStyle(_size_or_set,_font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align) {
 	    if (typeof _size_or_set === "object") {
             this.StringWithFont = Forge.sTextUtils.StringWithFont(
                 "",
@@ -43,11 +43,13 @@ class TextViewParams {
                 (typeof _size_or_set["textColor"] !== "undefined" ? _size_or_set["textColor"] : "#000000"),
                 (typeof _size_or_set["italic"] !== "undefined" ? _size_or_set["italic"] : false),
                 (typeof _size_or_set["bold"] !== "undefined" ? _size_or_set["bold"] : false),
-                (typeof _size_or_set["shadow"] !== "undefined" ? _size_or_set["shadow"] : null)
+                (typeof _size_or_set["shadow"] !== "undefined" ? _size_or_set["shadow"] : null),
+                (typeof _size_or_set["strokeWidth"] != "undefined" ? _size_or_set["strokeWidth"] : null),
+                (typeof _size_or_set["vAreaAlign"] != "undefined" ? _size_or_set["vAreaAlign"] : "top"),
             );
         } else {
             this.StringWithFont = Forge.sTextUtils.StringWithFont(
-                "", _size_or_set, _font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width);
+                "", _size_or_set, _font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align);
         }
         return this;
 	};
@@ -201,7 +203,8 @@ class TextViewEx {
 			italic,
 			bold,
             text_view_params.StringWithFont.shadow,
-            text_view_params.StringWithFont.stroke_width
+            text_view_params.StringWithFont.stroke_width,
+            text_view_params.StringWithFont.vertical_area_align
         );
 
         //需要实际宽高时，或有跑马灯设置，才获取实际的宽度
@@ -280,6 +283,12 @@ class TextViewEx {
             text_view.Init(new Forge.TextureSetting(text_texture.texture, null, null, true));
             text_view.SetId("Text-"+t_StringWithFont.str);
 
+			if (t_StringWithFont.vertical_area_align == "middle" || t_StringWithFont.vertical_area_align == "bottom") {
+				text_view.Element.style.display = "table-cell";
+				text_view.Element.style.position = "static";
+				parent_view.Element.style.display = "table";
+				parent_view.Element.style.position = "static";
+			}
             parent_view.AddView(text_view,
                 new Forge.LayoutParams({
                     x:0, y:0,

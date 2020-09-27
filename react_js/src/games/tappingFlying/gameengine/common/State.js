@@ -37,7 +37,7 @@ class State {
 
     static close() {
         //恢复现场
-        State.start("Boot");
+        State.start("Boot", true);
         if (State.goHome) {
             State.goHome();
         }

@@ -38,7 +38,8 @@ class RenderTextureDelegateManager {
 		settings_font_status["It"] = string_with_font.italic;
 		settings_font_status["Bo"] = string_with_font.bold;
 		settings_font_status["Al"] = string_with_font.alignment;
-		settings_font_status["Ve"] = string_with_font.vertical_align;
+        settings_font_status["Ve"] = string_with_font.vertical_align;
+        settings_font_status["Vaa"] = string_with_font.vertical_area_align;
 		settings_font_status["Tx"] = string_with_font.textColour;
 		settings_font_status["Ba"] = string_with_font.backgroundColour;
 		settings_font_status["En"] = string_with_font.enableBlend;
