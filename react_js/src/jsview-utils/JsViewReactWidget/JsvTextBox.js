@@ -7,20 +7,26 @@ class JsvTextBox extends React.Component {
 	}
 
 	render () {
-		const {left, top, backgroundColor, ...others} = this.props.style;
+		const {left, top, backgroundColor, width, height, ...others} = this.props.style;
 		if (window.JsvDisableReactWrapper) {
 			return (
-				<div style={{overflow: 'hidden', display: 'table', ...this.props.style}}>
-					<div style={{
-						display: 'table-cell',
-						...others,
-						verticalAlign: this.props.verticalAlign,
-					}}>{this.props.children}</div>
-				</div>)
+				<div style={{ left: left, top: top, width: width, height: height, backgroundColor: backgroundColor }}>
+					<div style={{ position: "static", display: 'table' }}>
+						<div style={{
+							position: "static",
+							display: 'table-cell',
+							width: width, height: height,
+							...others,
+							verticalAlign: this.props.verticalAlign,
+						}}>{this.props.children}</div>
+					</div>
+				</div>
+			)
 		} else {
 			return (
-				<div style={{overflow: 'hidden', ...this.props.style}}>
+				<div style={{left:left, top:top, width:width, height:height, backgroundColor:backgroundColor}}>
 					<div jsv_vertical_align={this.props.verticalAlign} style={{
+						width:width, height:height,
 						...others,
 					}}>{this.props.children}</div>
 				</div>)
