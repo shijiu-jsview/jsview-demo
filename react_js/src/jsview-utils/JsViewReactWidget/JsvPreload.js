@@ -50,7 +50,7 @@ class JsvPreload extends React.Component {
                 let texture_setting = new Forge.ExternalTextureSetting(ForgeExtension.TextureManager.GetImage(image_url));
                 let preload_view = new Forge.PreloadView(texture_setting);
                 return ForgeExtension.RootActivity.ViewStore.add(
-                    new Forge.ViewInfo(preload_view, {x:0, y:0, width: item.width, height: item.height})
+                    new Forge.ViewInfo(preload_view, {x:0, y:0, width: 0, height: 0})
                 );
             })
             return(
