@@ -1,5 +1,5 @@
 import React from 'react'
-import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee"
+import JsvMarquee2 from "../jsview-utils/JsViewReactWidget/JsvMarquee2"
 import CssStyle from './Commodify_CssStyle'
 
 class Commodity extends React.Component {
@@ -129,14 +129,11 @@ class TitleView extends React.Component{
 
 	render(){
 		if(this.props.isFocus){
-			let layout_area = CssStyle.TitleLayout.getStyles();
 			return(
-				<JsvMarquee
-					width={layout_area.width}
-					height={layout_area.height}
-					left={layout_area.left}
-					top={layout_area.top}
-					fontStyle={CssStyle.TitleFont.getStyles()}
+				<JsvMarquee2
+					layoutStyles={[CssStyle.TitleLayout]}
+					fontStyles={[CssStyle.TitleFont]}
+					styleToken={"fixed"}
 					text={this.props.text}
 				/>
 			)

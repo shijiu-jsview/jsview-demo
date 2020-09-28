@@ -20,7 +20,7 @@ class JsvMarquee extends React.Component {
 		this._text = props.text;
         this._timerId = null;
         this._KeyFrameStyleSheet = getKeyFramesGroup("marquee-tag");
-        this._rollTimeId = -1;
+        this._rollTimeId = null;
         this._KeyFrameNames = {
             step1: null,
             step2: null,
@@ -44,6 +44,10 @@ class JsvMarquee extends React.Component {
 		if (this._timerId != null) {
 			clearTimeout(this._timerId);
 			this._timerId = null;
+		}
+		if (this._rollTimeId !== null) {
+			clearTimeout(this._rollTimeId);
+			this._rollTimeId = null;
 		}
     }
     

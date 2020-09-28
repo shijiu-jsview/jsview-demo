@@ -28,18 +28,14 @@ class JsvTextBox extends React.Component {
 
     shouldComponentUpdate(next_props, next_state) {
         return (
-            next_props.styleToken != this.props.styleToken
-            || next_props.verticalAlign != this.props.verticalAlign
-            || next_props.children != this.props.children
+            next_props.styleToken !== this.props.styleToken
+            || next_props.verticalAlign !== this.props.verticalAlign
+            || next_props.children !== this.props.children
         );
     }
 
     render() {
-        if (this.props.styleToken !== this._TokenProcessed) {
-            // Token变化时，重新解析style array
-            this._AnalyzeStyleChange();
-            this._TokenProcessed = this.props.styleToken;
-        }
+        this._AnalyzeStyleChange();
 
         if (window.JsvDisableReactWrapper) {
             return (
@@ -72,22 +68,27 @@ class JsvTextBox extends React.Component {
     }
 
     _AnalyzeStyleChange() {
-        let layout_set = combinedStyles(this.props.layoutStyles, true);
-        let font_set = combinedStyles(this.props.fontStyles);
+        if (this.props.styleToken !== this._TokenProcessed) {
+            // Token变化时，重新解析style array
+            let layout_set = combinedStyles(this.props.layoutStyles, true);
+            let font_set = combinedStyles(this.props.fontStyles);
 
-        this._LayoutStyle = layout_set.combinedStyle;
-        this._FontStyle = font_set.combinedStyle;
+            this._LayoutStyle = layout_set.combinedStyle;
+            this._FontStyle = font_set.combinedStyle;
 
-        this._FontStyleClass = font_set.combinedClass;
-        if (this._FontStyleClass.length === 0) {
-            this._FontStyleClass = null;
-        }
-
-        // 校验 vertical align 变化，看是否能加速文字描画
-        if (this.props.fontStyles.length === 1 && this.props.fontStyles[0] instanceof JsvTextStyleClass) {
-            if (!this.props.fontStyles[0].appendJsvAttributes(JSV_TEXT_VERTICAL_ALIGN_NAME, this.props.verticalAlign)) {
-                console.warn("WARN: found vertical align changed of class, may cause lower performance");
+            this._FontStyleClass = font_set.combinedClass;
+            if (this._FontStyleClass.length === 0) {
+                this._FontStyleClass = null;
             }
+
+            // 校验 vertical align 变化，看是否能加速文字描画
+            if (this.props.fontStyles.length === 1 && this.props.fontStyles[0] instanceof JsvTextStyleClass) {
+                if (!this.props.fontStyles[0].appendJsvAttributes(JSV_TEXT_VERTICAL_ALIGN_NAME, this.props.verticalAlign)) {
+                    console.warn("WARN: found vertical align changed of class, may cause lower performance");
+                }
+            }
+
+            this._TokenProcessed = this.props.styleToken;
         }
     }
 }
