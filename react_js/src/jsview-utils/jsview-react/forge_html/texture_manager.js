@@ -680,10 +680,10 @@ class TextureManager {
 		// 创建TextTexture
 		var texture = this._BuildTextTextureAndSerialStatus(texture_set, string_with_font);
 
-		if (Forge.ForgeDebug.EnableTextureTracer) {
-			var descript = t_StringWithFont.str;
+		if (Forge.ForgeDebug.EnableTextureTracer && text) {
+			var descript = text;
 			if (descript.length > 8) {
-				descript = t_StringWithFont.str.substr(0, 8) + "...";
+				descript = text.substr(0, 8) + "...";
 			}
 			texture.SetTextureTracerDescript("[" + descript + "]");
 		}
