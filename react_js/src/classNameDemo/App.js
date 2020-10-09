@@ -14,7 +14,7 @@ class MainScene extends FocusBlock {
 		for (var i = 0; i < 300; i++) {
 			this._data.push({
 				name: "商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:" + i,
-				prize: "" + (Math.floor(Math.random() * 1000) + 500), /* 测试数据要保证比最高优惠券(500)要高 */
+				prize: "" + (i + 500), /* 测试数据要保证比最高优惠券(500)要高 */
 				savePrize: "" + (Math.floor(Math.random() * 500)),
 				soldTotal: "" + (Math.floor(Math.random() * 50000)),
 				pictUrl: "http://img.alicdn.com/bao/uploaded/i3/2207313464483/O1CN01Ab4vWz1izGAyRL1Yf_!!0-item_pic.jpg",

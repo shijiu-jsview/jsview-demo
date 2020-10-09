@@ -179,7 +179,11 @@ let demoInfos = [
 		"path": "/users/preload",
 		"class": lazy(() => import('../preload/App').then(m => ({ default: m.SubApp }))),
 	},
-
+    {
+        "name": "ClassName写法样例",
+        "path": "/users/classNameDemo",
+        "class": lazy(() => import('../classNameDemo/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
