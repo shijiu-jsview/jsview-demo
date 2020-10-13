@@ -176,6 +176,7 @@ class JsvControl {
 		let paused_callback = this._PausedCallback;
 		let ended_callback = this._EndCallback;
 		this._PausedCallback = null;
+		this._EndCallback = null;
 
 		// 回调所有callback
 		if (paused_callback) {
@@ -184,7 +185,6 @@ class JsvControl {
 		}
 		if (ended_callback && progress == 1) {
 			// Ended callback
-			this._EndCallback = null;
 			this._CallbackWithCatch(this._Current, ended_callback);
 		}
 
