@@ -116,7 +116,8 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		if (this.repeatTimes != 1) {
 			// 有动画Repeat处理
 			let that = this;
-			end_func = ()=> {
+			end_func = (event)=> {
+				event.stopPropagation();
 				if (that._Progress != null) {
 					that._Progress.Stop();
 				}
@@ -183,11 +184,16 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	_PerformAnimationEnd(on_end) {
 		// 清理OnEndListener监听，否则会重复收到
 		if (this._CurrentEndEventFunc != null) {
-			if (!window.jsvInAndroidWebView) {
-				this._LayoutViewRef.Element.removeEventListener("animationend", this._CurrentEndEventFunc);
-			} else {
-				this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._CurrentEndEventFunc);
-			}
+			let element = this._LayoutViewRef.Element;
+			let animate_end_callback = this._CurrentEndEventFunc;
+			// 异步进行removeEventListener处理，以解决event.stopPropagation不生效的问题
+			setTimeout(()=>{
+				if (!window.jsvInAndroidWebView) {
+					element.removeEventListener("animationend", animate_end_callback);
+				} else {
+					element.removeEventListener("webkitAnimationEnd", animate_end_callback);
+				}
+			}, 0)
 			this._CurrentEndEventFunc = null;
 		}
 
@@ -533,11 +539,16 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 	_PerformAnimationEnd(on_end) {
 		// 清理OnEndListener监听，否则会重复收到
 		if (this._CurrentEndEventFunc != null) {
-			if (!window.jsvInAndroidWebView) {
-				this._LayoutViewRef.Element.removeEventListener("animationend", this._CurrentEndEventFunc);
-			} else {
-				this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._CurrentEndEventFunc);
-			}
+			let element = this._LayoutViewRef.Element;
+			let animate_end_callback = this._CurrentEndEventFunc;
+			// 异步进行removeEventListener处理，以解决event.stopPropagation不生效的问题
+			setTimeout(()=>{
+				if (!window.jsvInAndroidWebView) {
+					element.removeEventListener("animationend", animate_end_callback);
+				} else {
+					element.removeEventListener("webkitAnimationEnd", animate_end_callback);
+				}
+			}, 0)
 			this._CurrentEndEventFunc = null;
 		}
 
@@ -633,6 +644,28 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 		console.warn("Warning:Should override")
 	}
 }
+
+Forge.TranslateFrameAnimation = class extends Forge.TranslateAnimation {
+	constructor(start_pos, target_pos, speed, affect_x, origin_x, origin_y) {
+		// 在浏览器场合，使用匀速的Translate动画模拟TranslateFrame动画
+		let start_x = origin_x;
+		let start_y = origin_y;
+		let end_x = origin_x;
+		let end_y = origin_y;
+
+		if (affect_x) {
+			start_x = start_pos;
+			end_x = target_pos;
+		} else {
+			start_y = start_pos;
+			end_y = target_pos;
+		}
+
+		let duration = Math.abs(Math.floor((target_pos - start_pos) / speed * 1000));
+
+		super(start_x, end_x, start_y, end_y, duration, null);
+	}
+};
 
 Forge.ThrowAnimation = class extends Forge.KeyFrameGroupAnimation {
 	constructor(from_x, from_y, x_or_y, init_v, acc, to, has_pole, pole_position) {

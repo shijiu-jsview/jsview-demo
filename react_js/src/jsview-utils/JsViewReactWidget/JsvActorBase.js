@@ -11,9 +11,6 @@ class JsvControl {
     constructor(params_count) {
         this._Current = new Array(params_count).fill(0);
         this._Target = new Array(params_count).fill(0);
-        this._RepeatStart = new Array(params_count).fill(0);
-        this._JumpTarget = null;
-        this._Jumping = false;
         this._ParameterCount = params_count;
         this._StateIndex = 0; // 0: idle, 1:running
         this._StateLocked = false;
@@ -23,23 +20,7 @@ class JsvControl {
         this._EndCallback = null;
         this._NextEndCallback = null;
         this._Token = 0;
-        this._Repeat = false;
-        this._OnRepeatCallback = null;
         this._SpriteView = null;
-    }
-
-    setRepeat(enable, repeat_callback) {
-        this._Repeat = enable;
-        if (enable) {
-            this._OnRepeatCallback = repeat_callback;
-        } else {
-            this._OnRepeatCallback = null;
-        }
-    }
-
-    resetRepeat() {
-        this._Repeat = false;
-        this._OnRepeatCallback = null;
     }
 
     start(start_params, end_callback) {
@@ -49,7 +30,6 @@ class JsvControl {
 
         this._StartingParams = start_params;
         this._StartSwitcher = true;
-        this._Jumping = false;
         this._StateMachineNext();
     }
 
@@ -73,13 +53,6 @@ class JsvControl {
         }
     }
 
-    jump() {
-        this._JumpTarget = [...this._Target];
-        this._Jumping = true;
-        this._StartSwitcher = true;
-        this._StateMachineNext();
-    }
-
     startFpsTesting() {
         Forge.sRenderBridge.SetStepFpsSwitch(true);
     }
@@ -88,7 +61,11 @@ class JsvControl {
         Forge.sRenderBridge.SetStepFpsSwitch(false);
     }
 
-    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump, start_params) {
+    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, start_params) {
+        console.warn("Should Override");
+    }
+
+    _WrapAddExtraListener(listener, start_params) {
         console.warn("Should Override");
     }
 
@@ -136,17 +113,13 @@ class JsvControl {
         let start_params = this._StartingParams;
         this._StartingParams = null;
 
-        let froms = (this._JumpTarget ? [...this._JumpTarget] : [...this._Current]);
+        let froms = [...this._Current];
         let tos = this._Target;
         let repeat_starts = (this._Repeat ? [...this._RepeatStart] : null);
 
         let token = this._Token++;
 
-        let anim = this._WrapBuildAnimation(repeat_starts, froms, tos, this._Jumping, start_params);
-
-        // clear jump status
-        this._JumpTarget = null;
-        this._Jumping = false;
+        let anim = this._WrapBuildAnimation(froms, tos, start_params);
 
         if (anim == null) {
             return;
@@ -160,13 +133,7 @@ class JsvControl {
                 that._OnPaused((repeat_starts != null ? repeat_starts : froms), memo_tos, progress, start_params);
             });
 
-        if (this._OnRepeatCallback) {
-            listener.OnRepeat((times)=>{
-                if (that._OnRepeatCallback) {
-                    that._OnRepeatCallback(times);
-                }
-            });
-        }
+        this._WrapAddExtraListener(listener, start_params);
 
         anim.AddAnimationListener(listener);
         anim.Enable(Forge.AnimationEnable.KeepTransform);

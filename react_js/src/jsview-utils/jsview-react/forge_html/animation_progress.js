@@ -76,6 +76,9 @@ class AnimationProgress {
 		this._OnEndListener = ((event) => {
 			event.stopPropagation();
 		});
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
+		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
 	Start(host_animation, starter_progress) {
@@ -89,18 +92,12 @@ class AnimationProgress {
 				this._IdToken,
 				this._TracerDiv._ForgeProgressToken);
 		this._TracerDiv.style.animation = animationToStyle(host_animation, this._KeyFrameName);
-
-		// TODO: 要支持Android WebView? WebkitAnimationEnd...
-		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
 	// 停止进度跟进，并返回进度值
 	Stop() {
 		let progress = this.GetProgress();
 		this._TracerDiv.style.animation = null;
-
-		// TODO: 要支持Android WebView? WebkitAnimationEnd...
-		this._TracerDiv.removeEventListener("animationend", this._OnEndListener);
 
 		if (this._KeyFrameName) {
 			this._RemoveTraceKeyFrame(this._KeyFrameName);
@@ -157,6 +154,9 @@ class AnimationGroupProgress {
 		this._OnEndListener = ((event) => {
 			event.stopPropagation();
 		});
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
+		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
 	Start(steps_settings/* [{easing:xxx, duration:xxxx},{}...] */) {
@@ -169,18 +169,12 @@ class AnimationGroupProgress {
 		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2
 		this._BuildTraceKeyFrameGroup(this._IdToken, this._TracerDiv._ForgeProgressToken);
 		this._TracerDiv.style.animation = this._ConvertToAnimationStyle(steps_settings);
-
-		// TODO: 要支持Android WebView? WebkitAnimationEnd...
-		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
 	// 停止进度跟进，并返回进度值
 	Stop() {
 		let progress = this.GetProgress();
 		this._TracerDiv.style.animation = null;
-
-		// TODO: 要支持Android WebView? WebkitAnimationEnd...
-		this._TracerDiv.removeEventListener("animationend", this._OnEndListener);
 
 		if (this._KeyFrameNameArray !== null) {
 			this._RemoveTraceKeyFrameGroup();

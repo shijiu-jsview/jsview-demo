@@ -6,6 +6,7 @@ import { JsvActorBase, ActorControlBase } from "./JsvActorBase"
 
 let CONST_MOVE_TYPE_ACC = 1; // 抛物变速运动
 let CONST_MOVE_TYPE_UNIFORM = 2; // 匀速运动
+let CONST_MOVE_TYPE_JUMP = 3; // 无动画，直接调整坐标到目标位置
 
 // 单向运动控制模块，单方向指的是只能进行一个方向的运动，要不是x，要不是y
 class _ActorControl extends ActorControlBase {
@@ -16,31 +17,73 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 平移运动接口，包含 moveToX, moveToY, repeatMoveAlongX, repeatMoveAlongY
+     * 平移运动接口，包含 moveToX, moveToY
      */
-    moveToX(target_x, end_callback) {
-        super.resetRepeat();
+    moveToX(target_x, speed, end_callback) {
+        this._UniformMove(0, target_x, NaN, speed, null, end_callback);
     }
 
-    moveToY(target_y, end_callback) {
-        super.resetRepeat();
+    moveToY(target_y, speed, end_callback) {
+        this._UniformMove(1, NaN, target_y, speed, null, end_callback);
     }
 
-    // repeat_start，必须要在当前位置到target的范围之外，范围之内目前不支持
-    repeatMoveAlongX(target_x, repeat_start, repeat_callback) {
-        super.resetRepeat();
+    /*
+     * Repeat平移运动接口，包含repeatMoveAlongX, repeatMoveAlongY
+     * 注意: Actor当前位置，必须在repeat_start 到 target_x之间，目前不支持当前位置不在范围内的场景
+     */
+    repeatMoveAlongX(target_x, speed, repeat_start, repeat_callback) {
+        this._UniformMove(0,
+            target_x, NaN, speed,
+            {
+                start: repeat_start,
+                repeatCallback: repeat_callback,
+            },
+            null);
     }
 
-    repeatMoveAlongY(target_y, repeat_start, repeat_callback) {
-        super.resetRepeat();
+    repeatMoveAlongY(target_y, speed, repeat_start, repeat_callback) {
+        this._UniformMove(1,
+            NaN, target_y, speed,
+            {
+                start: repeat_start,
+                repeatCallback: repeat_callback,
+            },
+            null);
+    }
+
+    _UniformMove(x_or_y, target_x, target_y, speed, repeat_set, end_callback) {
+        let start_params = {
+            type: CONST_MOVE_TYPE_UNIFORM,
+            xOrY: x_or_y,
+            speed: speed,
+            repeatSet: repeat_set,
+        };
+        this._Target[0] = target_x;
+        this._Target[1] = target_y;
+        super.start(start_params, end_callback);
     }
 
     /*
      * 抛掷运动接口，包含 throwAlongX, throwAlongY
+     * init_v : 初速度
+     * acc : 加速度
+     * end_condition: 包含两种方式
+     *  方式1: 以捕捉方式结束，格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
+     *  例如:
+     *      1. Y轴方向运动，在相对于起始点上方30px位置，接住向上运动的物体时，设置 direction = -1, offset = -30
+     *      2. Y轴方向运动，在相对于起始点下方30px位置，接住运动到高点后跌落下来的运动的物体时，
+     *          设置 direction = 1, offset = 30
+     *          position为相对于元素0点位置的绝对坐标，和offset的设定二选一
      */
-    _Throw(x_or_y, init_v, acc, end_condition, end_callback) {
-        super.resetRepeat();
+    throwAlongX(init_v, acc, end_condition, end_callback) {
+        this._Throw(0, init_v, acc, end_condition, end_callback);
+    }
 
+    throwAlongY(init_v, acc, end_condition, end_callback) {
+        this._Throw(1, init_v, acc, end_condition, end_callback);
+    }
+
+    _Throw(x_or_y, init_v, acc, end_condition, end_callback) {
         // 需要先进行动画停止，以确定本次动画的起始点(this._Current)
         super.pause(()=>{
             let start_params = this._CalculateTerminalStatus(x_or_y, init_v, acc, end_condition);
@@ -52,30 +95,17 @@ class _ActorControl extends ActorControlBase {
         });
     }
 
-    // init_v : 初速度
-    // acc : 加速度
-    // end_condition: 包含两种方式
-    //      方式1: 以捕捉方式结束，格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
-    //          例如:
-    //          1. Y轴方向运动，在相对于起始点上方30px位置，接住向上运动的物体时，设置 direction = -1, offset = -30
-    //          2. Y轴方向运动，在相对于起始点下方30px位置，接住运动到高点后跌落下来的运动的物体时，
-    //              设置 direction = 1, offset = 30
-    //          position为相对于元素0点位置的绝对坐标，和offset的设定二选一
-    throwAlongX(init_v, acc, end_condition, end_callback) {
-        this._Throw(0, init_v, acc, end_condition, end_callback);
-    }
-
-    throwAlongY(init_v, acc, end_condition, end_callback) {
-        this._Throw(1, init_v, acc, end_condition, end_callback);
-    }
-
     /*
      * 定位动作，移动表演者到指定位置
      */
     jumpTo(new_x, new_y) {
         this._Target[0] = new_x;
         this._Target[1] = new_y;
-        super.jump();
+
+        let start_params = {
+            type: CONST_MOVE_TYPE_JUMP,
+        };
+        super.start(start_params, null);
     }
 
     _CalculateTerminalStatus(x_or_y, init_v, acc, end_condition) {
@@ -186,6 +216,53 @@ class _ActorControl extends ActorControlBase {
         );
     }
 
+    _BuildUniformMoveAnimation(current_array, tos_array, start_params) {
+        let affect_x = (start_params.xOrY === 0);
+        let from_pos = (affect_x ?  current_array[0] : current_array[1]);
+        let to_pos = (affect_x ?  tos_array[0] : tos_array[1]);
+        let anim = null;
+
+        if (start_params.repeatSet !== null) {
+            // 进行Repeat处理
+            let repeat_set = start_params.repeatSet;
+
+            // Repeat动画中，循环运动区域为repeatSet.start 到 to_pos，
+            // 但首次动画从from_pos开始运行，首次运动完成后，第二次运行再从repeatSet.start开始
+            let start_percent = (from_pos - repeat_set.start) / (repeat_set.start - to_pos);
+            if (start_percent > 1 || start_percent < 0) {
+                console.error("Error: current=" + from_pos + " out of repeat range["
+                    + repeat_set.start + "-" + to_pos + "]");
+                return null;
+            }
+
+            anim = new Forge.TranslateFrameAnimation(
+                repeat_set.start, to_pos,
+                start_params.speed, affect_x,
+                current_array[0], current_array[1]
+            );
+            anim.SetStartPos(start_percent);
+            anim.EnableInfinite();
+        } else {
+            // 单次动画，无repeat
+            anim = new Forge.TranslateFrameAnimation(
+                from_pos, to_pos,
+                start_params.speed, affect_x,
+                current_array[0], current_array[1]
+            );
+        }
+
+        return anim;
+    }
+
+    _BuildJumpAnimation(current_array, tos_array, start_params) {
+        // 使用时长为0的Translate动画来完成jump动作
+        let anim = new Forge.TranslateAnimation(
+            current_array[0], tos_array[0],
+            current_array[1], tos_array[1],
+            0, null);
+        return anim;
+    }
+
     _ReCalculateAccelCurrent(froms, tos, progress, start_params) {
         let position = {x:{value:froms[0]}, y:{value:froms[1]}};
         let from = (start_params.xOrY === 0 ? position.x.value : position.y.value);
@@ -219,17 +296,49 @@ class _ActorControl extends ActorControlBase {
         this._Current[1] = position.y.value;
     }
 
+
+    _ReCalculateUMoveCurrent(froms, tos, progress, start_params) {
+        if (start_params.xOrY === 0) {
+            this._Current[0] = Math.floor((tos[0] - froms[0]) * progress + froms[0]);
+        } else {
+            this._Current[1] = Math.floor((tos[1] - froms[1]) * progress + froms[1]);
+        }
+    }
+
+    _ReCalculateJumpCurrent(froms, tos, progress, start_params) {
+        this._Current[0] = tos[0];
+        this._Current[1] = tos[1];
+    }
+
     // 异常内部函数
     start() {}
-    setRepeat() {}
-    resetRepeat() {}
-    jump() {}
 
     // Override
-    _WrapBuildAnimation(repeat_start_array, current_array, tos_array, act_jump, start_params) {
+    _WrapBuildAnimation(current_array, tos_array, start_params) {
         if (start_params.type === CONST_MOVE_TYPE_ACC) {
-            // 加速运动没有
+            // 加速运动
             return this._BuildAccelAnimation(current_array, tos_array, start_params);
+        } else if (start_params.type === CONST_MOVE_TYPE_UNIFORM) {
+            // 匀速运动
+            return this._BuildUniformMoveAnimation(current_array, tos_array, start_params)
+        } else if (start_params.type === CONST_MOVE_TYPE_JUMP) {
+            // 位置调整
+            return this._BuildJumpAnimation(current_array, tos_array, start_params);
+        } else {
+            console.error("Error:Undefined yet");
+        }
+    }
+
+    // Override
+    _WrapAddExtraListener(listener, start_params) {
+        if (start_params.type === CONST_MOVE_TYPE_UNIFORM) {
+            // 重复运动时，需要设定repeat回调
+            if (start_params.repeatSet !== null && start_params.repeatSet.repeatCallback) {
+                let repeat_callback = start_params.repeatSet.repeatCallback;
+                listener.OnRepeat((times)=>{
+                    repeat_callback(times);
+                });
+            }
         }
     }
 
@@ -244,6 +353,14 @@ class _ActorControl extends ActorControlBase {
     _WrapReCalculateCurrent(froms, tos, progress, start_params) {
         if (start_params.type === CONST_MOVE_TYPE_ACC) {
             this._ReCalculateAccelCurrent(froms, tos, progress, start_params);
+        } else if (start_params.type === CONST_MOVE_TYPE_UNIFORM) {
+            // 匀速运动
+            return this._ReCalculateUMoveCurrent(froms, tos, progress, start_params)
+        } else if (start_params.type === CONST_MOVE_TYPE_JUMP) {
+            // 位置调整
+            return this._ReCalculateJumpCurrent(froms, tos, progress, start_params);
+        } else {
+            console.error("Error:Undefined yet");
         }
     }
 }
