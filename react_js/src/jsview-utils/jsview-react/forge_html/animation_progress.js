@@ -1,4 +1,4 @@
-import {animationToStyle, getStaticFrameControl} from "./animation_keyframe"
+import {animationToStyle, getStaticFrameControl, convertTimingFunc} from "./animation_keyframe"
 
 let is_char = char_code => (65 <= char_code && char_code <= 90) || (97 <= char_code && char_code <= 122);
 let is_num = char_code => 48 <= char_code && char_code <= 57;
@@ -142,4 +142,117 @@ class AnimationProgress {
 	}
 }
 
+class AnimationGroupProgress {
+	constructor(layout_view, steps_total) {
+		this._TracerDiv = _BuildTracer(layout_view);
+		this._IdToken = (sIdToken++);
+		this._KeyFrameNameArray = null;
+		this._StepsTotal = steps_total;
+
+		if (!this._TracerDiv.hasOwnProperty("_ForgeProgressToken")) {
+			this._TracerDiv._ForgeProgressToken = 0;
+		}
+
+		// 阻止事件上发到父节点
+		this._OnEndListener = ((event) => {
+			event.stopPropagation();
+		});
+	}
+
+	Start(steps_settings/* [{easing:xxx, duration:xxxx},{}...] */) {
+		// 保证可用的Animation动画
+		if (this._KeyFrameName) {
+			console.error("Error: Asset!! should Stop before start");
+		}
+
+		// 交替token，避免animation属性中KeyFrames名字不变导致不触发动画启动
+		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2
+		this._BuildTraceKeyFrameGroup(this._IdToken, this._TracerDiv._ForgeProgressToken);
+		this._TracerDiv.style.animation = this._ConvertToAnimationStyle(steps_settings);
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
+		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
+	}
+
+	// 停止进度跟进，并返回进度值
+	Stop() {
+		let progress = this.GetProgress();
+		this._TracerDiv.style.animation = null;
+
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
+		this._TracerDiv.removeEventListener("animationend", this._OnEndListener);
+
+		if (this._KeyFrameNameArray !== null) {
+			this._RemoveTraceKeyFrameGroup();
+			this._KeyFrameNameArray = null;
+		}
+
+		return progress;
+	}
+
+	GetProgress() {
+		let s = window.getComputedStyle(this._TracerDiv);
+		if (s.transform != "none") {
+			let trans_values = __parseTransform(s.transform);
+			if (trans_values != null) {
+				return (trans_values.params[4] / (this._StepsTotal * 100)); // type is matrix...
+			} else {
+				console.error("Error:internal error");
+				return 0;
+			}
+		} else {
+			// none的场合代表动画结束了
+			return 1;
+		}
+	}
+
+	_BuildTraceKeyFrameGroup(token, dynamic_count) {
+		this._KeyFrameNameArray = new Array(this._StepsTotal);
+		let keyframe_control = getStaticFrameControl();
+		for (let i = 0; i < this._KeyFrameNameArray.length; i++) {
+			let step_name = (i === this._KeyFrameNameArray.length - 1 ? "finalStep" : "" + i);
+			let keyframe_name = "_AnimateGroupProgress_" + token + "_" + dynamic_count + "_Cnt_" + step_name;
+			let animate_progress = "@keyframes " + keyframe_name
+				+ "{0%{transform:translate3d(" + (100 * i) + "px,0,0)}"
+				+ "100%{transform:translate3d(" + (100 + 100 * i) +"px,0,0)}}";
+			keyframe_control.insertRule(animate_progress);
+			this._KeyFrameNameArray[i] = keyframe_name;
+		}
+	}
+
+	_RemoveTraceKeyFrameGroup() {
+		let keyframe_control = getStaticFrameControl();
+		for (let name of this._KeyFrameNameArray) {
+			keyframe_control.removeRule(name);
+		}
+	}
+
+	_ConvertToAnimationStyle(steps_settings) {
+		let style_animation = "";
+		for (let i = 0; i < steps_settings.length; i++) {
+			let timing_func = "linear";
+			let settings = steps_settings[i];
+			if (settings.easing) {
+				timing_func = convertTimingFunc(settings.easing);
+			}
+
+			let delay_start = (i !== 0 ? steps_settings[i - 1].duration : 0);
+
+			style_animation += this._KeyFrameNameArray[i] + " " + settings.duration / 1000 + "s "
+				+ timing_func + " " + delay_start / 1000 + "s ";
+
+			if (i !== steps_settings.length - 1) {
+				style_animation += ",";
+			}
+		}
+
+		console.log("animationToStyle style_anim:", style_animation);
+		return style_animation;
+	}
+}
+
 export default AnimationProgress;
+export {
+	AnimationGroupProgress,
+	AnimationProgress
+}

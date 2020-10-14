@@ -7,6 +7,10 @@ Forge.EasingTypeBlink = 4;
 Forge.EasingTypeDeceleration = 5;
 Forge.EasingTypeSteps = 6;
 class EasingBase {
+	constructor() {
+		this.Pacakge = this.Package; // 兼容老版本的拼写错误
+	}
+
 	Package() {
 	};
 	_GetBasePackage(type) {
@@ -19,35 +23,35 @@ class EasingBase {
 Forge.EasingBase = EasingBase;
 
 class EasingIn extends Forge.EasingBase {
-	Pacakge() {
+	Package() {
 		return this._GetBasePackage(Forge.EasingTypeIn);
 	};
 }
 Forge.EasingIn = EasingIn;
 
 class EasingOut extends Forge.EasingBase {
-	Pacakge() {
+	Package() {
 		return this._GetBasePackage(Forge.EasingTypeOut);
 	};
 }
 Forge.EasingOut = EasingOut;
 
 class EasingInOut extends Forge.EasingBase {
-	Pacakge() {
+	Package() {
 		return this._GetBasePackage(Forge.EasingTypeInOut);
 	};
 }
 Forge.EasingInOut = EasingInOut;
 
 class EasingDeceleration extends Forge.EasingBase {
-	Pacakge() {
+	Package() {
 		return this._GetBasePackage(Forge.EasingTypeDeceleration);
 	};
 }
 Forge.EasingDeceleration = EasingDeceleration;
 
 class EasingBlink extends Forge.EasingBase {
-	Pacakge() {
+	Package() {
 		return this._GetBasePackage(Forge.EasingTypeBlink);
 	};
 }
@@ -68,7 +72,7 @@ class BezierEasing extends Forge.EasingBase {
 		this._Y2 = y2;
 		this._Duration = duration;
 	}
-	Pacakge() {
+	Package() {
 		var data = this._GetBasePackage(Forge.EasingTypeBezier);
 		data["St"] = {
 			"X1": this._X1,
@@ -89,7 +93,7 @@ class StepsEasing extends Forge.EasingBase{
 		this._Type = type;
 	}
 
-	Pacakge() {
+	Package() {
 		var data = this._GetBasePackage(Forge.EasingTypeSteps);
 		data["St"] = {
 			"S": this._Steps,
