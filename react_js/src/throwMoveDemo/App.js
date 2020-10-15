@@ -31,7 +31,7 @@ class MainScene extends FocusBlock {
             this._MoveControl.moveToX(195 * this._LeftOrRight, 250, (x, y)=>{
                 console.log("Move end with x=" + x + " y=" + y);
             });
-            this._ThrowControl.throwAlongY(-500, 650, {type:"catch", position:0, direction: 1}, (x, y)=>{
+            this._ThrowControl.throwAlongY(-500, 750, {type:"catch", position:0, direction: 1}, (x, y)=>{
                 console.log("Throw end with x=" + x + " y=" + y);
             });
             // this._ThrowControl.moveToY(250 * this._LeftOrRight, 500, (x, y)=>{
