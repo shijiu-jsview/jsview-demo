@@ -2,6 +2,7 @@
  * Created by ludl on 10/12/20.
  */
 
+import {Forge} from "../jsview-react/index_widget.js"
 import { JsvActorBase, ActorControlBase } from "./JsvActorBase"
 
 let CONST_MOVE_TYPE_ACC = 1; // 抛物变速运动

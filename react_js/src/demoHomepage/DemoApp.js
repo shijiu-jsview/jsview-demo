@@ -184,6 +184,11 @@ let demoInfos = [
         "path": "/users/classNameDemo",
         "class": lazy(() => import('../classNameDemo/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "抛物运动写法样例",
+        "path": "/users/throwMoveDemo",
+        "class": lazy(() => import('../throwMoveDemo/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;

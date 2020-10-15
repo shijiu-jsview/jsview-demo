@@ -746,7 +746,7 @@ Forge.ThrowAnimation = class extends Forge.KeyFrameGroupAnimation {
 				name: keyframe_name,
 				keyFrameString: keyframe_string,
 				ease: (acc > 0 ? Forge.Easing.Circular.In : Forge.Easing.Circular.Out), // 根据加速度方向决定是加速运动还是减速运动
-				duration: Math.floor((sqrt(init_v * init_v + 2 * acc * distance) - init_v) / acc * 1000)
+				duration: Math.floor((Math.sqrt(init_v * init_v + 2 * acc * distance) - init_v) / acc * 1000)
 			});
 		}
 

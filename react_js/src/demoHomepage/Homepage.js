@@ -10,6 +10,9 @@ import React from 'react';
 import {FdivWrapper, SimpleWidget, VERTICAL, SWidgetDispatcher} from "../jsview-utils/jsview-react/index_widget.js"
 import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
 import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
+
+import {JsvTextStyleClass} from "../jsview-utils/JsViewReactTools/JsvStyleClass"
+
 let globalHistory = getGlobalHistory();
 
 let CONST_ITEM_WIDTH = 300;
@@ -18,6 +21,13 @@ let CONST_ITEM_HEIGHT = 100;
 let HomepageInfo = {
     curFocus: -1
 }
+
+let sFontStyle = new JsvTextStyleClass({
+	width: CONST_ITEM_WIDTH - 10,
+	height: CONST_ITEM_HEIGHT - 10,
+	color: "#000000",
+	fontSize: 30,
+});
 
 class Home extends FdivWrapper {
 	constructor(prop) {
@@ -43,7 +53,8 @@ class Home extends FdivWrapper {
         return (
             <div>
                 <div style={{backgroundColor: "#0000FF", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT}}></div>
-                <div style={{backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30}}>
+                <div className={sFontStyle.getName()}
+                     style={{backgroundColor: item.color}}>
                     { item.name }
                 </div>
             </div>
@@ -52,7 +63,8 @@ class Home extends FdivWrapper {
 
     _RenderItem(item) {
         return (
-            <div style={{backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30}}>
+            <div className={sFontStyle.getName()}
+                 style={{backgroundColor: item.color}}>
                 { item.name }
             </div>
         )
