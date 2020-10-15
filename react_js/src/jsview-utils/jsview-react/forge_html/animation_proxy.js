@@ -72,6 +72,54 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 			this.enableFlags = new_flags;
 		}
 	}
+	_GetCSSKeyframesRule(name) {
+		var key_frames_rule = null;
+		// 获取所有的style
+		var ss = document.styleSheets;
+		for (let i = 0; i < ss.length; ++i) {
+			if(ss[i] && ss[i].cssRules) {
+				for (let obj in ss[i].cssRules) {
+					if (ss[i].cssRules[obj].name === name) {
+						key_frames_rule = ss[i].cssRules[obj];
+						break;
+					}
+				}
+				if (key_frames_rule) {
+					break;
+				}
+			}
+		}
+		return key_frames_rule;
+	}
+
+	CheckCssAnimationFormat(anim_name) {
+		let key_frames_rule = this._GetCSSKeyframesRule(anim_name);
+		if (key_frames_rule && key_frames_rule.cssRules) {
+			for (let obj in key_frames_rule.cssRules) {
+				if (!key_frames_rule.cssRules[obj] || !key_frames_rule.cssRules[obj].style) {
+					continue;
+				}
+				if (!key_frames_rule.cssRules[obj].style.opacity
+					&& !key_frames_rule.cssRules[obj].style.transform) {
+					console.error("@keyframe "+anim_name+", transform parse error! cssText:"+key_frames_rule.cssText);
+					continue;
+				}
+
+				let transform = key_frames_rule.cssRules[obj].style.transform;
+				if (!transform) {
+					continue;
+				}
+
+				if (transform.indexOf('rotate(') != -1) {
+					console.error("@keyframe "+anim_name+", only support rotate3d, current transform:"+transform);
+				} else if (transform.indexOf('translate(') != -1) {
+					console.error("@keyframe " + anim_name + ", only support translate3d, current transform:" + transform);
+				} else if (transform.indexOf('scale(') != -1) {
+					console.error("@keyframe " + anim_name + ", only support scale3d, current transform:" + transform);
+				}
+			}
+		}
+	}
 }
 
 Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
@@ -152,6 +200,9 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		let anim_name = animation.name;
+		//检查css animation transform格式
+		this.CheckCssAnimationFormat(anim_name);
+
 		let that = this;
 		let html_element = this._LayoutViewRef.Element;
 
@@ -498,6 +549,8 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 		let frame_control = getStaticFrameControl();
 		for (let i = 0; i < animation_array.length; i++) {
 			let animation  = animation_array[i];
+			//检查css animation transform格式
+			this.CheckCssAnimationFormat(animation.name);
 
 			this._KeyFrameArray[i] = {
 				name: animation.name,
