@@ -87,7 +87,9 @@ class RenderBridge {
             this._OnRequesting = true;
             Promise.resolve().then(this._DoRequestSwap.bind(this));
         }
-	}
+    }
+    
+    SetGlobalConfig(json) {}
 
 	AddWillSwapListener(alias, callback) {
 		this._WillSwapCallbacks.set(alias, callback);

@@ -187,7 +187,11 @@ let demoInfos = [
     {
         "name": "抛物运动写法样例",
         "path": "/users/throwMoveDemo",
-        "class": lazy(() => import('../throwMoveDemo/App').then(m => ({ default: m.SubApp }))),
+        "class": lazy(() => import('../throwMoveDemo/App').then(m => ({ default: m.SubApp })))},
+    {
+        "name": "texture缓存示例",
+        "path": "/users/imageStorage",
+        "class": lazy(() => import('../imageStorage/App').then(m => ({ default: m.SubApp }))),
     },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];

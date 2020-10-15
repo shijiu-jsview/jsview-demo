@@ -6,7 +6,7 @@ let buildPreloadInfo = (url, width, height, color_type, net_setting) => {
         "url": url,
         "width": width,
         "height": height,
-        "colorType": color_type ? color_type : null,
+        "colorType": color_type ? color_type : Forge.ColorSpace.RGBA_8888,
         "netSetting": net_setting ? net_setting : null,
     }
 }
@@ -93,7 +93,7 @@ class JsvPreload extends React.Component {
                     image_url = new window.JsView.React.UrlRef(base_url).href;
                 }
             }
-            let texture = ForgeExtension.TextureManager.GetImage(image_url);
+            let texture = ForgeExtension.TextureManager.GetImage2(image_url, false, {width: item.width, height: item.height}, item.colorType);
             texture.RegisterLoadImageCallback(null, () => {
                 console.log("preload succeed " + image_url);
                 this._PreloadStateList[index] = true;
