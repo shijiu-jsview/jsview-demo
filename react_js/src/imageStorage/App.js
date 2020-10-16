@@ -51,7 +51,7 @@ class MainScene extends FocusBlock {
     _RenderFocus(item) {
         return (
             <div style={{width: item.width - 10, height: item.height - 10, fontSize: "30px"}}>
-                <img style={{width: item.width - 10, height: item.height - 10}} jsv_img_color_space={"RGB_565"} src={item.image}/>
+                <img style={{width: item.width - 10, height: item.height - 10, borderRadius: '15px 15px 15px 15px'}} jsv_img_color_space={"RGB_565"} src={item.image}/>
                 {item.id}
                 <div style={{width: 20, height: 20, backgroundColor: "#FF0000"}}/>
             </div>
@@ -61,7 +61,7 @@ class MainScene extends FocusBlock {
     _RenderItem(item) {
         return (
             <div style={{width: item.width - 10, height: item.height - 10, fontSize: "30px"}}>
-                <img style={{width: item.width - 10, height: item.height - 10}} jsv_img_color_space={"RGB_565"} src={item.image}/>
+                <img style={{width: item.width - 10, height: item.height - 10,                     borderRadius: '15px 15px 15px 15px'}} jsv_img_color_space={"RGB_565"} src={item.image}/>
                 {item.id}
             </div>
         )
