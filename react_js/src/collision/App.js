@@ -34,7 +34,10 @@ class MainScene extends FocusBlock{
         
         this._RotateEle1 = null;
         this._RotateEle2 = null;
-        
+
+		this._RotateEle3 = null;
+		this._RotateEle4 = null;
+
         this._ScaleEle1 = null;
         this._ScaleEle2 = null;
         
@@ -48,6 +51,8 @@ class MainScene extends FocusBlock{
             "tRightColor": "#00FF00",
             "rLeftColor": "#FF0000",
             "rRightColor": "#00FF00",
+			"r2LeftColor": "#FF0000",
+			"r2RightColor": "#00FF00",
             "sLeftColor": "#FF0000",
             "sRightColor": "#00FF00",
             "skLeftColor": "#FF0000",
@@ -80,12 +85,26 @@ class MainScene extends FocusBlock{
                 </div>
 
                 <div style={{top: 400, left: 100}}>
-                    <div ref={ele => this._RotateEle1 = ele} style={{left: 100, width: 20, height: 150, backgroundColor: this.state.rLeftColor, animation: "rotate1 5s"}}>
+                    <div ref={ele => this._RotateEle1 = ele} style={{left: 0, width: 20, height: 150, backgroundColor: this.state.rLeftColor, animation: "rotate1 5s"}}>
                         view1
                     </div>
-                    <div ref={ele => this._RotateEle2 = ele} style={{left: 200, width: 20, height: 150, backgroundColor: this.state.rRightColor, animation: "rotate2 5s"}}>
+                    <div ref={ele => this._RotateEle2 = ele} style={{left: 100, width: 20, height: 150, backgroundColor: this.state.rRightColor, animation: "rotate2 5s"}}>
                         view2
                     </div>
+                </div>
+
+                <div style={{top: 400, left: 500}}>
+                    <div style={{top:50, left: 0, width: 150, height: 150, backgroundColor: "rgba(255,255,255,0.5)", animation: "rotate3 5s"}}>
+                        <div ref={ele => this._RotateEle3 = ele} style={{left: (150-20)/2, width: 20, height: 150, backgroundColor: this.state.r2LeftColor}}>
+                            view1
+                        </div>
+                    </div>
+                    <div style={{top:0, left: 100, width: 150, height: 150, backgroundColor: "rgba(255,255,255,0.5)", animation: "rotate4 5s"}}>
+                        <div ref={ele => this._RotateEle4 = ele} style={{left: 0, top:(150-20)/2, width: 150, height: 20, backgroundColor: this.state.r2RightColor}}>
+                            view2
+                        </div>
+                    </div>
+
                 </div>
 
                 <div style={{top: 100, left: 500}}>
@@ -97,7 +116,7 @@ class MainScene extends FocusBlock{
                     </div>
                 </div>
 
-                <div style={{top: 400, left: 500}}>
+                <div style={{top: 400, left: 800}}>
                     <div ref={ele => this._SkewEle1 = ele} style={{left: 100, width: 100, height: 100, backgroundColor: this.state.skLeftColor, animation: "skew1 5s"}}>
                         view1
                     </div>
@@ -131,29 +150,49 @@ class MainScene extends FocusBlock{
 
         let rotate_count = {count:0};
         let rotate_sensor = createImpactTracer(this._RotateEle1, this._RotateEle2,
-            createImpactCallback(
-                () => {
-                    this.setState({
-                        "rLeftColor": "#00FFFF",
-                        "rRightColor": "#FFFF00"
-                    })
-                },
-                () => {
-                    rotate_count.count++;
-                    if (rotate_count.count >= 2) {
-                        // 旋转有头尾连续两次碰撞
-                        rotate_sensor.Recycle();
-                    }
-                    this.setState({
-                        "rLeftColor": "#FF0000",
-                        "rRightColor": "#00FF00"
-                    })
-                }
-            )
-        );
+			createImpactCallback(
+				() => {
+					this.setState({
+						"rLeftColor": "#00FFFF",
+						"rRightColor": "#FFFF00"
+					})
+				},
+				() => {
+					rotate_count.count++;
+					if (rotate_count.count >= 2) {
+						// 旋转有头尾连续两次碰撞
+						rotate_sensor.Recycle();
+					}
+					this.setState({
+						"rLeftColor": "#FF0000",
+						"rRightColor": "#00FF00"
+					})
+				}
+			)
+		);
         this._Sensors.push(rotate_sensor);
 
-        let scale_sensor = createImpactTracer(this._ScaleEle1, this._ScaleEle2, createImpactCallback(
+		let rotate2_sensor = createImpactTracer(this._RotateEle3, this._RotateEle4,
+			createImpactCallback(
+				() => {
+					this.setState({
+						"r2LeftColor": "#00FFFF",
+						"r2RightColor": "#FFFF00"
+					})
+				},
+				() => {
+					//rotate2_sensor.Recycle();
+					this.setState({
+						"r2LeftColor": "#FF0000",
+						"r2RightColor": "#00FF00"
+					})
+				}
+			)
+		);
+		this._Sensors.push(rotate2_sensor);
+
+
+		let scale_sensor = createImpactTracer(this._ScaleEle1, this._ScaleEle2, createImpactCallback(
             () => {
                 this.setState({
                     "sLeftColor": "#00FFFF",
