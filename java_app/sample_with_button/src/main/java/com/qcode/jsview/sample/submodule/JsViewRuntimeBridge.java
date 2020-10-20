@@ -151,9 +151,9 @@ public class JsViewRuntimeBridge {
 			if (jsview_version == null || jsview_version.isEmpty()) {
 				jsview_version = JsViewVersionUtils.getCoreVersion();
 			}
-			intent.putExtra("CORE", jsview_version);
+			intent.putExtra("COREVERSIONRANGE", jsview_version);
 			intent.putExtra("JSURL", app_url);
-			intent.putExtra("ENGINEJS", engine_url);
+			intent.putExtra("ENGINE", engine_url);
 			intent.putExtra("STARTIMG", start_img_url);
 			intent.putExtra("ISSUB", true);
 			mContext.startActivity(intent);
