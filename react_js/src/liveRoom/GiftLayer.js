@@ -63,7 +63,12 @@ class GiftLayer extends FocusBlock {
     }
 
     onKeyDown(ev) {
-        return false;
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            this.setState({ visible: 'hidden' })
+            this.changeFocus("/liveRoom/InputLayer");
+            return true
+        }
+        return false    
     }
 
     _OnClick(item) { // enter
