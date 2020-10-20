@@ -14,10 +14,16 @@ import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
 let globalHistory = getGlobalHistory();
 
 let demoInfos = [
+
     {
         "name": "基础示例合集",
         "path": "/users/basic",
         "class": lazy(() => import('../basic/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        "name": "LiveRoom",
+        "path": "/users/liveRoom",
+        "class": lazy(() => import('../liveRoom/App').then(m => ({ default: m.SubApp }))),
     },
     {
         "name": "红包雨",
