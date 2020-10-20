@@ -63,7 +63,6 @@ class MessageLayer extends FocusBlock {
     }
 
     _onAnmationEnd = () => {
-        console.log("in animation end........")
         let cnt = this.state.animationCnt;
         cnt++
         this.setState({animationCnt: cnt})
@@ -115,7 +114,7 @@ class MessageLayer extends FocusBlock {
             this._UpdatePage();
         }, 500)
 
-        if(this.state.textCount === 50){
+        if(this.state.textCount === 10){
             this._ClearTimer();
         }
     }
@@ -126,7 +125,7 @@ class MessageLayer extends FocusBlock {
                 <div style={ this._style.bg_style }>
                     {
                         this.state.textList.map((e, inx) =>{
-                            return <TextDiv key={e.key} style={this._style} img={e.img} text={e.text} top={(inx-1)*47} inx={e.key} callback={(parseInt(this.state.animationCnt/7)*7)===e.key?this._onAnmationEnd:null}/> 
+                            return <TextDiv key={e.key} style={this._style} img={e.img} text={e.text} top={(inx-1)*47} inx={e.key} callback={(parseInt(e.key/7)*7)===e.key?this._onAnmationEnd:null}/> 
                         })
                     }
                 </div>

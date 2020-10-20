@@ -22,7 +22,6 @@ class InputLayer extends FocusBlock {
                 this.setState({input_focused: false, send_focused: true})
                 break;
             case 13: // ok
-                console.log('press enter: I am at ', this.state.input_focused?"input block":"send block")
                 eventProxy.trigger('OnMessage',{text:"主播你唱歌很好听"})
                 break;  
             case 40: // Down
