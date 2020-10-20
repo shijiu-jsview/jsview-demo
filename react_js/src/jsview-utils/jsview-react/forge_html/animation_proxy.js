@@ -1,5 +1,5 @@
 import Forge from "../ForgeDefine"
-import AnimationProgress from "./animation_progress"
+import {AnimationProgress, AnimationGroupProgress} from "./animation_progress"
 import {convertTimingFunc, animationToStyle, getStaticFrameControl} from "./animation_keyframe"
 
 let sKeyFrameTokenGenerator = 0;
@@ -10,7 +10,7 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 
 		let easing_packed = null;
 		if (easing) {
-			easing_packed = easing.Pacakge();
+			easing_packed = easing.Package();
 		}
 
 		this.typeName = type_name;
@@ -72,6 +72,54 @@ Forge.AnimationDelegate = class extends Forge.AnimationBase {
 			this.enableFlags = new_flags;
 		}
 	}
+	_GetCSSKeyframesRule(name) {
+		var key_frames_rule = null;
+		// 获取所有的style
+		var ss = document.styleSheets;
+		for (let i = 0; i < ss.length; ++i) {
+			if(ss[i] && ss[i].cssRules) {
+				for (let obj in ss[i].cssRules) {
+					if (ss[i].cssRules[obj].name === name) {
+						key_frames_rule = ss[i].cssRules[obj];
+						break;
+					}
+				}
+				if (key_frames_rule) {
+					break;
+				}
+			}
+		}
+		return key_frames_rule;
+	}
+
+	CheckCssAnimationFormat(anim_name) {
+		let key_frames_rule = this._GetCSSKeyframesRule(anim_name);
+		if (key_frames_rule && key_frames_rule.cssRules) {
+			for (let obj in key_frames_rule.cssRules) {
+				if (!key_frames_rule.cssRules[obj] || !key_frames_rule.cssRules[obj].style) {
+					continue;
+				}
+				if (!key_frames_rule.cssRules[obj].style.opacity
+					&& !key_frames_rule.cssRules[obj].style.transform) {
+					console.error("@keyframe "+anim_name+", transform parse error! cssText:"+key_frames_rule.cssText);
+					continue;
+				}
+
+				let transform = key_frames_rule.cssRules[obj].style.transform;
+				if (!transform) {
+					continue;
+				}
+
+				if (transform.indexOf('rotate(') != -1) {
+					console.error("@keyframe "+anim_name+", only support rotate3d, current transform:"+transform);
+				} else if (transform.indexOf('translate(') != -1) {
+					console.error("@keyframe " + anim_name + ", only support translate3d, current transform:" + transform);
+				} else if (transform.indexOf('scale(') != -1) {
+					console.error("@keyframe " + anim_name + ", only support scale3d, current transform:" + transform);
+				}
+			}
+		}
+	}
 }
 
 Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
@@ -99,7 +147,7 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
             layout_view.Element.style.pointerEvents = "auto"
         }
 		if (this.enableStartPos > 0) {
-			// 有启动偏移
+			// 有启动进度偏移(例如以30%进度的位置开始启动)
 			this._EnableStarterAnimation();
 		} else {
 			this._EnableCssAnimation(this._BuildKeyFrame(), this._OnEndEvent, 0);
@@ -116,7 +164,8 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		if (this.repeatTimes != 1) {
 			// 有动画Repeat处理
 			let that = this;
-			end_func = ()=> {
+			end_func = (event)=> {
+				event.stopPropagation();
 				if (that._Progress != null) {
 					that._Progress.Stop();
 				}
@@ -151,6 +200,9 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 		}
 
 		let anim_name = animation.name;
+		//检查css animation transform格式
+		this.CheckCssAnimationFormat(anim_name);
+
 		let that = this;
 		let html_element = this._LayoutViewRef.Element;
 
@@ -183,11 +235,16 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	_PerformAnimationEnd(on_end) {
 		// 清理OnEndListener监听，否则会重复收到
 		if (this._CurrentEndEventFunc != null) {
-			if (!window.jsvInAndroidWebView) {
-				this._LayoutViewRef.Element.removeEventListener("animationend", this._CurrentEndEventFunc);
-			} else {
-				this._LayoutViewRef.Element.removeEventListener("webkitAnimationEnd", this._CurrentEndEventFunc);
-			}
+			let element = this._LayoutViewRef.Element;
+			let animate_end_callback = this._CurrentEndEventFunc;
+			// 异步进行removeEventListener处理，以解决event.stopPropagation不生效的问题
+			setTimeout(()=>{
+				if (!window.jsvInAndroidWebView) {
+					element.removeEventListener("animationend", animate_end_callback);
+				} else {
+					element.removeEventListener("webkitAnimationEnd", animate_end_callback);
+				}
+			}, 0)
 			this._CurrentEndEventFunc = null;
 		}
 
@@ -447,6 +504,346 @@ Forge.CssTransitionAnimation = class extends Forge.AnimationDelegate {
 				event.stopPropagation();
 				that.OnEnd(true);
 			});
+		}
+	}
+};
+
+Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
+	constructor(type) {
+		super(type, 0, null);
+
+		this._KeyFrameArray = null;
+		this._LatestProgressValue = 0;
+		this._CurrentEndEventFunc = null;
+		this._Progress = null;
+
+		let that = this;
+		this._OnEndEvent = (event) => {
+			event.stopPropagation();
+			if (this._TestFinalKeyFrame(event)) {
+				that._PerformAnimationEnd(true);
+			}
+		}
+	}
+
+	Start(layout_view) {
+		super.Start(layout_view);
+		// Keyframe动画启动时，清理transform，以保证动画行为正确
+		layout_view.ResetCssTransform(null, null);
+		if (layout_view.Element) {
+			layout_view.Element.style.pointerEvents = "auto"
+		}
+
+		this._EnableCssAnimation(this._BuildKeyFrameGroup(), this._OnEndEvent);
+	}
+
+	Cancel() {
+		super.Cancel();
+		this._PerformAnimationEnd(false);
+	}
+
+	_EnableCssAnimation(animation_array, on_end_func) {
+		if (animation_array == null) return;
+
+		this._KeyFrameArray = new Array(animation_array.length);
+		let frame_control = getStaticFrameControl();
+		for (let i = 0; i < animation_array.length; i++) {
+			let animation  = animation_array[i];
+			//检查css animation transform格式
+			this.CheckCssAnimationFormat(animation.name);
+
+			this._KeyFrameArray[i] = {
+				name: animation.name,
+				easing: animation.ease.Package(),
+				duration: animation.duration,
+				needRecycle: false
+			};
+
+			// KeyFrame在此创建，也被此类回收
+			if (animation.keyFrameString != null) {
+				frame_control.insertRule(animation.keyFrameString);
+				this._KeyFrameArray.needRecycle = true;
+			}
+		}
+
+		let that = this;
+		let html_element = this._LayoutViewRef.Element;
+
+		// 创建Progress跟踪器
+		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0
+			|| (this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0) {
+			this._Progress = new AnimationGroupProgress(this._LayoutViewRef, this._KeyFrameArray.length);
+			this._Progress.Start(this._KeyFrameArray);
+		}
+
+		let style_animation = this._ConvertToAnimationStyle(this._KeyFrameArray);
+
+		//name duration timing-function delay iteration-count direction;
+		if (!window.jsvInAndroidWebView) {
+			html_element.style.animation = style_animation;
+			html_element.addEventListener("animationend", on_end_func);
+		} else {
+			html_element.style.webkitAnimation = style_animation;
+			html_element.addEventListener("webkitAnimationEnd", on_end_func);
+		}
+		this._CurrentEndEventFunc = on_end_func;
+	}
+
+	_PerformAnimationEnd(on_end) {
+		// 清理OnEndListener监听，否则会重复收到
+		if (this._CurrentEndEventFunc != null) {
+			let element = this._LayoutViewRef.Element;
+			let animate_end_callback = this._CurrentEndEventFunc;
+			// 异步进行removeEventListener处理，以解决event.stopPropagation不生效的问题
+			setTimeout(()=>{
+				if (!window.jsvInAndroidWebView) {
+					element.removeEventListener("animationend", animate_end_callback);
+				} else {
+					element.removeEventListener("webkitAnimationEnd", animate_end_callback);
+				}
+			}, 0)
+			this._CurrentEndEventFunc = null;
+		}
+
+		if (this._Progress == null) {
+			// 无进度跟进需求，直接结束
+			if (on_end) {
+				this.OnEnd();
+			}
+			return;
+		}
+
+		let progress = this._Progress.Stop();
+		if (on_end) {
+			// 修正可能产生的进度为0.999的异常数值
+			progress = 1;
+		}
+
+		// 根据进度状态，保持动画最后状态
+		if ((this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0) {
+			let frozen_transform = this._GetFrozenTransform(progress);
+			this._LayoutViewRef.ResetCssTransform(
+				frozen_transform.transform,
+				frozen_transform.transformOrigin);
+		}
+
+		// 注意: OnEnd处理放在transform制作之后
+		if (on_end) {
+			this.OnEnd();
+		}
+
+		// 进度信息要异步回调，模拟JsView native的场景
+		if ((this.enableFlags & Forge.AnimationEnable.AckFinalProgress) != 0) {
+			window.setTimeout((()=> {
+				this.OnFinalProgress(progress);
+			}).bind(this), 0);
+		}
+
+		// 回收KeyFrame
+		let frame_control = getStaticFrameControl();
+		for (let key_frame of this._KeyFrameArray) {
+			if (key_frame.needRecycle) {
+				frame_control.removeRule(key_frame.name);
+			}
+		}
+		this._KeyFrameArray = null;
+	}
+
+	_ConvertToAnimationStyle(steps_settings) {
+		let style_animation = "";
+		for (let i = 0; i < steps_settings.length; i++) {
+			let timing_func = "linear";
+			let settings = steps_settings[i];
+			if (settings.easing) {
+				timing_func = convertTimingFunc(settings.easing);
+			}
+
+			let delay_start = (i !== 0 ? steps_settings[i - 1].duration : 0);
+
+			style_animation += settings.name + " " + settings.duration / 1000 + "s "
+				+ timing_func + " " + delay_start / 1000 + "s ";
+
+			if (i !== steps_settings.length - 1) {
+				style_animation += ",";
+			}
+		}
+
+		console.log("animationToStyle style_anim:", style_animation);
+		return style_animation;
+	}
+
+	// 由子类集成，创建动画对应的keyframe
+	_BuildKeyFrameGroup() {
+		// Should override
+		// 返回 数组，每个元素内容为:
+		// {
+		//      name:KeyFrame名称,
+		//      keyFrameString:null 或者 keyFrame内容(不为null时，动画结束时会被自动从cssRules中清理)
+		//      ease:xxx,  当前步骤的easing
+		//      duration:xxx, 当前步骤的duration
+		// };
+		console.warn("Warning:Should override and return keyframe name");
+	}
+
+	// 由子类集成，根据进度信息完成Keep Transform操作
+	_GetFrozenTransform(progress) {
+		// should override
+		console.warn("Warning:Should override and keep view transform by ResetCssTransform()")
+	}
+
+	// 由子类集成，进行检测这个animation end event是否是最后一个KeyFrame发起的
+	_TestFinalKeyFrame(event) {
+		// should override
+		console.warn("Warning:Should override")
+	}
+}
+
+Forge.TranslateFrameAnimation = class extends Forge.TranslateAnimation {
+	constructor(start_pos, target_pos, speed, affect_x, origin_x, origin_y) {
+		// 在浏览器场合，使用匀速的Translate动画模拟TranslateFrame动画
+		let start_x = origin_x;
+		let start_y = origin_y;
+		let end_x = origin_x;
+		let end_y = origin_y;
+
+		if (affect_x) {
+			start_x = start_pos;
+			end_x = target_pos;
+		} else {
+			start_y = start_pos;
+			end_y = target_pos;
+		}
+
+		let duration = Math.abs(Math.floor((target_pos - start_pos) / speed * 1000));
+
+		super(start_x, end_x, start_y, end_y, duration, null);
+	}
+};
+
+Forge.ThrowAnimation = class extends Forge.KeyFrameGroupAnimation {
+	constructor(from_x, from_y, x_or_y, init_v, acc, to, has_pole, pole_position) {
+		super("Thr"); // "Thr"ow
+
+		this._FromX = from_x;
+		this._FromY = from_y;
+		this._XorY = x_or_y;
+		this._InitV = init_v;
+		this._Acc = acc;
+		this._To = to;
+		this._HasPole = has_pole;
+		this._PolePosition = pole_position;
+		this._IsPositiveMove = (this._InitV > 0 || (this._InitV === 0 && this._Acc > 0)); // 是否朝正方向运动
+	}
+
+	_MakeTranslateString(keyframe_name, from, to) {
+		return "@keyframes " + keyframe_name + " {"
+			+ "0%{transform:translate3d(" + from.x.value + "px," + from.y.value + "px,0);}"
+			+ "100%{transform:translate3d(" + to.x.value + "px," + to.y.value + "px,0);}}";
+	}
+
+	_BuildKeyFrameGroup() {
+		let name_token = "" + (sKeyFrameTokenGenerator++);
+
+		// {
+		//      name:KeyFrame名称,
+		//      keyFrameString:null 或者 keyFrame内容(不为null时，动画结束时会被自动从cssRules中清理)
+		//      ease:xxx,  当前步骤的easing
+		//      duration:xxx, 当前步骤的duration
+		// };
+		let keyframe_array = [];
+
+		let start_vec2 = {x:{value:this._FromX}, y:{value:this._FromY}};
+		let end_vec2 = {x:{value:this._FromX}, y:{value:this._FromY}};
+
+		let start_ref = (this._XorY === 0 ? start_vec2.x : start_vec2.y);
+		let end_ref = (this._XorY === 0 ? end_vec2.x : end_vec2.y);
+		if (this._HasPole) {
+			// 有拐点时
+
+			// 运动处理，先从起始位置，到拐点
+			let keyframe_name = "_ForgeAnim_Thr_Forw_" + name_token;
+			end_ref.value = this._PolePosition;
+			let keyframe_string = this._MakeTranslateString(keyframe_name, start_vec2, end_vec2);
+			keyframe_array.push({
+				name: keyframe_name,
+				keyFrameString: keyframe_string,
+				ease: Forge.Easing.Circular.Out, // 减速运动
+				duration: Math.floor(-(this._InitV / this._Acc) * 1000) // 单位毫秒
+			});
+
+
+			// 运动处理，再从拐点到最终点
+			keyframe_name = "_ForgeAnim_Thr_Backw_" + name_token;
+			start_ref.value = this._PolePosition;
+			end_ref.value = this._To;
+			keyframe_string = this._MakeTranslateString(keyframe_name, start_vec2, end_vec2);
+			keyframe_array.push({
+				name: keyframe_name,
+				keyFrameString: keyframe_string,
+				ease: Forge.Easing.Circular.In, // 加速运动
+				duration: Math.floor(
+					Math.sqrt(2 * (this._To - this._PolePosition) / this._Acc) * 1000), // 单位毫秒
+			});
+		} else {
+			// 无拐点时
+			let keyframe_name = "_ForgeAnim_Thr_Forw_" + name_token;
+			end_ref.value = this._To;
+			let keyframe_string = this._MakeTranslateString(keyframe_name, start_vec2, end_vec2);
+
+			// 转换坐标系，使运动始终向正方向以简化计算处理
+			let init_v = (this._IsPositiveMove ? this._InitV : -this._InitV);
+			let acc = (this._IsPositiveMove ? this._Acc : -this._Acc);
+			let distance = (this._IsPositiveMove ? (end_ref.value - start_ref.value) : (start_ref.value - end_ref.value));
+
+			keyframe_array.push({
+				name: keyframe_name,
+				keyFrameString: keyframe_string,
+				ease: (acc > 0 ? Forge.Easing.Circular.In : Forge.Easing.Circular.Out), // 根据加速度方向决定是加速运动还是减速运动
+				duration: Math.floor((Math.sqrt(init_v * init_v + 2 * acc * distance) - init_v) / acc * 1000)
+			});
+		}
+
+		return keyframe_array;
+	}
+
+	// 由子类集成，根据进度信息完成Keep Transform操作
+	_GetFrozenTransform(progress) {
+		let position = {x:{value:this._FromX}, y:{value:this._FromY}};
+		let from = (this._XorY === 0 ? position.x.value : position.y.value);
+		let result_position_ref = (this._XorY === 0 ? position.x : position.y);
+		let result_pos_value = 0;
+
+		// 转换坐标系，使运动始终向正方向以简化计算处理
+		from = (this._IsPositiveMove ? from : -from);
+		let to = (this._IsPositiveMove ? this._To : -this._To);
+		let pole_position = (this._IsPositiveMove ? this._PolePosition : -this._PolePosition);
+
+		if (this._HasPole) {
+			let moved = (pole_position * 2 - from - to) * progress;
+			if (moved > (pole_position - from)) {
+				// 运动了超过了拐点的距离
+				result_pos_value = pole_position - (moved - (pole_position - from));
+			} else {
+				// 未到达拐点
+				result_pos_value = from + moved;
+			}
+		} else {
+			result_pos_value = from + (to - from) * progress;
+		}
+
+		// 恢复坐标系
+		result_position_ref.value = Math.floor(this._IsPositiveMove ? result_pos_value : -result_pos_value);
+
+		let transform = "translate3d(" + position.x.value + "px," + position.y.value + "px,0)";
+		return {transform: transform, transformOrigin: null};
+	}
+
+	// 由子类集成，进行检测这个animation end event是否是最后一个KeyFrame发起的
+	_TestFinalKeyFrame(event) {
+		if (this._HasPole) {
+			return (event.animationName.indexOf("_ForgeAnim_Thr_Backw_") >= 0);
+		} else {
+			return (event.animationName.indexOf("_ForgeAnim_Thr_Forw_") >= 0)
 		}
 	}
 };

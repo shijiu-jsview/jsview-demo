@@ -74,7 +74,7 @@ class JsvSpray extends React.Component {
             } else if (window.JsView.React.UrlRef) {
                 image_url = new window.JsView.React.UrlRef(this.props.pointRes).href;
             }
-            texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(image_url));
+            texture_setting = new Forge.ExternalTextureSetting(texture_manager.GetImage2(image_url, false, null, "RGB_8888", null));
         }
         let spray_view = new Forge.SprayView(texture_setting);
         let add_num_per_frame = this.props.sprayStyle.addNumSpeed ? this.props.sprayStyle.addNumSpeed : 0.001;

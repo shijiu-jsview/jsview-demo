@@ -1,4 +1,4 @@
-﻿import Forge from "../ForgeDefine"
+﻿import Forge from "../ForgeDefine";
 Forge.TextShaderType = {
     LinearGradient: 0,
     Image: 1,
@@ -15,25 +15,28 @@ class TextViewParams {
     constructor() {
         let layout_view = new Forge.LayoutView();
         let renderer = layout_view.GetRenderer();
-		this._Renderer = renderer;
+        this._Renderer = renderer;
         this.StringWithFont = Forge.sTextUtils.StringWithFont("", 0, undefined, "center", "middle", undefined, false, false, undefined, undefined, "top");
-        this.RectArea =  new Forge.RectArea(0, 0, 0, 0);//default w:0, h:0
+        this.RectArea = new Forge.RectArea(0, 0, 0, 0);//default w:0, h:0
         this.TextAttr = Forge.sTextUtils.TextAttr("ellipsis", "none");
         this.Marquee = null;//{repetition: "infinite", direction: "left", speed: "normal" };
         this.Shader = null;
-	    this.IsInstantLoad = true;
+        this.IsInstantLoad = true;
         this.LineHeight = 0;
     }
-	SetInstantLoad(is_instant_load) {
-		this.IsInstantLoad = is_instant_load;
-		return this;
-	};
+
+    SetInstantLoad(is_instant_load) {
+        this.IsInstantLoad = is_instant_load;
+        return this;
+    };
+
     SetStringWithFont(string_with_font) {
         this.StringWithFont = string_with_font;//renderer.StringWithFont
         return this;
     };
-	SetFontStyle(_size_or_set,_font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align) {
-	    if (typeof _size_or_set === "object") {
+
+    SetFontStyle(_size_or_set, _font, _alignment, _vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align) {
+        if (typeof _size_or_set === "object") {
             this.StringWithFont = Forge.sTextUtils.StringWithFont(
                 "",
                 (typeof _size_or_set["size"] !== "undefined" ? _size_or_set["size"] : 10),
@@ -49,10 +52,11 @@ class TextViewParams {
             );
         } else {
             this.StringWithFont = Forge.sTextUtils.StringWithFont(
-                "", _size_or_set, _font,_alignment,_vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align);
+                "", _size_or_set, _font, _alignment, _vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align);
         }
         return this;
-	};
+    };
+
     SetRectArea(rect_area) {
         if (rect_area instanceof Forge.RectArea) {
             this.RectArea = rect_area;
@@ -61,16 +65,18 @@ class TextViewParams {
         }
         return this;
     };
+
     SetViewSize(rect_area) {
         if (!(rect_area instanceof Forge.RectArea)) {
             rect_area = new Forge.RectArea(rect_area.x, rect_area.y, rect_area.width, rect_area.height);
         }
-		this.SetRectArea(rect_area);
-		if (this.LineHeight === 0 && rect_area.height !== 0) {
-			this.LineHeight = rect_area.height;
-		}
-		return this;
-	};
+        this.SetRectArea(rect_area);
+        if (this.LineHeight === 0 && rect_area.height !== 0) {
+            this.LineHeight = rect_area.height;
+        }
+        return this;
+    };
+
     SetTextAttr(set) {
         let text_overflow;
         if (set.hasOwnProperty("textOverflow"))
@@ -86,15 +92,16 @@ class TextViewParams {
             word_wrap = set["word_wrap"];
         else
             word_wrap = "none";
-        this.TextAttr  = {
-            word_wrap:word_wrap,
-            text_overflow:text_overflow
+        this.TextAttr = {
+            word_wrap: word_wrap,
+            text_overflow: text_overflow
         };
         return this;
     };
+
     SetMarquee(marquee) {
         if (marquee) {
-            this.Marquee = {repetition: "infinite", direction: "left", speed: "normal" };//set default
+            this.Marquee = {repetition: "infinite", direction: "left", speed: "normal"};//set default
             if (marquee.repetition)
                 this.Marquee.repetition = marquee.repetition;
             if (marquee.direction)
@@ -104,14 +111,22 @@ class TextViewParams {
         }
         return this;
     };
+
     SetShader(shader) {
         this.Shader = shader;
         return this;
     };
+
     SetLineHeight(line_height) {
         this.LineHeight = line_height;
         return this;
     };
+
+    // 启用获取复制文字Texture信息功能
+    EnableDuplicateBuilder() {
+        this.BuildCopyBag = true;
+    }
+
     Clone() {
         let text_view_params = new TextViewParams(null);
         text_view_params.StringWithFont = this.StringWithFont;
@@ -125,8 +140,7 @@ Forge.TextViewParams = TextViewParams;
 window["TextViewParams"] = Forge.TextViewParams;
 
 class TextViewEx {
-    constructor(texture_manager, text_view_params, text_string, quick, texture_onload_callbacks)
-    {
+    constructor(texture_manager, text_view_params, text_string, quick, texture_onload_callbacks) {
         this._layoutView = null;
         this._textWidth = 0;
         this._textViewReahHeight = 0;
@@ -135,64 +149,71 @@ class TextViewEx {
         this._marqueeCurrentNum = 2;
         this._textView = null;
         this._TextViewParams = text_view_params;
-        this._NeedQuick = typeof quick === "undefined"? false : quick;//默认需要实际高度
+        this._NeedQuick = typeof quick === "undefined" ? false : quick;//默认需要实际高度
         this._marquee = text_view_params.Marquee;
         this._rectArea = text_view_params.RectArea;
-		this._DrawCount = 0;
-		this._ShowInterval = 0;
+        this._DrawCount = 0;
+        this._ShowInterval = 0;
         this._TextureManager = texture_manager;
         this._Shader = text_view_params.Shader;
-	    this._IsInstantLoad = text_view_params.IsInstantLoad ? 1:0;
+        this._IsInstantLoad = text_view_params.IsInstantLoad ? 1 : 0;
         this._AutoHeight = false;
         this._EnableTextureOnloadCallback = !!texture_onload_callbacks;
+        this._DuplicateBag = (text_view_params.BuildCopyBag ?
+        {
+            // 创建非空bag后，就可以在GetTextTextureByMultiRows()处理时获取信息
+            "Set": null, // Texture的ResourceInfo中的Set
+            "Swf": null, // String with font
+            "Siz": null, // AddView时的width和height
+        } : null);
         let _this = this;
         let _renderer = null;
-        let _blockWidth =  text_view_params.RectArea.width;
-        let _blockHeight= text_view_params.RectArea.height;
+        let _blockWidth = text_view_params.RectArea.width;
+        let _blockHeight = text_view_params.RectArea.height;
         let _stringWithFont = null;
-	    let _matrixClipLayoutview = null;
+        let _matrixClipLayoutview = null;
 
-	    if (this._marquee !== null) {
-	    	// 只有在Maquee情况下需要ClipView(PS: react模式下不需要文字自身的maquee)
-		    _matrixClipLayoutview = new Forge.ClipView();
-		    _matrixClipLayoutview.Init();
-		    _matrixClipLayoutview.SetClipRect(
-			    0,
-			    0,
-			    _blockWidth,
-			    _blockHeight,
-			    true);
-		    _matrixClipLayoutview.SetId("matrixClipLayoutview");
-		    _matrixClipLayoutview.OnDettachFromSystem = function (){
-			    _this._marqueeRunning = false;
-			    Forge.ClipView.prototype.OnDettachFromSystem.call(this); // Call to super class
-		    }
-	    } else {
-		    _matrixClipLayoutview = new Forge.LayoutView();
-            _matrixClipLayoutview.OnDettachFromSystem = function (){
+        if (this._marquee !== null) {
+            // 只有在Maquee情况下需要ClipView(PS: react模式下不需要文字自身的maquee)
+            _matrixClipLayoutview = new Forge.ClipView();
+            _matrixClipLayoutview.Init();
+            _matrixClipLayoutview.SetClipRect(
+                0,
+                0,
+                _blockWidth,
+                _blockHeight,
+                true);
+            _matrixClipLayoutview.SetId("matrixClipLayoutview");
+            _matrixClipLayoutview.OnDettachFromSystem = function () {
+                _this._marqueeRunning = false;
+                Forge.ClipView.prototype.OnDettachFromSystem.call(this); // Call to super class
+            }
+        } else {
+            _matrixClipLayoutview = new Forge.LayoutView();
+            _matrixClipLayoutview.OnDettachFromSystem = function () {
                 if (this._TextureOnloadCallbacksTimer) {
                     clearTimeout(this._TextureOnloadCallbacksTimer);
                     this._TextureOnloadCallbacksTimer = null;
                 }
             }
-	    }
+        }
 
         _renderer = _matrixClipLayoutview.GetRenderer();
-		this._Renderer = _renderer;
+        this._Renderer = _renderer;
         let text_str = text_string;
         if (!text_str) {
             text_str = text_view_params.StringWithFont.str;
         }
         //对字符串进行转义字符替换(Escape character);
         text_str = this._ConvertEscToString(text_str);
-		let italic = false;
-		if (text_view_params.StringWithFont.italic.length > 0) {
-			italic = true;
-		}
-		let bold = false;
-		if (text_view_params.StringWithFont.bold.length > 0) {
-			bold = true;
-		}
+        let italic = false;
+        if (text_view_params.StringWithFont.italic.length > 0) {
+            italic = true;
+        }
+        let bold = false;
+        if (text_view_params.StringWithFont.bold.length > 0) {
+            bold = true;
+        }
         _stringWithFont = Forge.sTextUtils.StringWithFont(
             text_str,
             text_view_params.StringWithFont.size,
@@ -200,8 +221,8 @@ class TextViewEx {
             text_view_params.StringWithFont.alignment,
             text_view_params.StringWithFont.vertical_align,
             text_view_params.StringWithFont.textColour,
-			italic,
-			bold,
+            italic,
+            bold,
             text_view_params.StringWithFont.shadow,
             text_view_params.StringWithFont.stroke_width,
             text_view_params.StringWithFont.vertical_area_align
@@ -210,8 +231,8 @@ class TextViewEx {
         //需要实际宽高时，或有跑马灯设置，才获取实际的宽度
         if (typeof text_view_params.Marquee !== "undefined"
             && text_view_params.Marquee !== null) {
-           this._textWidth = Forge.sTextUtils.GetTextWidth(_stringWithFont);
-        } else if(!this._NeedQuick) {
+            this._textWidth = Forge.sTextUtils.GetTextWidth(_stringWithFont);
+        } else if (!this._NeedQuick) {
             this._textWidth = Forge.sTextUtils.GetTextWidth(_stringWithFont);
         } else {
             this._textWidth = text_view_params.RectArea.width - 2 * text_view_params.RectArea.x;
@@ -236,12 +257,13 @@ class TextViewEx {
 
         this._layoutView = _matrixClipLayoutview;
 
-		this._TextTexture = null;
+        this._TextTexture = null;
 
-		this._MarqueeTimer = null;
+        this._MarqueeTimer = null;
     }
+
     _ConvertEscToString(src_string) {
-        let dst_str = ""+src_string;//强转字符串型
+        let dst_str = "" + src_string;//强转字符串型
         if (dst_str.indexOf("&quot;") !== -1) {
             dst_str = dst_str.replace(/&quot;/ig, "\"");
         }
@@ -269,48 +291,58 @@ class TextViewEx {
         let block_height = t_RectArea.height;
         let text_texture;
         let rect_area = Forge.Clone(t_RectArea);
-		let text_view = null;
+        let text_view = null;
         if (t_StringWithFont.str.length !== 0) {
-            text_texture =  this._TextureManager.GetTextTextureByMultiRows(t_StringWithFont, t_TextAttr, rect_area,
-                line_height, this._NeedQuick, this._Shader, this._IsInstantLoad);
+            text_texture = this._TextureManager.GetTextTextureByMultiRows(t_StringWithFont, t_TextAttr, rect_area,
+                line_height, this._NeedQuick, this._Shader, this._IsInstantLoad, this._DuplicateBag);
 
-			// Set text texture
-			this._TextTexture = text_texture.texture;
+            // Set text texture
+            this._TextTexture = text_texture.texture;
 
             //set real height
             this._textViewReahHeight = text_texture.real_height;
             text_view = new Forge.LayoutView();
             text_view.Init(new Forge.TextureSetting(text_texture.texture, null, null, true));
-            text_view.SetId("Text-"+t_StringWithFont.str);
+            text_view.SetId("Text-" + t_StringWithFont.str);
 
-			if (t_StringWithFont.vertical_area_align == "middle" || t_StringWithFont.vertical_area_align == "bottom") {
-				text_view.Element.style.display = "table-cell";
-				text_view.Element.style.position = "static";
-				parent_view.Element.style.display = "table";
-				parent_view.Element.style.position = "static";
-			}
+            if (t_StringWithFont.vertical_area_align == "middle" || t_StringWithFont.vertical_area_align == "bottom") {
+                text_view.Element.style.display = "table-cell";
+                text_view.Element.style.position = "static";
+                parent_view.Element.style.display = "table";
+                parent_view.Element.style.position = "static";
+            }
             parent_view.AddView(text_view,
                 new Forge.LayoutParams({
-                    x:0, y:0,
-                    width: rect_area.width, height:block_height}));
+                    x: 0, y: 0,
+                    width: rect_area.width, height: block_height
+                }));
             this._textView = text_view;
         } else {
             this._textViewReahHeight = 0;
             Forge.LogI("t_StringWithFont.str.length is 0");
         }
     }
-    GetLayoutView () {
+
+    // 获取快速构建同样文字样式TextViewEx的信息（样式和描画区域相同，一般出现在MetroWidget的重复项中的文字样式
+    // 获取样式后，通过 CopiedTextViewEx 快速创建文字View
+    GetDuplicateBuilder() {
+        return this._DuplicateBag;
+    }
+
+    GetLayoutView() {
         return this._layoutView;
     }
+
     GetTextWidth() {
-    	if (this._textView) {
-    		return this._textView.Element.clientWidth;
-	    } else {
-		    return Math.floor(this._textWidth + 0.5);
-	    }
+        if (this._textView) {
+            return this._textView.Element.clientWidth;
+        } else {
+            return Math.floor(this._textWidth + 0.5);
+        }
     }
+
     StartAnimation(animation) {
-        if(animation && this._textView !== null) {
+        if (animation && this._textView !== null) {
             this._textView.StartAnimation(animation);
         }
     }
@@ -318,9 +350,79 @@ class TextViewEx {
 Forge.TextViewEx = TextViewEx;
 Forge.TextViewControl = TextViewEx;
 
-Forge.Clone = function(obj) {
-	let obj_json = JSON.stringify(obj);
-	let obj_clone = JSON.parse(obj_json);
-	return obj_clone;
+class CopiedTextViewEx {
+    /**
+     * 通过TextViewEx.GetDuplicateBuilder获得信息快速构建的文字View控件<br>
+     * 【重要】该控件主要为React场景服务，不支持Maquee和needQuick模式
+     *
+     * @public
+     * @param texture_manager {Forge.TextureManager}
+     * @param {String} text_string 文本
+     * @param {Object} duplicate_info_bag TextViewEx.GetDuplicateBuilder得到的结构体(不要进行改动)
+     * @param {Object} text_area_size 文字展示区域，格式 {width:xxx, height:xxx}
+     * @param {Function} texture_onload_callbacks 加载完成后的回调
+     * @class Forge.CopiedTextViewEx
+     **/
+    constructor(texture_manager, text_string, text_area_size, duplicate_info_bag, texture_onload_callbacks) {
+        let text_area = {x: 0, y: 0, width: text_area_size.width, height: text_area_size.height};
+
+        this._ContainerView = new Forge.LayoutView();
+        this._TextView = this._AddTextView(
+            texture_manager, text_string, text_area,
+            this._ContainerView, duplicate_info_bag, texture_onload_callbacks);
+    }
+
+    _AddTextView(texture_manager, text_string, text_area,
+                 container_view, duplicate_info_bag, texture_onload_callbacks) {
+        let text_view = null;
+        if (text_string && text_string.length != 0) {
+            let text_texture = texture_manager.GetCopiedTextTexture(
+                text_string,
+                text_area,
+                duplicate_info_bag,
+                texture_onload_callbacks);
+
+            text_view = new Forge.LayoutView();
+            text_view.Init(new Forge.TextureSetting(text_texture, null, null, true));
+            if (text_string.length < 15) {
+                text_view.SetId("Text-" + text_string);
+            } else {
+                // 文字太长时，使用长度来代表view id
+                text_view.SetId("Text-Long" + text_string.length);
+            }
+
+            container_view.AddView(text_view,
+                new Forge.LayoutParams({
+                    x: 0, y: 0,
+                    width: text_area.width,
+                    height: text_area.height
+                }));
+
+            // 注册加载完成后的回调
+            if (texture_onload_callbacks) {
+                text_texture.RegisterLoadImageCallback(null, texture_onload_callbacks, null);
+            }
+        }
+
+        return text_view;
+    }
+
+    EnableAutoHeight() {
+        if (this._TextView) {
+            this._TextView.EnableAutoHeight();
+        }
+    }
+
+    GetLayoutView() {
+        return this._ContainerView;
+    }
+}
+Forge.CopiedTextViewEx = CopiedTextViewEx;
+
+Forge.Clone = function (obj) {
+    // 效率低的深度层次拷贝
+    // 非深层次拷贝请换成Object.assign进行拷贝
+    return JSON.parse(JSON.stringify(obj));
 };
+
 window["Clone"] = Forge.Clone;

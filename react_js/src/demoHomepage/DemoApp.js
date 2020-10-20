@@ -173,8 +173,26 @@ let demoInfos = [
 		"name": "文字清晰度自适应描画区域",
 		"path": "/users/textScale",
 		"class": lazy(() => import('../textScale/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+		"name": "图片预加载",
+		"path": "/users/preload",
+		"class": lazy(() => import('../preload/App').then(m => ({ default: m.SubApp }))),
 	},
-
+    {
+        "name": "ClassName写法样例",
+        "path": "/users/classNameDemo",
+        "class": lazy(() => import('../classNameDemo/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        "name": "抛物运动写法样例",
+        "path": "/users/throwMoveDemo",
+        "class": lazy(() => import('../throwMoveDemo/App').then(m => ({ default: m.SubApp })))},
+    {
+        "name": "texture缓存示例",
+        "path": "/users/imageStorage",
+        "class": lazy(() => import('../imageStorage/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;

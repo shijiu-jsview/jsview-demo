@@ -19,25 +19,27 @@ function _EnsureCssNamesMap() {
 		"borderImageOutset": ["border-image-outset"],
 		"borderImageWidth": ["border-image-width"],
 		"backgroundColor": ["background-color"],
-		"backfaceVisibility": ["backface-visibility"],
+		"backfaceVisibility": ["backface-visibility", "-webkit-backface-visibility"],
 		"clipPath": ["clip-path"],
 		"fontFamily": ["font-family"],
 		"fontSize": ["font-size"],
 		"fontStyle": ["font-style"],
 		"lineHeight": ["line-height"],
 		"objectFit": ["object-fit"],
-		"perspectiveOrigin": ["perspective-origin"],
+		"perspective": ["perspective", "-webkit-perspective"],
+		"perspectiveOrigin": ["perspective-origin", "-webkit-perspective-origin"],
 		"textAlign": ["text-align"],
 		"textOverflow": ["text-overflow"],
 		"transform": ["transform", "-webkit-transform"],
 		"transformOrigin": ["transform-origin", "-webkit-transform-origin"],
-		"transformStyle": ["transform-style"],
+		"transformStyle": ["transform-style", "-webkit-transform-style"],
 		"transition": ["transition", "-webkit-transition"],
 		"whiteSpace": ["white-space"],
 		"zIndex": ["z-index"],
 	};
 
 	sUnitSuffixMap = {
+		"fontSize": "px",
 		"left": "px",
 		"top": "px",
 		"width": "px",
@@ -77,11 +79,15 @@ function _ConvertStyles(styles_define) {
 	return styles_result;
 }
 
+let CONST_TYPE_BASE = null;
+let CONST_TYPE_TEXT = "text";
+
 class JsvStyleClass {
 	constructor(styles_define) {
 		this._Name = null;
 		this._Styles = null;
 		this._StyleGroup = null;
+		this._JsvInnerAttach = null;
 
 		if (styles_define) {
 			this._UpdateInner(styles_define);
@@ -98,7 +104,7 @@ class JsvStyleClass {
 	_UpdateInner(styles_define) {
 		this._RecycleInner();
 
-		this._Name = "JsvStyle_" + (sIdGenerator++);
+		this._Name = "JsvStyle_" + (sIdGenerator++); // 重新命名以触发react的className属性变化
 		this._Styles = styles_define;
 
 		if (window.JsvDisableReactWrapper) {
@@ -134,26 +140,118 @@ class JsvStyleClass {
 			}
 			this._Name = null;
 			this._Styles = null;
+			this._JsvInnerAttach = null;
 		}
+	}
+
+	// 约定接口，引擎中获取本对象的类型
+	classType() {
+		return CONST_TYPE_BASE;
 	}
 
 	// 约定接口，引擎中获取本对象的style设置
 	getStyles() {
 		return this._Styles;
 	}
+
+
+	// 约定接口，
+	// 用于存储配置转化出来的缓存信息和标识位
+	getAttach() {
+		return this._JsvInnerAttach;
+	}
+
+	// 约定接口，
+	// 用于读取缓存信息和标识位
+	updateAttach(new_attach) {
+		this._JsvInnerAttach = new_attach;
+	}
 }
 
-class JsvFontStyleClass extends JsvStyleClass {
-	// TODO: 完成与Forge fsId对接
+class JsvTextStyleClass extends JsvStyleClass {
+	constructor(styles_define) {
+		super(styles_define);
+
+		this._JsvTextAttributes = {}; // 例如 jsv_text_vertical_align 属性
+	}
+
+	// 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
+	// 非hoc由于调用时机控制不正确，可能产生设置无效的问题
+	appendJsvAttributes(name, value) {
+		if (!name.startsWith("jsv_text_")) {
+			// Error: should start with 'jsv_text_'
+			return false;
+		}
+
+		if (this._JsvTextAttributes.hasOwnProperty(name) && this._JsvTextAttributes[name] !== value) {
+			// Error: should set once
+			return false ;
+		}
+
+		this._JsvTextAttributes[name] = value;
+		return true;
+	}
+
+	getTextJsvAttributes() {
+		return this._JsvTextAttributes;
+	}
+
+	// 与jsviewreact.min.js对接的内部接口
+	// 加速功能失效，失效的原因由style name给出
+	// 导致加速失效的属性为下列列表中的属性在class的style定义之外被设置成其他值:
+	// ***** Style中 ******
+	// "textOverflow",
+	// "wordWrap",
+	// "textShadow",
+	// "fontSize",
+	// "lineHeight",
+	// "color",
+	// "fontFamily",
+	// "fontStyle",
+	// "fontWeight",
+	// "textAlign",
+	// ***** Attribute中 ******
+	// "jsv_text_vertical_align"
+	fallbackMode(style_name) {
+		console.warn("WARN: JsvTextStyleClass[" + this.getName() + "] enter fallback mode due to [" + style_name + "]");
+	}
+
+	// Override
+	classType() {
+		return CONST_TYPE_TEXT;
+	}
 }
 
-class JsvFontDisplayStyleClass extends JsvStyleClass {
-	// TODO: 完成与Forge dsId对接
+function combinedStyles(style_array, extract_all) {
+	let class_process_done = false;
+	let name_list = [];
+	let normal_style = {};
+	for (let item of style_array) {
+		if (item instanceof JsvStyleClass) {
+			if (extract_all) {
+				// 属性全拆解
+				normal_style = Object.assign(normal_style, item.getStyles());
+			} else {
+				name_list.push(item.getName());
+			}
+			if (class_process_done) {
+				console.warn("WARNING:found class define after normal style set");
+			}
+		} else {
+			class_process_done = true;
+			normal_style = Object.assign(normal_style, item);
+		}
+	}
+
+	return {
+		combinedClass: name_list.join(" "),
+		combinedStyle: normal_style
+	};
 }
 
 export {
 	JsvStyleClass,
-	JsvFontStyleClass,
-	JsvFontDisplayStyleClass,
+	JsvTextStyleClass,
+	combinedStyles
 }
 

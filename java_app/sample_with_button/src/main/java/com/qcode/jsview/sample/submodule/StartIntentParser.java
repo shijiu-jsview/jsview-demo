@@ -16,9 +16,9 @@ public class StartIntentParser {
 
 	public StartIntentParser(Intent intent) {
 		// 可选：JsView 内核版本指定范围，若不指定，则会使用当前AAR携带的版本
-		if (intent.hasExtra("CORE")) {
-			String core_version_range = intent.getStringExtra("CORE");
-			Log.d(TAG, "CORE:" + core_version_range);
+		if (intent.hasExtra("COREVERSIONRANGE")) {
+			String core_version_range = intent.getStringExtra("COREVERSIONRANGE");
+			Log.d(TAG, "COREVERSIONRANGE:" + core_version_range);
 			if (core_version_range != null) {
 				coreVersionRange = core_version_range;
 			}
@@ -34,9 +34,9 @@ public class StartIntentParser {
 		}
 
 		// 可选：引擎JS接口层的地址，没有则使用gradle.properties中填写的 CustomConfig_EngineUrl 的值
-		if (intent.hasExtra("ENGINEJS")) {
-			String engine_url = intent.getStringExtra("ENGINEJS");
-			Log.d(TAG, "ENGINEJS:" + engine_url);
+		if (intent.hasExtra("ENGINE")) {
+			String engine_url = intent.getStringExtra("ENGINE");
+			Log.d(TAG, "ENGINE:" + engine_url);
 			if (engine_url != null) {
 				engineUrl = engine_url;
 			}
@@ -66,8 +66,8 @@ public class StartIntentParser {
 	}
 
 	private void loadDebugChange() {
-//		coreVersionRange = "461";
+		// 在此可以配置一些调试用的参数来覆盖am start设置过来的参数，例如URL和engineUrl设定
 //		jsUrl = "http://192.168.2.179:3000/static/js/bundle.js";
-//		engineUrl = "http://192.168.2.179:8081/apps/home_js/imports/forge_all/es6_wrapper_react_index.list";
+//		engineUrl = "http://cdn.release.51vtv.cn/forge_js/master/JsViewES6_react_r716.jsv.e3750856.js";
 	}
 }

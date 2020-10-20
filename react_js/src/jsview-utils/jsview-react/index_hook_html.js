@@ -1,5 +1,7 @@
 import initHeaderScriptLoader from "./header_script_loader"
 
+window.JsvDisableReactWrapper = true; // 设置标识位，有部分高阶组件根据此标识位决定元素的搭建方式
+
 // Forge define
 if (typeof window["Forge"] === 'undefined')
 	window["Forge"] = {};
