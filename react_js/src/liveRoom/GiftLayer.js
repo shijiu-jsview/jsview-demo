@@ -63,7 +63,7 @@ class GiftLayer extends FocusBlock {
     }
 
     onKeyDown(ev) {
-        return true;
+        return false;
     }
 
     _OnClick(item) { // enter

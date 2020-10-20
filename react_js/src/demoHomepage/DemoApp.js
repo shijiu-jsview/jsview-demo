@@ -21,7 +21,7 @@ let demoInfos = [
         "class": lazy(() => import('../basic/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        "name": "LiveRoom",
+        "name": "直播间",
         "path": "/users/liveRoom",
         "class": lazy(() => import('../liveRoom/App').then(m => ({ default: m.SubApp }))),
     },

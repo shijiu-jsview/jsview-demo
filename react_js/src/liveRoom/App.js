@@ -1,11 +1,12 @@
 import React from 'react';
 import createStandaloneApp from "../demoCommon/StandaloneApp"
+import { FocusBlock } from "../demoCommon/BlockDefine"
 import BasicLayer from './BasicLayer'
 import MessageLayer from './MessageLayer'
 import InputLayer from './InputLayer'
 import GiftLayer from './GiftLayer'
 
-class LiveRoom extends React.Component {
+class LiveRoom extends FocusBlock {
     constructor(props) {
         super(props);
         this._autoPlay = false;
@@ -26,9 +27,19 @@ class LiveRoom extends React.Component {
     _RefVideo = (ele)=>{
 		console.log("video:", ele);
 		this.video = ele;
-	}
+    }
     
-    render (){
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    renderContent (){
         let _style = {
             top:0,
             left:0,
