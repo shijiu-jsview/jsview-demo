@@ -20,12 +20,6 @@ class GiftLayer extends FocusBlock {
     constructor(props) {
         super(props);
         this._style = LiveStyle.get().giftLayer;
-        this._Measures = this._Measures.bind(this);
-        this._RenderItem = this._RenderItem.bind(this);
-        this._RenderFocus = this._RenderFocus.bind(this);
-        this._OnClick = this._OnClick.bind(this);
-        this._OnEdge = this._OnEdge.bind(this);
-
         this.state = {
             visible: 'hidden',
             ani_visible: 'hidden',
@@ -40,11 +34,11 @@ class GiftLayer extends FocusBlock {
         this.setState({ani_visible:'hidden'})
     }
 
-    _Measures(item) {
+    _Measures = item => {
         return SimpleWidget.getMeasureObj(128, 163, item.focusable, false)
     }
 
-    _RenderFocus(item) {
+    _RenderFocus = item => {
         return (
             <div style={{ width:128,height:163, backgroundImage:focusImg}}>
                 <div style={{ ...this._style.gift_bg_style, backgroundImage:item.imgUrl}}/>
@@ -53,7 +47,7 @@ class GiftLayer extends FocusBlock {
         )
     }
 
-    _RenderItem(item) {
+    _RenderItem = item => {
         return (
             <div style={{ width:128,height:163 }}> 
                 <div style={{ ...this._style.gift_bg_style, backgroundImage:item.imgUrl}}/>
@@ -62,7 +56,7 @@ class GiftLayer extends FocusBlock {
         )
     }
 
-    onKeyDown(ev) {
+    onKeyDown = ev => {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
             this.setState({ visible: 'hidden' })
             this.changeFocus("/liveRoom/InputLayer");
@@ -71,7 +65,7 @@ class GiftLayer extends FocusBlock {
         return false    
     }
 
-    _OnClick(item) { // enter
+    _OnClick = item => { // enter
         this.setState({item:item, ani_visible:'hidden'})
         this.changeFocus("/liveRoom/InputLayer")
         eventProxy.trigger('OnMessage',{text:null,img:item.imgUrl})
@@ -80,7 +74,7 @@ class GiftLayer extends FocusBlock {
         // this._DoAnimation()
     }
 
-    _OnEdge(edge_info) {
+    _OnEdge = edge_info => {
         console.log("SimpleWidget onEdge", edge_info)
         if(edge_info && edge_info.direction === EdgeDirection.top){
             this.setState({ visible: 'hidden' })
@@ -88,7 +82,7 @@ class GiftLayer extends FocusBlock {
         }
     }
 
-    onFocus() {
+    onFocus = () => {
         console.log("GiftLayer is focused")
         this.setState({ visible: 'visible' })
         this.changeFocus(this.props.branchName + "/gift")
