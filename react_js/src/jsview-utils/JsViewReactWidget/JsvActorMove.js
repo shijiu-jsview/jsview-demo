@@ -229,7 +229,7 @@ class _ActorControl extends ActorControlBase {
 
             // Repeat动画中，循环运动区域为repeatSet.start 到 to_pos，
             // 但首次动画从from_pos开始运行，首次运动完成后，第二次运行再从repeatSet.start开始
-            let start_percent = (from_pos - repeat_set.start) / (repeat_set.start - to_pos);
+            let start_percent = (from_pos - repeat_set.start) / (to_pos - repeat_set.start);
             if (start_percent > 1 || start_percent < 0) {
                 console.error("Error: current=" + from_pos + " out of repeat range["
                     + repeat_set.start + "-" + to_pos + "]");
