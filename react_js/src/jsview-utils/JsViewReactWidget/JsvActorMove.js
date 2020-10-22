@@ -260,7 +260,7 @@ class _ActorControl extends ActorControlBase {
         let anim = new Forge.TranslateAnimation(
             current_array[0], tos_array[0],
             current_array[1], tos_array[1],
-            0, null);
+            1, null);
         return anim;
     }
 
