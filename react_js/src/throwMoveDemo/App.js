@@ -92,19 +92,18 @@ class MainScene extends FocusBlock {
                     <div key="leftWall" style={{top:0, left:425, width:5, height:620, backgroundColor:"#F0F000"}}/>
                     <div key="rightWall" style={{top:0, left:850, width:5, height:620, backgroundColor:"#F0F000"}}/>
                     <div key="bottomWall" style={{top:620, left:425, width:430, height:5, backgroundColor:"#F0F000"}}/>
-                    <div key="GuidText" class={CssStyles.FontStyle.getName()}
-                         style={{top:625, left:425, width:800, height:40}}>
+                    <div key="GuidText" className={CssStyles.FontStyle.getName()}
+                         style={{top:625, left:425, width:430, height:40}}>
                         按OK键进行跳跃和转向
                     </div>
-                    <div key="DirectText" class={CssStyles.FontStyle.getName()}
+                    <div key="DirectText" className={CssStyles.FontStyle.getName()}
                          style={{top:250, left:425, width:430, height:40}}>
                         {"当前方向:" + (this.state.direction > 0 ? "->" : "<-")}
                     </div>
-                    <div key="bottomWall" style={{top:620, left:425, width:430, height:5, backgroundColor:"#F0F000"}}/>
                 </React.Fragment>
 				<div style={{top:50, left:50}}>
 					<div style={{backgroundColor:"#0916ff",width:20,height:20}}></div>
-					<div key="sample1" class={CssStyles.DetailFontStyle.getName()}
+					<div key="sample1" className={CssStyles.DetailFontStyle.getName()}
 						 style={{top:0, left:30, width:800, height:30}}>初始速度-500/500、加速度750/-750，着落点为抛物线左侧-50、右侧50</div>
 				</div>
 				<div style={{top:590, left:300}}>
@@ -116,7 +115,7 @@ class MainScene extends FocusBlock {
 				</div>
 				<div style={{top:80, left:50}}>
 					<div style={{backgroundColor:"#00FF00",width:20,height:20}}></div>
-					<div key="sample1" class={CssStyles.DetailFontStyle.getName()}
+					<div key="sample1" className={CssStyles.DetailFontStyle.getName()}
 						 style={{top:0, left:30, width:800, height:30}}>抛物线运动</div>
 				</div>
                 <div style={{top:590, left:625}}>
@@ -129,7 +128,7 @@ class MainScene extends FocusBlock {
 
 				<div style={{top:110, left:50}}>
 					<div style={{backgroundColor:"#ffb915",width:20,height:20}}></div>
-					<div key="sample1" class={CssStyles.DetailFontStyle.getName()}
+					<div key="sample1" className={CssStyles.DetailFontStyle.getName()}
 						 style={{top:0, left:30, width:800, height:30}}>初始速度500/-500、加速度750</div>
 				</div>
                 <div style={{top:290, left:300}}>
@@ -142,7 +141,7 @@ class MainScene extends FocusBlock {
 
 				<div style={{top:140, left:50}}>
 					<div style={{backgroundColor:"#abaa20",width:20,height:20}}></div>
-					<div key="sample1" class={CssStyles.DetailFontStyle.getName()}
+					<div key="sample1" className={CssStyles.DetailFontStyle.getName()}
 						 style={{top:0, left:30, width:800, height:30}}>初始速度-500、加速度750、着落点为抛物线左侧-100</div>
 				</div>
                 <div style={{top:590, left:925}}>
@@ -155,7 +154,7 @@ class MainScene extends FocusBlock {
 
 				<div style={{top:170, left:50}}>
 					<div style={{backgroundColor:"#FF0000",width:20,height:20}}></div>
-					<div key="sample1" class={CssStyles.DetailFontStyle.getName()}
+					<div key="sample1" className={CssStyles.DetailFontStyle.getName()}
 						 style={{top:0, left:30, width:800, height:30}}>初始速度0、加速度750/-750，上下运动</div>
 				</div>
                 <div style={{top:290, left:925}}>
