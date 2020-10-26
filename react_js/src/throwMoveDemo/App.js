@@ -42,7 +42,9 @@ class MainScene extends FocusBlock {
 			});
 			this._ThrowControl.throwAlongY(-500, 750, { type: "catch", position: 0, direction: 1 }, (x, y) => {
 				console.log("Throw end with x=" + x + " y=" + y);
-			});
+			}, ()=>{
+			    console.log("Get to the pole...");
+            });
 
 			this._ThrowControl1.throwAlongY(-500 * this._ToggleDirection, 750 * this._ToggleDirection, {
 				type: "catch",
