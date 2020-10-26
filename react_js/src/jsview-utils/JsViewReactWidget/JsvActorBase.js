@@ -191,8 +191,28 @@ class JsvActorBase extends React.Component{
      */
     constructor(props) {
         super(props);
+
+        this._ElementRef = null;
+        this._RefCallback = null;
         this._LinkedControl = props.control;
-        this._ElementRef = React.createRef();
+
+        // 对接外部设置的ref处理
+        let outer_ref = false;
+        if (props.ref) {
+            let ref_type = (typeof props.ref);
+
+            if (ref_type === "object") {
+                // 使用外部reference
+                this._ElementRef = props.ref;
+                outer_ref = true;
+            } else if (ref_type === "function") {
+                // 当did mount时，将内部reference传给外部
+                this._RefCallback = props.ref;
+            }
+        }
+        if (!outer_ref) {
+            this._ElementRef = React.createRef();
+        }
 
         // 校验合法性
         if (!this._LinkedControl || !(this._LinkedControl instanceof ActorControlBase)) {
@@ -210,6 +230,11 @@ class JsvActorBase extends React.Component{
     componentDidMount() {
         // 将JsView的Forge.LayoutView关联给control
         this._LinkedControl._SetView(this._ElementRef.current.jsvMainView);
+
+        // 回执reference信息
+        if (this._RefCallback) {
+            this._RefCallback(this._ElementRef);
+        }
     }
 }
 
