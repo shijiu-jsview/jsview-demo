@@ -297,21 +297,21 @@ Forge.sImpactSensorManager.Callback = class {
 // 再次为了PC端调试不报错，完成所有接口的声明的说明
 Forge.sImpactSensorManager.AutoFroze = class {
 	constructor(
-		contract_froze_views, // 碰撞后，想要执行动画停止的view的列表，
-		leave_froze_views   // 物体分离后，想要执行动画停止的view的列表
+		froze_pre_impact_views, // 碰撞后，想要执行动画停止的view的列表，
+		froze_on_impact_views   // 物体分离后，想要执行动画停止的view的列表
 	) {
-		this._OnContractViews = contract_froze_views;
-		this._OnLeaveViews = leave_froze_views
+		this._PreImpactViews = froze_pre_impact_views;
+		this._OnImpactViews = froze_on_impact_views
 	}
 
 	// 列表可更新
-	UpdateContractList(contract_froze_views) {
-		this._OnContractViews = contract_froze_views;
+	UpdatePreImpactList(froze_pre_impact_views) {
+		this._PreImpactViews = froze_pre_impact_views;
 	}
 
 	// 列表可更新
-	UpdateLeaveList(leave_froze_views) {
-		this._OnLeaveViews = leave_froze_views;
+	UpdateOnImpactList(froze_on_impact_views) {
+		this._OnImpactViews = froze_on_impact_views;
 	}
 }
 

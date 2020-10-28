@@ -18,7 +18,7 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 平移运动接口，包含 moveToX, moveToY
+     * 平移运动接口，包含 moveToX, moveToY, moveOffsetX, moveOffsetY
      */
     moveToX(target_x, speed, end_callback) {
         this._UniformMove(0, target_x, NaN, speed, null, end_callback);
@@ -250,6 +250,11 @@ class _ActorControl extends ActorControlBase {
             anim.EnableInfinite();
         } else {
             // 单次动画，无repeat
+            console.log("DebugMove  affect_x="
+                + affect_x
+                + " from=" + from_pos + " to=" + to_pos
+                + " cx=" + current_array[0] + " cy=" + current_array[1]
+            );
             anim = new Forge.TranslateFrameAnimation(
                 from_pos, to_pos,
                 start_params.speed, affect_x,
@@ -263,8 +268,8 @@ class _ActorControl extends ActorControlBase {
     _BuildJumpAnimation(current_array, tos_array, start_params) {
         // 使用时长为0的Translate动画来完成jump动作
         let anim = new Forge.TranslateAnimation(
-            current_array[0], tos_array[0],
-            current_array[1], tos_array[1],
+            tos_array[0], tos_array[0],
+            tos_array[1], tos_array[1],
             1, null);
         return anim;
     }
