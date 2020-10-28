@@ -21,7 +21,7 @@
  */
 
 import React from 'react';
-import { createImpactTracer, createImpactCallback } from "../jsview-utils/jsview-react/index_widget.js"
+import { createImpactTracer, createImpactCallback } from "../jsview-utils/JsViewReactTools/JsvImpactTracer"
 import './App.css'
 import createStandaloneApp from "../demoCommon/StandaloneApp"
 import {FocusBlock} from "../demoCommon/BlockDefine"

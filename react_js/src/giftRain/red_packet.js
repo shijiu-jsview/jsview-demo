@@ -2,7 +2,7 @@
  * Created by luocf on 2019/12/3.
  */
 import React, {Component} from 'react';
-import {createImpactTracer, createImpactCallback} from '../jsview-utils/jsview-react/index_widget';
+import {createImpactTracer, createImpactCallback} from '../jsview-utils/JsViewReactTools/JsvImpactTracer';
 import {JsvSpriteTranslate, TranslateControl} from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 
 class SpriteTranslate extends Component {

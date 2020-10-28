@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import "./Target.css"
-import {createImpactTracer, createImpactCallback} from '../../../../../jsview-utils/jsview-react/index_widget';
+import {createImpactTracer, createImpactCallback} from '../../../../../jsview-utils/JsViewReactTools/JsvImpactTracer';
 import {JsvSpriteTranslate, TranslateControl} from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate"
 import {JsvSpriteAnim} from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim'
 import Game from "../../common/Game"
