@@ -30,18 +30,7 @@ class TextureSetting {
         if (typeof has_alpha === "undefined") has_alpha = true;
         this.HasAlpha = has_alpha;
     }
-    
-	/**
-	 * 对接虚拟html node(来源自react和vue)的自定义属性
-	 *
-	 * @func SetElementProp
-	 * @memberof Forge.LayoutViewBase
-	 * @instance
-	 * @param {Object} changed_props 格式{name1:value, name2:value}
-	 **/
-	SetElementProp(changed_props, owner_activity) {
-	    //nothing to do 
-	}
+
     /**
      * 标识这个Texture集合是否为外部Texture<br>
      *     默认为内部Texture，内部Texture将在所附着的LayoutView从RootView移除时被强制释放<br>
@@ -223,6 +212,17 @@ class LayoutViewBase {
         this.ResetTexture(texture_setting);
     }
 
+	/**
+	 * 对接虚拟html node(来源自react和vue)的自定义属性
+	 *
+	 * @func SetElementProp
+	 * @memberof Forge.LayoutViewBase
+	 * @instance
+	 * @param {Object} changed_props 格式{name1:value, name2:value}
+	 **/
+	SetElementProp(changed_props, owner_activity) {
+		//nothing to do
+	}
     AddView(child_view, layout_params, packed_layout) {
         if (layout_params !== null) {
             if (!(layout_params instanceof Forge.LayoutParamsBase))
