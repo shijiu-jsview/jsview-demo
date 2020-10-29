@@ -11,11 +11,11 @@ class MainScene extends FocusBlock {
 		this._data = [];
 
 		// 添加300个模拟数据
-		for (var i = 0; i < 300; i++) {
+		for (var i = 0; i < 183; i++) {
 			this._data.push({
 				name: "商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:" + i,
-				prize: "" + (i + 500), /* 测试数据要保证比最高优惠券(500)要高 */
-				savePrize: "" + (Math.floor(Math.random() * 500)),
+				prize: "" + (Math.floor(Math.random() * 200) + 200), /* 测试数据要保证比最高优惠券(300左右)要高 */
+				savePrize: "" + (i),
 				soldTotal: "" + (Math.floor(Math.random() * 50000)),
 				pictUrl: "http://img.alicdn.com/bao/uploaded/i3/2207313464483/O1CN01Ab4vWz1izGAyRL1Yf_!!0-item_pic.jpg",
 			});
@@ -23,7 +23,7 @@ class MainScene extends FocusBlock {
 	}
 
 	_Measures = (item)=>{
-		return SimpleWidget.getMeasureObj(340, 526, true, false)
+		return SimpleWidget.getMeasureObj(227, 351, true, false)
 	};
 
 	_OnItemFocus = (data_item)=>{
@@ -54,18 +54,18 @@ class MainScene extends FocusBlock {
 	}
 
 	onFocus() {
-		console.log("cchtest onfocus")
+		console.log("On App focused");
 		this.changeFocus(this.props.branchName + "/widget1")
 	}
 
 	renderContent() {
 		return (
-			<div style={{width: 1920, height: 1080, backgroundColor: "#00000F"}}>
-				<div style={{top: 40, left: 20}}>
+			<div style={{width: 1280, height: 720, backgroundColor: "#00000F"}}>
+				<div style={{top: 5, left: 5}}>
 					<SimpleWidget
-						width={1840}
-						height={1000}
-						padding={{left: 20, top: 20, right: 20, bottom: 20}}
+						width={1253}
+						height={700}
+						padding={{left: 26, top: 36, right: 26, bottom: 36}}
 						direction={VERTICAL}
 						data={this._data}
 						renderItem={this._RenderItem}

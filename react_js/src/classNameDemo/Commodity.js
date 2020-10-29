@@ -36,22 +36,22 @@ class Commodity extends React.Component {
 		// 焦点的放大效果
 		let focus_transform = null;
 		if (this.state.isFocus) {
-			focus_transform = "scale3d(1.05,1.05,1)"
+			focus_transform = "scale3d(1.2,1.2.1,1)"
 		}
 
 		// 处理优惠券展示长度
-		let save_prize_width = 14 * this._CommodityInfo.savePrize.length + 57; /* "元券"长度 */
+		let save_prize_width = 10 * this._CommodityInfo.savePrize.length + 26; /* "元券"长度 */
 
 		// 处理销售量长度
-		let sold_total_width = 20 + 70 /* "已售" + "件"的长度 */;
+		let sold_total_width = 44 + 22 /* "已售" + "件"的长度 */;
 		let sold_total_text = null;
 		if (this._CommodityInfo.soldTotal >= 10000) {
 			sold_total_text = "" + parseInt(this._CommodityInfo.soldTotal / 10000);
-			sold_total_width += sold_total_text.length * 15 + 30;
+			sold_total_width += sold_total_text.length * 12 + 22;
 			sold_total_text += "万";
 		} else {
 			sold_total_text = this._CommodityInfo.soldTotal;
-			sold_total_width += this._CommodityInfo.soldTotal.length * 15;
+			sold_total_width += this._CommodityInfo.soldTotal.length * 12;
 		}
 
 		let draw_item = (
@@ -75,16 +75,16 @@ class Commodity extends React.Component {
 				{/* 券额 */}
 				<div key="prizeBar"
 					style={{
-						height: 36,
-						left: 20,
-						top: 384,
+						height: 24,
+						left: 13,
+						top: 256,
 						width: save_prize_width,
 					}}>
 					<div key="prizeBgLeft" className={CssStyle.SavePrizeFrameLeft.getName()}/>
 					<div key="prizeBgMid" className={CssStyle.SavePrizeFrameMid.getName()}
-					     style={{width: save_prize_width - 16}}/>
+					     style={{width: save_prize_width - 11}}/>
 					<div key="prizeBgRight" className={CssStyle.SavePrizeFrameRight.getName()}
-					     style={{left: save_prize_width - 8}}/>
+					     style={{left: save_prize_width - 6}}/>
 					<div key="prizeText" className={CssStyle.SavePrizeText.getName()}
 					     style={{
 						     width: save_prize_width,
@@ -94,14 +94,14 @@ class Commodity extends React.Component {
 				</div>
 
 				<div key="soldBar" style={{
-					top: 384,
-					left: 40 + save_prize_width
+					top: 256,
+					left: 27 + save_prize_width
 				}}>
 					<div key="soldBarLeft" className={CssStyle.SoldFrameLeft.getName()}/>
 					<div key="soldBarMid" className={CssStyle.SoldFrameMid.getName()}
-					     style={{width: sold_total_width - 20}}/>
+					     style={{width: sold_total_width - 13}}/>
 					<div key="soldBarRight" className={CssStyle.SoldFrameRight.getName()}
-					     style={{left: sold_total_width - 10}}/>
+					     style={{left: sold_total_width - 7}}/>
 					<div key="soldBarText" className={CssStyle.SoldText.getName()} style={{
 						width: sold_total_width,
 					}}>
