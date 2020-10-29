@@ -114,7 +114,7 @@ class MessageLayer extends FocusBlock {
             this._UpdatePage();
         }, 500)
 
-        if(this.state.textCount === 10){
+        if(this.state.textCount === 30){
             this._ClearTimer();
         }
     }

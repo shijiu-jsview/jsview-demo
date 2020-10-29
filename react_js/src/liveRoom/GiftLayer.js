@@ -11,7 +11,7 @@ import focusImg from './img/focus.png'
 const GiftDiv = ({ mystyle, item, visible, callback }) => {
 
     return (
-        <div key={ item && item.inx>=0 ? item.inx: -1} style={{ ...mystyle, backgroundImage:item && item.imgUrl?item.imgUrl:null, visibility: visible, animation: "wings 2s 3" }} onAnimationEnd={callback}/>    
+        <div  style={{ ...mystyle, backgroundImage:item && item.imgUrl?item.imgUrl:null, visibility: visible, animation: "wings 2s 3" }} onAnimationEnd={callback}/>    
     )    
 }
 
@@ -20,6 +20,7 @@ class GiftLayer extends FocusBlock {
     constructor(props) {
         super(props);
         this._style = LiveStyle.get().giftLayer;
+
         this.state = {
             visible: 'hidden',
             ani_visible: 'hidden',
@@ -89,6 +90,8 @@ class GiftLayer extends FocusBlock {
     }
 
     renderContent() {
+        let r = Math.random()*10+Math.random()*20
+        const key = this.state.item && this.state.item.inx>=0 ? this.state.item.inx+r: r
         return (
             <span>
                 <div style={{ ...this._style.bg_style, visibility:this.state.visible }}>
@@ -108,7 +111,7 @@ class GiftLayer extends FocusBlock {
                         />
                     </div>   
                 </div>
-                <GiftDiv mystyle={this._style.ani_bg_style} item = {this.state.item} visible = {this.state.ani_visible} callback={this._hiddenAniDiv} />
+                <GiftDiv key={ key} mystyle={this._style.ani_bg_style} item = {this.state.item} visible = {this.state.ani_visible} callback={this._hiddenAniDiv} />
             </span>
         )
     }
