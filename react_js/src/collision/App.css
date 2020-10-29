@@ -84,3 +84,25 @@
         transform: skew(0, 0);
     }
 }
+
+@keyframes rotate3 {
+  from {
+    transform: rotate3d(0, 0, 1, 0deg);
+    transform-origin: center top;
+  }
+  to {
+    transform: rotate3d(0, 0, 1, -360deg);
+    transform-origin: center top;
+  }
+}
+
+@keyframes rotate4 {
+  from {
+    transform: rotate3d(0, 0, 1, 0deg);
+    transform-origin: center center;
+  }
+  to {
+    transform: rotate3d(0, 0, 1, -360deg);
+    transform-origin: center center;
+  }
+}

@@ -153,7 +153,11 @@ class JsvControl {
         // 根据froms, tos, progress信息更新this._Current
         this._WrapReCalculateCurrent(froms, tos, progress, start_params);
 
-        this._StateLocked = true;
+        this._StateLocked = true; // 阻止在callback中触发的状态变化
+
+        // 标识状态为暂停，使回调中执行pause处理时能立刻得到pauseCallback
+        this._StateIndex = 0;
+
         // 换出callbacks，回调时可能加入新的callbacks
         let paused_callback = this._PausedCallback;
         let ended_callback = this._EndCallback;
@@ -172,9 +176,7 @@ class JsvControl {
 
         this._StateLocked = false;
 
-        this._StateIndex = 0; // mark idle
-        let that = this;
-        that._StateMachineNext(); // Trigger next start
+        this._StateMachineNext(); // Trigger next start
     }
 
     _SetView(jsv_view) {
@@ -191,8 +193,28 @@ class JsvActorBase extends React.Component{
      */
     constructor(props) {
         super(props);
+
+        this._ElementRef = null;
+        this._RefCallback = null;
         this._LinkedControl = props.control;
-        this._ElementRef = React.createRef();
+
+        // 对接外部设置的ref处理
+        let outer_ref = false;
+        if (props.refDefine) {
+            let ref_type = (typeof props.refDefine);
+
+            if (ref_type === "object") {
+                // 使用外部reference
+                this._ElementRef = props.refDefine;
+                outer_ref = true;
+            } else if (ref_type === "function") {
+                // 当did mount时，将内部reference传给外部
+                this._RefCallback = props.refDefine;
+            }
+        }
+        if (!outer_ref) {
+            this._ElementRef = React.createRef();
+        }
 
         // 校验合法性
         if (!this._LinkedControl || !(this._LinkedControl instanceof ActorControlBase)) {
@@ -201,7 +223,7 @@ class JsvActorBase extends React.Component{
     }
 
     render() {
-        let {control, ...other_prop} = this.props;
+        let {control, refDefine, ...other_prop} = this.props; // 去除已经使用过的control和refDefine
         return (
             <div ref={this._ElementRef} {...other_prop} />
         );
@@ -210,6 +232,11 @@ class JsvActorBase extends React.Component{
     componentDidMount() {
         // 将JsView的Forge.LayoutView关联给control
         this._LinkedControl._SetView(this._ElementRef.current.jsvMainView);
+
+        // 回执reference信息
+        if (this._RefCallback) {
+            this._RefCallback(this._ElementRef.current);
+        }
     }
 }
 

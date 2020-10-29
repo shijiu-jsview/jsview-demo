@@ -15,5 +15,14 @@ CssStyle.FontStyle = new JsvTextStyleClass({
     textOverflow: "ellipsis",
     textAlign: 'center',
 });
+CssStyle.DetailFontStyle = new JsvTextStyleClass({
+	fontSize:`16px`,
+	color:'#f7f7eb',
+	lineHeight:`30px`,
+	overflow: "hidden",
+	whiteSpace: 'nowrap',
+	textOverflow: "ellipsis",
+	textAlign: 'left',
+});
 
 export default CssStyle;

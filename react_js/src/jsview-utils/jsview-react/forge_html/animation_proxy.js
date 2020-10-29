@@ -522,6 +522,8 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 			event.stopPropagation();
 			if (this._TestFinalKeyFrame(event)) {
 				that._PerformAnimationEnd(true);
+			} else {
+				that._OnSubKeyFrameDone(event);
 			}
 		}
 	}
@@ -672,7 +674,7 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 		return style_animation;
 	}
 
-	// 由子类集成，创建动画对应的keyframe
+	// 由子类复写，创建动画对应的keyframe
 	_BuildKeyFrameGroup() {
 		// Should override
 		// 返回 数组，每个元素内容为:
@@ -685,14 +687,20 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 		console.warn("Warning:Should override and return keyframe name");
 	}
 
-	// 由子类集成，根据进度信息完成Keep Transform操作
+	// 由子类复写，根据进度信息完成Keep Transform操作
 	_GetFrozenTransform(progress) {
 		// should override
 		console.warn("Warning:Should override and keep view transform by ResetCssTransform()")
 	}
 
-	// 由子类集成，进行检测这个animation end event是否是最后一个KeyFrame发起的
+	// 由子类复写，进行检测这个animation end event是否是最后一个KeyFrame发起的
 	_TestFinalKeyFrame(event) {
+		// should override
+		console.warn("Warning:Should override")
+	}
+
+	// 由子类复写，进行检测这个animation end event是否是最后一个KeyFrame发起的
+	_OnSubKeyFrameDone(event) {
 		// should override
 		console.warn("Warning:Should override")
 	}
@@ -731,8 +739,13 @@ Forge.ThrowAnimation = class extends Forge.KeyFrameGroupAnimation {
 		this._Acc = acc;
 		this._To = to;
 		this._HasPole = has_pole;
+		this._PoleCallback = null;
 		this._PolePosition = pole_position;
 		this._IsPositiveMove = (this._InitV > 0 || (this._InitV === 0 && this._Acc > 0)); // 是否朝正方向运动
+	}
+
+	SetPoleCallback(callback) {
+		this._PoleCallback = callback;
 	}
 
 	_MakeTranslateString(keyframe_name, from, to) {
@@ -844,6 +857,13 @@ Forge.ThrowAnimation = class extends Forge.KeyFrameGroupAnimation {
 			return (event.animationName.indexOf("_ForgeAnim_Thr_Backw_") >= 0);
 		} else {
 			return (event.animationName.indexOf("_ForgeAnim_Thr_Forw_") >= 0)
+		}
+	}
+
+	_OnSubKeyFrameDone(event) {
+		if (this._HasPole && this._PoleCallback) {
+			// 第一个动画结束，到达拐点，回报拐点事件
+			this._PoleCallback();
 		}
 	}
 };

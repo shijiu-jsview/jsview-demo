@@ -293,3 +293,25 @@ Forge.sImpactSensorManager.Callback = class {
 	}
 }
 
+// 在PC端不存在异步回调的问题，所以并不需要AutoFroze功能
+// 再次为了PC端调试不报错，完成所有接口的声明的说明
+Forge.sImpactSensorManager.AutoFroze = class {
+	constructor(
+		froze_pre_impact_views, // 碰撞后，想要执行动画停止的view的列表，
+		froze_on_impact_views   // 物体分离后，想要执行动画停止的view的列表
+	) {
+		this._PreImpactViews = froze_pre_impact_views;
+		this._OnImpactViews = froze_on_impact_views
+	}
+
+	// 列表可更新
+	UpdatePreImpactList(froze_pre_impact_views) {
+		this._PreImpactViews = froze_pre_impact_views;
+	}
+
+	// 列表可更新
+	UpdateOnImpactList(froze_on_impact_views) {
+		this._OnImpactViews = froze_on_impact_views;
+	}
+}
+

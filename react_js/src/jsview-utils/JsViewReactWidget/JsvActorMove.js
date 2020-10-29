@@ -18,7 +18,7 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 平移运动接口，包含 moveToX, moveToY
+     * 平移运动接口，包含 moveToX, moveToY, moveOffsetX, moveOffsetY
      */
     moveToX(target_x, speed, end_callback) {
         this._UniformMove(0, target_x, NaN, speed, null, end_callback);
@@ -69,6 +69,8 @@ class _ActorControl extends ActorControlBase {
      * init_v : 初速度
      * acc : 加速度
      * end_condition: 包含两种方式
+     * end_callback: 动画完成后的回调
+     * pole_callback: 动画运行到拐点时的回调，用于拐点需要切换角色形象的处理
      *  方式1: 以捕捉方式结束，格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
      *  例如:
      *      1. Y轴方向运动，在相对于起始点上方30px位置，接住向上运动的物体时，设置 direction = -1, offset = -30
@@ -76,18 +78,18 @@ class _ActorControl extends ActorControlBase {
      *          设置 direction = 1, offset = 30
      *          position为相对于元素0点位置的绝对坐标，和offset的设定二选一
      */
-    throwAlongX(init_v, acc, end_condition, end_callback) {
-        this._Throw(0, init_v, acc, end_condition, end_callback);
+    throwAlongX(init_v, acc, end_condition, end_callback, pole_callback) {
+        this._Throw(0, init_v, acc, end_condition, end_callback, pole_callback);
     }
 
-    throwAlongY(init_v, acc, end_condition, end_callback) {
-        this._Throw(1, init_v, acc, end_condition, end_callback);
+    throwAlongY(init_v, acc, end_condition, end_callback, pole_callback) {
+        this._Throw(1, init_v, acc, end_condition, end_callback, pole_callback);
     }
 
-    _Throw(x_or_y, init_v, acc, end_condition, end_callback) {
+    _Throw(x_or_y, init_v, acc, end_condition, end_callback, pole_callback) {
         // 需要先进行动画停止，以确定本次动画的起始点(this._Current)
         super.pause(()=>{
-            let start_params = this._CalculateTerminalStatus(x_or_y, init_v, acc, end_condition);
+            let start_params = this._CalculateTerminalStatus(x_or_y, init_v, acc, end_condition, pole_callback);
             if (start_params !== null) {
                 super.start(start_params, end_callback);
             } else {
@@ -109,7 +111,7 @@ class _ActorControl extends ActorControlBase {
         super.start(start_params, null);
     }
 
-    _CalculateTerminalStatus(x_or_y, init_v, acc, end_condition) {
+    _CalculateTerminalStatus(x_or_y, init_v, acc, end_condition, pole_callback) {
         let start_params = {
             type: CONST_MOVE_TYPE_ACC,
             xOrY: x_or_y,
@@ -117,6 +119,7 @@ class _ActorControl extends ActorControlBase {
             acc: acc,
             hasPole: false,
             polePosition: 0,
+            poleCallback: pole_callback,
             isPositiveMove: (init_v > 0 || (init_v === 0 && acc > 0))
         };
         let start_pos = (x_or_y === 0 ? this._Current[0] : this._Current[1]);
@@ -205,7 +208,7 @@ class _ActorControl extends ActorControlBase {
     }
 
     _BuildAccelAnimation(current_array, tos_array, start_params) {
-        return new Forge.ThrowAnimation(
+        let anim = new Forge.ThrowAnimation(
             current_array[0],
             current_array[1],
             start_params.xOrY,
@@ -215,6 +218,8 @@ class _ActorControl extends ActorControlBase {
             start_params.hasPole,
             start_params.polePosition
         );
+        anim.SetPoleCallback(start_params.poleCallback);
+        return anim;
     }
 
     _BuildUniformMoveAnimation(current_array, tos_array, start_params) {
@@ -229,7 +234,7 @@ class _ActorControl extends ActorControlBase {
 
             // Repeat动画中，循环运动区域为repeatSet.start 到 to_pos，
             // 但首次动画从from_pos开始运行，首次运动完成后，第二次运行再从repeatSet.start开始
-            let start_percent = (from_pos - repeat_set.start) / (repeat_set.start - to_pos);
+            let start_percent = (from_pos - repeat_set.start) / (to_pos - repeat_set.start);
             if (start_percent > 1 || start_percent < 0) {
                 console.error("Error: current=" + from_pos + " out of repeat range["
                     + repeat_set.start + "-" + to_pos + "]");
@@ -245,6 +250,11 @@ class _ActorControl extends ActorControlBase {
             anim.EnableInfinite();
         } else {
             // 单次动画，无repeat
+            console.log("DebugMove  affect_x="
+                + affect_x
+                + " from=" + from_pos + " to=" + to_pos
+                + " cx=" + current_array[0] + " cy=" + current_array[1]
+            );
             anim = new Forge.TranslateFrameAnimation(
                 from_pos, to_pos,
                 start_params.speed, affect_x,
@@ -258,9 +268,9 @@ class _ActorControl extends ActorControlBase {
     _BuildJumpAnimation(current_array, tos_array, start_params) {
         // 使用时长为0的Translate动画来完成jump动作
         let anim = new Forge.TranslateAnimation(
-            current_array[0], tos_array[0],
-            current_array[1], tos_array[1],
-            0, null);
+            tos_array[0], tos_array[0],
+            tos_array[1], tos_array[1],
+            1, null);
         return anim;
     }
 

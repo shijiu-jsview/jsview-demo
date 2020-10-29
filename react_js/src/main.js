@@ -24,10 +24,10 @@ function startApp(confirm_entry) {
 		// 运行在JsView引擎中
 
 		// 检查配套引擎的版本
-		if (window.JsView.CodeRevision !== 531 /* Native引擎版本(由APK启动参数 CORE 决定) */
-				|| window.Forge.Version !== "1.0.721" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */) {
+		if (window.JsView.CodeRevision !== 539 /* Native引擎版本(由APK启动参数 CORE 决定) */
+				|| window.Forge.Version !== "1.0.727" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */) {
 			console.warn("Warning: JsView Engine version miss matched, some effect will be lost");
-			/* Engine js 721版本地址: http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r721.jsv.4d646f77.js */
+			/* Engine js 727版本地址: http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r727.jsv.21a7f7ce.js */
 		}
 
 		// (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，PS:注意"164"的引号

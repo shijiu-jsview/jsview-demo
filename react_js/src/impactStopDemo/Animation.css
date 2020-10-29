@@ -1,0 +1,8 @@
+@keyframes ImpactStopAnimRotate {
+    from {
+        transform: rotate3d(0, 0, 1, 270deg);
+    }
+    to {
+        transform: rotate3d(0, 0, 1, 0deg);
+    }
+}

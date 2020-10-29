@@ -1,0 +1,106 @@
+@keyframes AnimTranslate {
+    from {
+      transform: translate3d(50%, 50px, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes AnimScale {
+    from {
+      opacity: 0.1;
+      transform: scale3d(0.5, 0.5, 0.5);
+    }
+    0% {opacity: 0.9; }
+    10% {opacity: 0.8; }
+    20% {opacity: 0.7; }
+    30% {opacity: 0.6; }
+    40% {opacity: 0.5; }
+    50% {opacity: 0.4; }
+    60% {opacity: 0.3; }
+    80% {opacity: 0.2; }
+    90% {opacity: 0.1; }
+    to {
+      opacity: 0.1;
+      transform: scale3d(4, 4, 4);
+    }
+  }
+  
+  @keyframes AnimRotate {
+    from {
+      transform: rotate3d(1, 0, 0, 90deg);
+    }
+    to {
+      transform: rotate3d(1, 0, 0, 0deg);
+    }
+  }
+
+  @keyframes wings {
+    from {
+      transform: scale3d(1, 1, 1);
+      transform: rotate3d(0, 1, 0, 90deg);
+    }
+    20%{transform: rotate3d(0, 1, 0, 0deg);}
+    40%{transform: rotate3d(0, 1, 0, 90deg);}
+    50%{transform: scale3d(2, 2, 2);}
+    60%{transform: rotate3d(0, 1, 0, 0deg);}
+    80%{transform: rotate3d(0, 1, 0, 90deg);}
+    to {
+      transform: scale3d(3, 3, 3);
+      /* transform: rotate3d(0, 1, 0, 0deg); */
+    }
+  }
+  
+  @keyframes AnimSkew {
+    from {
+      transform: skew(30deg, 45deg);
+    }
+    to {
+      transform: skew(0, 0);
+    }
+  }
+  
+  @keyframes AnimOpacityOut {
+    from {
+      opacity: 0.1;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes AnimOpacityIn {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 20%;
+    }
+  }
+  
+  
+  @keyframes fadeInLeft{
+		0% {
+		    opacity: 0;
+		    transform: translate3d(450px,0px,0);
+    }
+		100% {
+		    opacity: 1;
+		    transform: translate3d(0px,0px,0);
+		}
+	}
+
+  @keyframes heart-bounce {
+    from {transform: scale3d(1,1,1); }
+    12% {transform: scale3d(1.02,1.02,1.02); }
+    20% {transform: scale3d(0.99,0.99,0.99); }
+    28% {transform: scale3d(0.98,0.98,0.98); }
+    32% {transform: scale3d(1.2,1.2,1.2); }
+    38% {transform: scale3d(0.96,0.96,0.96); }
+    50% {transform: scale3d(1,1,1); }
+    58% {transform: scale3d(0.98,0.98,0.98); }
+    70% {transform: scale3d(0.9,0.9,0.9); }
+    80% {transform: scale3d(0.98,0.98,0.98); }
+    to {transform: scale3d(1,1,1); } 
+  }
