@@ -1,20 +1,31 @@
 import React from 'react';
 import { Forge, ForgeExtension } from "../jsview-react/index_widget.js"
 
-let buildPreloadInfo = (url, width, height, color_type, net_setting) => {
+const CONST_FORMAT_TOKEN = "_JsvP_";
+
+let buildPreloadInfo = (url,
+                        width = 0,   // 指定加载时的宽度(0为不指定)，与div标签中的 jsv_img_scaledown_tex 属性一起使用
+                        height = 0,  // 指定加载时的高度(0为不指定)，与div标签中的 jsv_img_scaledown_tex 属性一起使用
+                        color_type = Forge.ColorSpace.RGBA_8888, // 指定加载色空间，与div标签中的 jsv_img_color_space 一起使用
+                        net_setting = null // 预留，未使用，图片的网络加载header设置
+) => {
     return {
         "url": url,
         "width": width,
         "height": height,
-        "colorType": color_type ? color_type : Forge.ColorSpace.RGBA_8888,
-        "netSetting": net_setting ? net_setting : null,
+        "colorType": color_type,
+        "netSetting": net_setting,
+        "magicToken": CONST_FORMAT_TOKEN,  // 用于格式校验
     }
 }
 
-let buildDownloadInfo = (url, net_setting) => {
+let buildDownloadInfo = (url,
+                         net_setting = null // 预留，未使用，图片的网络加载header设置
+) => {
     return {
         "url": url,
-        "netSetting": net_setting ? net_setting : null,
+        "netSetting": net_setting,
+        "magicToken": CONST_FORMAT_TOKEN, // 用于格式校验
     }
 }
 
@@ -86,14 +97,21 @@ class JsvPreload extends React.Component {
         if (!this.props.preloadList) { return }
         this._PreloadStateList = new Array(this.props.preloadList.length).fill(false);
         this._PreloadViewList = this.props.preloadList.map((item, index) => {
+            if (item.magicToken !== CONST_FORMAT_TOKEN) {
+                console.error("Error:format mismatch, data should comes from function buildPreloadInfo()");
+            }
             let base_url = item.url;
             let image_url = base_url;
-            if (base_url && base_url.indexOf("http") < 0) {
+            if (base_url && base_url.indexOf("http") < 0) { // 包含http和https两种请求
                 if (window.JsView.React.UrlRef) {
                     image_url = new window.JsView.React.UrlRef(base_url).href;
                 }
             }
-            let texture = ForgeExtension.TextureManager.GetImage2(image_url, false, null, item.colorType);
+            let target_size = null;
+            if (item.width !== 0 && item.height !== 0) {
+                target_size = {width:item.width, height:item.height};
+            }
+            let texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
             texture.RegisterLoadImageCallback(null, () => {
                 console.log("preload succeed " + image_url);
                 this._PreloadStateList[index] = true;
@@ -120,9 +138,12 @@ class JsvPreload extends React.Component {
         if (!this.props.downloadList) { return }
         this._DownloadStateList = new Array(this.props.downloadList.length).fill(false);
         this._DownloadViewList = this.props.downloadList.map((item, index) => {
+            if (item.magicToken !== CONST_FORMAT_TOKEN) {
+                console.error("Error:format mismatch, data should comes from function buildDownloadInfo()");
+            }
             let base_url = item.url;
             let image_url = base_url;
-            if (base_url && base_url.indexOf("http") < 0) {
+            if (base_url && base_url.indexOf("http") < 0) { // 包含http和https两种请求
                 if (window.JsView.React.UrlRef) {
                     image_url = new window.JsView.React.UrlRef(base_url).href;
                 }
