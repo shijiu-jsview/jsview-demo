@@ -8,9 +8,15 @@
  *          downloadList{array} 预下载的图片信息
  * buildPreloadInfo(url, width, height, color_type) 构建预加载图片信息的函数
  * buildDownloadInfo(url, net_setting) 构建预下载图片信息的函数
+ *
  * 【技巧说明】
- * Q: 注意事项
- * A: 建议使用buildPreloadInfo构建图片信息
+ * Q: 如何创建预加载图片列表
+ * A: 预加载图片列表，通过buildPreloadInfo构建图片信息，组成数组传给 preloadList
+ *    预下载图片列表，通过buildDownloadInfo构建图片信息，组成数组传给 downloadList
+ *
+ * Q: 预下载和预加载有什么区别？
+ * A: 预下载仅仅将图片从网络上下载下来，并不进行解码和读入内存，只能加速图片展示的加载过程
+ *    预加载是将图片下载后，解码并读入到内存中，以解决类似按钮首次焦点/非焦点状态变化时的闪动问题
  */
 import React from 'react';
 import { FocusBlock } from "../demoCommon/BlockDefine"
@@ -86,8 +92,8 @@ class MainScene extends FocusBlock {
     renderContent() {
         let preload_info = [];
         for (let item of data) {
-            preload_info.push(buildPreloadInfo(item.url, 166, 90));
-            preload_info.push(buildPreloadInfo(item.focusUrl, 166, 90));
+            preload_info.push(buildPreloadInfo(item.url));
+            preload_info.push(buildPreloadInfo(item.focusUrl));
         }
         let download_info = [buildDownloadInfo(awesome), buildDownloadInfo(cat)];
         return (
