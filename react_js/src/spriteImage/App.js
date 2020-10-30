@@ -109,7 +109,7 @@ class MainScene extends FocusBlock {
             };
 
             let that = this;
-            return (<div style={{top: 20, left: 20}}>
+            return (<div style={{top: 30, left: 30, transform:"scale3d(2.5, 2.5, 1)"}}>
                 <JsvSpriteAnim
                     spriteInfo={sprite_info.info}
                     loop={10}
