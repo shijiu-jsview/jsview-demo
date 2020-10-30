@@ -410,7 +410,6 @@ class App extends GameAppBase {
      */
     renderContent() {
         let basekey = "Game_"+this.state.stageIndex+"_"+this.state.roundIndex+this.state.repeatCount;
-        console.log("debugjump renderContent ,key:"+(basekey));
         return (<div key={basekey}>
             {/*滚动背景*/}
             <BackGround key={basekey+"_BackGround"} ref={(ref) => {this._BgRef = ref;}}

@@ -250,11 +250,6 @@ class _ActorControl extends ActorControlBase {
             anim.EnableInfinite();
         } else {
             // 单次动画，无repeat
-            console.log("DebugMove  affect_x="
-                + affect_x
-                + " from=" + from_pos + " to=" + to_pos
-                + " cx=" + current_array[0] + " cy=" + current_array[1]
-            );
             anim = new Forge.TranslateFrameAnimation(
                 from_pos, to_pos,
                 start_params.speed, affect_x,
