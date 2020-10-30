@@ -73,6 +73,10 @@ class JsvMarquee2 extends React.Component {
     }
 
     _resetSlider() {
+        if (this._rollTimeId >= 0) {
+            clearTimeout(this._rollTimeId);
+            this._rollTimeId = -1;
+        }
         this._animationCount = 0;
         this._sliderRef.current.jsvMaskView.StopAnimation();
     }
