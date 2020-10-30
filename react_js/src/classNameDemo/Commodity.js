@@ -36,7 +36,7 @@ class Commodity extends React.Component {
 		// 焦点的放大效果
 		let focus_transform = null;
 		if (this.state.isFocus) {
-			focus_transform = "scale3d(1.2,1.2.1,1)"
+			focus_transform = "scale3d(1.2, 1.2, 1)"
 		}
 
 		// 处理优惠券展示长度
