@@ -1,6 +1,7 @@
 import React from 'react';
 import './JsvMarquee.css';
 import PropTypes from "prop-types";
+import {Forge} from "../jsview-react/index_widget";
 import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
 
 // JsvMarquee comes from JsView React Project
