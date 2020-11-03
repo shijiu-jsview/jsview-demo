@@ -195,7 +195,7 @@ class LayoutViewBase {
             this.Element = window.originDocument.getElementById(element_name);
         } else if (element_name === "svg" || element_name === "path") {
             this.Element = document.createElementNS("http://www.w3.org/2000/svg", element_name);
-        } else {
+        } else if (element_name) {
             this.Element = window.originDocument.createElement(element_name);
             this.Element.style.position = "absolute";
         }
@@ -1181,6 +1181,7 @@ class NinePatchView extends Forge.LayoutView {
 
 Forge.NinePatchView = NinePatchView;
 
+
 class JsvElementView extends Forge.LayoutView {
 
     /**
@@ -1221,4 +1222,53 @@ class JsvElementView extends Forge.LayoutView {
 }
 Forge.JsvElementView = JsvElementView;
 
+class VideoView extends  Forge.LayoutView{
+	constructor(video_player_hdl, texture_setting) {
+		super(texture_setting);
+		this._ViewType = 8;
+		this.Element = video_player_hdl.Ele;
+		this.Id = "VideoView";
+	}
 
+	/**
+	 * 重载LayoutView.SetId，为所设置的Id添加后缀_VideoView
+	 *
+	 * @public
+	 * @func SetId
+	 * @memberof Forge.VideoView
+	 * @instance
+	 * @param {string} id 原始id
+	 **/
+	SetId(id) {
+		this.Id = id + "_VideoView";
+	}
+
+	ResetLayoutParams(new_params) {
+		if (new_params !== null) {
+			if (!(new_params instanceof Forge.LayoutParamsBase))
+				this.LayoutParams = new Forge.LayoutParams(new_params);
+			else
+				this.LayoutParams = new_params.Clone();
+			this.Element.style.left = this.LayoutParams.MarginLeft + "px";
+			this.Element.style.top = this.LayoutParams.MarginTop + "px";
+			if (this.LayoutParams.Width) {
+				this.Element.style.width = this.LayoutParams.Width + "px";
+			}
+			if (this.LayoutParams.Height) {
+				this.Element.style.height = this.LayoutParams.Height + "px";
+			}
+		} else {
+			Forge.ThrowError("ResetLayoutParams(): new params is null");
+		}
+
+	}
+
+	_OnDetachFromSystem() {
+		super._OnDetachFromSystem();
+		if (this._VideoPlayerHdl) {
+			this._VideoPlayerHdl.unload();
+			this._VideoPlayerHdl = null;
+		}
+	}
+}
+Forge.VideoView = VideoView;
