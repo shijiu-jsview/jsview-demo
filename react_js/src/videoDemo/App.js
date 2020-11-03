@@ -437,7 +437,7 @@ class MainScene extends FocusBlock {
 						height: 500,
 						backgroundColor:"rgb(200,100,100)"
 					}} />
-					<video style={{
+					<video jsvusetexture={"true"} style={{
 						top:50,
 						left:(1280 - object_fit_set.width) / 2,
 						width: object_fit_set.width,
