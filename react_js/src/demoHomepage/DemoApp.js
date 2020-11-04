@@ -205,6 +205,11 @@ let demoInfos = [
         "path": "/users/impactStopDemo",
         "class": lazy(() => import('../impactStopDemo/App').then(m => ({ default: m.SubApp }))),
     },
+    {
+        "name": "格式混排文字",
+        "path": "/users/multiStyleText",
+        "class": lazy(() => import('../multiStyleText/App').then(m => ({ default: m.SubApp }))),
+    },
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;

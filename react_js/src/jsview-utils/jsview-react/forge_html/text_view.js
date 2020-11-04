@@ -23,6 +23,7 @@ class TextViewParams {
         this.Shader = null;
         this.IsInstantLoad = true;
         this.LineHeight = 0;
+        this.LatexMode = false;
     }
 
     SetInstantLoad(is_instant_load) {
@@ -34,6 +35,11 @@ class TextViewParams {
         this.StringWithFont = string_with_font;//renderer.StringWithFont
         return this;
     };
+
+    SetLatexMode(latex_mode) {
+        this.LatexMode = latex_mode;
+        return this;
+    }
 
     SetFontStyle(_size_or_set, _font, _alignment, _vertical_align, _text_color, _italic, _bold, _shadow, _stroke_width, _vertical_area_align) {
         if (typeof _size_or_set === "object") {
@@ -155,6 +161,7 @@ class TextViewEx {
         this._DrawCount = 0;
         this._ShowInterval = 0;
         this._TextureManager = texture_manager;
+        this._LatexMode = text_view_params.LatexMode;
         this._Shader = text_view_params.Shader;
         this._IsInstantLoad = text_view_params.IsInstantLoad ? 1 : 0;
         this._AutoHeight = false;
@@ -294,7 +301,7 @@ class TextViewEx {
         let text_view = null;
         if (t_StringWithFont.str.length !== 0) {
             text_texture = this._TextureManager.GetTextTextureByMultiRows(t_StringWithFont, t_TextAttr, rect_area,
-                line_height, this._NeedQuick, this._Shader, this._IsInstantLoad, this._DuplicateBag);
+                line_height, this._NeedQuick, this._Shader, this._IsInstantLoad, this._LatexMode, this._DuplicateBag);
 
             // Set text texture
             this._TextTexture = text_texture.texture;

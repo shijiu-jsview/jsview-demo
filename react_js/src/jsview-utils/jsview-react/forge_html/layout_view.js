@@ -1,4 +1,5 @@
 import Forge from "../ForgeDefine"
+import {parseLatex, toHtml} from "./latex_parse";
 window["gRootView"] = null; // For record root view
 Forge.sRootView = null;
 
@@ -388,7 +389,6 @@ class LayoutViewBase {
     }
 
     _ResetTextStyle(resource_info) {
-        this.Element.textContent = resource_info.Set.ST;
         this.Element.style.overflow = "hidden";
         if (resource_info.Set.AT) {
             let attr_json = JSON.parse(resource_info.Set.AT);
@@ -437,6 +437,14 @@ class LayoutViewBase {
             if (font_json.Vaa) {
                 this.Element.style.verticalAlign = font_json.Vaa;
             }
+        }
+        if (resource_info.Set.LA) {
+            //latex文本
+            let node_info = parseLatex(resource_info.Set.ST);
+            let html_node = toHtml(node_info);
+            this.Element.appendChild(html_node);
+        } else {
+            this.Element.textContent = resource_info.Set.ST;
         }
     }
 
