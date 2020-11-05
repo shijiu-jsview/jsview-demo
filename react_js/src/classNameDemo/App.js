@@ -61,7 +61,18 @@ class MainScene extends FocusBlock {
 	renderContent() {
 		return (
 			<div style={{width: 1280, height: 720, backgroundColor: "#00000F"}}>
-				<div style={{top: 5, left: 5}}>
+				<div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 20,
+					width: (1280-200),
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`使用ClassName写法可提升渲染性能`}</div>
+				<div style={{top: 100, left: 70}}>
 					<SimpleWidget
 						width={1253}
 						height={700}

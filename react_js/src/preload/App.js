@@ -98,7 +98,18 @@ class MainScene extends FocusBlock {
         let download_info = [buildDownloadInfo(awesome), buildDownloadInfo(cat)];
         return (
             <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
-                <div style={{ top: 50, left: 300 }}>
+                <div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 20,
+					width: (1280-200),
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`预加载后，图片(按钮焦点切换)切换不闪屏`}</div>
+                <div style={{ top: 200, left: 300 }}>
                     <SimpleWidget
                         width={540}
                         height={90}
@@ -110,7 +121,7 @@ class MainScene extends FocusBlock {
                         measures={this._Measures}
                         branchName={this.props.branchName + "/swidget"} />
                 </div>
-                <div style={{left: 50, top: 200, width: 800, height: 800, fontSize: "30px", color: "#000000"}}>
+                <div style={{left: 100, top: 350, width: 800, height: 800, fontSize: "30px", color: "#000000"}}>
                     {this.state.text}
                 </div>
                 <JsvPreload 

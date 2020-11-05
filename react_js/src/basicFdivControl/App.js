@@ -79,15 +79,29 @@ class MainScene extends FocusBlock{
 	renderContent() {
 		return (
 			<div>
-				<MainArea style={{left:0}}/>
-				<SideBarArea style={{left:300}}/>
+				<div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 50,
+					width: 400,
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`可上下左右切换焦点`}</div>
+				<div style={{left:100, top:120}}>
+					<MainArea style={{left:0}}/>
+					<SideBarArea style={{left:300}}/>
+				</div>
+
 			</div>
 		)
 	}
 
 	componentDidMount() {
-		// this.changeFocus("/main/L0C0");
-		this.changeFocus("/sideBar/L0C0");
+		this.changeFocus("/main/L0C0");
+		//this.changeFocus("/sideBar/L0C0");
 	}
 }
 let App = createStandaloneApp(MainScene);

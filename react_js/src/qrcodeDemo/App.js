@@ -30,13 +30,13 @@ class MainScene extends FocusBlock {
         super(props);
         this.state = {
             value: 'http://www.baidu.com/',
-            size: 128,
+            size: 400,
             fgColor: '#0000FF',
             bgColor: '#ffff00',
-            level: 'L',
+            level: 'H',//，容错级别，分别是L(7%)、M(15%)、Q(25%)、H(30%),
             includeImage: true,
-            imageH: 24,
-            imageW: 24,
+            imageH: 64,
+            imageW: 64,
             imageSrc: 'http://oss.image.51vtv.cn/homepage/20191224/0fdcdc8b258fe7baac16b73f58f8989d.jpg',
         };
     }
@@ -51,24 +51,44 @@ class MainScene extends FocusBlock {
     }
 
     renderContent() {
+        let tipsInfo = `功能：二维码展示
+可配置项：
+1.前景色
+2.背景色
+3.指定小图标
+4.容错级别：'L', 'M', 'Q', 'H'`;
         return (
             <div>
-                <QRCode
-                    value={this.state.value}
-                    size={this.state.size}
-                    fgColor={this.state.fgColor}
-                    bgColor={this.state.bgColor}
-                    level={this.state.level}
-                    imageSettings={
-                        this.state.includeImage
-                            ? {
-                                src: this.state.imageSrc,
-                                height: this.state.imageH,
-                                width: this.state.imageW,
-                            }
-                            : null
-                    }
-                />
+                <div style={{
+					textAlign: "left",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 200 + 420,
+					top: 100,
+					width: 400,
+					height: 50*8,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{tipsInfo}</div>
+                <div style={{left:200, top:100 }}>
+                    <QRCode
+                        value={this.state.value}
+                        size={this.state.size}
+                        fgColor={this.state.fgColor}
+                        bgColor={this.state.bgColor}
+                        level={this.state.level}
+                        imageSettings={
+							this.state.includeImage
+								? {
+								src: this.state.imageSrc,
+								height: this.state.imageH,
+								width: this.state.imageW,
+							}
+								: null
+						}
+                    />
+                </div>
+
             </div>
         );
     }

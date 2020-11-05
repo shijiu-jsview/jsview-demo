@@ -98,18 +98,32 @@ class MainScene extends FocusBlock {
     }
 
     renderContent() {
-        if (this.state.show) {
-            // 展示精灵图
-            let sprite_info = this._formatInfo();
+        // 展示精灵图
+        let sprite_info = this._formatInfo();
 
-            /* 精灵图绘图区域尺寸，格式: {w:XXXXX, h:XXXX} */
-            let view_size = {
-                w: sprite_info.maxW,
-                h: sprite_info.maxH
-            };
+        /* 精灵图绘图区域尺寸，格式: {w:XXXXX, h:XXXX} */
+        let view_size = {
+            w: sprite_info.maxW,
+            h: sprite_info.maxH
+        };
 
-            let that = this;
-            return (<div style={{top: 30, left: 30, transform:"scale3d(2.5, 2.5, 1)"}}>
+        let that = this;
+        return (<div>
+
+            <div style={{
+                textAlign: "center",
+                fontSize: "30px",
+                lineHeight: "50px",
+                color: "#ffffff",
+                left: 200,
+                top: 100,
+                width: 434,
+                height: 50,
+                backgroundColor: "rgba(27,38,151,0.8)"
+            }}>{`精灵图效果`}</div>
+            {   //通过show进行 清理精灵图，用于验证精灵图清理后，StyleSheet中cssRules的keyFrame清理工作能正常完成
+                this.state.show ?
+                <div style={{ left: 200, top: 150, transform: "scale3d(2.5, 2.5, 1)" }}>
                 <JsvSpriteAnim
                     spriteInfo={sprite_info.info}
                     loop={10}
@@ -117,13 +131,32 @@ class MainScene extends FocusBlock {
                     duration={0.8}
                     controller={this._Controller}
                     autostart={true}
-                    onAnimEnd={function () { console.log("anim end");that.setState({show:false}) }}
-                    imageUrl={spriteImage} />
-            </div>);
-        } else {
-            // 清理精灵图，用于验证精灵图清理后，StyleSheet中cssRules的keyFrame清理工作能正常完成
-            return (<div/>);
-        }
+                    onAnimEnd={function () {
+                        console.log("anim end");
+                        that.setState({ show: false })
+                    }}
+                    imageUrl={spriteImage}/>
+            </div> : null}
+            
+            <div style={{
+                textAlign: "center",
+                fontSize: "30px",
+                lineHeight: "50px",
+                color: "#ffffff",
+                left: 700,
+                top: 100,
+                width: 434,
+                height: 50,
+                backgroundColor: "rgba(27,38,151,0.8)"
+            }}>{`原始图片`}</div>
+            <div style={{
+                left: 700,
+                top: 150,
+                width: 434,
+                height: 372,
+                backgroundImage:`url(${spriteImage})`
+            }}/>
+        </div>);
     }
 }
 let App = createStandaloneApp(MainScene);

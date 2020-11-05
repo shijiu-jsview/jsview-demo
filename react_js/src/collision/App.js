@@ -73,7 +73,18 @@ class MainScene extends FocusBlock{
     renderContent() {
         return(
             <div>
-                <div style={{top: 100, left: 100}}>
+				<div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 20,
+					width: (1280-200),
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`原生端辅助的高效率碰撞检测处理`}</div>
+                <div style={{top: 200, left: 100}}>
                     <div ref={ele => this._TranslateEle1 = ele} style={{left: 0, width: 100, height: 100, backgroundColor: this.state.tLeftColor, animation: "toRight 5s"}}>
                         view1
                     </div>
@@ -84,7 +95,7 @@ class MainScene extends FocusBlock{
 		            </div>
                 </div>
 
-                <div style={{top: 400, left: 100}}>
+                <div style={{top: 500, left: 100}}>
                     <div ref={ele => this._RotateEle1 = ele} style={{left: 0, width: 20, height: 150, backgroundColor: this.state.rLeftColor, animation: "rotate1 5s"}}>
                         view1
                     </div>
@@ -93,7 +104,7 @@ class MainScene extends FocusBlock{
                     </div>
                 </div>
 
-                <div style={{top: 400, left: 500}}>
+                <div style={{top: 500, left: 500}}>
                     <div style={{top:50, left: 0, width: 150, height: 150, backgroundColor: "rgba(255,255,255,0.5)", animation: "rotate3 5s"}}>
                         <div ref={ele => this._RotateEle3 = ele} style={{left: (150-20)/2, width: 20, height: 150, backgroundColor: this.state.r2LeftColor}}>
                             view1
@@ -107,7 +118,7 @@ class MainScene extends FocusBlock{
 
                 </div>
 
-                <div style={{top: 100, left: 500}}>
+                <div style={{top: 200, left: 500}}>
                     <div ref={ele => this._ScaleEle1 = ele} style={{left: 100, width: 100, height: 100, backgroundColor: this.state.sLeftColor, animation: "scale1 5s"}}>
                         view1
                     </div>
@@ -116,7 +127,7 @@ class MainScene extends FocusBlock{
                     </div>
                 </div>
 
-                <div style={{top: 400, left: 800}}>
+                <div style={{top: 500, left: 800}}>
                     <div ref={ele => this._SkewEle1 = ele} style={{left: 100, width: 100, height: 100, backgroundColor: this.state.skLeftColor, animation: "skew1 5s"}}>
                         view1
                     </div>

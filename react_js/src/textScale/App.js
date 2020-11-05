@@ -52,7 +52,18 @@ class MainScene extends FocusBlock {
 	renderContent() {
 		return (
 			<div style={{width: 1920, height: 1080, backgroundColor: "#00000F"}}>
-				<div style={{top: 0, left: 0}}>
+				<div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 20,
+					width: (1280-200),
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`JsView环境下，放大后文字仍保持清晰显示`}</div>
+				<div style={{top: 100, left: 80}}>
 					<SimpleWidget
 						width={1840}
 						height={1000}

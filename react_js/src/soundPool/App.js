@@ -96,6 +96,17 @@ class MainScene extends FocusBlock {
         let info = "[确定]: 播放背景音乐\n[左]: 播放失败音乐1\n[右]: 播放失败音乐2\n[上]: 播放硬币音乐1\n[下]: 播放硬币音乐2"
         return(
             <div style={{width: 1920, height: 1080, backgroundColor: "#FFFFFF"}}>
+                <div style={{
+					textAlign: "center",
+					fontSize: "30px",
+					lineHeight: "50px",
+					color: "#ffffff",
+					left: 100,
+					top: 20,
+					width: (1280-200),
+					height: 50,
+					backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`适合游戏场景的多音效混音效果`}</div>
                 <div style={{left: 400, top: 300, width: 500, height: 500, color: "#000000", textAlign: "center", fontSize: 30}}>
                     {info}
                 </div>
