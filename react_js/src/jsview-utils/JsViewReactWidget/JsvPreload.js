@@ -113,7 +113,7 @@ class JsvPreload extends React.Component {
             }
             let texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
             texture.RegisterLoadImageCallback(null, () => {
-                console.log("preload succeed " + image_url);
+                // console.log("preload succeed " + image_url);
                 this._PreloadStateList[index] = true;
                 this._checkPreload()
             })
