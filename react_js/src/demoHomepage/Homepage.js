@@ -50,9 +50,9 @@ class Home extends FdivWrapper {
         this._Dispatcher = new SWidgetDispatcher();
 		this._BtnDispatcher = new SWidgetDispatcher();
 		this.btnDatas = this._GetBtnDatas();
-		this.curBtnFocus = 0;
+		this.curBtnFocus = this.props.getFocusId();
 		this.state = {
-			data:this.props.funcData
+			data:this.props.getRenderData()
 		}
 	}
 
@@ -100,23 +100,14 @@ class Home extends FdivWrapper {
     }
 
 	_onBtnClick=(item)=> {
-		if (item.id == 0) {
-			this.setState({
-				data:this.props.funcData
-			})
-			this._BtnDispatcher.dispatch({
-				type: SWidgetDispatcher.Type.updateItem,
-				data: [0]
-			})
-		} else {
-			this.setState({
-				data:this.props.sceneData
-			})
-			this._BtnDispatcher.dispatch({
-				type: SWidgetDispatcher.Type.updateItem,
-				data: [1]
-			})
-		}
+
+		this.setState({
+			data:this.props.getRenderData()
+		})
+		this._BtnDispatcher.dispatch({
+			type: SWidgetDispatcher.Type.updateItem,
+			data: [item.id]
+		})
 	}
 
 	_BtnMeasures=(item)=> {
@@ -153,18 +144,15 @@ class Home extends FdivWrapper {
 
 		)
 	}
+
 	_onBtnItemFocus=(item)=>{
 		this.curBtnFocus = item.id;
-		if (item.id == 0) {
-			this.setState({
-				data:this.props.funcData
-			})
-		} else {
-			this.setState({
-				data:this.props.sceneData
-			})
-		}
+		this.props.changeFocusId(item.id);
+		this.setState({
+			data:this.props.getRenderData()
+		})
 	}
+
 	_onBtnEdge = (edge_info) => {
 		if (edge_info.direction === EdgeDirection.bottom) {
 			this.changeFocus("homepage");
@@ -179,6 +167,7 @@ class Home extends FdivWrapper {
 
 	// 直接集成自FdivWrapper的场合，使用renderContent而不是render进行布局
 	renderContent() {
+		let btnFocusId = this.props.getFocusId();
         return (
             <React.Fragment>
                 <div style={{fontSize: "20px", width: 1280, height: 30, color: "#FFFFFF"}}>{window.location.href}</div>
@@ -188,6 +177,7 @@ class Home extends FdivWrapper {
 						height={ 100 }
 						direction={ VERTICAL }
 						data={ this.btnDatas }
+						initFocusId={btnFocusId}
 						dispatcher={this._BtnDispatcher}
 						renderItem={ this._RenderBtnItem }
 						renderFocus={ this._RenderBtnFocus }
@@ -199,7 +189,7 @@ class Home extends FdivWrapper {
 						branchName={ "homepagebtns" }
 					/>
 				</div>
-                <div style={{top: 100, left: 10}} key={"data_"+(this.state.data=== this.props.funcData?"0":"1")}>
+                <div style={{top: 100, left: 10}} key={"data_"+btnFocusId}>
                     <SimpleWidget 
                       width={ 1280 } 
                       height={ 580 }

@@ -7,7 +7,6 @@ class BaseMedia {
 
     buildPlatformInstance() {
         this.Ele = window.originDocument.createElement(this.type);
-		window.document.body.appendChild(this.Ele);
         this.Ele.addEventListener("loadedmetadata", ()=>{
             if (this.hasOwnProperty("onload")) {//这个onload是必须调用的，否则创建的video 标签不会被添加到父view上
                 this.onload();
@@ -34,11 +33,8 @@ class BaseMedia {
     }
 
     set currentTime(value) {
-        this.Ele.isRenderable = false;
         this.Ele.currentTime = value;
-        if (!this.Ele.paused) {
-			this.setState("seek", value, "number");
-        }
+		this.setState("seek", value, "number");
     }
 
     get duration() {
@@ -149,7 +145,6 @@ class BaseMedia {
 
     unload() {
         this.setState("paused", true, "boolean");
-        this.Ele.isRenderable = false;
         this.Ele.pause();
         this.Ele.removeAttribute('src'); // empty source
         this.Ele.load();
@@ -175,8 +170,14 @@ class BaseMedia {
         return value;
     }
 
+	onEnd(data) {
+		this.setState("paused", true, "boolean");
+		if (this.hasOwnProperty("onended")) {
+			this.onended();
+		}
+	}
+
     onError(event) {
-        this.Ele.isRenderable = false;
         if (this.hasOwnProperty("onerror")) {
             this.onerror(event.currentTarget.error.code);
         }

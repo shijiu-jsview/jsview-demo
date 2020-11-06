@@ -218,6 +218,7 @@ class DemoApp extends React.Component {
     constructor(props) {
         super(props);
         this._FocusControl = null;
+
         this._NavigateHome = (()=>{
             if (globalHistory.length > 1) {
                 globalHistory.goBack();
@@ -228,10 +229,27 @@ class DemoApp extends React.Component {
             }
         }).bind(this);
 
+		this.focusId = 0;
         this.state = {
-            "homepageDisplay": "visible"
+            "homepageDisplay": "visible",
+
         };
     }
+
+	getFocusId=()=>{
+    	return this.focusId;
+	}
+	changeFocusId=(focus_id)=> {
+		this.focusId = focus_id;
+	}
+
+	getRenderData=()=>{
+		if (this.focusId == 0) {
+			return demoFuncInfos;
+		} else {
+			return demoSceneInfos;
+		}
+	}
 
     render() {
         return (
@@ -258,7 +276,9 @@ class DemoApp extends React.Component {
 									})
 								}
                                 <Route path="/">
-                                    <Home branchName="/" funcData={demoFuncInfos} sceneData={demoSceneInfos} />
+                                    <Home branchName="/" funcData={demoFuncInfos} sceneData={demoSceneInfos}
+										  getRenderData={this.getRenderData} changeFocusId={this.changeFocusId}
+										  getFocusId={this.getFocusId}/>
                                 </Route>
                             </Switch>
                         </React.Suspense>
