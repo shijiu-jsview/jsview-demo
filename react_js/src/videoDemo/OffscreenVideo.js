@@ -192,7 +192,7 @@ class OffscreenVideo extends FocusBlock {
 	// toggle play
 	togglePlay() {
 		if (this.video.paused == null || this.video.paused) {
-			this.setState({ play_state: "pause", currentTime:0 });
+			this.setState({ play_state: "pause"});
 			//this.seek(1);
 			this.play();
 		} else {
