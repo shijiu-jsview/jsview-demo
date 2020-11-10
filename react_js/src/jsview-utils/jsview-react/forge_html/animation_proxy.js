@@ -142,10 +142,10 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 	Start(layout_view) {
 		super.Start(layout_view);
 		// Keyframe动画启动时，清理transform，以保证动画行为正确
-        layout_view.ResetCssTransform(null, null);
-        if (layout_view.Element) {
-            layout_view.Element.style.pointerEvents = "auto"
-        }
+		layout_view.ResetCssTransform(null, null);
+		if (layout_view.Element) {
+			layout_view.Element.style.pointerEvents = "auto"
+		}
 		if (this.enableStartPos > 0) {
 			// 有启动进度偏移(例如以30%进度的位置开始启动)
 			this._EnableStarterAnimation();
@@ -342,7 +342,7 @@ Forge.TranslateAnimation = class extends Forge.KeyFrameAnimation {
 			let keyframe_name = "_ForgeAnim_TL_" + (sKeyFrameTokenGenerator++);
 			let keyframe_string = "@keyframes " + keyframe_name + " {"
 				+ "0%{transform:translate3d(" + start_x + "px," + start_y + "px,0);}"
-                + "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
+				+ "100%{transform:translate3d(" + this.endX + "px," + this.endY + "px,0);}}";
 			return {name: keyframe_name, keyFrameString: keyframe_string};
 		} else {
 			console.error("Error: no enabled starter position");
@@ -516,6 +516,8 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 		this._LatestProgressValue = 0;
 		this._CurrentEndEventFunc = null;
 		this._Progress = null;
+		this._AnimRunList = null;
+		this._AnimationRunIndex = 0;
 
 		let that = this;
 		this._OnEndEvent = (event) => {
@@ -523,6 +525,11 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 			if (this._TestFinalKeyFrame(event)) {
 				that._PerformAnimationEnd(true);
 			} else {
+				// 切换到下一个animation
+				this._AnimationRunIndex++;
+				this._LayoutViewRef.Element.style.animation = this._AnimRunList[this._AnimationRunIndex];
+				this._Progress.TriggerNextStep(this._AnimationRunIndex);
+
 				that._OnSubKeyFrameDone(event);
 			}
 		}
@@ -578,14 +585,15 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 			this._Progress.Start(this._KeyFrameArray);
 		}
 
-		let style_animation = this._ConvertToAnimationStyle(this._KeyFrameArray);
+		this._AnimRunList = this._ConvertToAnimationStyle(this._KeyFrameArray);
+		this._AnimationRunIndex = 0;
 
 		//name duration timing-function delay iteration-count direction;
 		if (!window.jsvInAndroidWebView) {
-			html_element.style.animation = style_animation;
+			html_element.style.animation = this._AnimRunList[0];
 			html_element.addEventListener("animationend", on_end_func);
 		} else {
-			html_element.style.webkitAnimation = style_animation;
+			html_element.style.webkitAnimation = this._AnimRunList[0];
 			html_element.addEventListener("webkitAnimationEnd", on_end_func);
 		}
 		this._CurrentEndEventFunc = on_end_func;
@@ -652,7 +660,7 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 	}
 
 	_ConvertToAnimationStyle(steps_settings) {
-		let style_animation = "";
+		let style_animation_list = [];
 		for (let i = 0; i < steps_settings.length; i++) {
 			let timing_func = "linear";
 			let settings = steps_settings[i];
@@ -662,16 +670,10 @@ Forge.KeyFrameGroupAnimation = class extends Forge.AnimationDelegate {
 
 			let delay_start = (i !== 0 ? steps_settings[i - 1].duration : 0);
 
-			style_animation += settings.name + " " + settings.duration / 1000 + "s "
-				+ timing_func + " " + delay_start / 1000 + "s ";
-
-			if (i !== steps_settings.length - 1) {
-				style_animation += ",";
-			}
+			style_animation_list.push(settings.name + " " + settings.duration / 1000 + "s " + timing_func);
 		}
 
-		console.log("animationToStyle style_anim:", style_animation);
-		return style_animation;
+		return style_animation_list;
 	}
 
 	// 由子类复写，创建动画对应的keyframe
