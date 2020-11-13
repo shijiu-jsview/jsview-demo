@@ -1,9 +1,21 @@
-/*
- * @Author: ChenChanghua
- * @Date: 2020-07-13 10:37:48
- * @LastEditors: ChenChanghua
- * @LastEditTime: 2020-07-13 11:34:34
- * @Description: file content
+/**
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
+ */
+
+/**
+ * 静态切图的插件，用于整张切图显示部分
+ *      spriteInfo {object}  (必需)精灵图配置信息
+ *                          { frames: [
+ *                              {
+ *                                  source:{w,h},
+ *                                  target:{w,h},
+ *                              },
+ *                              ...
+ *                            ],
+ *                            meta:{w,h}
+ *                          }
+ *      viewSize {object}  (必需){w:0, h:0}
+ *      imageUrl {string}  (必需)图片地址，另外，为了减小无效的解析处理，规定只有image的URL变更时才重新解析spriteInfo
  */
 import React from 'react';
 

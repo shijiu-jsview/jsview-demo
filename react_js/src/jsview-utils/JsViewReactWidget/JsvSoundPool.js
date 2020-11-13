@@ -1,8 +1,13 @@
 /**
- * @description: 控制音频的对象
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
  */
 
- let supportSoundPool = !!window.SoundPool;
+/**
+ * JsvSoundPool: 用于播放效果音的类
+ *      创建JsvSoundPool对象后通过request的回调获得AudioController句柄
+ */
+
+let supportSoundPool = !!window.SoundPool;
 class AudioController{
     constructor(soundPool, soundId, url) {
         this._SoundPool = soundPool;
@@ -96,6 +101,9 @@ class AudioController{
 }
 
 class JsvSoundPool{
+    /**
+     * @param {int} max max streams
+     */
     constructor(max) {
         if (!supportSoundPool) return;
         this._SoundPool = new window.SoundPool(max);

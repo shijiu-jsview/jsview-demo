@@ -1,3 +1,7 @@
+/**
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
+ */
+
 /*
  * JsvPreload：预加载的控件
  *      preloadList: 预加载的信息列表，通过buildPreloadInfo构建
