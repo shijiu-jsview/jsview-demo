@@ -8,7 +8,7 @@ import createStandaloneApp from "../demoCommon/StandaloneApp"
  * 
  * 语法说明:
  * 1. 支持的转义字段
- *      \textcolor{颜色(十六进制)}{文字}                    设定颜色
+ *      \textcolor{颜色(十六进制)/rgba(255,255,255,1.0)}{文字}                    设定颜色
  *      \textb{文字}                                      粗体
  *      \texti{文字}                                      斜体
  *      \textdecoration{underline/line-through}{文字}     下划线/删除线
@@ -17,6 +17,12 @@ import createStandaloneApp from "../demoCommon/StandaloneApp"
  * 2. 输入\, {, }是需要在前面添加反斜杠
  * 3. 支持嵌套的语法
  *      \textb{aa\textdecoration{underline}{\texti{bb}}}
+ * 
+ * 注意事项
+ * 1. pc和jsview的折行可能不一致
+ * 2. 输入'\'应该写成\\\\
+ * 3. 输入'{'应该写成\\{
+ * 4. 输入'}'应该写成\\}
  */
 
 class MainScene extends FocusBlock {

@@ -1,11 +1,24 @@
+/*
+ * JsvPreload：预加载的控件
+ *      preloadList: 预加载的信息列表，通过buildPreloadInfo构建
+ *      downloadList: 预下载的信息列表，通过buildDownloadInfo构建
+ *      onPreloadDone: 预加载完成回调
+ *      onDownloadDone: 预下载完成回调
+ *      sprayStyle {object}  (必需)粒子效果配置
+ * 
+ * 注意事项:
+ *      指定加载时的尺寸(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
+ *      指定加载色空间，与div标签中的 jsv_img_color_space 一起使用
+ */
+
 import React from 'react';
 import { Forge, ForgeExtension } from "../jsview-react/index_widget.js"
 
 const CONST_FORMAT_TOKEN = "_JsvP_";
 
 let buildPreloadInfo = (url,
-                        width = 0,   // 指定加载时的宽度(0为不指定)，与div标签中的 jsv_img_scaledown_tex 属性一起使用
-                        height = 0,  // 指定加载时的高度(0为不指定)，与div标签中的 jsv_img_scaledown_tex 属性一起使用
+                        width = 0,   // 指定加载时的宽度(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
+                        height = 0,  // 指定加载时的高度(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
                         color_type = Forge.ColorSpace.RGBA_8888, // 指定加载色空间，与div标签中的 jsv_img_color_space 一起使用
                         net_setting = null // 预留，未使用，图片的网络加载header设置
 ) => {
