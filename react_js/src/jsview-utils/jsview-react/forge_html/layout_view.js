@@ -207,23 +207,51 @@ class LayoutViewBase {
         this._TextureAnimationObj = null;
 
         this._ObjectFitTestCache = null;
+
+        this._ProxyView = null;
     }
 
     Init(texture_setting) {
         this.ResetTexture(texture_setting);
     }
 
-	/**
-	 * 对接虚拟html node(来源自react和vue)的自定义属性
-	 *
-	 * @func SetElementProp
-	 * @memberof Forge.LayoutViewBase
-	 * @instance
-	 * @param {Object} changed_props 格式{name1:value, name2:value}
-	 **/
-	SetElementProp(changed_props, owner_activity) {
-		//nothing to do
-	}
+    SetElementProp(changed_props, owner_activity) {
+        if (!!changed_props) {
+            for (let name of Object.keys(changed_props)) {
+                switch (name) {
+                    case "jsv_enable_fade":
+                        // 无论配置什么内容，都将启动
+                        break;
+                    case "jsv_poster_on_top":
+                        // 无论配置什么内容，都将启动
+                        break;
+                    case "jsv_innerview":
+                        let view_info = Forge.sViewStore.get(changed_props[name]);
+                        if (view_info) {
+                            let proxy_view = view_info.view;
+                            let proxy_view_lp = view_info.layout_params;
+                            if (proxy_view) {
+                                if (this._ProxyView == null) {
+                                    this._InsertProxyLayer(proxy_view, proxy_view_lp);
+                                } else {
+                                    if (proxy_view != this._ProxyView) {
+                                        console.error("Error: Can not reset proxy view");
+                                    } else {
+                                        // Do nothing
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case "jsv_media_usetexture":
+                        //nothing todo
+                        break;
+                    default:
+                        Forge.LogE("Error: View Unknown prop name=" + name);
+                }
+            }
+        }
+    }
     AddView(child_view, layout_params, packed_layout) {
         if (layout_params !== null) {
             if (!(layout_params instanceof Forge.LayoutParamsBase))
@@ -456,6 +484,49 @@ class LayoutViewBase {
             mask_setting._BottomLeft + "px";
     }
 
+    // 将本View的所有子节点都移动到Proxy层中
+    _InsertProxyLayer(proxy_view, layout_params) {
+        proxy_view.ParentView = this;
+        proxy_view.ChildViews = proxy_view.ChildViews.concat(this.ChildViews);
+        proxy_view._ChildrenListDirty = true;
+        for (var i = 0; i < proxy_view.ChildViews; i++) {
+            proxy_view.ChildViews[i].ParentView = proxy_view;
+            proxy_view._RequestLayoutForAddingView(proxy_view.ChildViews[i]);
+        }
+
+        // 应用Layout params
+        if (layout_params != null) {
+            if (!(layout_params instanceof Forge.LayoutParamsBase))
+                proxy_view.LayoutParams = new Forge.LayoutParams(layout_params);
+            else
+                proxy_view.LayoutParams = layout_params.Clone();
+        } else {
+            if (proxy_view.LayoutParams == null) {
+                proxy_view.LayoutParams = new Forge.LayoutParams({x: 0, y: 0});
+            }
+        }
+        //设置element 属性
+        proxy_view.ResetLayoutParams( proxy_view.LayoutParams);
+
+        // 重置原节点的ChildViews
+        this.ChildViews = [proxy_view];
+        this._ChildrenListDirty = true;
+        this._RequestLayoutForAddingView(proxy_view);
+
+        // 关联ProxyView
+        this._ProxyView = proxy_view;
+        // Poster on top关系不需要重建
+
+        //将子view追加到父view上
+        if (this._IsChildOfRootView) {
+            proxy_view._OnAttachToSystem();
+        }
+    }
+
+    _RequestLayoutForAddingView(child_view) {
+        this._RequestLayout();
+    };
+
     /**
      * 设置新的Texture集合
      *
@@ -602,6 +673,9 @@ class LayoutViewBase {
         this._RequestLayout();
     };
 
+    _RequestLayout() {
+
+    }
     /**
      * 停止这个LayoutView中的Texture的动画变换，并重置曾经进行动画变换的矩阵
      *
@@ -672,7 +746,7 @@ class LayoutViewBase {
 
     ResetCssTransform(transform_string, transform_origin_string) {
         if (transform_string !== this._CssTransform || transform_origin_string != this._CssTransformOrigin) {
-            console.log("ResetCssTransform transform_string:", transform_string);
+            //console.log("ResetCssTransform transform_string:", transform_string);
             if (!window.jsvInAndroidWebView) {
                 this.Element.style.transform = transform_string;
                 this.Element.style.transformOrigin = transform_origin_string;
@@ -1280,3 +1354,245 @@ class VideoView extends  Forge.LayoutView{
 	}
 }
 Forge.VideoView = VideoView;
+
+class EditControlView extends Forge.LayoutView {
+    /**
+     * 带输入框功能的LayoutView
+     *
+     * @constructor Forge.EditControlView
+     * @extends Forge.LayoutView
+     * @param {Forge.TextureSetting} texture_setting 背景Texture集合
+     **/
+    constructor() {
+        super(null, "input");
+        this._ViewType = 5;
+        this._InputType = Forge.TextInputType.TEXT;
+        this.Id = "EditControlView";
+    }
+
+    _OnAttachToSystem() {
+        super._OnAttachToSystem();
+        //该input只作为文字录入的辅助作用，故移除屏幕外,
+        //具体描画为高阶控件操控
+        this.Element.style.left="-1920px";
+        this.Element.style.top="-1080px";
+        this.Element.style.width="1px";
+        this.Element.style.height="1px";
+        /*//TODO for Test
+        this.Element.style.left="300px";
+        this.Element.style.top="100px";
+        this.Element.style.width="100px";
+        this.Element.style.height="50px";*/
+
+        //pointerEvents设置，input才能获得焦点
+        this.Element.style.pointerEvents = "auto";
+        this.Element.addEventListener('keydown',(event)=>{ //add listener keydown for textarea
+            event = event || window.event;
+            let cur_offset = this.Element.selectionStart;
+            console.log("keydown cur_offset:"+cur_offset);
+            if (event.keyCode === 37) {
+                --cur_offset;
+                if (cur_offset < 0) {
+                    cur_offset = 0;
+                }
+                if (cur_offset != this.Element.selectionStart) {
+                    this.OnTextChanged(this.Element.value, cur_offset, true);
+                    if (event.stopPropagation) {
+                        event.stopPropagation();
+                    }
+                } else {
+                    this.Element.blur();
+                }
+            } else if (event.keyCode === 39) {
+                ++cur_offset;
+                if (cur_offset > this.Element.value.length) {
+                    cur_offset = this.Element.value.length;
+                }
+                if (cur_offset != this.Element.selectionStart) {
+                    this.OnTextChanged(this.Element.value, cur_offset, true);
+                    if (event.stopPropagation) {
+                        event.stopPropagation();
+                    }
+                } else {
+                    this.Element.blur();
+                }
+            } else if (event.keyCode === 38 || event.keyCode === 40) {
+                 this.Element.blur();
+            }
+        });
+
+        //input onfocus焦点获得
+        this.Element.onfocus=(event)=>{
+            console.log("onfocus in");
+            this.OnStatusChanged(1);
+        }
+        //input onfocus焦点丢失
+        this.Element.onblur=(event)=>{
+            console.log("onblur in");
+            this.OnStatusChanged(0);
+        }
+        let ifDigital = char => '0'.charCodeAt() <= char.charCodeAt() && char.charCodeAt() <= '9'.charCodeAt();
+
+        //input 文字变化时
+        this.Element.oninput=(event)=>{
+            console.log("oninput:", event);
+            if (event.target.value.length > 0 && event.target.selectionStart > 0) {
+                let start = event.target.selectionStart-1;
+                let end = event.target.selectionStart;
+                let add_text = event.target.value.slice(start, end);
+                if (!ifDigital(add_text) && this._InputType == Forge.TextInputType.NUMBER) {
+                    event.target.value = event.target.value.substr(0, start) +  event.target.value.substr(end);
+                    event.target.selectionStart = start;
+                }
+            }
+
+            let text = event.target.value;
+            let select_start = event.target.selectionStart;
+            this.OnTextChanged(decodeURIComponent(text), select_start);
+        }
+    }
+
+    /**
+     * 重载LayoutView.SetId，为所设置的Id添加后缀_EditControlView
+     *
+     * @public
+     * @func SetId
+     * @memberof Forge.EditControlView
+     * @instance
+     * @param {string} id 原始id
+     **/
+    SetId(id) {
+        this.Id = id + "_EditControlView";
+    }
+
+    /**
+     * 显示输入法
+     *
+     * @public
+     * @func showIme
+     * @memberof Forge.EditControlView
+     * @instance
+     * @param {Forge.TextInputType} input_type
+     * @param {string} text    显示字符串
+     * @param {int} cursor_pos  光标所在位置
+     * @param {int} selectionEnd  字符串选择stop位置，默认为文字的末尾
+     **/
+    showIme(input_type, text, cursor_pos) {
+        if (!this.Element) {
+            console.log("showIme but ele is null!");
+            return;
+        }
+        if (input_type == Forge.TextInputType.NONE) {
+            console.log("showIme input_type error");
+            return;
+        }
+        if (typeof cursor_pos == "undefined" || cursor_pos == null) {
+            cursor_pos = text.length > 0 ? text.length : 0;
+        }
+        if (cursor_pos < 0) {
+            cursor_pos = 0;
+        } else if (cursor_pos > text.length) {
+            cursor_pos = text.length > 0 ? text.length : 0;
+        }
+        this._InputType = input_type;
+        /*switch (input_type) {
+            case Forge.TextInputType.PASSWORD:
+                this.Element.type = "password";
+                break;
+            case Forge.TextInputType.NUMBER:
+                this.Element.type = "number";
+                break;
+            case Forge.TextInputType.TEXT:
+            default:
+                this.Element.type = "text";
+                break;
+        }*/
+        //浏览器端不对type做限制，（因为number/password类型时selectionStart为null）
+        this.Element.type = "text";
+        this.Element.value = text;
+        this.Element.focus();
+        this.Element.selectionStart = cursor_pos;
+        this.Element.selectionEnd = cursor_pos;
+    }
+
+    /**
+     * 隐藏输入法
+     *
+     * @public
+     * @func hideIme
+     * @memberof Forge.EditControlView
+     * @instance
+     **/
+    hideIme() {
+        if (!this.Element) {
+            console.log("hideIme, but ele is null!");
+            return;
+        }
+        this.Element.blur();
+    }
+
+    /**
+     * 更新光标位置
+     *
+     * @public
+     * @func updateCursorOffset
+     * @memberof Forge.EditControlView
+     *
+     * @instance
+     * @param {String} text  显示字符串
+     * @param {int} cursor_pos  光标所在位置
+     **/
+    updateCursorOffset(text, cursor_offset) {
+        if (!this.Element) {
+            console.log("updateCursorOffset, but ele is null!");
+            return ;
+        }
+        this.Element.selectionStart = cursor_offset;
+        this.Element.selectionEnd = cursor_offset;
+        this.Element.value = text;
+    }
+
+    /**
+     * 文字变更
+     * @param value
+     * @param {int} cursor_pos  光标所在位置
+     * @param {bool} moved  光标移动
+     * @constructor
+     */
+    OnTextChanged(value, cursor_pos, moved) {
+        //Override
+        console.log("OnTextChanged value:"+value);
+    }
+
+    /**
+     * 状态变更
+     * @param status    输入法状态 1:'show'/0:'hide'
+     * @constructor
+     */
+    OnStatusChanged(status) {
+        //Override
+    }
+
+    /**
+     * action 事件通知
+     * @param action
+     * @constructor
+     */
+    OnEditAction(action) {
+        //Override
+    }
+}
+
+Forge.TextInputType = {
+    "NONE": 0,
+    "TEXT": 1,
+    "PASSWORD": 2,
+    "TEXT_AREA": 3,
+    "CONTENT_EDITABLE": 4,
+    "SEARCH": 5,
+    "URL": 6,
+    "EMAIL": 7,
+    "TELEPHONE": 8,
+    "NUMBER": 9
+}
+Forge.EditControlView = EditControlView;
