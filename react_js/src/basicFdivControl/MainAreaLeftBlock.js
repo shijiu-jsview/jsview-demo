@@ -1,5 +1,5 @@
 import React from 'react'
-import { enableFocusable } from "../jsview-utils/jsview-react/index_widget.js"
+import { convertToFocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine"
 
 class MainAreaLeftBlockBasic extends React.Component {
 	constructor() {
@@ -8,10 +8,6 @@ class MainAreaLeftBlockBasic extends React.Component {
 		this.state = {
 			focused: false
 		}
-	}
-
-	setControl() {
-
 	}
 
 	onFocus() {
@@ -34,7 +30,7 @@ class MainAreaLeftBlockBasic extends React.Component {
 	}
 }
 
-var MainAreaLeftBlock = enableFocusable(MainAreaLeftBlockBasic);
+var MainAreaLeftBlock = convertToFocusBlock(MainAreaLeftBlockBasic);
 
 export {
 	MainAreaLeftBlock

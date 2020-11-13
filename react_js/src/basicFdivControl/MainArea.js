@@ -1,7 +1,7 @@
 import React from 'react'
 import {MainAreaRightBlock} from './MainAreaRightBlock'
 import {MainAreaLeftBlock} from './MainAreaLeftBlock'
-import { enableFocusable } from "../jsview-utils/jsview-react/index_widget.js"
+import { convertToFocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine"
 import { EventCenter } from "./EventCenter"
 
 class MainAreaBasic extends React.Component {
@@ -9,11 +9,6 @@ class MainAreaBasic extends React.Component {
 		super(prop);
 		this._column = 0;
 		this._line = 0;
-		this.ControlRef = null;
-	}
-
-	setControl(control_ref) {
-		this.ControlRef = control_ref;
 	}
 
 	onKeyDown(ev) {
@@ -38,7 +33,7 @@ class MainAreaBasic extends React.Component {
 
 		if (key_used) {
 			// 焦点与之前相同时也可以重复调用，焦点管理系统内容有是否变更的判断处理
-			this.ControlRef.changeFocus("/main/L" + this._line + "C" + this._column);
+			this.changeFocus("/main/L" + this._line + "C" + this._column);
 		}
 	}
 
@@ -66,7 +61,7 @@ class MainAreaBasic extends React.Component {
 	}
 }
 
-var MainArea = enableFocusable(MainAreaBasic);
+var MainArea = convertToFocusBlock(MainAreaBasic);
 
 export {
 	MainArea

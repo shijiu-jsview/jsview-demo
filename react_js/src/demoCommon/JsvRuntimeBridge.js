@@ -1,5 +1,1 @@
-import {jJsvRuntimeBridge} from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"
-
-export {
-	jJsvRuntimeBridge
-}
+export * from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"

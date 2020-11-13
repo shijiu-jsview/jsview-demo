@@ -2,9 +2,10 @@
  * Created by donglin.lu@qcast.cn on 11/13/2020.
  */
 
-/* FocusBlock: React
- *			高阶组件/ 面向对象的类，被FDivRoot统一管理的可获焦控件，
- *			接管导航(上下左右)和确定键的按键处理。
+/*
+ * 【模块 export 内容】
+ * FocusBlock: React高阶组件/ 面向对象的类，被FdivRouter统一管理的可获焦控件，
+ *			控制按键事件按照焦点链进行流转
  *
  *      props说明:
  *          branchName {String} 节点名称，用于changeFocus时指定的参数
@@ -34,15 +35,22 @@
  *          onBlur()
  *              功能：当本控件或子控件从焦点状态变更成非焦点状态时的回调
  *              子控件失焦时，回调调用顺序晚于子控件
+ *
+ * convertToFocusBlock: 函数，将一个React组件包装成FocusBlock，注意:描画函数不用改成renderContent
  */
 
 import React from 'react';
-import {FdivWrapper} from "../jsview-react/index_widget.js"
+import { FdivWrapper,enableFocusable } from "../jsview-react/index_widget.js"
 
 class FocusBlock extends FdivWrapper {
 	constructor(props) {
 		super(props);
-		this._NavigateHome = props.navigateHome;
+
+		// TODO: 将来吧 _NavigateHome 这个与 FocusBlock 无关，但所有Demo界面用到的属性封装到外部
+		this._NavigateHome = null;
+		if (props) {
+			this._NavigateHome = props.navigateHome;
+		}
 	}
 
 	/*
@@ -51,11 +59,17 @@ class FocusBlock extends FdivWrapper {
 	 *      keep_child_focus (Boolean) 是否延续子焦点的获焦状态，
 	 *                              例如指定目标控件为一个父控件，在此父控件失焦前，其某个子控件是焦点。
 	 *                              当这个父控件重新获焦时，子控件获焦的焦点链继续保持
+	 *  返回值
+	 *      boolean     branch_name对应的控件是否找到
 	 */
 	changeFocus(branch_name, keep_child_focus) {
-		super.changeFocus(branch_name, keep_child_focus)
+		return super.changeFocus(branch_name, keep_child_focus)
 	}
 
+	/*
+	 * renderContent 参数说明:
+	 *      无
+	 */
 	renderContent() {
 
 	}
@@ -92,15 +106,35 @@ class FocusBlock extends FdivWrapper {
 		return false;
 	}
 
+	/*
+	 * onFocus 参数说明:
+	 *      无
+	 */
 	onFocus() {
 
 	}
 
+	/*
+	 * onBlur 参数说明:
+	 *      无
+	 */
 	onBlur() {
 
 	}
 }
 
+/*
+ * convertToFocusBlock 参数说明:
+ *      base_class (React.Component) 需要转化成FocusBlock的React组件,
+ *                                  传入的组件不需要重载renderContent，使用render进行渲染即可
+ *                                  传入的组件应重载onKeyDown/onKeyUp/onFocus/onBlur...(非必须)等关注的回调
+ *                                  转化完成后，可以使用this.changeFocus来切换焦点
+ */
+function convertToFocusBlock(base_class) {
+	return enableFocusable(base_class);
+}
+
 export {
-	FocusBlock
+	FocusBlock,
+	convertToFocusBlock
 }
