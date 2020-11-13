@@ -48,8 +48,11 @@ class MainScene extends FocusBlock {
                     {"常规\\textcolor{#FF0000}{红色文字}常规\\textb{加粗\\\\n\n文字}常规\\texti{Italic}常规\\textdecoration{underline}{下划线}常规\\textdecoration{line-through}{删除线}常规\\textsub{下标Sub}常规\\textsup{上标\\\\n\nSup}\\\\\\{\\}"}
                 </div>
 
-                <div style={{left: 50, top: 350, width: 550, height: 200, fontSize: "40px", lineHeight: "80px", backgroundColor: "#DDDDDD" }} jsv_text_latex_enable="true">
-                    {"这是\\textcolor{#FF0000}{一个\\textb{\\textdecoration{underline}{嵌套}}\\texti{Case}Case}常规\\textsup{上\\textb{\\textcolor{#7700FF}{标\\texti{Italic}}}}English\\textsup{Super}English\\textsub{Sub}"}
+                <div style={{left: 50, top: 350, width: 550, height: 280, fontSize: "40px", lineHeight: "80px", backgroundColor: "#DDDDDD" }} jsv_text_latex_enable="true">
+                    {"这是\\textcolor{#FF0000}{一个\\textb{\\textdecoration{underline}{嵌套}}\\texti{Case}Case}常规\\textsup{上\\textb{\\textcolor{#7700FF}{标\\texti{Italic}}}}English\\textsup{Super}English\\textsub{sub}"}
+                </div>
+                <div style={{left: 650, top: 50, width: 500, height: 280, fontSize: "35px", lineHeight: "40px", backgroundColor: "#DDDDDD" }} jsv_text_latex_enable="true">
+                    {"上标\\textsup{a quick brown fox jumps over the lazy dog}\n上标\\textsup{A QUICK BROWN FOX JUMPS OVER THE LAZY DOG}\n下标\\textsub{a quick brown fox jumps over the lazy dog}\n下标\\textsub{A QUICK BROWN FOX JUMPS OVER THE LAZY DOG}\n"}
                 </div>
             </div>
         )
