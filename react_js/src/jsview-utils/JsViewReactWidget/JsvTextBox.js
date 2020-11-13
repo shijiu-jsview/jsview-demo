@@ -1,20 +1,23 @@
+/**
+ * Created by chunfeng.luo@qcast.cn on 10/13/20.
+ */
 /*
- * 【控件介绍】
- * JsvTextBox：文字的垂直对齐方式显示控件
- *                  verticalAlign {string}  垂直对齐方式 (必需) top、middle、bottom
- *                  layoutStyles {array}  布局样式(必需)，数组中可包含样式对象或者JsvStyleClass对象，
- *                                         样式对象内容为{left:0, top:0, width:xxx, height:xxx}，
- *                                         布局样式为数组中所有样式的合并。
- *                  fontStyles {array} 字体样式数组(必需)，由object或JsvTextStyleClass组成
- *                                                          布局样式为数组中所有样式的合并。
- *                                                          数组中只有单个JsvTextStyleClass时，可加速渲染性能
- *                  styleToken {string}  类似于react html元素的key，当style变化时，由使用者改变此Token通知hoc进行style重新识别。
- *                                      Token不变的场景，props变化不会引起render，以提高渲染性能
+ * JsvTextBox：React高阶组件，文字的垂直对齐方式显示控件
+ *      props说明:
+ *          verticalAlign {string}  垂直对齐方式 (必需) top、middle、bottom
+ *          layoutStyles {array}    布局样式(必需)，数组中可包含样式对象或者JsvStyleClass对象，
+ *                                  样式对象内容为{left:0, top:0, width:xxx, height:xxx}，
+ *                                  布局样式为数组中所有样式的合并。
+ *          fontStyles {array}      字体样式数组(必需)，由object或JsvTextStyleClass组成
+ *                                  布局样式为数组中所有样式的合并。
+ *                                  数组中只有单个JsvTextStyleClass时，可加速渲染性能
+ *          styleToken {string}     类似于react html元素的key，当style变化时，由使用者改变此Token通知hoc进行style重新识别。
+ *                                  Token不变的场景，props变化不会引起render，以提高渲染性能
  */
 
 import React from "react";
 import PropTypes from "prop-types";
-import {combinedStyles, JsvTextStyleClass} from "../JsViewReactTools/JsvStyleClass";
+import { combinedStyles, JsvTextStyleClass } from "../JsViewReactTools/JsvStyleClass";
 
 const JSV_TEXT_VERTICAL_ALIGN_NAME = "jsv_text_vertical_align";
 class JsvTextBox extends React.Component {
@@ -40,7 +43,7 @@ class JsvTextBox extends React.Component {
         if (window.JsvDisableReactWrapper) {
             return (
                 <div style={this._LayoutStyle}>
-                    <div style={{position: "static", display: 'table'}}>
+                    <div style={{ position: "static", display: 'table' }}>
                         <div className={this._FontStyleClass}
                              style={{
                                  position: "static",
@@ -102,7 +105,7 @@ JsvTextBox.propTypes = {
 
 JsvTextBox.defaultProps = {
     verticalAlign: 'middle',
-    layoutStyles:[{
+    layoutStyles: [{
         left: 0,
         top: 0,
         width: 100,
