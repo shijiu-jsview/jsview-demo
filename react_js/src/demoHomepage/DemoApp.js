@@ -169,6 +169,16 @@ let demoFuncInfos = [
 		"name": "格式混排文字",
 		"path": "/users/multiStyleText",
 		"class": lazy(() => import('../multiStyleText/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+		"name": "设置颜色空间",
+		"path": "/users/colorSpace",
+		"class": lazy(() => import('../colorSpace/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+		"name": "指定texture尺寸",
+		"path": "/users/textureSize",
+		"class": lazy(() => import('../textureSize/App').then(m => ({ default: m.SubApp }))),
 	},
 ]
 let demoSceneInfos = [
