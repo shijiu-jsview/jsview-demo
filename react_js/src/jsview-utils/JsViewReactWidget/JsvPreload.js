@@ -3,7 +3,8 @@
  */
 
 /*
- * JsvPreload：预加载的控件
+ * 【模块 export 内容】
+ * JsvPreload：React高阶组件，图片预加载的控件
  *      preloadList: 预加载的信息列表，通过buildPreloadInfo构建
  *      downloadList: 预下载的信息列表，通过buildDownloadInfo构建
  *      onPreloadDone: 预加载完成回调
@@ -12,7 +13,13 @@
  * 
  * 注意事项:
  *      指定加载时的尺寸(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
- *      指定加载色空间，与div标签中的 jsv_img_color_space 一起使用
+ *      指定加载色空间，与div标签中的 jsv_img_color_space 一起使用。
+ *      因为，同样url情况下，jsv_img_scaledown_tex 和 jsv_img_color_space 启用后，不同的尺寸不同颜色空间
+ *      对应着各自不同的图片内存缓存
+ *
+ * buildPreloadInfo: 函数，创建预加载信息项，用于制作JsvPreload的preloadList属性列表信息
+ *
+ * buildDownloadInfo: 函数，创建预下载信息项，用于制作JsvPreload的downloadList属性列表信息
  */
 
 import React from 'react';
@@ -20,11 +27,20 @@ import { Forge, ForgeExtension } from "../jsview-react/index_widget.js"
 
 const CONST_FORMAT_TOKEN = "_JsvP_";
 
+/*
+ * buildPreloadInfo: 创建预加载信息项
+ * 参数说明:
+ *      url     {String}        图片下载地址
+ *      width   {int}           指定加载时的宽度(0为不指定)，不为0时，与img标签中的 jsv_img_scaledown_tex 属性一起使用
+ *      height  {int}           指定加载时的宽度(0为不指定)，不为0时，与img标签中的 jsv_img_scaledown_tex 属性一起使用
+ *      color_type {String}     指定加载色空间，与div标签中的 jsv_img_color_space 一起使用，支持 RGBA_8888 和 RGB_565
+ *      net_setting {Object}    预留，未使用，图片的网络加载header设置
+ */
 let buildPreloadInfo = (url,
-                        width = 0,   // 指定加载时的宽度(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
-                        height = 0,  // 指定加载时的高度(0为不指定)，与img标签中的 jsv_img_scaledown_tex 属性一起使用
-                        color_type = Forge.ColorSpace.RGBA_8888, // 指定加载色空间，与div标签中的 jsv_img_color_space 一起使用
-                        net_setting = null // 预留，未使用，图片的网络加载header设置
+                        width = 0,
+                        height = 0,
+                        color_type = "RGBA_8888",
+                        net_setting = null
 ) => {
     return {
         "url": url,
@@ -36,8 +52,14 @@ let buildPreloadInfo = (url,
     }
 }
 
+/*
+ * buildPreloadInfo: 创建预下载信息项，仅下载，不加载进内存
+ * 参数说明:
+ *      url     {String}        图片下载地址
+ *      net_setting {Object}    预留，未使用，图片的网络加载header设置
+ */
 let buildDownloadInfo = (url,
-                         net_setting = null // 预留，未使用，图片的网络加载header设置
+                         net_setting = null
 ) => {
     return {
         "url": url,
