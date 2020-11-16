@@ -3,14 +3,13 @@
  */
 
 /*
+ * 【模块 export 内容】
  * JsvActorMove：React高阶组件，单轴(X 或 Y)运动控制控件，可控制完成单方向的匀速运动和变速运动（抛物运动），
  *               若想进行X和Y轴同时的运动，可以通过运动分解后的两个JsvActorMove进行组合来实现
  *      props说明:
  *          control {JsvActorMoveControl} JsvActorMove控制器实体，通过new JsvActorMoveControl()生成，说明见下文
  *
  * JsvActorMoveControl: 面向对象的类，JsvActorMove控制器
- *      构造函数：
- *          参数：无
  *      功能函数：(参数说明见函数本体)
  *          moveToX(target_x, speed, end_callback)
  *              功能：延X轴进行匀速运动

@@ -1,21 +1,30 @@
-// JsvDynamicKeyFrames
-
-/*
- * 【模块介绍】
- * KeyFrameStyleSheet：KeyFrames CSS rule的操作类，用于添加和删除KeyFrame
- *      接口：
- *          insertRule {String} 将传入的KeyFrames对象("@Keyframe name {}"形式)插入到CSS列表中，
- *                              请保证不要和其他KeyFrame重名
- *          removeRule {String} 从CSS列表中删除指定名字的keyFrame
- *          removeMultiRules {String[]} 从CSS列表中删除复数个keyFrame
- * getKeyFramesGroup: 获取KeyFrameStyleSheet的函数，可接受一个参数anchor_tag，用来定位CSS rule的群组
+/**
+ * Created by donglin.lu@qcast.cn on 11/13/2020.
  */
 
+/*
+ * 【模块 export 内容】
+ * getKeyFramesGroup: 函数，获取KeyFrame操作类 KeyFrameStyleSheet
+ * KeyFrameStyleSheet：面向对象类，KeyFrames CSS rule的操作类，用于添加和删除KeyFrame
+ *      功能函数：(参数说明见函数本体)
+ *          insertRule(key_frame_string)    动态添加keyFrame
+ *          removeRule(name)                动态删除keyFrame
+ *          removeMultiRules(names_array)   批量动态删除keyFrame
+ *          hasRule(name)                   查询KeyFrame是否存在
+ */
 class KeyFrameStyleSheet {
 	constructor(style_sheet_ref) {
 		this._SS = style_sheet_ref;
 	}
 
+	/*
+	 * insertRule 参数说明:
+	 *      key_frame_string    (String) 要添加的keyFrame声明，
+	 *                          格式为"@keyframes name {0%: XXX, 100%:XXX}"，同CSS文件中声明
+	 *                          请使用者保证不要和其他KeyFrame重名
+	 *  返回值:
+	 *      无
+	 */
 	insertRule(key_frame_string) {
 		if (window.jsvInAndroidWebView) {
 			// Convert keyframe => -webkit-keyframe
@@ -29,6 +38,12 @@ class KeyFrameStyleSheet {
 		this._SS.insertRule(key_frame_string, index);
 	}
 
+	/*
+	 * hasRule 参数说明:
+	 *      name    (String) 要动态删除的keyframe的名字
+	 *  返回值:
+	 *      boolean 是否含有指定名称的keyframe
+	 */
 	hasRule(name) {
 		let css_rules_ref = this._SS.cssRules;
 		for (let i = css_rules_ref.length - 1; i >= 0; i--) {
@@ -41,10 +56,22 @@ class KeyFrameStyleSheet {
 		return false;
 	}
 
+	/*
+	 * removeRule 参数说明:
+	 *      name    (String) 要动态删除的keyframe的名字
+	 *  返回值:
+	 *      无
+	 */
 	removeRule(name) {
 		this.removeMultiRules([name]);
 	}
 
+	/*
+	 * removeMultiRules 参数说明:
+	 *      names_array    (Array) Array<String>，要动态删除的keyframe的名字数组
+	 *  返回值:
+	 *      无
+	 */
 	removeMultiRules(names_array) {
 		let style_sheet_ref = this._SS;
 		let css_rules_ref = this._SS.cssRules;
@@ -61,6 +88,12 @@ class KeyFrameStyleSheet {
 	}
 }
 
+/*
+ * getKeyFramesGroup 参数说明:
+ *      anchor_tag    (String) keyFrame的名称，可以不设置或者为undefined
+ *  返回值:
+ *      KeyFrameStyleSheet  以anchor_tag为锚点，找到对应的cssRule，以此cssRule创建出的KeyFrame管理句柄
+ */
 function getKeyFramesGroup(anchor_tag) {
 	var style_sheets_ref = null;
 

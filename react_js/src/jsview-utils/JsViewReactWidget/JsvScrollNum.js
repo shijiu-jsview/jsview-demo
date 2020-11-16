@@ -1,8 +1,9 @@
 /**
- * Created by chunfeng.luo@qcast.cn on 10/13/20.
+ * Created by chunfeng.luo@qcast.cn on 10/13/2020.
  */
 
 /*
+ * 【模块 export 内容】
  * JsvScrollNum：React高阶组件，二维码显示，
  *      props说明:
  *            value 	{number} 			初始值

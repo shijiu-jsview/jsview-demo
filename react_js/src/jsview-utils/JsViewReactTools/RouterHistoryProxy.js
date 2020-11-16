@@ -1,3 +1,29 @@
+/**
+ * Created by donglin.lu@qcast.cn on 11/13/2020.
+ */
+
+/*
+ * 【模块 export 内容】
+ * initWithType: 函数(参数见函数声明处)，在getGlobalHistory前调用，设置HistoryProxy的类型，目前只支持 hash(默认)
+ * getGlobalHistory: 函数(参数见函数声明处)，创建 HistoryProxy，HistoryProxy.getReference()对象可以对接react-router使用
+ * HistoryProxy:
+ *      功能函数：(参数说明见函数本体)
+ *
+ * jJsvRuntimeBridge：接口句柄
+ *      功能函数：
+ *          getReference()              获得传给react-router使用的对象
+ *          listen(listen_callback)     同浏览器history.listen，注册history发生变化时的回调
+ *          push(...args)               同浏览器history.push，URL跳转到新的一层
+ *          replace(...args)            同浏览器history.replace，URL跳转，但是history层数不变
+ *          goBack()                    同浏览器history.goBack，URL跳转，history退一层
+ *                                      【特别说明】在JsView场合，最后一层history进行goBack时会触发Activity退出
+ *          go(...args)                 同浏览器history.go，跳转到history指定层
+ *      支持的属性:
+ *          index           同浏览器的index, 当前history深度, 仅支持get方法
+ *          length          同浏览器的length, 当前history的长度，仅支持get方法
+ *          location        同浏览器的location, 当前地址信息，仅支持get方法
+ */
+
 import {createMemoryHistory, createHashHistory} from 'history';
 import {jJsvRuntimeBridge} from "./JsvRuntimeBridge"
 
@@ -110,6 +136,10 @@ class HistoryProxy {
 
 let sGlobalHistory = null;
 
+/*
+ * initWithType 参数说明:
+ *      type    (String)    History的类型，目前不用设定，仅支持"hash"一种
+ */
 function initWithType(type /* reserved */) {
 	if (sGlobalHistory === null) {
 		sGlobalHistory = new HistoryProxy(type);
@@ -118,6 +148,12 @@ function initWithType(type /* reserved */) {
 	}
 }
 
+/*
+ * getGlobalHistory 参数说明:
+ *
+ * 返回值
+ *      HistoryProxy    可用于react-router的history对象
+ */
 function getGlobalHistory() {
 	if (sGlobalHistory === null) {
 		initWithType("hash"); // 默认使用hash的location.href解析和locatoin.herf的更新模式

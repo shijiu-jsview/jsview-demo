@@ -1,8 +1,6 @@
-import React from 'react';
-import './JsvMarquee.css';
-import PropTypes from "prop-types";
-import {Forge} from "../jsview-react/index_widget";
-import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
+/**
+ * Created by donglin.lu@qcast.cn on 10/12/20.
+ */
 
 // JsvMarquee comes from JsView React Project
 /*
@@ -18,6 +16,12 @@ import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
  *                  styleToken {string}  类似于react html元素的key，当style变化时，由使用者改变此Token通知hoc进行style重新识别。
  *                                      Token不变的场景，props变化不会引起render，以提高渲染性能
  */
+
+import React from 'react';
+import './JsvMarquee.css';
+import PropTypes from "prop-types";
+import {Forge} from "../jsview-react/index_widget";
+import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
 
 const CONST_SLIDE_SPEED = 60; // 80px per second
 

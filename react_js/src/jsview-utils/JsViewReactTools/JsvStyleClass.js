@@ -1,3 +1,37 @@
+/**
+ * Created by donglin.lu@qcast.cn on 4/30/2020.
+ */
+
+/*
+ * 【模块 export 内容】
+ * JsvStyleClass：面向对象类，定义一组可以复用的Style，模拟css中的.class的概念
+ *      功能函数：(参数说明见函数本体)
+ *          constructor(styles_define)  构造函数
+ *          reset(styles_define)        重新设定styles内容
+ *          getName()                   获得该StyleClass系统分配的名称，用于填写元素的className属性
+ *          recycle()                   清理该Style class声明的内存占用
+ *
+ * JsvTextStyleClass: 面向对象类，继承自 JsvStyleClass，拥有JsvStyleClass的所有接口。但style内容仅支持一下品类:
+ *                      textOverflow
+ *                      wordWrap
+ *                      textShadow
+ *                      fontSize
+ *                      lineHeight
+ *                      color
+ *                      fontFamily
+ *                      fontStyle
+ *                      fontWeight
+ *                      textAlign
+ *                      当多个含有文字的元素使用同一个JsvTextStyleClass
+ *                      并且这些元素的props中，JsView自定义属性 jsv_text_vertical_align 也相同，则会得到描画上的极大加速
+ *
+ * combinedStyles: 函数(参数说明见函数本体)，将两个JsvStyleClass进行合并
+ *
+ * 【特别说明】
+ *  使用JsvStyleClass进行属性合并，可以极大减少元素style中声明的属性的数量，从而提升界面刷新的性能。
+ *  经测试，react中对style属性的解析性能较低，属性大量的时候非常影响性能
+ */
+
 import {getCssStyleGroup} from "./JsvDynamicCssStyle"
 import {Forge} from "../jsview-react/index_widget.js"
 
@@ -5,7 +39,7 @@ let sIdGenerator = 100;
 
 // 转换CSS名称的对应表
 let sCssNamesMap = null;
-let sUnitSuffixMap = null
+let sUnitSuffixMap = null;
 
 function _EnsureCssNamesMap() {
 	// Css 名称 style -> css的对应表，
@@ -83,6 +117,10 @@ let CONST_TYPE_BASE = null;
 let CONST_TYPE_TEXT = "text";
 
 class JsvStyleClass {
+	/*
+	 * constructor 参数说明:
+	 *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
+	 */
 	constructor(styles_define) {
 		this._Name = null;
 		this._Styles = null;
@@ -96,9 +134,31 @@ class JsvStyleClass {
 		}
 	}
 
+	/*
+	 * reset 参数说明:
+	 *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
+	 */
 	reset(styles_define) {
 		// 创建新的Css Style，替代原缓存，并生成新的name
 		this._UpdateInner(styles_define);
+	}
+
+	/*
+	 * getName 参数说明:
+	 *
+	 * 返回值
+	 *      String  系统分配给这个JsvStyleClass的 className
+	 */
+	getName() {
+		return this._Name;
+	}
+
+	/*
+	 * recycle 参数说明:
+	 *      无
+	 */
+	recycle() {
+		this._RecycleInner();
 	}
 
 	_UpdateInner(styles_define) {
@@ -118,15 +178,6 @@ class JsvStyleClass {
 			// JsView场合(PC/android)，向引擎注册class
 			Forge.ReactUtils.StyleClassMap[this._Name] = this;
 		}
-	}
-
-	getName() {
-		return this._Name;
-	}
-
-	// 释放CSS定义，以节省内存
-	recycle() {
-		this._RecycleInner();
 	}
 
 	_RecycleInner() {

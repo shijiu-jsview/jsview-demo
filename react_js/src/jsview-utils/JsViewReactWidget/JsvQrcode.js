@@ -1,8 +1,9 @@
 /**
- * Created by chunfeng.luo@qcast.cn on 10/13/20.
+ * Created by chunfeng.luo@qcast.cn on 10/13/2020.
  */
 
 /*
+ * 【模块 export 内容】
  * QRCode：React高阶组件，描绘二维码，
  *      props说明:
  *            value {string} (必须)     二维码代表的字符串

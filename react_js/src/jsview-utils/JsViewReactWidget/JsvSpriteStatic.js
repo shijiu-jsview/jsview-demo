@@ -3,7 +3,9 @@
  */
 
 /**
- * 静态切图的插件，用于整张切图显示部分
+ * 【模块 export 内容】
+ * JsvSpriteStatic: React高阶组件，静态切图的插件，用于整张切图显示部分
+ *  prop说明:
  *      spriteInfo {object}  (必需)精灵图配置信息
  *                          { frames: [
  *                              {

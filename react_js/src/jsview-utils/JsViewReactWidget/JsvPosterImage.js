@@ -1,10 +1,21 @@
-import React from 'react';
+/**
+ * Created by donglin.lu@qcast.cn on 10/12/20.
+ */
 
 /*
- <JsvPosterImage style={{...otherStyle}} color_space={"RGB_565"} src={`url:${海报url}`}>
- ...Holder内容
- </JsvPosterImage>
+ * 【模块 export 内容】
+ * JsvPosterImage：同JsvPosterDiv，用于海报图展示的控件，为海报添加了三个效果:
+ *              1. 海报(JsvPosterImage的src属性)加载出来前，显示place holder的内容(JsvPosterImage的子节点)
+ *              2. 海报完毕进行显示的时候，有淡出效果
+ *              3. 在JsView引擎中，海报加载完毕后，place holder内容自动隐藏以节省描画资源(PC环境不会自动隐藏)
+ *              【区别点】JsvPosterImage可以配置的是scaleDown(节省内存)切指定色空间的海报图
+ *      props说明:
+ *          style       {Object}    同<img>的Style，通过top/left/width/height控制坐标和宽高，宽高值也作为scaleDown的参数
+ *          src         {String}    海报图url
+ *          color_space {String}    颜色空间，默认为"RGBA_8888"，可以指定为"RGB_565"以节省一半内存
  */
+
+import React from 'react';
 
 class JsvPosterImage extends React.Component{
 	constructor(props) {
