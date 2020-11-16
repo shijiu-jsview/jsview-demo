@@ -133,7 +133,21 @@ class Input extends FocusBlock {
         }
     }
 
+
     _onTextChanged = (text, cursor_pos, moved) => {
+        if (text.length > 0) {
+            let start = cursor_pos-1;
+            let end = cursor_pos;
+            let add_text = text.slice(start, end);
+            if (!ifDigital(add_text) && this.props.type == Forge.TextInputType.NUMBER) {
+                console.log("onTextChanged add text failed, add_text:"+add_text+", when input type is number!");
+                if (this._InputView) {
+                    this._InputView.updateCursorOffset(this.state.fullString, this.state.curOffset);
+                }
+                return ;
+            }
+        }
+
         this._updateTextWidth(text);
         let textLeft = this._calculateSlide(this.state.fullString, text, cursor_pos, moved);
         this.setState({
@@ -287,7 +301,7 @@ class Input extends FocusBlock {
             offset = this._VisibleAreaCurStart;
         } else {
             if (this.props.fontStyle.textAlign == "right") {
-                let text_real_width = this._getFullStringLength(this._GetCurText());
+                let text_real_width = this._getFullStringLength(this._GetShowText());
                 if (new_left > text_real_width - this._MaxWidth) {
                     new_left = text_real_width - this._MaxWidth;
                     offset = this._VisibleAreaCurStart + new_left;
