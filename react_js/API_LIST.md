@@ -55,6 +55,7 @@ e. JsView.enableStorageNames(name1, name2, name3...)
 	JsvNinePatch.js			React HOC，正方形.9图片加载控件，样例: 【ninePatchDemo】
 	JsvPosterDiv.js			React HOC，海报图效果控件，含有holder和前景图联动效果，前景图加载完毕淡出效果，样例: 暂无
 	JsvPosterImage.js		React HOC，同JsvPosterDiv，但海报载体由div改成了img，支持scaleDown和颜色空间设置以节省内存消耗，样例:暂无
+	JsvPreload.js			React HOC，图片预下载(针对巨型图片)和预加载处理，解决焦点非焦点切换图片闪动问题。 样例: 【preload】
 	JsvQrcode.js			React HOC，展示由url转出来的二维码，样例: 【qrcodeDemo】
 	JsvScrollNum.js			React HOC，数值滚动变化特效的控件，样例: 【scrollNum】
 	JsvSoundPool.js			功能类，面向游戏开发的多音效混音支持，样例: 【soundPool】
