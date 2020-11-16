@@ -79,18 +79,32 @@ class MainScene extends FocusBlock{
 
     renderContent() {
         let that = this;
-        return (<div
-            style={{
-                left: 30,
-                height: 50,
-                width: 50,
-                color: "#FFFFFF",
-                fontSize: "20px",
-                backgroundColor:"#00F0F0",
-                animation: this.state.keyAnimation,
-            }}
-            onAnimationEnd={()=>{that._animateNext()}}
-        >{this.state.loopLeft}</div>)
+        return (
+        <div>
+            <div style={{
+				textAlign: "center",
+				fontSize: "30px",
+				lineHeight: "50px",
+				color: "#ffffff",
+				left: 100,
+				top: 20,
+				width: (1280-200),
+				height: 50,
+				backgroundColor: "rgba(27,38,151,0.8)"
+			}}>{`动画指令动态生成，不需要提前准备css`}</div>
+            <div style={{
+                    top:200,
+					left: 100,
+					height: 100,
+					width: 100,
+					color: "#FFFFFF",
+					fontSize: "20px",
+					backgroundColor:"#00F0F0",
+					animation: this.state.keyAnimation,
+				}}
+                onAnimationEnd={()=>{that._animateNext()}}
+            >{this.state.loopLeft}</div>
+        </div>)
     }
 }
 

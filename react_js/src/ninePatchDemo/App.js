@@ -4,10 +4,10 @@
  *
  * 【控件介绍】
  * JsvSquareNinePatch：对原图为正方形进行NinePatch扩展的控件
- *      style { object } (必须) div的left,top,width,height的定位信息
+ *      style { object } div的left,top,width,height的定位信息
  *      animTime { int } transition动画时长
- *      imageUrl { string } (必须) 图片url
- *      imageWidth { int } (必须) 图片的宽，正方形宽和高相等
+ *      imageUrl { string } (必须) 原图片url
+ *      imageWidth { int } (必须) 原图片的宽，正方形宽和高相等
  *      contentWidth { int } (必须) 图片延展区域的宽
  *      borderOutset { int } 边框向外扩展的大小
  *

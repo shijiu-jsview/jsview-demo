@@ -1,5 +1,32 @@
 /**
- * Created by ludl on 10/12/20.
+ * Created by donglin.lu@qcast.cn on 10/12/20.
+ */
+
+/*
+ * 【模块 export 内容】
+ * JsvActorMove：React高阶组件，单轴(X 或 Y)运动控制控件，可控制完成单方向的匀速运动和变速运动（抛物运动），
+ *               若想进行X和Y轴同时的运动，可以通过运动分解后的两个JsvActorMove进行组合来实现
+ *      props说明:
+ *          control {JsvActorMoveControl} JsvActorMove控制器实体，通过new JsvActorMoveControl()生成，说明见下文
+ *
+ * JsvActorMoveControl: 面向对象的类，JsvActorMove控制器
+ *      功能函数：(参数说明见函数本体)
+ *          moveToX(target_x, speed, end_callback)
+ *              功能：延X轴进行匀速运动
+ *          moveToY(target_y, speed, end_callback)
+ *              功能：延Y轴进行匀速运动
+ *          repeatMoveAlongX(target_x, speed, repeat_start, repeat_callback)
+ *              功能：延X轴进行重复匀速运动
+ *          repeatMoveAlongY(target_y, speed, repeat_start, repeat_callback)
+ *              功能：延Y轴进行重复匀速运动
+ *          throwAlongX(init_v, acc, end_condition, end_callback, pole_callback)
+ *              功能：延X轴进行回旋运动
+ *          throwAlongY(init_v, acc, end_condition, end_callback, pole_callback)
+ *              功能：延Y轴进行回旋运动(例如Y轴抛物运动)
+ *          jumpTo(new_x, new_y)
+ *              功能：直接将JsvActorMove移动到目标位置，无中间运动动画
+ *          pause(pause_callback)
+ *              功能：暂停动画，并将JsvActorMove保持在暂停的位置上
  */
 
 import {Forge} from "../jsview-react/index_widget.js"
@@ -18,19 +45,40 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 平移运动接口，包含 moveToX, moveToY, moveOffsetX, moveOffsetY
+     * moveToX 参数说明:
+     *      paused_callback (Function(x,y)) 运动暂停完成后的回调，回报当前JsvActorMove的相对x,y
+     */
+    pause(paused_callback) {
+        super.pause(paused_callback);
+    }
+
+    /*
+     * moveToX 参数说明:
+     *      target_x     (int) 带符号整数，标识运动的目标位置，相对于JsvActorMove当前位置
+     *      speed        (int) 带符号整数，符号表示方向，标识运动的运行速度，单位(pixel/s)
+     *      end_callback (Function(x,y)) 运动到目标位置后的回调函数，回报当前JsvActorMove的相对x,y
      */
     moveToX(target_x, speed, end_callback) {
         this._UniformMove(0, target_x, NaN, speed, null, end_callback);
     }
 
+    /*
+     * moveToY 参数说明:
+     *      target_y     (int) 带符号整数，标识运动的目标位置，相对于JsvActorMove当前位置
+     *      speed        (int) 带符号整数，符号表示方向，标识运动的运行速度，单位(pixel/s)
+     *      end_callback (Function(x,y)) 运动到目标位置后的回调函数，回报当前JsvActorMove的相对x,y
+     */
     moveToY(target_y, speed, end_callback) {
         this._UniformMove(1, NaN, target_y, speed, null, end_callback);
     }
 
     /*
-     * Repeat平移运动接口，包含repeatMoveAlongX, repeatMoveAlongY
-     * 注意: Actor当前位置，必须在repeat_start 到 target_x之间，目前不支持当前位置不在范围内的场景
+     * repeatMoveAlongX 参数说明：
+     *      target_x     (int) 带符号整数，标识运动的目标位置，相对于JsvActorMove当前位置
+     *      speed        (int) 带符号整数，符号表示方向，标识运动的运行速度，单位(pixel/s)
+     *      repeat_start (int) 带符号整数，标识往复运动的起始点，使用时注意，JsvActorMove的当前位置必须在
+     *                         repeat_start和target_x之间
+     *      repeat_callback (Function(times)) 完整一个运动周期后的回调，返回当前运动的周期数times
      */
     repeatMoveAlongX(target_x, speed, repeat_start, repeat_callback) {
         this._UniformMove(0,
@@ -42,6 +90,14 @@ class _ActorControl extends ActorControlBase {
             null);
     }
 
+    /*
+     * repeatMoveAlongY 参数说明：
+     *      target_y     (int) 带符号整数，标识运动的目标位置，相对于JsvActorMove当前位置
+     *      speed        (int) 带符号整数，符号表示方向，标识运动的运行速度，单位(pixel/s)
+     *      repeat_start (int) 带符号整数，标识往复运动的起始点，使用时注意，JsvActorMove的当前位置必须在
+     *                         repeat_start和target_y之间
+     *      repeat_callback (Function(times)) 完整一个运动周期后的回调，返回当前运动的周期数times
+     */
     repeatMoveAlongY(target_y, speed, repeat_start, repeat_callback) {
         this._UniformMove(1,
             NaN, target_y, speed,
@@ -65,23 +121,39 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 抛掷运动接口，包含 throwAlongX, throwAlongY
-     * init_v : 初速度
-     * acc : 加速度
-     * end_condition: 包含两种方式
-     * end_callback: 动画完成后的回调
-     * pole_callback: 动画运行到拐点时的回调，用于拐点需要切换角色形象的处理
-     *  方式1: 以捕捉方式结束，格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
-     *  例如:
-     *      1. Y轴方向运动，在相对于起始点上方30px位置，接住向上运动的物体时，设置 direction = -1, offset = -30
-     *      2. Y轴方向运动，在相对于起始点下方30px位置，接住运动到高点后跌落下来的运动的物体时，
-     *          设置 direction = 1, offset = 30
-     *          position为相对于元素0点位置的绝对坐标，和offset的设定二选一
+     * throwAlongX 参数说明：
+     *      init_v      (int) 带符号整形，描素运动初速度，单位(pixel/s)
+     *      acc         (int) 带符号整形，描素运动的加速度，单位(pixel/(s*s))
+     *      end_condition (Object) 动画结束的条件设定
+     *                          格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
+     *                          例如:
+     *                              1. X轴方向运动，在相对于起始点右方30px位置，接住向上运动的物体时，
+     *                                  设置 direction = -1, offset = -30
+     *                              2. X轴方向运动，在相对于起始点左方30px位置，接住运动到右边界后回旋向左的运动的物体时，
+     *                                  设置 direction = 1, offset = 30
+     *                                  position为相对于元素0点位置的绝对坐标，和offset的设定二选一
+     *      end_callback (Function(x,y)) 运动到目标位置后的回调函数，回报当前JsvActorMove的相对x,y
+     *      pole_callback (Function(void)) 动画运行到拐点时的回调
      */
     throwAlongX(init_v, acc, end_condition, end_callback, pole_callback) {
         this._Throw(0, init_v, acc, end_condition, end_callback, pole_callback);
     }
 
+    /*
+     * throwAlongY 参数说明：
+     *      init_v      (int) 带符号整形，描素运动初速度，单位(pixel/s)
+     *      acc         (int) 带符号整形，描素运动的加速度，单位(pixel/(s*s))
+     *      end_condition (Object) 动画结束的条件设定
+     *                          格式{type:"catch", position:xxx, offset:xxx, direction: 1 or -1}
+     *                          例如:
+     *                              1. Y轴方向运动，在相对于起始点上方30px位置，接住向上运动的物体时，
+     *                                  设置 direction = -1, offset = -30
+     *                              2. Y轴方向运动，在相对于起始点下方30px位置，接住运动到高点后跌落下来的运动的物体时，
+     *                                  设置 direction = 1, offset = 30
+     *                                  position为相对于元素0点位置的绝对坐标，和offset的设定二选一
+     *      end_callback (Function(x,y)) 运动到目标位置后的回调函数，回报当前JsvActorMove的相对x,y
+     *      pole_callback (Function(void)) 动画运行到拐点时的回调
+     */
     throwAlongY(init_v, acc, end_condition, end_callback, pole_callback) {
         this._Throw(1, init_v, acc, end_condition, end_callback, pole_callback);
     }
@@ -99,7 +171,9 @@ class _ActorControl extends ActorControlBase {
     }
 
     /*
-     * 定位动作，移动表演者到指定位置
+     * jumpTo 参数说明:
+     *      new_x     (int) 带符号整数，标识目标位置，数值相对于JsvActorMove在render中的起始位置
+     *      new_y     (int) 带符号整数，标识目标位置，数值相对于JsvActorMove在render中的起始位置
      */
     jumpTo(new_x, new_y) {
         this._Target[0] = new_x;
@@ -250,11 +324,6 @@ class _ActorControl extends ActorControlBase {
             anim.EnableInfinite();
         } else {
             // 单次动画，无repeat
-            console.log("DebugMove  affect_x="
-                + affect_x
-                + " from=" + from_pos + " to=" + to_pos
-                + " cx=" + current_array[0] + " cy=" + current_array[1]
-            );
             anim = new Forge.TranslateFrameAnimation(
                 from_pos, to_pos,
                 start_params.speed, affect_x,

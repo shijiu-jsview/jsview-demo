@@ -1,18 +1,13 @@
 import React from 'react'
-import { enableFocusable } from "../jsview-utils/jsview-react/index_widget.js"
+import { convertToFocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine"
 import { EventCenter } from "./EventCenter"
 
 class MainAreaRightBlockBasic extends React.Component {
 	constructor() {
 		super();
-		this.ControlRef = null;
 		this.state = {
 			focused: false
 		}
-	}
-
-	setControl(control_ref) {
-		this.ControlRef = control_ref;
 	}
 
 	onFocus() {
@@ -26,7 +21,7 @@ class MainAreaRightBlockBasic extends React.Component {
 	onKeyDown(ev) {
 		if (ev.keyCode == 39) {
 			// Left key
-			this.ControlRef.changeFocus("/sideBar/L0C0");
+			this.changeFocus("/sideBar/L0C0");
 			EventCenter.emitEvent("ResetSideBarPosition", null);
 			return true;
 		} else {
@@ -46,7 +41,7 @@ class MainAreaRightBlockBasic extends React.Component {
 	}
 }
 
-var MainAreaRightBlock = enableFocusable(MainAreaRightBlockBasic);
+var MainAreaRightBlock = convertToFocusBlock(MainAreaRightBlockBasic);
 
 export {
 	MainAreaRightBlock

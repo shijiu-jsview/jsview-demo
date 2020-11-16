@@ -11,126 +11,126 @@ let CssStyle = {};
 
 // 带圆角的白色背景
 CssStyle.FrameBackground = new JsvStyleClass({
-	width:320,
-	height:506,
+	width:213,
+	height:337,
 	borderRadius: `10px 10px 10px 10px`,
 	backgroundColor: '#F7F7F4'
 });
 
 // 海报默认背景图，上边缘为圆角
 CssStyle.PosterHolder = new JsvStyleClass({
-	width:320,
-	height:320,
+	width:213,
+	height:213,
 	borderRadius: `10px 10px 0px 0px`,
 	backgroundColor:'#CFCAC6'
 });
 
 // 海报未显示时的展示内容
 CssStyle.PosterHolderText = new JsvStyleClass({
-	width:160,
-	height:34,
-	left:80,
-	top:143,
+	width:107,
+	height:23,
+	left:53,
+	top:95,
 	backgroundImage:`url(${posterHolder})`
 });
 
 // 海报位置，上边缘为圆角
 CssStyle.Poster = new JsvStyleClass({
-	width:320,
-	height:320,
-	borderRadius: `10px 10px 0px 0px`,
+	width:213,
+	height:213,
+	borderRadius: `7px 7px 0px 0px`,
 });
 
 CssStyle.TitleFont = new JsvTextStyleClass({
-	fontSize:`32px`,
+	fontSize:`21px`,
 	color:'#73665C',
-	lineHeight:`44px`,
+	lineHeight:`29px`,
 	overflow: "hidden",
 	whiteSpace: 'nowrap',
 	textOverflow: "ellipsis",
 });
 
 CssStyle.TitleLayout = new JsvTextStyleClass({
-	top: 332,
-	left: 20,
-	width: 290,
-	height: 44
+	top: 221,
+	left: 13,
+	width: 193,
+	height: 29
 });
 
 // 优惠券展示外框(由左中右3部分拼接成)
 CssStyle.SavePrizeFrameLeft = new JsvStyleClass({
-	width:8,height:36,backgroundImage:`url(${couponLeft})`
+	width:5,height:24,backgroundImage:`url(${couponLeft})`
 });
 
 CssStyle.SavePrizeFrameMid = new JsvStyleClass({
-	height:36,
+	height:24,
 	backgroundImage:`url(${couponMid})`,
-	left:8
+	left:5
 });
 
 CssStyle.SavePrizeFrameRight = new JsvStyleClass({
-	width:8,height:36,backgroundImage:`url(${couponRight})`,
+	width:5,height:24,backgroundImage:`url(${couponRight})`,
 });
 
 // 优惠券文字显示，使用 JsvTextStyleClass 能极大加速同样式的文字描画
 CssStyle.SavePrizeText = new JsvTextStyleClass({
-	height:36,
+	height:24,
 	color:'#FFFFFF',
-	fontSize:`24px`,
+	fontSize:`16px`,
 	textAlign:'center',
-	lineHeight:`36px`
+	lineHeight:`24px`
 });
 
 // 销售额区域
 CssStyle.SoldFrameLeft = new JsvStyleClass({
-	width:10,
-	height:36,
+	width:7,
+	height:25,
 	backgroundImage:`url(${borderLeft})`
 });
 
 CssStyle.SoldFrameMid = new JsvStyleClass({
-	height:36,
-	left:10,
+	height:25,
+	left:7,
 	backgroundImage:`url(${borderMid})`
 });
 
 CssStyle.SoldFrameRight = new JsvStyleClass({
-	width:10,
-	height:36,
+	width:7,
+	height:25,
 	backgroundImage:`url(${borderRight})`
 });
 
 CssStyle.SoldText = new JsvTextStyleClass({
-	height:36,
+	height:25,
 	color:'#FF7A00',
-	fontSize:`24px`,
+	fontSize:`20px`,
 	textAlign:'center',
-	lineHeight:`36px`
+	lineHeight:`25px`
 });
 
 // "券后"字样，再次为了展示class合并功能，把属性进行分开
 CssStyle.PrizeTitleLayout = new JsvStyleClass({
-	width:52,
-	height:36,
-	top:444,
-	left:20,
+	width:35,
+	height:24,
+	top:296,
+	left:13,
 });
 
 CssStyle.PrizeTitleFont = new JsvTextStyleClass({
 	color:'#DE2825',
 	textAlign:'center',
-	fontSize:`26px`,
-	lineHeight:`36px`
+	fontSize:`17px`,
+	lineHeight:`24px`
 });
 
 // 价格字样
 CssStyle.PrizeText = new JsvTextStyleClass({
-	top:434,
-	left:80,
-	width: (320-82),
-	height: 56,
-	lineHeight: `56px`,
-	fontSize: `42px`,
+	top:289,
+	left:53,
+	width: (213-55),
+	height: 37,
+	lineHeight: `37px`,
+	fontSize: `28px`,
 	color: '#DE2825'
 });
 

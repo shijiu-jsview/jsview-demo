@@ -1,2 +1,1 @@
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp"
-export default createStandaloneApp;
+export {default} from "../jsview-utils/JsViewReactTools/StandaloneApp"

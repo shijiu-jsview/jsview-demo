@@ -1,8 +1,6 @@
-import React from 'react';
-import './JsvMarquee.css';
-import PropTypes from "prop-types";
-import {getKeyFramesGroup} from './JsvDynamicKeyFrames'
-import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
+/**
+ * Created by donglin.lu@qcast.cn on 10/12/20.
+ */
 
 // JsvMarquee comes from JsView React Project
 /*
@@ -19,18 +17,23 @@ import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
  *                                      Token不变的场景，props变化不会引起render，以提高渲染性能
  */
 
+import React from 'react';
+import './JsvMarquee.css';
+import PropTypes from "prop-types";
+import {Forge} from "../jsview-react/index_widget";
+import {combinedStyles} from "../JsViewReactTools/JsvStyleClass";
+
+const CONST_SLIDE_SPEED = 60; // 80px per second
+
 class JsvMarquee2 extends React.Component {
     constructor(props) {
         super(props);
         this._textRef = React.createRef();
-        this._text = props.text;
-        this._timerId = null;
-        this._rollTimeId = null;
-        this._KeyFrameStyleSheet = getKeyFramesGroup("marquee-tag");
-        this._KeyFrameNames = {
-            step1: null,
-            step2: null,
-        };
+        this._sliderRef = React.createRef();
+        this._asyncTextLenTimer = -1;
+        this._rollTimeId = -1;
+        this._animationCount = 0;
+
         this._LayoutStyle = null;
         this._FontStyle = null;
         this._FontStyleClass = null;
@@ -40,103 +43,90 @@ class JsvMarquee2 extends React.Component {
         this._AnalyzeStyleChange();
 
         this.state = {
-            left: 0,
             width: this._LayoutStyle.width,
-            animation: null,
-            count: 0,
-        }
+        };
     }
 
     shouldComponentUpdate(next_props, next_state) {
         return (
             next_props.styleToken !== this.props.styleToken
             || next_props.text !== this.props.text
-            || next_state !== this.state.count
         );
     }
 
+    componentDidUpdate() {
+        this._asyncStartSlider();
+    }
+
     componentDidMount() {
-        this._timerId = setTimeout(() => {
-            this._startAnimation();
-        }, 1000);
+        this._asyncStartSlider();
+    }
+
+    _asyncStartSlider() {
+        // 清理之前的Slider处理
+        this._resetSlider();
+
+        // 稍进行延迟，以等待JsView的native端描绘文字并回传文字宽度
+        if (this._asyncTextLenTimer < 0) {
+            this._asyncTextLenTimer = setTimeout(()=>{
+                if (this._textRef.current.clientWidth > this._LayoutStyle.width) {
+                    this._slideNextStep();
+                }
+                this._asyncTextLenTimer = -1;
+            }, 500);
+        }
+    }
+
+    _resetSlider() {
+        if (this._rollTimeId >= 0) {
+            clearTimeout(this._rollTimeId);
+            this._rollTimeId = -1;
+        }
+        this._animationCount = 0;
+        this._sliderRef.current.jsvMaskView.StopAnimation();
     }
 
     componentWillUnmount() {
-        if (this._timerId !== null) {
-            clearTimeout(this._timerId);
-            this._timerId = null;
+        // 清理所有异步处理，并停止Slider动作
+        if (this._asyncTextLenTimer >= 0) {
+            clearTimeout(this._asyncTextLenTimer);
+            this._asyncTextLenTimer = -1;
         }
-        if (this._rollTimeId !== null) {
-            clearTimeout(this._rollTimeId);
-            this._rollTimeId = null;
-        }
+        this._resetSlider();
     }
 
-    _initKeyFrameAnim() {
+    _slideNextStep() {
         const text_width = this._textRef.current.clientWidth;
-        let name1 = `step1-${text_width}-${this._LayoutStyle.width}`;
-        let step1 = `@keyframes ${name1} {
-                from{
-                    transform:translate3d(0,0,0);
-                }
-                to{
-                    transform:translate3d(${-text_width}px,0,0);
-                }
-            }`;
-        let name2 = `step2-${text_width}-${this._LayoutStyle.width}`;
-        let step2 = `@keyframes ${name2} {
-                from{
-                    transform:translate3d(${this._LayoutStyle.width}px,0,0)
-                }
-                to{
-                    transform:translate3d(0,0,0)
-                }
-            }`;
-
-        if (!this._KeyFrameStyleSheet.hasRule(name1)) {
-            this._KeyFrameStyleSheet.insertRule(step1);
-        }
-        if (!this._KeyFrameStyleSheet.hasRule(name2)) {
-            this._KeyFrameStyleSheet.insertRule(step2);
-        }
-        this._KeyFrameNames.step1 = name1;
-        this._KeyFrameNames.step2 = name2;
-    }
-
-    _startAnimation() {
-        const text_width = this._textRef.current.clientWidth;
-        if (text_width > this._LayoutStyle.width) {
-            this._initKeyFrameAnim();
-            let overflowWidth = text_width;
-            let container_left = 0;
-            const duration = Math.ceil(text_width / 60);
-            this.setState({
-                left: container_left,
-                width: overflowWidth,
-                animation: this._KeyFrameNames.step1 + " " + duration + "s linear",
-                count: 0,
-            });
-        }
-    }
-
-    _OnMovedEnd = ()=>{
-        const text_width = this._textRef.current.clientWidth;
-        if (this.state.count % 2 === 0) {
-            let duration = Math.ceil(this._LayoutStyle.width / 60);
-            this.setState({
-                animation: this._KeyFrameNames.step2 + " " + duration + "s linear",
-                count: this.state.count + 1,
-            });
-        } else {
+        if (this._animationCount % 2 === 0) {
+            // 文字从原始位置，向左移动出屏幕(每次完整移动，停顿1秒)
             this._rollTimeId = setTimeout(() => {
-                let duration = Math.ceil(text_width / 60);
-                this.setState({
-                    animation: this._KeyFrameNames.step1 + " " + duration + "s linear",
-                    count: this.state.count + 1,
-                });
+                this._rollTimeId = -1;
+                let anim =  new Forge.TranslateFrameAnimation(
+                    0, -text_width, CONST_SLIDE_SPEED, true, 0, 0);
+                anim.SetAnimationListener(new Forge.AnimationListener(null, (ended)=>{
+                    if (ended) {
+                        // 正常结束，非Cancel时，进行下一个动作
+                        this._slideNextStep();
+                    }
+                }, null));
+                anim.Enable(Forge.AnimationEnable.ReleaseAfterEndCallback);
+                this._sliderRef.current.jsvMaskView.StartAnimation(anim);
+                this._animationCount += 1;
             }, 1000);
+        } else {
+            // 文字从右边屏幕外部，移动回屏幕中的文字原始位置
+            let anim =  new Forge.TranslateFrameAnimation(
+                this._LayoutStyle.width, 0, CONST_SLIDE_SPEED, true, this._LayoutStyle.width, 0);
+            anim.SetAnimationListener(new Forge.AnimationListener(null, (ended)=>{
+                if (ended) {
+                    // 正常结束，非Cancel时，进行下一个动作
+                    this._slideNextStep();
+                }
+            }, null));
+            this._sliderRef.current.jsvMaskView.StartAnimation(anim);
+            this._animationCount += 1;
         }
-    };
+    }
 
     render() {
         this._AnalyzeStyleChange();
@@ -144,22 +134,20 @@ class JsvMarquee2 extends React.Component {
         return (
             <div key="container"
                  style={{...this._LayoutStyle, overflow: "hidden"}}>
-                <div key="slider"
+                <div key="slider" ref={this._sliderRef}
                      style={{
-                         left: this.state.left,
+                         left: 0,
                          top: 0,
                          width: this.state.width,
-                         height: 100,
-                         animation: this.state.animation
-                     }}
-                     onAnimationEnd={this._OnMovedEnd}>
+                         height: this._LayoutStyle.height,
+                     }}>
                     <div key="text" ref={this._textRef}
                          className={this._FontStyleClass}
                          style={{...this._FontStyle,
                              height: this._LayoutStyle.height,
                              whiteSpace: 'nowrap'}}
                     >
-                        {this._text}
+                        {this.props.text}
                     </div>
                 </div>
             </div>

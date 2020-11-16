@@ -6,3 +6,4 @@ ext {
 ext.jsViewExt.JsView_Dir = new File(rootProject.projectDir, '../jsview-project/jsview/')
 
 apply from: "${ext.jsViewExt.JsView_Dir}/android/jsview.gradle"
+apply from: "${ext.jsViewExt.JsView_Dir}/android/jsview-publish.gradle"

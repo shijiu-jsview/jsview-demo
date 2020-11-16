@@ -129,17 +129,31 @@ class MainScene extends FocusBlock{
 
     renderContent() {
         return(
-            <div style={{left: 140, top: 20}}>
+        <div>
+            <div style={{
+				textAlign: "center",
+				fontSize: "30px",
+				lineHeight: "50px",
+				color: "#ffffff",
+				left: 100,
+				top: 20,
+				width: 1000,
+				height: 50,
+				backgroundColor: "rgba(27,38,151,0.8)"
+			}}>{`可加载长或宽超过2048px的图片`}</div>
+            <div style={{left: 100, top: 100}}>
                 <LongImageScroll branchName={this.props.branchName + "/longImageView"}
-                                style={{width: 1000, height: 500, backgroundColor: '#EEEEEE'}}
-                                imageSrc={LongImageSource}
-                                scrollBlockStyle={{ width: 10, height: 30, backgroundColor: "#555555"}}
-                                scrollStyle={{left: 1005, width: 10, height: 500, backgroundColor: "#DDDDDD"}}
-                                step={60} />
+                                 style={{width: 1000, height: 500, backgroundColor: '#EEEEEE'}}
+                                 imageSrc={LongImageSource}
+                                 scrollBlockStyle={{ width: 10, height: 30, backgroundColor: "#555555"}}
+                                 scrollStyle={{left: 1005, width: 10, height: 500, backgroundColor: "#DDDDDD"}}
+                                 step={60} />
                 <div style={{left: 400, top: 550}}>
                     <Button branchName={this.props.branchName + "/button"} onEdge={this._ButtonOnEdge}/>
                 </div>
             </div>
+        </div>
+
         )
     }
 }

@@ -1,0 +1,10 @@
+@keyframes offscreenAnim {
+  from {
+    transform:scale3d(1, 1, 1) rotate3d(0, 0, 1, -360deg);
+    transform-origin: center center;
+  }
+  to {
+    transform:scale3d(0.4, 0.4, 0) rotate3d(0, 0, 1, 0);
+    transform-origin: center center;
+  }
+}

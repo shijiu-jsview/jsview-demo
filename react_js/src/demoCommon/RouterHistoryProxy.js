@@ -1,7 +1,2 @@
-import {initWithType, getGlobalHistory} from "../jsview-utils/JsViewReactTools/RouterHistoryProxy"
-
-export {
-	initWithType,
-	getGlobalHistory,
-};
+export * from "../jsview-utils/JsViewReactTools/RouterHistoryProxy"
 

@@ -1,7 +1,27 @@
-import React, {Component} from "react"
+/**
+ * Created by chunfeng.luo@qcast.cn on 10/13/2020.
+ */
+
+/*
+ * 【模块 export 内容】
+ * QRCode：React高阶组件，描绘二维码，
+ *      props说明:
+ *            value {string} (必须)     二维码代表的字符串
+ *            size {number} (必须)      二维码展示尺寸，二维码为正方形，所以改值代表宽和高，默认值：128
+ *            fgColor {string}          二维码前景色，默认值"#000000"，黑色
+ *            bgColor {string}          二维码背景色，默认值"#ffffff"，白色
+ *            level {string}            二维码的容错能力，可选值{'L':低, 'M':中, 'H':高, 'Q':最精细}，默认值'L'
+ *            imageSettings {Object}    设置中心logo图片，默认值为null，设置格式为：
+ *                       {
+ *                              src {string}        logo的url地址
+ *                              height {number}     logo的宽度
+ *                              height {number}     logo的高度
+ *                       }
+ */
+import React, { Component } from "react"
 import PropTypes from "prop-types"
 import QRCodeImpl from 'qr.js/lib/QRCode'
-import {Forge, ForgeExtension} from "../jsview-react/index_widget.js"
+import { Forge, ForgeExtension } from "../jsview-react/index_widget.js"
 
 const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
 function convertStr(str) {
@@ -121,7 +141,7 @@ class QRCodeSVG extends Component {
     }
 
     getImageSettings(props,) {
-        const {imageSettings, size} = props;
+        const { imageSettings, size } = props;
         if (imageSettings == null) {
             return null;
         }
@@ -136,7 +156,7 @@ class QRCodeSVG extends Component {
                 ? size / 2 - h / 2
                 : imageSettings.y;
 
-        return {x, y, h, w};
+        return { x, y, h, w };
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -145,12 +165,12 @@ class QRCodeSVG extends Component {
         let image_changed = !((!pre_image && !new_image) || (pre_image && new_image && pre_image.src == new_image.src && pre_image.height == new_image.height && pre_image.width == new_image.width))
 
         return nextProps.value !== this.props.value
-        || nextProps.size !== this.props.size
-        || nextProps.level !== this.props.level
-        || nextProps.bgColor !== this.props.bgColor
-        || nextProps.fgColor !== this.props.fgColor
-        || nextProps.includeMargin !== this.props.includeMargin
-        || image_changed;
+            || nextProps.size !== this.props.size
+            || nextProps.level !== this.props.level
+            || nextProps.bgColor !== this.props.bgColor
+            || nextProps.fgColor !== this.props.fgColor
+            || nextProps.includeMargin !== this.props.includeMargin
+            || image_changed;
     }
 
     render() {
@@ -181,21 +201,23 @@ class QRCodeSVG extends Component {
         let view = null;
         let lp_params = null;
 
-        let texture_manager =  ForgeExtension.TextureManager;
-        let qrcode_texture = texture_manager.GetQRCodeTexture(value, size,size,Forge.QRCodeLevel[level],bgColor,fgColor);
+        let texture_manager = ForgeExtension.TextureManager;
+        let qrcode_texture = texture_manager.GetQRCodeTexture(value, size, size, Forge.QRCodeLevel[level], bgColor, fgColor);
         view = new Forge.LayoutView(new Forge.TextureSetting(qrcode_texture));
         let calculatedImageSettings = this.getImageSettings(this.props);
         if (imageSettings && calculatedImageSettings) {
-        	let url = imageSettings.src
-			if(typeof(url) === "string") {
-				url = new window.JsView.React.UrlRef(imageSettings.src).href;
-			}
+            let url = imageSettings.src
+            if (typeof(url) === "string") {
+                url = new window.JsView.React.UrlRef(imageSettings.src).href;
+            }
             let img_texture = texture_manager.GetImage(url);
             let img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
-            view.AddView(img_view, new Forge.LayoutParams({x:calculatedImageSettings.x,y:calculatedImageSettings.y,
-                width:calculatedImageSettings.w,height:calculatedImageSettings.h}))
+            view.AddView(img_view, new Forge.LayoutParams({
+                x: calculatedImageSettings.x, y: calculatedImageSettings.y,
+                width: calculatedImageSettings.w, height: calculatedImageSettings.h
+            }))
         }
-        lp_params = new Forge.LayoutParams({x:0,y:0,width:size,height:size});
+        lp_params = new Forge.LayoutParams({ x: 0, y: 0, width: size, height: size });
 
         // Add new QRCode
         this._QRCodeView = view;
@@ -207,7 +229,7 @@ class QRCodeSVG extends Component {
         if (this._JsvBaseView == null) {
             this._JsvBaseView = new Forge.LayoutView();
             this._InnerViewId = ForgeExtension.RootActivity.ViewStore.add(
-                new Forge.ViewInfo(this._JsvBaseView, {x:0, y:0})
+                new Forge.ViewInfo(this._JsvBaseView, { x: 0, y: 0 })
             );
         }
 
@@ -293,6 +315,7 @@ class QRCodeSVG extends Component {
             );
         }
     }
+
     componentWillUnmount() {
         if (this._InnerViewId != -1) {
             ForgeExtension.RootActivity.ViewStore.remove(this._InnerViewId);
@@ -307,7 +330,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const QRCode = (props) => {
-    const {...otherProps} = props;
+    const { ...otherProps } = props;
     return <QRCodeSVG {...otherProps} />;
 };
 

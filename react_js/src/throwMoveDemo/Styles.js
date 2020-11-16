@@ -16,13 +16,13 @@ CssStyle.FontStyle = new JsvTextStyleClass({
     textAlign: 'center',
 });
 CssStyle.DetailFontStyle = new JsvTextStyleClass({
-	fontSize:`16px`,
+	fontSize:`32px`,
 	color:'#f7f7eb',
 	lineHeight:`30px`,
 	overflow: "hidden",
 	whiteSpace: 'nowrap',
 	textOverflow: "ellipsis",
-	textAlign: 'left',
+	textAlign: 'center',
 });
 
 export default CssStyle;

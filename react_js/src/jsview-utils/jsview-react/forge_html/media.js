@@ -33,9 +33,8 @@ class BaseMedia {
     }
 
     set currentTime(value) {
-        this.Ele.isRenderable = false;
         this.Ele.currentTime = value;
-        this.setState("seek", value, "number");
+		this.setState("seek", value, "number");
     }
 
     get duration() {
@@ -146,7 +145,6 @@ class BaseMedia {
 
     unload() {
         this.setState("paused", true, "boolean");
-        this.Ele.isRenderable = false;
         this.Ele.pause();
         this.Ele.removeAttribute('src'); // empty source
         this.Ele.load();
@@ -172,8 +170,14 @@ class BaseMedia {
         return value;
     }
 
+	onEnd(data) {
+		this.setState("paused", true, "boolean");
+		if (this.hasOwnProperty("onended")) {
+			this.onended();
+		}
+	}
+
     onError(event) {
-        this.Ele.isRenderable = false;
         if (this.hasOwnProperty("onerror")) {
             this.onerror(event.currentTarget.error.code);
         }
@@ -214,8 +218,6 @@ class Video extends Media {
         this.state.height = 0;
         this.state.width = 0;
         this.state.aspectRatiow = 'origin'; // 'origin', 'full', '16:9', '4:3',
-        this.Ele.videoWidth = 0;
-        this.Ele.videoHeight = 0;
     }
 
     get height() {

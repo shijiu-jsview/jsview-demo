@@ -7,7 +7,8 @@
  */
 
 import React from 'react';
-import {FdivWrapper, SimpleWidget, VERTICAL, SWidgetDispatcher} from "../jsview-utils/jsview-react/index_widget.js"
+
+import {FdivWrapper, SimpleWidget, VERTICAL, EdgeDirection, SWidgetDispatcher} from "../jsview-utils/jsview-react/index_widget.js"
 import {getGlobalHistory} from '../demoCommon/RouterHistoryProxy';
 import {jJsvRuntimeBridge} from "../demoCommon/JsvRuntimeBridge"
 
@@ -17,6 +18,9 @@ let globalHistory = getGlobalHistory();
 
 let CONST_ITEM_WIDTH = 300;
 let CONST_ITEM_HEIGHT = 100;
+
+let CONST_BTN_ITEM_WIDTH = 200;
+let CONST_BTN_ITEM_HEIGHT = 50;
 
 let HomepageInfo = {
     curFocus: -1
@@ -28,7 +32,13 @@ let sFontStyle = new JsvTextStyleClass({
 	color: "#000000",
 	fontSize: 30,
 });
-
+let sBtnFontStyle = new JsvTextStyleClass({
+	width: CONST_BTN_ITEM_WIDTH - 10,
+	height: CONST_BTN_ITEM_HEIGHT - 10,
+	textAlign:"center",
+	color: "#FFFFFF",
+	fontSize: 30,
+});
 class Home extends FdivWrapper {
 	constructor(prop) {
         super(prop);
@@ -38,6 +48,19 @@ class Home extends FdivWrapper {
         this._onClick = this._onClick.bind(this);
         this._onItemFocus = this._onItemFocus.bind(this);
         this._Dispatcher = new SWidgetDispatcher();
+		this._BtnDispatcher = new SWidgetDispatcher();
+		this.btnDatas = this._GetBtnDatas();
+		this.curBtnFocus = this.props.getFocusId();
+		this.state = {
+			data:this.props.getRenderData()
+		}
+	}
+
+	_GetBtnDatas=()=>{
+		return [
+			{color:"#1c7b24", name:"功能实例", id:0},
+			{color:"#1c7b24", name:"场景实例", id:1},
+		]
 	}
 
     _onClick(item) {
@@ -63,10 +86,12 @@ class Home extends FdivWrapper {
 
     _RenderItem(item) {
         return (
-            <div className={sFontStyle.getName()}
-                 style={{backgroundColor: item.color}}>
-                { item.name }
-            </div>
+			<div>
+				<div className={sFontStyle.getName()}
+					 style={{backgroundColor: item.color}}>
+					{ item.name }
+				</div>
+			</div>
         )
     }
 
@@ -74,25 +99,111 @@ class Home extends FdivWrapper {
         HomepageInfo.curFocus = query.id;
     }
 
+	_onBtnClick=(item)=> {
+
+		this.setState({
+			data:this.props.getRenderData()
+		})
+		this._BtnDispatcher.dispatch({
+			type: SWidgetDispatcher.Type.updateItem,
+			data: [item.id]
+		})
+	}
+
+	_BtnMeasures=(item)=> {
+		return SimpleWidget.getMeasureObj(CONST_BTN_ITEM_WIDTH, CONST_BTN_ITEM_HEIGHT, true, false);
+	}
+
+	_RenderBtnFocus=(item)=> {
+		return (
+			<div>
+				<div style={{backgroundColor: "#0000FF", top: -5, left: -5, width: CONST_BTN_ITEM_WIDTH, height: CONST_BTN_ITEM_HEIGHT}}></div>
+				<div className={sBtnFontStyle.getName()}
+					 style={{backgroundColor: item.color}}>
+					{ item.name }
+				</div>
+			</div>
+		)
+	}
+
+	_RenderBtnItem=(item)=> {
+		return (
+			<div>
+				<div className={sBtnFontStyle.getName()}
+					 style={{backgroundColor: item.color}}>
+					{ item.name }
+				</div>
+				{this.curBtnFocus === item.id ? <div style={{
+					backgroundColor: "#f0ef29",
+					top: 50,
+					left: -5,
+					width: CONST_BTN_ITEM_WIDTH,
+					height: 4
+				}}></div> : null}
+			</div>
+
+		)
+	}
+
+	_onBtnItemFocus=(item)=>{
+		this.curBtnFocus = item.id;
+		this.props.changeFocusId(item.id);
+		this.setState({
+			data:this.props.getRenderData()
+		})
+	}
+
+	_onBtnEdge = (edge_info) => {
+		if (edge_info.direction === EdgeDirection.bottom) {
+			this.changeFocus("homepage");
+		}
+	}
+
+	_onEdge = (edge_info) => {
+		if (edge_info.direction === EdgeDirection.top) {
+			this.changeFocus("homepagebtns");
+		}
+	}
+
 	// 直接集成自FdivWrapper的场合，使用renderContent而不是render进行布局
 	renderContent() {
+		let btnFocusId = this.props.getFocusId();
         return (
             <React.Fragment>
-                <div style={{fontSize: "20px", width: 1280, height: 70, color: "#FFFFFF"}}>{window.location.href}</div>
-                <div style={{top: 70, left: 10}}>
+                <div style={{fontSize: "20px", width: 1280, height: 30, color: "#FFFFFF"}}>{window.location.href}</div>
+				<div style={{top: 30, left: 10}}>
+					<SimpleWidget
+						width={ 1280 }
+						height={ 100 }
+						direction={ VERTICAL }
+						data={ this.btnDatas }
+						initFocusId={btnFocusId}
+						dispatcher={this._BtnDispatcher}
+						renderItem={ this._RenderBtnItem }
+						renderFocus={ this._RenderBtnFocus }
+						onClick={ this._onBtnClick }
+						measures={ this._BtnMeasures }
+						padding={{top: 10, left: 10, right: 10, bottom: 10}}
+						onEdge={this._onBtnEdge}
+						onItemFocus={this._onBtnItemFocus}
+						branchName={ "homepagebtns" }
+					/>
+				</div>
+                <div style={{top: 100, left: 10}} key={"data_"+btnFocusId}>
                     <SimpleWidget 
                       width={ 1280 } 
-                      height={ 630 } 
+                      height={ 580 }
                       dispatcher={this._Dispatcher}
                       direction={ VERTICAL } 
-                      data={ this.props.data } 
+                      data={ this.state.data }
                       renderItem={ this._RenderItem }
                       renderFocus={ this._RenderFocus }
                       onClick={ this._onClick }
                       measures={ this._Measures }
-                      padding={{top: 10, left: 10, right: 10, buttom: 10}}
+                      padding={{top: 10, left: 10, right: 10, bottom: 10}}
                       onItemFocus={this._onItemFocus}
-                      branchName={ "home_page" }
+					  onEdge={this._onEdge}
+                      branchName={ "homepage" }
                     />
                 </div>
             </React.Fragment>
@@ -101,7 +212,7 @@ class Home extends FdivWrapper {
 
 	onKeyDown(ev) {
         if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            jJsvRuntimeBridge.closePage()
+            jJsvRuntimeBridge.closePage();
             return true;
         }
 		return false;
@@ -135,7 +246,7 @@ class Home extends FdivWrapper {
             })
             HomepageInfo.curFocus = -1;
         }
-        this.changeFocus("home_page")
+        this.changeFocus("homepage")
 	}
 
 	onBlur() {

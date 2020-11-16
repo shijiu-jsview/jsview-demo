@@ -1,3 +1,44 @@
+/**
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
+ */
+
+/**
+ * 【模块 export 内容】
+ * JsvTabWidget: React高阶组件，TAB + 多页内容的展示控件，多用于机顶盒主页的场景，接管焦点控制和导航键(上下左右)
+ *      prop说明:
+ *          onEdge {function} 边缘回调
+ *          flowDirection {Symbol} 控件的方向 (必选)
+ *          initFocusId {int} 初始的焦点
+ *          tabFocusable {boolean} tab是否可获得焦点
+ *          onWidgetMount{function} 控件挂载完成回调
+ *
+ *          tabData {list} tab的数据 (必选)
+ *          tabMeasures {function} tab的measures函数 (必选)
+ *          tabOnItemFocus {function} tab的onItemFoucs函数
+ *          tabOnItemBlur {function} tab的onItemBlur函数
+ *          tabStyle {object} tab的style {width: 宽, height: 高, left: x, top: y} (必选)
+ *          tabOnBlur {function} tab的onBlur函数
+ *          tabOnFocus {function} tab的onFocus函数
+ *          tabRenderItem {function} tab的renderItem函数 (必选)
+ *          tabRenderCurItem {function} tab的blur状态下焦点描画函数
+ *          tabRenderFocus {function} tab的renderFocus函数
+ *          tabRenderBlur {function} tab的renderBlur函数
+ *          tabPadding {object} 同SimpleWidget的padding
+ *
+ *          bodyStyle {object} body的style {width: 宽, height: 高, left: x, top: y} (必选)
+ *          bodyData {list} body的数据 (必选)
+ *          bodyOnFocus {function} body的onFocus
+ *          bodyOnItemFocus {function} body的onItemFocus
+ *          bodyOnItemBlur {function} body的onItemBlur
+ *          bodyOnBlur {function} body的onBlur
+ *          bodyRenderItem {function} body的RenderItem (必选)
+ *          bodyRenderFocus {function} body的renderFocus
+ *          bodyRenderBlur {function} body的renderBlur
+ *          bodyMeasures {function} body的measures (必选)
+ *          bodyPadding {function} 同SimpleWidget的padding
+ *          bodySlideStyle { Symbol } body的SlideStyle
+ */
+
 import React, { Component } from "react"
 import ReactDOM from 'react-dom';
 import {SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL, SlideStyle, FdivWrapper} from "../jsview-react/index_widget.js"
@@ -21,40 +62,6 @@ class TabItem extends React.Component{
         }
     }
 }
-
-/*
-    onEdge {function} 边缘回调
-    flowDirection {Symbol} 控件的方向 (必选)
-    initFocusId {int} 初始的焦点
-    tabFocusable {boolean} tab是否可获得焦点
-    onWidgetMount{function} 控件挂载完成回调
-
-    tabData {list} tab的数据 (必选)
-    tabMeasures {function} tab的measures函数 (必选)
-    tabOnItemFocus {function} tab的onItemFoucs函数
-    tabOnItemBlur {function} tab的onItemBlur函数
-    tabStyle {object} tab的style {width: 宽, height: 高, left: x, top: y} (必选)
-    tabOnBlur {function} tab的onBlur函数
-    tabOnFocus {function} tab的onFocus函数
-    tabRenderItem {function} tab的renderItem函数 (必选)
-    tabRenderCurItem {function} tab的blur状态下焦点描画函数
-    tabRenderFocus {function} tab的renderFocus函数
-    tabRenderBlur {function} tab的renderBlur函数
-    tabPadding {object} 同SimpleWidget的padding
-
-    bodyStyle {object} body的style {width: 宽, height: 高, left: x, top: y} (必选)
-    bodyData {list} body的数据 (必选)
-    bodyOnFocus {function} body的onFocus
-    bodyOnItemFocus {function} body的onItemFocus
-    bodyOnItemBlur {function} body的onItemBlur
-    bodyOnBlur {function} body的onBlur
-    bodyRenderItem {function} body的RenderItem (必选)
-    bodyRenderFocus {function} body的renderFocus
-    bodyRenderBlur {function} body的renderBlur
-    bodyMeasures {function} body的measures (必选)
-    bodyPadding {function} 同SimpleWidget的padding
-    bodySlideStyle { Symbol } body的SlideStyle
- */
 
  class TabDispatcher extends BaseDispatcher { }
  TabDispatcher.Type = {

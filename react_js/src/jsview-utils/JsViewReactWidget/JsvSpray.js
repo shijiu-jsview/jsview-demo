@@ -1,8 +1,15 @@
+/**
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
+ */
+
 /*
- * JsvSpray：粒子控件
- *      pointRes {string} (必需)粒子图案 可选值: 绝对路径url|url(相对路径url)|#FFFFFF|rbga(255,0,0,1.0)
- *      sprayStyle {object}  (必需)粒子效果配置
- * sprayStyle
+ * 【模块 export 内容】
+ * JsvSpray：React高阶组件，粒子效果控件
+ *      prop说明:
+ *          pointRes {string} (必需)粒子图案 可选值: 绝对路径url|url(相对路径url)|#FFFFFF|rbga(255,0,0,1.0)
+ *          sprayStyle {object}  (必需)粒子效果配置
+ *
+ * prop中的sprayStyle说明:
  *      type {int} (必需)喷射类型 0: 一次喷射 1: 持续喷射
  *      particleNum {int} (必需)粒子个数
  *      deltaAngle {int} (必需)粒子喷射角度范围。如设30则粒子喷射范围为div上边法向正负30度

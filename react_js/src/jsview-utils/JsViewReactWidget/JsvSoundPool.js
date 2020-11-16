@@ -1,8 +1,44 @@
 /**
- * @description: 控制音频的对象
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
  */
 
- let supportSoundPool = !!window.SoundPool;
+/**
+ * 【模块 export 内容】
+ * JsvSoundPool: 面向对象的类，用于播放效果音，创建JsvSoundPool对象后通过request的回调获得AudioController句柄后进行控制
+ *      功能函数: (参数说明见函数本体)
+ *          constructor(max)
+ *              功能: 构造JsvSoundPool，构造后需要destroy进行资源释放
+ *          request(url, netSetting, priority, callback)
+ *              功能: 创建加载指定音轨(url)的控制器(AudioController)，在回调中获得AudioController
+ *          release(controller)
+ *              功能: 释放指定AudioController资源
+ *          destroy()
+ *              功能: 释放JsvSoundPool管理的所有资源
+ *          autoPause()
+ *              功能: 暂停当前Pool中所有正在播放的音轨
+ *          autoResume()
+ *              功能: 播放当前Pool中所有暂停掉的音轨
+ * AudioController:
+ *      功能函数: (参数说明见函数本体)
+ *          play()
+ *              功能: 播放当前音轨，与stop()配套
+ *          pause()
+ *              功能: 暂停当前音轨，与resume()配套
+ *          stop()
+ *              功能: 停止当前音轨，与play()配套
+ *          resume()
+ *              功能: 恢复当前音轨播放，与pause()配套
+ *          setRate(rate)
+ *              功能: 当前播放速率
+ *          setVolume(leftVolume, rightVolume)
+ *              功能: 调整音量
+ *          setLoop(loop)
+ *              功能: 设置是否进行循环和循环次数
+ *          setPriority(priority)
+ *              功能: 设置播放优先级
+ */
+
+let supportSoundPool = !!window.SoundPool;
 class AudioController{
     constructor(soundPool, soundId, url) {
         this._SoundPool = soundPool;
@@ -96,6 +132,9 @@ class AudioController{
 }
 
 class JsvSoundPool{
+    /**
+     * @param {int} max max streams
+     */
     constructor(max) {
         if (!supportSoundPool) return;
         this._SoundPool = new window.SoundPool(max);
@@ -175,7 +214,7 @@ class JsvSoundPool{
     /**
      * @description: 全部暂停
      */
-    autoPaues() {
+    autoPause() {
         if (!supportSoundPool) return;
         this._SoundPool.autoPause();
     }

@@ -1,14 +1,16 @@
-// JsvDynamicCssStyle
+/**
+ * Created by donglin.lu@qcast.cn on 11/13/2020.
+ */
 
 /*
- * 【模块介绍】
- * CssStyleSheet：CSS rule的操作类，用于添加和删除CssStyle
+ * 【模块 export 内容】
+ * CssStyleSheet：面向对象类，CSS rule的操作器，用于添加和删除CssStyle，服务于JsvStyleClass
  *      接口：
  *          insertRule {String} 将传入的Css rule对象插入到CSS列表中，
  *                              请保证不要和其他css rule重名，重名场合以最后一个为准
  *          removeRule {String} 从CSS列表中删除指定名字的css rule
  *          removeMultiRules {String[]} 从CSS列表中删除复数个css rule
- * getCssStyleSheet: 获取 _StyleSheet 实例的函数，可接受一个参数anchor_tag，用来定位CSS rule的群组
+ * getCssStyleSheet: 函数，获取 _StyleSheet 实例的函数，可接受一个参数anchor_tag，用来定位CSS rule的群组
  */
 
 class CssStyleSheet {

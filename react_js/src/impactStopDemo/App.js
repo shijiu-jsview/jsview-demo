@@ -179,6 +179,9 @@ class MainScene extends FocusBlock {
         return (
             <>
                 <div key="bg" style={{width:1280, height:720, backgroundColor:"#000000"}}/>
+			{!window.JsView?<div style={{ textAlign: "center", fontSize: "30px", lineHeight: "50px", color: "#ffffff",
+					left: 100, top: 20, width: (1280-200), height: 50, backgroundColor: "rgba(27,38,151,0.8)"
+				}}>{`JsView环境下不会穿透模型`}</div>:null}
                 <React.Fragment>
                     <div key="bottomWall" style={{top:620, left:40, width:1200, height:5, backgroundColor:"#F0FFF0"}}/>
 
@@ -236,7 +239,7 @@ class MainScene extends FocusBlock {
 				</div>
 
                 {/* 一个无限动画元素，来测试卡顿 */}
-                <div style={{top:50, left:50, height:150, width:150,
+                <div style={{top:100, left:50, height:150, width:150,
 	                backgroundColor: "#334455",
 	                animation: 'ImpactStopAnimRotate 1s infinite linear'}}/>
             </>

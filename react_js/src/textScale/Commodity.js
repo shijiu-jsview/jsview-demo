@@ -9,8 +9,6 @@ import borderRight from './images/line_right.png'
 import posterHolder from './images/holder_logo.png'
 import './App.css'
 
-let _LastTime = 0;
-
 let data={
     "category_id": 201294501,
     "click_url": "//s.click.taobao.com/t?e=m%3D2%26s%3DfZo%2FF7%2BKnA1w4vFB6t2Z2ueEDrYVVa64Dne87AjQPk9yINtkUhsv0Jgs97d5Y%2BXDngqExHzB0EIqEL4N12nzBXBUg1tKFNQ8yu%2BYVH%2BwQ8LdoSjVQRMJvTSetc%2FoNqO7UyNpxLfgKr0jWpzpm6nEC67dPKJQo6Fi3RDi7vDGNfRcfm37xb4PJWojUxvil99qmalwsp3NoAG%2FzhHmwRLNf3EqY%2Bakgpmw&scm=1007.15348.115058.0_27451&pvid=cdeb884b-063d-4f03-9c63-e328f0d506b6&app_pvid=59590_11.11.44.240_63709_1597905096653&ptl=floorId:27451;originalFloorId:27451;pvid:cdeb884b-063d-4f03-9c63-e328f0d506b6;app_pvid:59590_11.11.44.240_63709_1597905096653&union_lens=lensId%3AMAPI%401597905096%40cdeb884b-063d-4f03-9c63-e328f0d506b6_622366236227%401",
@@ -112,12 +110,6 @@ class Commodity extends React.Component{
     render(){
         //  券额可能是0
         console.log('commodity render')
-
-        let start_time = Date.now();
-
-        console.log("DebugMetro item draw interval=" + (start_time - _LastTime)
-            + " fromLayout=" + (start_time - window._DoneItemTime));
-        _LastTime = start_time;
 
         let couponAmount=data.coupon_amount+""
         let couponWidth=data.coupon_amount==0?0:16+57+14*couponAmount.length
@@ -265,10 +257,6 @@ class Commodity extends React.Component{
                 </div>
             </div>
         );
-
-        console.log("DebugMetro item draw cost=" + (Date.now() - start_time));
-
-        window._DoneItemTime = Date.now();
 
         return draw_item;
     }

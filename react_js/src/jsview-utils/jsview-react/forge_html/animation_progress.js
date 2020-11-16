@@ -88,9 +88,9 @@ class AnimationProgress {
 		}
 		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2
 		this._KeyFrameName = this._BuildTraceKeyFrame(
-				starter_progress,
-				this._IdToken,
-				this._TracerDiv._ForgeProgressToken);
+			starter_progress,
+			this._IdToken,
+			this._TracerDiv._ForgeProgressToken);
 		this._TracerDiv.style.animation = animationToStyle(host_animation, this._KeyFrameName);
 	}
 
@@ -145,6 +145,7 @@ class AnimationGroupProgress {
 		this._IdToken = (sIdToken++);
 		this._KeyFrameNameArray = null;
 		this._StepsTotal = steps_total;
+		this._RunAnimList = null;
 
 		if (!this._TracerDiv.hasOwnProperty("_ForgeProgressToken")) {
 			this._TracerDiv._ForgeProgressToken = 0;
@@ -168,7 +169,14 @@ class AnimationGroupProgress {
 		// 交替token，避免animation属性中KeyFrames名字不变导致不触发动画启动
 		this._TracerDiv._ForgeProgressToken = (this._TracerDiv._ForgeProgressToken + 1) % 2
 		this._BuildTraceKeyFrameGroup(this._IdToken, this._TracerDiv._ForgeProgressToken);
-		this._TracerDiv.style.animation = this._ConvertToAnimationStyle(steps_settings);
+
+		this._RunAnimList = this._ConvertToAnimationStyle(steps_settings);
+		this._TracerDiv.style.animation = this._RunAnimList[0];
+	}
+
+	// 下个步骤的触发由KeyFrameGroupAnimation来完成
+	TriggerNextStep(index) {
+		this._TracerDiv.style.animation = this._RunAnimList[index];
 	}
 
 	// 停止进度跟进，并返回进度值
@@ -189,7 +197,9 @@ class AnimationGroupProgress {
 		if (s.transform != "none") {
 			let trans_values = __parseTransform(s.transform);
 			if (trans_values != null) {
-				return (trans_values.params[4] / (this._StepsTotal * 100)); // type is matrix...
+				let p = (trans_values.params[4] / (this._StepsTotal * 100)); // type is matrix...
+				// console.log("Report progress=" + p + " v=" + trans_values.params);
+				return p;
 			} else {
 				console.error("Error:internal error");
 				return 0;
@@ -222,26 +232,17 @@ class AnimationGroupProgress {
 	}
 
 	_ConvertToAnimationStyle(steps_settings) {
-		let style_animation = "";
+		let anim_list = [];
 		for (let i = 0; i < steps_settings.length; i++) {
 			let timing_func = "linear";
 			let settings = steps_settings[i];
 			if (settings.easing) {
 				timing_func = convertTimingFunc(settings.easing);
 			}
-
-			let delay_start = (i !== 0 ? steps_settings[i - 1].duration : 0);
-
-			style_animation += this._KeyFrameNameArray[i] + " " + settings.duration / 1000 + "s "
-				+ timing_func + " " + delay_start / 1000 + "s ";
-
-			if (i !== steps_settings.length - 1) {
-				style_animation += ",";
-			}
+			anim_list.push(this._KeyFrameNameArray[i] + " " + settings.duration / 1000 + "s " + timing_func);
 		}
 
-		console.log("animationToStyle style_anim:", style_animation);
-		return style_animation;
+		return anim_list;
 	}
 }
 

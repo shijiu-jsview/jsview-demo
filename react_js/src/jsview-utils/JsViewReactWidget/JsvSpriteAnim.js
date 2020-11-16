@@ -1,3 +1,38 @@
+/**
+ * Created by changhua.chen@qcast.cn on 11/13/2020.
+ */
+
+/**
+ * 【模块 export 内容】
+ *  JsvSpriteAnim: React高阶组件，描画动态的精灵图(雪碧图)
+ *      prop说明:
+ *          spriteInfo {object}  (必需)精灵图配置信息
+ *               { frames: [
+ *                   {
+ *                       source:{w,h},
+ *                       target:{w,h},
+ *                   },
+ *                   ...
+ *                 ],
+ *                 meta:{w,h}
+ *               }
+ *      viewSize {object}  (必需){w:0, h:0}
+ *      imageUrl {string}  (必需)图片地址，另外，为了减小无效的解析处理，规定只有image的URL变更时才重新解析spriteInfo
+ *      duration {float}  (动图必需)动图的时间
+ *      onAnimEnd {function} 动图结束回调
+ *      autostart {boolean} 启动动图，默认false
+ *      loop {string} 动图的循环次数 infinite/数字，默认为infinite
+ *      spriteName {string} 动图的名称，默认为null
+ *      controller {SpriteController} 控制动图start,stop的对象
+ *
+ *  SpriteController: 面向对象类，精灵图动作控制器
+ *      功能函数：(参数说明见函数本体)
+ *          start()
+ *              功能: 启动精灵图动画
+ *          stop(end_frame)
+ *              功能: 停止精灵图动画，可选择静止在第一帧或最后一帧
+ */
+
 import React from 'react';
 import './JsvSpriteAnim.css';
 import {getKeyFramesGroup} from './JsvDynamicKeyFrames'
@@ -50,6 +85,10 @@ class SpriteController{
         this._SpriteImage = sprite;
     }
 
+    /*
+     * start()  启动精灵图
+     * 参数说明: 无
+     */
     start() {
         if (!this.Used) { this.Used = true; }
         if (this._SpriteImage) {
@@ -57,6 +96,11 @@ class SpriteController{
         }
     }
 
+    /*
+     * stop(end_frame)  停止精灵图
+     * 参数说明:
+     *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
+     */
     stop(end_frame) {
         if (!this.Used) { this.Used = true; }
         if (this._SpriteImage) {
@@ -67,27 +111,6 @@ class SpriteController{
 
 let sAnimationToken = 0;
 class JsvSpriteAnim extends React.Component{
-    /**
-     * @description: 属性说明
-     *      spriteInfo {object}  (必需)精灵图配置信息
-     *                          { frames: [
-     *                              {
-     *                                  source:{w,h},
-     *                                  target:{w,h},
-     *                              },
-     *                              ...
-     *                            ],
-     *                            meta:{w,h}
-     *                          }
-     *      viewSize {object}  (必需){w:0, h:0}
-     *      imageUrl {string}  (必需)图片地址，另外，为了减小无效的解析处理，规定只有image的URL变更时才重新解析spriteInfo
-     *      duration {float}  (动图必需)动图的时间
-     *      onAnimEnd {function} 动图结束回调
-     *      autostart {boolean} 启动动图，默认false
-     *      loop {string} 动图的循环次数 infinite/数字，默认为infinite
-     *      spriteName {string} 动图的名称，默认为null
-     *      controller {SpriteController} 控制动图start,stop的对象
-     */
     constructor(props) {
         super(props);
         if (this.props.controller) {

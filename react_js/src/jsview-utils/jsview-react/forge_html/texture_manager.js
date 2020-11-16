@@ -550,7 +550,7 @@ class TextureManager {
 	GetTextTextureByMultiRows(t_StringWithFont, t_TextAttr,
 	                          t_RectArea, line_height,
 	                          need_quick,
-	                          shader, is_instant,
+	                          shader, is_instant, latex_mode,
 	                          duplicate_info_bag) {
 		let text = t_StringWithFont.str;
 		if (text === null || text.length === 0) {
@@ -585,7 +585,8 @@ class TextureManager {
 				"Y": parseInt(rect_area.y + 0.5),
 				"W": parseInt(rect_area.width + 0.5),
 				"H": parseInt(rect_area.height + 0.5)
-			}),
+            }),
+            "LA": latex_mode,
 			"LH": parseInt(line_height + 0.5),
 			"ILD": typeof is_instant !== "undefined" ? is_instant : 1
 		};
@@ -630,7 +631,6 @@ class TextureManager {
 			let real_rect = window.PlatformUtils.GetTextRect(text, rect_area, string_with_font, t_TextAttr, line_height);
 			real_height = real_rect.height;
 		}
-		;
 
 		real_height = Math.floor(real_height / display_scale_ratio + 0.5);
 
