@@ -21,7 +21,7 @@ function initDesignedMap(input_designed_map) {
 		}
 
 		// 设置播放器的屏幕坐标尺寸
-		if (window.JsView.setVideoDesignMapWidth) {
+		if (window.JsView && window.JsView.setVideoDesignMapWidth) {
 			window.JsView.setVideoDesignMapWidth(designMap.width)
 		} else {
 			// 借助Audio标签设置基类BaseMedia的屏幕尺寸配置，绕开react的unref语法检测
@@ -36,9 +36,9 @@ function initDesignedMap(input_designed_map) {
 
 var sForgeReactAppDefine = null;
 function loadJsViewProxy(callback, js_sub_path, input_designed_map) {
+	initDesignedMap(input_designed_map);
 	if(!!window.JsView) {
 		initHeaderScriptLoader(js_sub_path);
-		initDesignedMap(input_designed_map);
 		import("./jsv_hook_wrapper.js").then((app_define)=>{
 			sForgeReactAppDefine = app_define.ForgeReactApp;
 			window.JsView.ForgeExt = app_define.ForgeExtension;

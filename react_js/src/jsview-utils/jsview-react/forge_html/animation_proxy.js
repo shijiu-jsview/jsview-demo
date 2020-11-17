@@ -211,8 +211,9 @@ Forge.KeyFrameAnimation = class extends Forge.AnimationDelegate {
 			|| (this.enableFlags & Forge.AnimationEnable.KeepTransform) != 0
 			|| (this.enableFlags & Forge.AnimationEnable.AckRepeat) != 0) {
 			this._Progress = new AnimationProgress(this._LayoutViewRef);
-			this._Progress.Start(this, start_position);
-
+			this._Progress.Start(this, start_position, (progress)=>{
+				this.OnAnimAdvance(progress);
+			});
 			if ((this.enableFlags & Forge.AnimationEnable.AckRepeat) != 0) {
 				this._LatestProgressValue = 0;
 				Forge.sRenderBridge.RegisterPerFrameCallback(this._TestRepeat);

@@ -67,7 +67,8 @@ class AnimationProgress {
 		this._TracerDiv = _BuildTracer(layout_view);
 		this._IdToken = (sIdToken++);
 		this._KeyFrameName = null;
-
+		this._AdvanceTimer = null;
+		this._AdvanceListener = null;
 		if (!this._TracerDiv.hasOwnProperty("_ForgeProgressToken")) {
 			this._TracerDiv._ForgeProgressToken = 0;
 		}
@@ -81,7 +82,29 @@ class AnimationProgress {
 		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
 	}
 
-	Start(host_animation, starter_progress) {
+	_ClearAdvanceTimer() {
+		if (this._AdvanceTimer != null) {
+			clearInterval(this._AdvanceTimer);
+			this._AdvanceTimer = null;
+		}
+	}
+
+	_NotifyAdvance() {
+		this._ClearAdvanceTimer();
+		if (this._AdvanceListener != null) {
+			this._AdvanceTimer = setInterval(()=>{
+				let progress = this.GetProgress();
+				this._AdvanceListener(progress);
+				if (progress === 1) {
+					this._ClearAdvanceTimer();
+				}
+			}, 100)
+		}
+	}
+
+	Start(host_animation, starter_progress, advance_listener) {
+		this._AdvanceListener = advance_listener;
+
 		// 保证可用的Animation动画
 		if (this._KeyFrameName) {
 			console.error("Error: Asset!! should Stop before start");
@@ -92,6 +115,10 @@ class AnimationProgress {
 			this._IdToken,
 			this._TracerDiv._ForgeProgressToken);
 		this._TracerDiv.style.animation = animationToStyle(host_animation, this._KeyFrameName);
+		// TODO: 要支持Android WebView? WebkitAnimationEnd...
+		this._TracerDiv.addEventListener("animationend", this._OnEndListener);
+
+		this._NotifyAdvance();
 	}
 
 	// 停止进度跟进，并返回进度值
@@ -104,6 +131,12 @@ class AnimationProgress {
 			this._KeyFrameName = null;
 		}
 
+		if (this._AdvanceListener) {
+			this._ClearAdvanceTimer();
+			this._AdvanceListener(progress);
+			this._AdvanceListener = null;
+		}
+
 		return progress;
 	}
 
@@ -112,7 +145,7 @@ class AnimationProgress {
 		if (s.transform != "none") {
 			let trans_values = __parseTransform(s.transform);
 			if (trans_values != null) {
-				return (trans_values.params[4] / 100); // type is matrix...
+				return (trans_values.params[4] / 1000); // type is matrix...
 			} else {
 				console.error("Error:internal error");
 				return 0;
@@ -127,8 +160,8 @@ class AnimationProgress {
 		let keyframe_name = "_AnimateProgress_" + token + "_" + dynamic_count;
 		let keyframe_control = getStaticFrameControl();
 		let animate_progress = "@keyframes " + keyframe_name
-			+ "{0%{transform:translate3d(" + Math.floor(starter_progress * 100) + "px,0,0)}"
-			+ "100%{transform:translate3d(100px,0,0)}}";
+			+ "{0%{transform:translate3d(" + Math.floor(starter_progress * 1000) + "px,0,0)}"
+			+ "100%{transform:translate3d(1000px,0,0)}}";
 		keyframe_control.insertRule(animate_progress);
 		return keyframe_name;
 	}

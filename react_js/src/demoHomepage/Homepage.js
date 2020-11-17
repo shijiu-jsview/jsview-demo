@@ -204,8 +204,9 @@ class Home extends FdivWrapper {
                       onItemFocus={this._onItemFocus}
 					  onEdge={this._onEdge}
                       branchName={ "homepage" }
+					  enableTouch={true}
                     />
-                </div>
+				</div>
             </React.Fragment>
         )
 	}

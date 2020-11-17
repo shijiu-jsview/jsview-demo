@@ -25,7 +25,7 @@ function startApp(confirm_entry) {
 
 		// 检查配套引擎的版本
 		if (window.JsView.CodeRevision !== 546 /* Native引擎版本(由APK启动参数 CORE 决定) */
-				|| window.Forge.Version !== "1.0.732" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */) {
+				|| window.Forge.Version !== "1.0.734" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */) {
 			console.warn("Warning: JsView Engine version miss matched, some effect will be lost");
 			/* Engine js 732 版本地址: http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r732.jsv.fad74340.js */
 		}
@@ -43,6 +43,14 @@ function startApp(confirm_entry) {
 		}
 		confirm_entry();
 	} else {
+		let body_scale = "scale("+(window.innerWidth/1280)+","+(window.innerHeight/720)+")";
+		console.log("enter smash eggs page!");
+		document.body.style.width = 1280;
+		document.body.style.heigth = 720
+		document.body.style.transform = body_scale;
+		document.body.style.transformOrigin = "left top";
+		document.body.style.webkitTransform = body_scale;
+		document.body.style.webkitTransformOrigin = "left top";
 		ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
 	}
 }

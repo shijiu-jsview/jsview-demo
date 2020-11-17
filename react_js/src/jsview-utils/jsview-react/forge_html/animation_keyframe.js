@@ -52,7 +52,7 @@ function animationToStyle(animation_ref, keyframe_name) {
 	let style_animation = keyframe_name + " " + animation_ref.duration / 1000 + "s "
 		+ timing_func + " " + animation_ref.delayedTime / 1000 + "s "
 		+ repeat;
-	console.log("animationToStyle style_anim:", style_animation);
+	console.log("animationToStyle style_anim:"+style_animation);
 
 	return style_animation;
 }

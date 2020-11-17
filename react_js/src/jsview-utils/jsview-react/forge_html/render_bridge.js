@@ -33,11 +33,11 @@ class RenderBridge {
     	let keep_loop = false;
 
 	    // 碰撞检测
-    	if (Forge.sImpactSensorManager.HasTrace()) {
-		    Forge.sImpactSensorManager.TestCollision();
+    	if (Forge.sElementImpactSensorManager.HasTrace()) {
+		    Forge.sElementImpactSensorManager.TestCollision();
 
 		    // Check if need continue frame loop
-		    if (Forge.sImpactSensorManager.HasTrace()) {
+		    if (Forge.sElementImpactSensorManager.HasTrace()) {
 			    keep_loop = true;
 		    }
 	    }

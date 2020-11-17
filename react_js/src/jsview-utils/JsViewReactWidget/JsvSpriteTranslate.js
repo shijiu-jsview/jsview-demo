@@ -1,5 +1,4 @@
 // JsvSpriteTranslate comes from JsView React Project
-
 /**
  * Component: JsvSpriteTranslate
  * @param {TranslateControl} Sprite动作控制器 必需

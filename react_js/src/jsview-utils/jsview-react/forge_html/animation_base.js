@@ -171,6 +171,13 @@ class AnimationBase {
 			listener.OnAnimFinal(progress);
 		}
 	};
+
+	OnAnimAdvance(progress) {
+		var listener = this.AnimationListenerObj;
+		if (listener && listener.OnAnimAdvance) {
+			listener.OnAnimAdvance(progress);
+		}
+	}
 }
 Forge.AnimationBase = AnimationBase;
 
@@ -200,6 +207,8 @@ class AnimationListener {
 		this._OnAnimRepeat = null;
 		this._AttachedGroup = null;
 		this._InheritListener = [];
+		this._OnAnimAdvance = null;
+		this.OnAnimAdvance = null;
 	}
 
 	OnStart(on_start) {
@@ -209,6 +218,11 @@ class AnimationListener {
 
 	OnEnd(on_end) {
 		this.OnAnimationEnd = this._OnAnimationEnd = on_end;
+		return this;
+	}
+
+	OnAdvance(on_advance) {
+		this.OnAnimAdvance = this._OnAnimAdvance = on_advance;
 		return this;
 	}
 
@@ -273,6 +287,15 @@ class AnimationListener {
 				for (var i = 0; i < that._InheritListener.length; i++) {
 					if (that._InheritListener[i].OnAnimRepeat) {
 						that._InheritListener[i].OnAnimRepeat();
+					}
+				}
+			};
+
+			this.OnAnimAdvance = function() {
+				if (that._OnAnimAdvance) that._OnAnimAdvance();
+				for (var i = 0; i < that._InheritListener.length; i++) {
+					if (that._InheritListener[i].OnAnimAdvance) {
+						that._InheritListener[i].OnAnimAdvance();
 					}
 				}
 			};

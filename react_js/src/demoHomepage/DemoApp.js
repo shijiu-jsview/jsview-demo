@@ -180,6 +180,11 @@ let demoFuncInfos = [
 		"path": "/users/textureSize",
 		"class": lazy(() => import('../textureSize/App').then(m => ({ default: m.SubApp }))),
 	},
+	{
+		"name": "触控--滑动",
+		"path": "/users/touchDemo",
+		"class": lazy(() => import('../touchDemo/App').then(m => ({ default: m.SubApp }))),
+	}
 ]
 let demoSceneInfos = [
 	//场景
@@ -212,7 +217,7 @@ let demoSceneInfos = [
 		"name": "小狗跨栏游戏",
 		"path": "/users/games1",
 		"class": lazy(() => import('../games/tappingFlying/apps/dog/App').then(m => ({ default: m.SubApp }))),
-	},
+	}
 ]
 let color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
