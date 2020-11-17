@@ -490,7 +490,7 @@ class OffscreenVideo extends FocusBlock {
 						objectFit:object_fit_set.objectFit,
 						animation:this.state.animation,
 						borderRadius: '0 80px 160px 240px'}}
-					src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
+					src="http://qcast-image.oss-cn-qingdao.aliyuncs.com/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
 					videoref={this._RefVideo}
 					onLoadStart={this.handleLoadStart}
 					onWaiting={this.handleWaiting}
@@ -541,7 +541,7 @@ class OffscreenVideo extends FocusBlock {
 					top: 550,
 					width: 60,
 					height: 40
-				}}>{parseInt(this.state.currentTime)}</div>
+				}}>{Math.ceil(this.state.currentTime)}</div>
 				<div style={{
 					color: "#FF0000",
 					textAlign: "left",
@@ -550,7 +550,7 @@ class OffscreenVideo extends FocusBlock {
 					top: 550,
 					width: 60,
 					height: 40
-				}}>{"/" + (this.video ? parseInt(this.video.duration) : 0)}</div>
+				}}>{"/" + (this.video ? Math.ceil(this.video.duration) : 0)}</div>
 
 				<div style={{
 					textAlign: "center",
