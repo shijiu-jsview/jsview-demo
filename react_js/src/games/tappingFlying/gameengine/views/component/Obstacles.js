@@ -116,7 +116,7 @@ class Obstacles extends ScrollPage {
                                     loop="infinite"
                                     viewSize={spriteInfo.viewSize}
                                     duration={0.8}
-                                    imageUrl={`url(${require(`../../../${Game.apppath}/assets/atlas/${this.obstacleConfig.value}`)})`}/>
+                                    imageUrl={`url(${Game.requireUrl(this.obstacleConfig.value)})`}/>
                                 <div ref={ele => this._InitItemEle(item, ele)}
                                      style={{
                                        backgroundColor: "rgba(0,0,0,0.0)",

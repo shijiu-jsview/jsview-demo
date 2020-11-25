@@ -154,7 +154,7 @@ class Role extends FocusBlock {
     if (!bodySize) {
       bodySize = { x: 15, y: 30, w: this.props.rolesList[0].viewSize.w - 30, h: this.props.rolesList[0].viewSize.h - 60 };
     }
-
+    const imgUrl = Game.requireUrl(clashObstacleConfig.value);
     return (
             <div style={{ left: this.state.roleSpriteLeft, top: this.props.worldSize.height / 2 - 40, transition: "left 1s linear 0s" }}
                  onTransitionEnd={this.props.onTransitionEnd}>
@@ -190,7 +190,7 @@ class Role extends FocusBlock {
                                 autostart={true}
                                 viewSize={clashObstacleViewSize}
                                 duration={clashObstacle_duration}
-                                imageUrl={`url(${require(`../../../${Game.apppath}/assets/atlas/${clashObstacleConfig.value}`)})`}/>
+                                imageUrl={`url(${imgUrl})`}/>
                         </div>}
                     </div>
 

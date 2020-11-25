@@ -67,24 +67,28 @@ class Game {
     return info;
   }
 
-  static Math = math;
-
-  static Audio = null;
-
-  static roundIndex = 0;
-
-  static stageIndex = 0;
-
-  static Config = null;
-
-  static assetData = null;
-
-  static state = State;
-
-  static apppath = "";
-
-  static env = "production";
+  static requireUrl(path) {
+    const url = require(`../../${Game.apppath}/assets/atlas/${path}`);
+    return url;
+  }
 }
+Game.Math = math;
+
+Game.Audio = null;
+
+Game.roundIndex = 0;
+
+Game.stageIndex = 0;
+
+Game.Config = null;
+
+Game.assetData = null;
+
+Game.state = State;
+
+Game.apppath = "";
+
+Game.env = "production";
 
 export default Game;
 

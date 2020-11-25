@@ -172,7 +172,7 @@ class App extends GameAppBase {
     if (!cur_stage) {
       return rolesList;
     }
-    cur_stage.assets.forEach((value, o) => {
+    Object.keys(cur_stage.assets).forEach((o) => {
       const json_name = cur_stage.assets[o].json;
       if (json_name && !window.GameSource[json_name]) {
         const config_json = require(`../../../${this.game.apppath}/assets/atlas/${json_name}`);

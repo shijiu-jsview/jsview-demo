@@ -43,14 +43,6 @@ function startApp(confirm_entry) {
     };
     confirm_entry();
   } else {
-    const body_scale = `scale(${window.innerWidth / 1280},${window.innerHeight / 720})`;
-    console.log("enter smash eggs page!");
-    document.body.style.width = 1280;
-    document.body.style.heigth = 720;
-    document.body.style.transform = body_scale;
-    document.body.style.transformOrigin = "left top";
-    document.body.style.webkitTransform = body_scale;
-    document.body.style.webkitTransformOrigin = "left top";
     ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
   }
 }
