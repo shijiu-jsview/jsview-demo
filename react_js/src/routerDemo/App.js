@@ -11,74 +11,73 @@
  *    createMemoryHistory来创建。
  */
 
-import React, { Suspense, lazy } from 'react';
+import React, { lazy } from 'react';
 import {
-	Switch,
-	Router,
-	Route,
-	Link,
-	useHistory
+  Switch,
+  Router,
+  Route,
 } from "react-router-dom";
 import { createMemoryHistory } from 'history';
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+
 const LazyGreen = lazy(() => import('./green'));
 const LazyRed = lazy(() => import('./red'));
 
 const global_history = createMemoryHistory();
 
 class MainScene extends FocusBlock {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		setTimeout(()=>{
-			console.log("Switch to green ...");
-			global_history.replace('/users/green')
-			setTimeout(()=>{
-				console.log("Switch red ...");
-				global_history.replace('/users/red')
-				setTimeout(()=>{
-					console.log("Switch to blank...");
-					global_history.replace('/')
-				}, 2000);
-			}, 2000);
-		}, 2000);
-	}
+    setTimeout(() => {
+      console.log("Switch to green ...");
+      global_history.replace('/users/green');
+      setTimeout(() => {
+        console.log("Switch red ...");
+        global_history.replace('/users/red');
+        setTimeout(() => {
+          console.log("Switch to blank...");
+          global_history.replace('/');
+        }, 2000);
+      }, 2000);
+    }, 2000);
+  }
 
-	onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-	        if (this._NavigateHome) {
-		        this._NavigateHome();
-	        }
-        }
-        return true;
-	}
-	
-	renderContent() {
-		return (
-			<Router history={global_history} >
-				<div>
-					<React.Suspense fallback={<div></div>}>
-						<Switch>
-							<Route path="/users/green">
-								<LazyGreen />
-							</Route>
-							<Route path="/users/red">
-								<LazyRed/>
-							</Route>
-							<Route path="/">
-							</Route>
-						</Switch>
-					</React.Suspense>
-				</div>
-			</Router>
-		);
-	}
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+    }
+    return true;
+  }
+
+  renderContent() {
+    return (
+            <Router history={global_history} >
+                <div>
+                    <React.Suspense fallback={<div></div>}>
+                        <Switch>
+                            <Route path="/users/green">
+                                <LazyGreen />
+                            </Route>
+                            <Route path="/users/red">
+                                <LazyRed/>
+                            </Route>
+                            <Route path="/">
+                            </Route>
+                        </Switch>
+                    </React.Suspense>
+                </div>
+            </Router>
+    );
+  }
 }
 
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-	App, // 独立运行时的入口
-	MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

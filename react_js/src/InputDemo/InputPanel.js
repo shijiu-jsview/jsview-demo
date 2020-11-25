@@ -36,120 +36,122 @@
  * 【技巧说明】
  * Q: 如何修改输入框中的文字?
  * A: 通过JsvInputDispatcher，具体的三个事件的示例可见_keyboardOnClick函数
- * 
+ *
  * Q: 如何获取输入框中的文字?
  * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
  */
-import React, { Component } from 'react'
-import {  EdgeDirection } from "../jsview-utils/jsview-react/index_widget.js"
-import { FocusBlock } from "../demoCommon/BlockDefine"
-import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
-import FullKeyboard from "./FullKeyboard"
+import React from 'react';
+import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput';
+import FullKeyboard from "./FullKeyboard";
+
 class InputPanel extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._Ref = null;
-        this.state = {
-            cursorShow:false
-        }
-        this._dispatcher = new JsvInputDispatcher();
-        this._keyboardOnEdge = this._keyboardOnEdge.bind(this);
-        this._keyboardOnClick = this._keyboardOnClick.bind(this);
-        this._editableTextOnEdge = this._editableTextOnEdge.bind(this);
+  constructor(props) {
+    super(props);
+    this._Ref = null;
+    this.state = {
+      cursorShow: false
+    };
+    this._dispatcher = new JsvInputDispatcher();
+    this._keyboardOnEdge = this._keyboardOnEdge.bind(this);
+    this._keyboardOnClick = this._keyboardOnClick.bind(this);
+    this._editableTextOnEdge = this._editableTextOnEdge.bind(this);
+  }
+
+  _editableTextOnEdge(edge_info) {
+    let used = false;
+    if (edge_info.direction === EdgeDirection.bottom) {
+      this.changeFocus(`${this.props.branchName}/keyboard`);
+      used = true;
+    } else {
+      if (this.props.onEdge) {
+        used = this.props.onEdge(edge_info);
+      }
+    }
+    return used;
+  }
+
+  _keyboardOnEdge(edge_info) {
+    if (edge_info.direction === EdgeDirection.top) {
+      this.changeFocus(`${this.props.branchName}/etext`);
+      return true;
+    }
+    if (this.props.onEdge) {
+      return this.props.onEdge(edge_info);
     }
 
-    _editableTextOnEdge(edge_info) {
-        let used = false;
-        if (edge_info.direction === EdgeDirection.bottom) {
-            this.changeFocus(this.props.branchName + "/keyboard");
-            used = true;
-        } else {
-            if (this.props.onEdge) {
-                used = this.props.onEdge(edge_info);
-            }
-        }
-        return used;
+    return false;
+  }
+
+  _keyboardOnClick(char) {
+    if (char === '删除') {
+      this._dispatcher.dispatch({
+        type: JsvInputDispatcher.Type.delete,
+      });
+    } else if (char === '清空') {
+      this._dispatcher.dispatch({
+        type: JsvInputDispatcher.Type.clear,
+      });
+    } else {
+      this._dispatcher.dispatch({
+        type: JsvInputDispatcher.Type.add,
+        data: char
+      });
     }
+  }
 
-    _keyboardOnEdge(edge_info) {
-        if (edge_info.direction === EdgeDirection.top) {
-            this.changeFocus(this.props.branchName + "/etext")
-            return true;
-        } else {
-            if (this.props.onEdge) {
-                return this.props.onEdge(edge_info);
-            }
-        }
-        return false;
-    }
+  onKeyDown(ev) {
+    return false;
+  }
 
-    _keyboardOnClick(char) {
-        if (char === '删除') {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.delete,
-            })
-        } else if (char === '清空') {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.clear,
-            })
-        } else {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.add,
-                data: char
-            })
-        }
-    }
+  renderContent() {
+    return (
+        <div>
+            <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#33334f' }} />
+            <JsvInput
+                type={this.props.type}
+                left={50}
+                top={50}
+                height={40}
+                width={150}
+                placeholder={this.props.placeholder}
+                cursorShow={this.state.cursorShow}
+                fontStyle={{ fontSize: 28, color: "#ffff00", textAlign: this.props.textAlign }}
+                dispatcher={this._dispatcher}
+                branchName={`${this.props.branchName}/etext`}
+                onEdge={this._editableTextOnEdge}
+                cursorWidth={2}
+                onTextChange={(str) => { console.log(`ontextChange ${str}`); }}
+                onTextOverflow={() => { console.log("too long"); }}
+            />
 
-    onKeyDown(ev) {
-
-        return false;
-    }
-
-    renderContent() {
-        return (
-            <div>
-                <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#33334f' }} />
-                <JsvInput
-                    type={this.props.type}
-                    left={50}
-                    top={50}
-                    height={40}
-                    width={150}
-                    placeholder={this.props.placeholder}
-                    cursorShow={this.state.cursorShow}
-                    fontStyle={{ fontSize: 28, color: "#ffff00", textAlign: this.props.textAlign}}
-                    dispatcher={this._dispatcher}
-                    branchName={this.props.branchName + "/etext"}
-                    onEdge={this._editableTextOnEdge}
-                    cursorWidth={2}
-                    onTextChange={(str) => { console.log("ontextChange " + str) }}
-                    onTextOverflow={() => { console.log("too long") }}
+            <div style={{ top: 100 }}>
+                <FullKeyboard
+                    onClick={this._keyboardOnClick}
+                    onEdge={this._keyboardOnEdge}
+                    branchName={`${this.props.branchName}/keyboard`}
                 />
-
-                <div style={{ top: 100 }}>
-                    <FullKeyboard
-                        onClick={this._keyboardOnClick}
-                        onEdge={this._keyboardOnEdge}
-                        branchName={this.props.branchName + '/keyboard'}
-                    />
-                </div>
             </div>
-        )
-    }
-    onFocus() {
-        this.setState({
-            cursorShow:true,
-        })
-        this.changeFocus(this.props.branchName + "/keyboard");
-    }
+        </div>
+    );
+  }
 
-    onBlur() {
-        this.setState({
-            cursorShow: false,
-        })
-    }
-    componentDidMount() {
+  onFocus() {
+    this.setState({
+      cursorShow: true,
+    });
+    this.changeFocus(`${this.props.branchName}/keyboard`);
+  }
 
-    }
+  onBlur() {
+    this.setState({
+      cursorShow: false,
+    });
+  }
+
+  componentDidMount() {
+
+  }
 }
 export default InputPanel;

@@ -1,5 +1,5 @@
-import {getKeyFramesGroup} from "../JsViewReactTools/JsvDynamicKeyFrames"
+import { getKeyFramesGroup } from "../JsViewReactTools/JsvDynamicKeyFrames";
 
 export {
-	getKeyFramesGroup,
-}
+  getKeyFramesGroup,
+};

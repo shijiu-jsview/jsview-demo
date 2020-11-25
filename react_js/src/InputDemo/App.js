@@ -28,116 +28,135 @@
  * Q: 如何获取输入框中的文字?
  * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
  */
-
-import React, { Component } from 'react'
-import { SimpleWidget, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
-import { JsvInput} from '../jsview-utils/JsViewReactWidget/JsvInput'
+import React from 'react';
+import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import { JsvInput } from '../jsview-utils/JsViewReactWidget/JsvInput';
 import InputPanel from "./InputPanel";
 
 
 class MainScene extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._FocusName="InputPanel1";
-    }
+  constructor(props) {
+    super(props);
+    this._FocusName = "InputPanel1";
+  }
 
-    _OnEdge=(edge_info)=>{
-        let used = false;
-        switch(edge_info.direction) {
-            case EdgeDirection.left:
-                if (this._FocusName == "InputPanel2") {
-                    this._FocusName = "InputPanel1"
-                    this.changeFocus(this.props.branchName + "/"+this._FocusName);
-                    used = true;
-                } else  if (this._FocusName == "InputPanel3") {
-                    this._FocusName = "InputPanel2"
-                    this.changeFocus(this.props.branchName + "/"+this._FocusName);
-                    used = true;
-                }
-                break;
-            case EdgeDirection.right:
-                if (this._FocusName == "InputPanel1") {
-                    this._FocusName = "InputPanel2"
-                    this.changeFocus(this.props.branchName + "/"+this._FocusName);
-                    used = true;
-                } else if (this._FocusName == "InputPanel2") {
-                    this._FocusName = "InputPanel3"
-                    this.changeFocus(this.props.branchName + "/"+this._FocusName);
-                    used = true;
-                }
-                break;
-        }
+    _OnEdge=(edge_info) => {
+      let used = false;
+      switch (edge_info.direction) {
+        case EdgeDirection.left:
+          if (this._FocusName === "InputPanel2") {
+            this._FocusName = "InputPanel1";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          } else if (this._FocusName === "InputPanel3") {
+            this._FocusName = "InputPanel2";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          }
+          break;
+        case EdgeDirection.right:
+          if (this._FocusName === "InputPanel1") {
+            this._FocusName = "InputPanel2";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          } else if (this._FocusName === "InputPanel2") {
+            this._FocusName = "InputPanel3";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          }
+          break;
+        default:
+          break;
+      }
 
-        return used;
+      return used;
     }
 
     onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-            return true;
+      if (ev.keyCode === 10000 || ev.keyCode === 27) {
+        if (this._NavigateHome) {
+          this._NavigateHome();
         }
-        return false;
+        return true;
+      }
+      return false;
     }
 
     renderContent() {
-        return (
+      return (
             <div style={{ backgroundColor: "#0e0f5a", width: 1280, height: 720 }}>
-                <div style={{ textAlign: "center", fontSize: "30px", lineHeight: "50px", color: "#ffffff",
-                    left: 50, top: 50, width: 300, height: 50,
-                    backgroundColor: "rgba(27,38,151,0.8)"
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 50,
+                  top: 50,
+                  width: 300,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`文字输入--左对齐`}</div>
-                <div style={{ left: 50, top:100}}>
+                <div style={{ left: 50, top: 100 }}>
                     <InputPanel
                         type={JsvInput.type.TEXT}
                         textAlign="left"
                         placeholder="请输入文字"
-                        branchName={this.props.branchName + "/InputPanel1"}
+                        branchName={`${this.props.branchName}/InputPanel1`}
                         onEdge={this._OnEdge}
                     />
                 </div>
 
-                <div style={{ textAlign: "center", fontSize: "30px", lineHeight: "50px", color: "#ffffff",
-                    left: 400, top: 50, width: 400, height: 50,
-                    backgroundColor: "rgba(27,38,151,0.8)"
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 400,
+                  top: 50,
+                  width: 400,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`文字输入--右对齐(密码）`}</div>
-                <div style={{ left: 400, top:100}}>
+                <div style={{ left: 400, top: 100 }}>
                     <InputPanel
                         type={JsvInput.type.PASSWORD}
                         textAlign="right"
                         placeholder="请输入密码"
-                        branchName={this.props.branchName + "/InputPanel2"}
+                        branchName={`${this.props.branchName}/InputPanel2`}
                         onEdge={this._OnEdge}
                     />
                 </div>
 
-                <div style={{ textAlign: "center", fontSize: "30px", lineHeight: "50px", color: "#ffffff",
-                    left: 850, top: 50, width: 400, height: 50,
-                    backgroundColor: "rgba(27,38,151,0.8)"
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 850,
+                  top: 50,
+                  width: 400,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`文字输入--右对齐(数字）`}</div>
-                <div style={{ left: 850, top:100}}>
+                <div style={{ left: 850, top: 100 }}>
                     <InputPanel
                         type={JsvInput.type.NUMBER}
                         textAlign="right"
                         placeholder="请输入数字"
-                        branchName={this.props.branchName + "/InputPanel3"}
+                        branchName={`${this.props.branchName}/InputPanel3`}
                         onEdge={this._OnEdge}
                     />
                 </div>
             </div>
-        )
+      );
     }
 
     componentDidMount() {
-        this.changeFocus(this.props.branchName + "/"+this._FocusName);
+      this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
     }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

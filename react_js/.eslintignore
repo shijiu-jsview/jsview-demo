@@ -1,0 +1,4 @@
+/patch_package/*
+/public/*
+/build/*
+/node_modules/*

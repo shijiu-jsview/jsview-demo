@@ -1,1 +1,1 @@
-export * from "../jsview-utils/JsViewReactTools/PageSwitcher"
+export * from "../jsview-utils/JsViewReactTools/PageSwitcher";

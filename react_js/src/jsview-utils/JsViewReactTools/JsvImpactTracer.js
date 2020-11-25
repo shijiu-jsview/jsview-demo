@@ -10,7 +10,7 @@
  * updateImpactAutoFroze: 函数，更新 createImpactAutoFroze 创建的碰撞即停管理对象中管理的运动元素列表
  */
 
-import {Forge} from "../jsview-react/index_widget.js"
+import { Forge } from "../jsview-react/index_widget";
 
 /*
  * createImpactCallback 参数说明:
@@ -20,7 +20,7 @@ import {Forge} from "../jsview-react/index_widget.js"
  *      Object  句柄，用于传输给 createImpactTracer
  */
 function createImpactCallback(on_contact, on_dis_contact) {
-    return new Forge.sImpactSensorManager.Callback(on_contact, on_dis_contact);
+  return new Forge.sImpactSensorManager.Callback(on_contact, on_dis_contact);
 }
 
 /*
@@ -33,19 +33,19 @@ function createImpactCallback(on_contact, on_dis_contact) {
  *      Object  句柄，提供 Recycle() 函数用于停止碰撞检测，需要再componentWillUnmount进行调用(清理)
  */
 function createImpactTracer(ele1, ele2, callback, auto_froze) {
-    return Forge.sImpactSensorManager.StartTrace(ele1.jsvMainView, ele2.jsvMainView, callback, auto_froze);
+  return Forge.sImpactSensorManager.StartTrace(ele1.jsvMainView, ele2.jsvMainView, callback, auto_froze);
 }
 
 // 创建用于设置碰撞即停管理对象的参数
 // 结果用于函数 createImpactAutoFroze 和 updateImpactAutoFroze
 function _ConvertToViewsList(elements_array) {
-    let views_array = [];
-    if (elements_array) {
-        for (let ele of elements_array) {
-            views_array.push(ele.jsvMainView);
-        }
+  const views_array = [];
+  if (elements_array) {
+    for (const ele of elements_array) {
+      views_array.push(ele.jsvMainView);
     }
-    return views_array;
+  }
+  return views_array;
 }
 
 /*
@@ -61,17 +61,17 @@ function _ConvertToViewsList(elements_array) {
  *        更新后立刻在对所有的共享此管理对象的碰撞对中生效
  */
 function createImpactAutoFroze(element_auto_froze_pre_impact, element_auto_froze_on_impact) {
-    if (!element_auto_froze_pre_impact && !element_auto_froze_on_impact) {
-        // Nothing to set
-        return;
-    }
+  if (!element_auto_froze_pre_impact && !element_auto_froze_on_impact) {
+    // Nothing to set
+    return;
+  }
 
-    let pre_impact_list = _ConvertToViewsList(element_auto_froze_pre_impact);
-    let on_impact_list = _ConvertToViewsList(element_auto_froze_on_impact);
+  const pre_impact_list = _ConvertToViewsList(element_auto_froze_pre_impact);
+  const on_impact_list = _ConvertToViewsList(element_auto_froze_on_impact);
 
-    return new Forge.sImpactSensorManager.AutoFroze(
-        (pre_impact_list.length > 0 ? pre_impact_list : null),
-        (on_impact_list.length > 0 ? on_impact_list : null));
+  return new Forge.sImpactSensorManager.AutoFroze(
+    (pre_impact_list.length > 0 ? pre_impact_list : null),
+    (on_impact_list.length > 0 ? on_impact_list : null));
 }
 
 /*
@@ -83,24 +83,24 @@ function createImpactAutoFroze(element_auto_froze_pre_impact, element_auto_froze
  *      无
  */
 function updateImpactAutoFroze(handler, element_auto_froze_pre_impact, element_auto_froze_on_impact) {
-    if (handler instanceof Forge.sImpactSensorManager.AutoFroze) {
-        console.error("Error: handler type error");
-        return;
-    }
+  if (handler instanceof Forge.sImpactSensorManager.AutoFroze) {
+    console.error("Error: handler type error");
+    return;
+  }
 
-    let pre_impact_list = _ConvertToViewsList(element_auto_froze_pre_impact);
-    let on_impact_list = _ConvertToViewsList(element_auto_froze_on_impact);
+  const pre_impact_list = _ConvertToViewsList(element_auto_froze_pre_impact);
+  const on_impact_list = _ConvertToViewsList(element_auto_froze_on_impact);
 
-    // 更新碰撞即停列表
-    handler.UpdatePreImpactList((pre_impact_list.length > 0 ? pre_impact_list : null));
+  // 更新碰撞即停列表
+  handler.UpdatePreImpactList((pre_impact_list.length > 0 ? pre_impact_list : null));
 
-    // 更新接触接触即停列表
-    handler.UpdateOnImpactList((on_impact_list.length ? on_impact_list : null));
+  // 更新接触接触即停列表
+  handler.UpdateOnImpactList((on_impact_list.length ? on_impact_list : null));
 }
 
 export {
-    createImpactCallback,
-    createImpactTracer,
-    createImpactAutoFroze,
-    updateImpactAutoFroze,
-}
+  createImpactCallback,
+  createImpactTracer,
+  createImpactAutoFroze,
+  updateImpactAutoFroze,
+};

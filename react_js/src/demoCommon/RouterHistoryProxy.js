@@ -1,2 +1,1 @@
-export * from "../jsview-utils/JsViewReactTools/RouterHistoryProxy"
-
+export * from "../jsview-utils/JsViewReactTools/RouterHistoryProxy";

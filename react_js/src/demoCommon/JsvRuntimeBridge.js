@@ -1,1 +1,1 @@
-export * from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"
+export * from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";

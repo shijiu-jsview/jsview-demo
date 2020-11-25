@@ -16,74 +16,55 @@
  *    改变播放进度：video标签.currentTime = 新的播放时间(毫秒)
  */
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
-import NormalVideo from "./NormalVideo"
-import OffscreenVideo from "./OffscreenVideo"
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import NormalVideo from "./NormalVideo";
+import OffscreenVideo from "./OffscreenVideo";
 
-function throttle(callback, limit) {
-	let wait = false;
-	return () => {
-		if (!wait) {
-			// eslint-disable-next-line prefer-rest-params
-			callback(...arguments);
-			wait = true;
-			setTimeout(() => {
-				wait = false;
-			}, limit);
-		}
-	};
-}
 class MainScene extends FocusBlock {
-	constructor(props) {
-		super(props);
-
-	}
-
-	changeMode=(use_texture)=> {
-		if (use_texture) {
-			this.changeFocus("useTexture")
-		} else {
-			this.changeFocus("useSurface")
-		}
-	}
-	onKeyDown(ev) {
-		switch (ev.keyCode) {
-			case 27:
-			case 10000:
-				if (this._NavigateHome) {
-					this._NavigateHome();
-				}
-				break;
-			default:
-				break;
-		}
-
-		return true;
-	}
-
-	renderContent() {
-		return (<div>
-				<OffscreenVideo branchName="useTexture" changeMode={this.changeMode}/>
-				<NormalVideo branchName="useSurface" changeMode={this.changeMode}/>
-			</div>
-		)
-	}
-
-	componentWillUnmount() {
-        console.log("Video App componentWillUnmount in");
-
+  changeMode=(use_texture) => {
+    if (use_texture) {
+      this.changeFocus("useTexture");
+    } else {
+      this.changeFocus("useSurface");
     }
-	componentDidMount() {
-		this.changeFocus("useTexture")
-        console.log("Video App componentDidMount in");
+  }
 
+  onKeyDown(ev) {
+    switch (ev.keyCode) {
+      case 27:
+      case 10000:
+        if (this._NavigateHome) {
+          this._NavigateHome();
+        }
+        break;
+      default:
+        break;
     }
+
+    return true;
+  }
+
+  renderContent() {
+    return (<div>
+        <OffscreenVideo branchName="useTexture" changeMode={this.changeMode}/>
+        <NormalVideo branchName="useSurface" changeMode={this.changeMode}/>
+      </div>
+    );
+  }
+
+  componentWillUnmount() {
+    console.log("Video App componentWillUnmount in");
+  }
+
+  componentDidMount() {
+    this.changeFocus("useTexture");
+    console.log("Video App componentDidMount in");
+  }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-	App, // 独立运行时的入口
-	MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };
-

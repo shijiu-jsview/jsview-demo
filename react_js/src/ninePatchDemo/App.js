@@ -17,115 +17,115 @@
  *    引擎就会自动按照transition中定义的动画，对框进行尺寸和位置调整动画。
  */
 
-import React, { Component } from 'react';
-import "./App.css"
-import {Router, FdivRoot, Fdiv, HORIZONTAL, SimpleWidget, SWidgetDispatcher, EdgeDirection, VERTICAL, SlideStyle } from "../jsview-utils/jsview-react/index_widget.js"
-import {JsvSquareNinePatch} from '../jsview-utils/JsViewReactWidget/JsvNinePatch'
-import {FocusBlock} from "../demoCommon/BlockDefine"
+import React from 'react';
+import "./App.css";
+import { HORIZONTAL, SimpleWidget, SlideStyle } from "../jsview-utils/jsview-react/index_widget";
+import { JsvSquareNinePatch } from '../jsview-utils/JsViewReactWidget/JsvNinePatch';
+import { FocusBlock } from "../demoCommon/BlockDefine";
 import borderImgPath from './border.png';
-import createStandaloneApp from "../demoCommon/StandaloneApp"
+import createStandaloneApp from "../demoCommon/StandaloneApp";
 
-let data = [
-    {
-        "blocks":{
-            "w":170,
-            "h":170
-        },
-        "focusable":true,
-        "color": "#FF9900",
-        "content": 0
+const data = [
+  {
+    blocks: {
+      w: 170,
+      h: 170
     },
-    {
-        "blocks":{
-            "w":300,
-            "h":300
-        },
-        "focusable":true,
-        "color": "#0099FF",
-        "content": 1
+    focusable: true,
+    color: "#FF9900",
+    content: 0
+  },
+  {
+    blocks: {
+      w: 300,
+      h: 300
     },
-    {
-        "blocks":{
-            "w":170,
-            "h":170
-        },
-        "focusable":true,
-        "color": "#FF9900",
-        "content": 2
+    focusable: true,
+    color: "#0099FF",
+    content: 1
+  },
+  {
+    blocks: {
+      w: 170,
+      h: 170
     },
-]
+    focusable: true,
+    color: "#FF9900",
+    content: 2
+  },
+];
 
 class MainScene extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._Measures = this._Measures.bind(this);
-        this._RenderItem = this._RenderItem.bind(this);
-        this._RenderFocus = this._RenderFocus.bind(this);
-        this._RenderBlur = this._RenderBlur.bind(this);
-        this._onWidgetMount = this._onWidgetMount.bind(this);
-        this._onItemFocus = this._onItemFocus.bind(this);
+  constructor(props) {
+    super(props);
+    this._Measures = this._Measures.bind(this);
+    this._RenderItem = this._RenderItem.bind(this);
+    this._RenderFocus = this._RenderFocus.bind(this);
+    this._RenderBlur = this._RenderBlur.bind(this);
+    this._onWidgetMount = this._onWidgetMount.bind(this);
+    this._onItemFocus = this._onItemFocus.bind(this);
 
-        this.state = {
-            focusFrameX: 50,
-            focusFrameY: 50,
-            focusFrameW: 100,
-            focusFrameH: 100,
-        }
-    }
+    this.state = {
+      focusFrameX: 50,
+      focusFrameY: 50,
+      focusFrameW: 100,
+      focusFrameH: 100,
+    };
+  }
 
-    _Measures(item) {
-        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
-    }
+  _Measures(item) {
+    return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
+  }
 
-    _RenderFocus(item) {
-        let x = (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
-        let y = (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
-        return (
-            <div style={{backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * 1.05, height: (item.blocks.h - 10)* 1.05, color: "#FF0000", animation: "NinePatchDemo_FocusScale 0.2s"}}>
+  _RenderFocus(item) {
+    const x = (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2;
+    const y = (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2;
+    return (
+            <div style={{ backgroundColor: item.color, left: x, top: y, width: (item.blocks.w - 10) * 1.05, height: (item.blocks.h - 10) * 1.05, color: "#FF0000", animation: "NinePatchDemo_FocusScale 0.2s" }}>
                 { item.content }
             </div>
-        )
-    }
+    );
+  }
 
-    _RenderBlur(item, callback) {
-        return (
-            <div style={{backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "NinePatchDemo_BlurScale 0.2s"}}
+  _RenderBlur(item, callback) {
+    return (
+            <div style={{ backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "NinePatchDemo_BlurScale 0.2s" }}
             onAnimationEnd={callback}>
                 { item.content }
             </div>
-        )
-    }
+    );
+  }
 
-    _RenderItem(item) {
-        return (
-            <div style={{backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FFFFFF"}}>
+  _RenderItem(item) {
+    return (
+            <div style={{ backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FFFFFF" }}>
                 { item.content }
             </div>
-        )
-    }
+    );
+  }
 
-    _onItemFocus(item, edgeInfo, queryObj) {
-        let position = queryObj.queryPosition(queryObj.id)
-        let x = position.xPos + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2
-        let y = position.yPos + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2
-        this.setState({
-            focusFrameX: x,
-            focusFrameY: y,
-            focusFrameW: (item.blocks.w - 10) * 1.05,
-            focusFrameH: (item.blocks.h - 10) * 1.05,
-        })
-    }
+  _onItemFocus(item, edgeInfo, queryObj) {
+    const position = queryObj.queryPosition(queryObj.id);
+    const x = position.xPos + (item.blocks.w - 10 - (item.blocks.w - 10) * 1.05) / 2;
+    const y = position.yPos + (item.blocks.h - 10 - (item.blocks.h - 10) * 1.05) / 2;
+    this.setState({
+      focusFrameX: x,
+      focusFrameY: y,
+      focusFrameW: (item.blocks.w - 10) * 1.05,
+      focusFrameH: (item.blocks.h - 10) * 1.05,
+    });
+  }
 
-    renderContent() {
-        return(
+  renderContent() {
+    return (
             <div>
-                <div style={{width: 1280, height: 720, backgroundColor: '#FFFFFF'}}>
-                    <SimpleWidget 
-                    width={ 1000 } 
-                    height={ 400 } 
-                    direction={ HORIZONTAL } 
-                    data={ data } 
-                    onClick={ (item) => {} }
+                <div style={{ width: 1280, height: 720, backgroundColor: '#FFFFFF' }}>
+                    <SimpleWidget
+                    width={ 1000 }
+                    height={ 400 }
+                    direction={ HORIZONTAL }
+                    data={ data }
+                    onClick={console.log("item ")}
                     renderBlur={ this._RenderBlur }
                     slideStyle={SlideStyle.seamLess}
                     renderItem={ this._RenderItem }
@@ -133,12 +133,12 @@ class MainScene extends FocusBlock {
                     onItemFocus={ this._onItemFocus }
                     measures={ this._Measures }
                     onWidgetMount={ this._onWidgetMount }
-                    padding={{left: 50, right: 50, top: 50, height: 50}}
-                    branchName={ this.props.branchName + "/swidget" }/>
+                    padding={{ left: 50, right: 50, top: 50, height: 50 }}
+                    branchName={ `${this.props.branchName}/swidget` }/>
                 </div>
-                <div style={{top: 50, left: 50}}>
+                <div style={{ top: 50, left: 50 }}>
                     <JsvSquareNinePatch
-                        style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH}}
+                        style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH }}
                         imageUrl={ borderImgPath }
                         imageWidth={ 81 }
                         contentWidth={ 21 }
@@ -147,30 +147,30 @@ class MainScene extends FocusBlock {
                         />
                 </div>
             </div>
-        )
-    }
+    );
+  }
 
-    onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-            return true;
-        }
-        return false;
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+      return true;
     }
+    return false;
+  }
 
-    _onWidgetMount() {
-    }
+  _onWidgetMount() {
+  }
 
-    componentDidMount() {
-        this.changeFocus(this.props.branchName + "/swidget");
-    }
+  componentDidMount() {
+    this.changeFocus(`${this.props.branchName}/swidget`);
+  }
 }
 
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

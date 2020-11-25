@@ -21,96 +21,96 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import {FocusBlock} from "../demoCommon/BlockDefine"
-import {getKeyFramesGroup} from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames"
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import { getKeyFramesGroup } from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames";
 
 let sAnimIndexToken = 0;
-class MainScene extends FocusBlock{
-    constructor(props) {
-        super(props);
-        this._KeyFrameControl = getKeyFramesGroup();
-        this._ActiveKeyFrameName = null;
-        this._CurrentOffsetX = 0;
-        this.state = {
-            keyAnimation: null,
-            loopLeft:5
-        };
+class MainScene extends FocusBlock {
+  constructor(props) {
+    super(props);
+    this._KeyFrameControl = getKeyFramesGroup();
+    this._ActiveKeyFrameName = null;
+    this._CurrentOffsetX = 0;
+    this.state = {
+      keyAnimation: null,
+      loopLeft: 5
+    };
+  }
+
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  _animateNext() {
+    if (this._ActiveKeyFrameName !== null) {
+      this._KeyFrameControl.removeRule(this._ActiveKeyFrameName);
+      this._ActiveKeyFrameName = null;
     }
 
-    onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-            return true;
-        }
-        return false;
+    const left_loop = this.state.loopLeft - 1;
+    if (left_loop > 0) {
+      this._ActiveKeyFrameName = `Frame${sAnimIndexToken++}`;
+      let keyframe = `@keyframes ${this._ActiveKeyFrameName} {`;
+      const origin_x = this._CurrentOffsetX;
+      this._CurrentOffsetX += 300;
+      keyframe += `0%{transform:translate3d(${origin_x}px,0px,0px)}`;
+      keyframe += `100%{transform:translate3d(${this._CurrentOffsetX}px,0px,0px)}`;
+      keyframe += "}";
+
+      this._KeyFrameControl.insertRule(keyframe);
     }
 
-    _animateNext() {
-        if (this._ActiveKeyFrameName != null) {
-            this._KeyFrameControl.removeRule(this._ActiveKeyFrameName);
-            this._ActiveKeyFrameName = null;
-        }
+    this.setState({
+      keyAnimation: (left_loop > 0 ? `${this._ActiveKeyFrameName} 2s linear` : null),
+      loopLeft: left_loop,
+    });
+  }
 
-        let left_loop = this.state.loopLeft - 1;
-        if (left_loop > 0) {
-            this._ActiveKeyFrameName = "Frame" + (sAnimIndexToken++);
-            let keyframe = "@keyframes " + this._ActiveKeyFrameName + " {";
-            let origin_x = this._CurrentOffsetX;
-            this._CurrentOffsetX += 300;
-            keyframe += "0%{transform:translate3d(" + origin_x + "px,0px,0px)}";
-            keyframe += "100%{transform:translate3d(" + this._CurrentOffsetX + "px,0px,0px)}";
-            keyframe += "}";
+  componentDidMount() {
+    this._animateNext();
+  }
 
-            this._KeyFrameControl.insertRule(keyframe);
-        }
-
-        this.setState({
-            keyAnimation: (left_loop > 0 ? this._ActiveKeyFrameName + " 2s linear" : null),
-            loopLeft: left_loop,
-        })
-    }
-
-    componentDidMount() {
-        this._animateNext();
-    }
-
-    renderContent() {
-        let that = this;
-        return (
+  renderContent() {
+    const that = this;
+    return (
         <div>
             <div style={{
-				textAlign: "center",
-				fontSize: "30px",
-				lineHeight: "50px",
-				color: "#ffffff",
-				left: 100,
-				top: 20,
-				width: (1280-200),
-				height: 50,
-				backgroundColor: "rgba(27,38,151,0.8)"
-			}}>{`动画指令动态生成，不需要提前准备css`}</div>
+              textAlign: "center",
+              fontSize: "30px",
+              lineHeight: "50px",
+              color: "#ffffff",
+              left: 100,
+              top: 20,
+              width: (1280 - 200),
+              height: 50,
+              backgroundColor: "rgba(27,38,151,0.8)"
+            }}>{`动画指令动态生成，不需要提前准备css`}</div>
             <div style={{
-                    top:200,
-					left: 100,
-					height: 100,
-					width: 100,
-					color: "#FFFFFF",
-					fontSize: "20px",
-					backgroundColor:"#00F0F0",
-					animation: this.state.keyAnimation,
-				}}
-                onAnimationEnd={()=>{that._animateNext()}}
+              top: 200,
+              left: 100,
+              height: 100,
+              width: 100,
+              color: "#FFFFFF",
+              fontSize: "20px",
+              backgroundColor: "#00F0F0",
+              animation: this.state.keyAnimation,
+            }}
+                onAnimationEnd={() => { that._animateNext(); }}
             >{this.state.loopLeft}</div>
-        </div>)
-    }
+        </div>);
+  }
 }
 
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

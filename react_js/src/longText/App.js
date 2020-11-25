@@ -4,7 +4,7 @@
  *
  * 【控件介绍】
  * SimpleWidget：见simpleMetrowidget
- * 
+ *
  * 【技巧说明】
  * Q: 如何长文字div的高度自适应？
  * A: 描画长文字的div的高度不设置即可
@@ -25,133 +25,133 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import {FocusBlock} from "../demoCommon/BlockDefine"
-import LongTextScroll from './LongTextScroll'
-import {SimpleWidget, HORIZONTAL, EdgeDirection} from "../jsview-utils/jsview-react/index_widget.js"
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import LongTextScroll from './LongTextScroll';
+import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
 
-let CONST_ITEM_WIDTH = 90;
-let CONST_ITEM_HEIGHT = 50;
-let BUTTON_DATA = [
-    {
-        'name': '同意'
-    },
-    {
-        'name': '取消'
-    }
-]
-class Button extends FocusBlock{
-    constructor(prop) {
-        super(prop);
-        this._Measures = this._Measures.bind(this);
-        this._RenderItem = this._RenderItem.bind(this);
-        this._RenderFocus = this._RenderFocus.bind(this);
-        this._OnWidgetMount = this._OnWidgetMount.bind(this);
-        this._OnClick = this._OnClick.bind(this);
-	}
+const CONST_ITEM_WIDTH = 90;
+const CONST_ITEM_HEIGHT = 50;
+const BUTTON_DATA = [
+  {
+    name: '同意'
+  },
+  {
+    name: '取消'
+  }
+];
+class Button extends FocusBlock {
+  constructor(prop) {
+    super(prop);
+    this._Measures = this._Measures.bind(this);
+    this._RenderItem = this._RenderItem.bind(this);
+    this._RenderFocus = this._RenderFocus.bind(this);
+    this._OnWidgetMount = this._OnWidgetMount.bind(this);
+    this._OnClick = this._OnClick.bind(this);
+  }
 
-    _Measures(item) {
-        return SimpleWidget.getMeasureObj(CONST_ITEM_WIDTH, CONST_ITEM_HEIGHT, true, false);
-    }
+  _Measures(item) {
+    return SimpleWidget.getMeasureObj(CONST_ITEM_WIDTH, CONST_ITEM_HEIGHT, true, false);
+  }
 
-    _RenderFocus(item) {
-        return (
+  _RenderFocus(item) {
+    return (
             <div>
-                <div style={{backgroundColor: "#DD0000", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT}}></div>
-                <div style={{backgroundColor: '#EEEEEE', width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", textAlign: "center", fontSize: 30}}>
+                <div style={{ backgroundColor: "#DD0000", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT }}></div>
+                <div style={{ backgroundColor: '#EEEEEE', width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", textAlign: "center", fontSize: 30 }}>
                     { item.name }
                 </div>
             </div>
-        )
-    }
+    );
+  }
 
-    _RenderItem(item) {
-        return (
-            <div style={{backgroundColor: '#EEEEEE', width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", textAlign: "center", fontSize: 30}}>
+  _RenderItem(item) {
+    return (
+            <div style={{ backgroundColor: '#EEEEEE', width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", textAlign: "center", fontSize: 30 }}>
                 { item.name }
             </div>
-        )
-    }
+    );
+  }
 
-    _OnClick(item) {
-        console.log("click " + item.name)
-    }
+  _OnClick(item) {
+    console.log(`click ${item.name}`);
+  }
 
-    onFocus() {
-        this.changeFocus(this.props.branchName + "/widget")
-    }
+  onFocus() {
+    this.changeFocus(`${this.props.branchName}/widget`);
+  }
 
-    _OnWidgetMount() {
-        
-    }
+  _OnWidgetMount() {
 
-    renderContent() {
-        return(
-            <SimpleWidget 
-                width={ 200 } 
-                height={ 70 } 
-                direction={ HORIZONTAL } 
-                data={ BUTTON_DATA } 
+  }
+
+  renderContent() {
+    return (
+            <SimpleWidget
+                width={ 200 }
+                height={ 70 }
+                direction={ HORIZONTAL }
+                data={ BUTTON_DATA }
                 renderItem={ this._RenderItem }
                 renderFocus={ this._RenderFocus }
                 onClick={ this._OnClick }
                 measures={ this._Measures }
-                padding={{top: 10, left: 10}}
-                branchName={ this.props.branchName + "/widget" }
+                padding={{ top: 10, left: 10 }}
+                branchName={ `${this.props.branchName}/widget` }
                 onEdge={this.props.onEdge}
                 onWidgetMount={ this._OnWidgetMount }
             />
-        )
-    }
+    );
+  }
 }
 
-class MainScene extends FocusBlock{
-    constructor(props) {
-        super(props);
-        this._ButtonOnEdge = this._ButtonOnEdge.bind(this);
+class MainScene extends FocusBlock {
+  constructor(props) {
+    super(props);
+    this._ButtonOnEdge = this._ButtonOnEdge.bind(this);
+  }
+
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+      return true;
+    }
+    if (ev.keyCode === 40) {
+      this.changeFocus(`${this.props.branchName}/button`);
+      return true;
     }
 
-    onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-            return true;
-        } else {
-            if (ev.keyCode == 40) {
-                this.changeFocus(this.props.branchName + "/button");
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 
-    componentDidMount() {
-        this.changeFocus(this.props.branchName + "/textView");
-    }
+  componentDidMount() {
+    this.changeFocus(`${this.props.branchName}/textView`);
+  }
 
-    _ButtonOnEdge(edge_info) {
-        if (edge_info.direction == EdgeDirection.top) {
-            this.changeFocus(this.props.branchName + "/textView")
-        }
+  _ButtonOnEdge(edge_info) {
+    if (edge_info.direction === EdgeDirection.top) {
+      this.changeFocus(`${this.props.branchName}/textView`);
     }
+  }
 
-    renderContent() {
-        return(
+  renderContent() {
+    return (
             <div>
                 <div style={{
-					textAlign: "center",
-					fontSize: "30px",
-					lineHeight: "50px",
-					color: "#ffffff",
-					left: 140,
-					top: 20,
-					width: 1000,
-					height: 50,
-					backgroundColor: "rgba(27,38,151,0.8)"
-				}}>{`可展示篇幅超过一屏的文字`}</div>
-                <div style={{left: 140, top: 100}}>
-                    <LongTextScroll branchName={this.props.branchName + "/textView"} style={{width: 1000, height: 500, backgroundColor: '#EEEEEE'}} textStyle={{color: "#000000", fontSize: 20}} scrollBlockStyle={{ width: 10, height: 30, backgroundColor: "#555555"}} scrollStyle={{left: 1005, width: 10, height: 500, backgroundColor: "#DDDDDD"}} step={20}>
+                  textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 140,
+                  top: 20,
+                  width: 1000,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
+                }}>{`可展示篇幅超过一屏的文字`}</div>
+                <div style={{ left: 140, top: 100 }}>
+                    <LongTextScroll branchName={`${this.props.branchName}/textView`} style={{ width: 1000, height: 500, backgroundColor: '#EEEEEE' }} textStyle={{ color: "#000000", fontSize: 20 }} scrollBlockStyle={{ width: 10, height: 30, backgroundColor: "#555555" }} scrollStyle={{ left: 1005, width: 10, height: 500, backgroundColor: "#DDDDDD" }} step={20}>
                         {"重要提示：   \n\
         财付通支付科技有限公司（以下简称“本公司”）依据本协议为用户（以下简称“你”）提供微信支付服务。本协议对你和本公司均具有法律约束力。\n\
     在使用微信支付服务前，你应当阅读并遵守本协议和《财付通服务协议》。由于微信支付服务是本公司依托微信及微信公众平台提供的服务，你在使用本服务时，还需使用微信软件服务，所以你应阅读并遵守《腾讯微信软件许可及服务协议》，若你需要使用微信公众平台服务，你还应阅读并遵守《微信公众平台服务协议》。本公司在此特别提醒你认真阅读并充分理解前述协议各条款，特别是免除或限制本公司的责任、限制你的权利、规定争议解决方式的相关条款。请你审慎阅读并选择是否接受前述协议，如你对本协议有任何疑问，应向客服咨询。\n\
@@ -224,18 +224,18 @@ class MainScene extends FocusBlock{
         3.10.2 你同意，本公司仅按照你选择的牌价通过本公司合作银行购买指定的外汇，而不对你选择的牌价中标明的汇率与实际购买时执行的汇率之间的汇兑损益负责。\n\
         3.10.3 你知悉并同意，在你授权本公司向本公司合作银行发送外汇购买信息后，即视为你与本公司合作银行直接达成外汇购买协议，有关该外汇购买的相关权利义务由你与本公司合作银行享有并承担。同时，你同意并授权本公司有权将你微信支付账户中与购汇指令等值的人民币资金支付给本公司合作银行。若你发送的购汇指令中所购外汇等值的人民币金额超出你“零钱”余额或你关联的银行卡账户余额的，该购汇指令应被视为异常指令。"}
                 </LongTextScroll>
-                    <div style={{left: 400, top: 550}}>
-                        <Button branchName={this.props.branchName + "/button"} onEdge={this._ButtonOnEdge}/>
+                    <div style={{ left: 400, top: 550 }}>
+                        <Button branchName={`${this.props.branchName}/button`} onEdge={this._ButtonOnEdge}/>
                     </div>
                 </div>
             </div>
-        )
-    }
+    );
+  }
 }
 
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

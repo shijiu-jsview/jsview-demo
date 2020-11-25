@@ -7,7 +7,7 @@
  * JsvMarquee：文字跑马灯控件
  *              top {int} 控件的Y坐标，默认为0
  *              left {int} 控件的X坐标，默认为0
- *	            width {int} (必须)控件的宽度
+ *              width {int} (必须)控件的宽度
  *              height {int} (必须)控件的高度
  *              text {string} (必须)控件中显示的文字内容
  *              fontStyle {object} style中的文字相关属性设置，例如font, color, fontSize, lineHeight
@@ -22,56 +22,56 @@
 
 import React from 'react';
 import './App.css';
-import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
-import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee"
-import { HomePageData, PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT } from "./DataProvader"
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
+import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
+import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee";
+import { HomePageData, PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT } from "./DataProvader";
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
 import borderImgPath from './images/nine_patch_focus.png';
 
 class MainScene extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._Measures = this._Measures.bind(this);
-        this._RenderItem = this._RenderItem.bind(this);
-        this._RenderFocus = this._RenderFocus.bind(this);
-        this._RenderBlur = this._RenderBlur.bind(this);
-        this._onWidgetMount = this._onWidgetMount.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this._Measures = this._Measures.bind(this);
+    this._RenderItem = this._RenderItem.bind(this);
+    this._RenderFocus = this._RenderFocus.bind(this);
+    this._RenderBlur = this._RenderBlur.bind(this);
+    this._onWidgetMount = this._onWidgetMount.bind(this);
+  }
 
-    onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-        } return true;
-    }
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+    } return true;
+  }
 
-    _Measures(item) {
-        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
-    }
+  _Measures(item) {
+    return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
+  }
 
-    _RenderFocus(item) {
-        let image_width = item.blocks.w - PAGE_THEME_ITEM_GAP;
-        let scale_width = parseInt(image_width * PAGE_THEME_ITEM_SCALE);
-        let left = -parseInt((scale_width - image_width) / 2);
-        let image_height = item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT;
-        let scale_height = parseInt(image_height * PAGE_THEME_ITEM_SCALE);
-        let top = -parseInt((scale_height - image_height) / 2);
-        console.log("left:" + left + ", top:" + top + ",width:" + scale_width + ", height:" + scale_height);
-        return (
+  _RenderFocus(item) {
+    const image_width = item.blocks.w - PAGE_THEME_ITEM_GAP;
+    const scale_width = parseInt(image_width * PAGE_THEME_ITEM_SCALE, 10);
+    const left = -parseInt((scale_width - image_width) / 2, 10);
+    const image_height = item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT;
+    const scale_height = parseInt(image_height * PAGE_THEME_ITEM_SCALE, 10);
+    const top = -parseInt((scale_height - image_height) / 2, 10);
+    console.log(`left:${left}, top:${top},width:${scale_width}, height:${scale_height}`);
+    return (
             <div>
                 <div style={{
-                    animation: "focusScale 0.25s",
-                    backgroundImage: `url(${item.content.url})`,
-                    left: left,
-                    top: top,
-                    width: scale_width,
-                    height: scale_height,
-                    borderRadius: '8px 8px 8px 8px',
-                    borderImage: `url(${borderImgPath}) 40 fill`,
-                    borderImageWidth: '40px',
-                    borderImageOutset: "28px 28px 28px 28px",
+                  animation: "focusScale 0.25s",
+                  backgroundImage: `url(${item.content.url})`,
+                  left,
+                  top,
+                  width: scale_width,
+                  height: scale_height,
+                  borderRadius: '8px 8px 8px 8px',
+                  borderImage: `url(${borderImgPath}) 40 fill`,
+                  borderImageWidth: '40px',
+                  borderImageOutset: "28px 28px 28px 28px",
                 }}>
 
                 </div>
@@ -80,72 +80,72 @@ class MainScene extends FocusBlock {
                     top={image_height} left={0}
                     width={image_width} height={PAGE_THEME_ITEM_TEXT_HEIGHT}
                     fontStyle={{
-                        color: "#ffffff",
-                        fontSize: 20,
-                        lineHeight: PAGE_THEME_ITEM_TEXT_HEIGHT + "px"
+                      color: "#ffffff",
+                      fontSize: 20,
+                      lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`
                     }} />
             </div>
-        )
-    }
+    );
+  }
 
-    _RenderBlur(item, callback) {
-        return (
+  _RenderBlur(item, callback) {
+    return (
             <div>
                 <div style={{
-                    animation: "blurScale 0.25s",
-                    backgroundImage: `url(${item.content.url})`,
-                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                    height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                  animation: "blurScale 0.25s",
+                  backgroundImage: `url(${item.content.url})`,
+                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                  height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
                 }}
                     onAnimationEnd={callback}>
                 </div>
                 <div style={{
-                    color: "#ffffff",
-                    fontSize: 20,
-                    whiteSpace: 'nowrap',
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    left: 0,
-                    top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                    lineHeight: PAGE_THEME_ITEM_TEXT_HEIGHT + "px",
-                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                    height: PAGE_THEME_ITEM_TEXT_HEIGHT
+                  color: "#ffffff",
+                  fontSize: 20,
+                  whiteSpace: 'nowrap',
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  left: 0,
+                  top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                  lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`,
+                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                  height: PAGE_THEME_ITEM_TEXT_HEIGHT
                 }}>
                     {item.content.title}
                 </div>
             </div>
-        )
-    }
+    );
+  }
 
-    _RenderItem(item) {
-        return (
+  _RenderItem(item) {
+    return (
             <div>
                 <div style={{
-                    backgroundImage: `url(${item.content.url})`,
-                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                    height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                  backgroundImage: `url(${item.content.url})`,
+                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                  height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
                 }}>
                 </div>
                 <div style={{
-                    color: "#ffffff",
-                    fontSize: 20,
-                    whiteSpace: 'nowrap',
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    left: 0,
-                    top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                    lineHeight: PAGE_THEME_ITEM_TEXT_HEIGHT + "px",
-                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                    height: PAGE_THEME_ITEM_TEXT_HEIGHT
+                  color: "#ffffff",
+                  fontSize: 20,
+                  whiteSpace: 'nowrap',
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  left: 0,
+                  top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                  lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`,
+                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                  height: PAGE_THEME_ITEM_TEXT_HEIGHT
                 }}>
                     {item.content.title}
                 </div>
             </div>
-        )
-    }
+    );
+  }
 
-    renderContent() {
-        return (
+  renderContent() {
+    return (
             <div key="background" style={{ top: 0, left: 0, width: 1280, height: 720, backgroundColor: "#123f80" }}>
                 <div key="title" style={{ top: 30, left: 80, width: 80, height: PAGE_THEME_ITEM_TEXT_HEIGHT, fontSize: 24, color: "#369cc4", whiteSpace: "nowrap", textAlign: "center" }}>影音</div>
                 <div key="sub_line" style={{ top: 70, left: 80, width: 80, height: 5, backgroundColor: "#2b6da1" }}></div>
@@ -160,21 +160,21 @@ class MainScene extends FocusBlock {
                         renderItem={this._RenderItem}
                         renderFocus={this._RenderFocus}
                         measures={this._Measures}
-                        branchName={this.props.branchName + "/widget"}
+                        branchName={`${this.props.branchName}/widget`}
                         onWidgetMount={this._onWidgetMount}
                     />
                 </div>
             </div>
-        )
-    }
+    );
+  }
 
-    _onWidgetMount() {
-        this.changeFocus(this.props.branchName + "/widget")
-    }
+  _onWidgetMount() {
+    this.changeFocus(`${this.props.branchName}/widget`);
+  }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

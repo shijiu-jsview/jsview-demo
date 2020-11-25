@@ -1,1 +1,1 @@
-export * from "../jsview-utils/JsViewReactTools/DebugContentShellJBridge"
+export * from "../jsview-utils/JsViewReactTools/DebugContentShellJBridge";
