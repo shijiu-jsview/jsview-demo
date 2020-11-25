@@ -187,7 +187,7 @@ const getTransform = (ele) => {
   while (cur_element.parentElement) {
     const style = getComputedStyle(cur_element);
     const transform_str = style.transform ? style.transform : style.webkitTransform;
-    if (transform_str && transform_str !== "none") {
+    if (transform_str) {
       const origin_str = style.transformOrigin ? style.transformOrigin : style.webkitTransformOrigin;
       const transform = parseToMat4(transform_str);
       if (origin_str) {
@@ -199,9 +199,6 @@ const getTransform = (ele) => {
       } else {
         total_transform = transform.multiply(total_transform);
       }
-    }
-    if (cur_element.id === "root") {
-      break;
     }
     cur_element = cur_element.parentElement;
   }
