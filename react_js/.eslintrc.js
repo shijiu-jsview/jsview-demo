@@ -16,6 +16,7 @@ module.exports = {
     "no-restricted-syntax":0,// 关闭 for...of 限制，与其他厂不同
     "no-prototype-builtins":0,
     "no-bitwise":0,
+    "quote-props":0,
     "camelcase":0,
     "quotes": 0,
     "no-console": 0,
