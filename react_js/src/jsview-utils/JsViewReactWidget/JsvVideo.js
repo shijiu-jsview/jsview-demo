@@ -12,13 +12,20 @@
  */
 
 import React from 'react';
+import PropTypes from "prop-types";
 
 class JsvVideo extends React.Component {
   render() {
     const { usetexture, videoref, ...others } = this.props;
+    const usetextureInner = usetexture ? "true" : "false";
     // 确保jsv_media_usetexture属性先被设置，故前后各写一个该属性，防止react属性顺序变更
     // eslint-disable-next-line react/jsx-no-duplicate-props
-    return <video ref={videoref} jsv_media_usetexture={usetexture} {...others} jsv_media_usetexture={usetexture}/>;
+    return <video ref={videoref} jsv_media_usetexture={usetextureInner} { ...others } jsv_media_usetexture={usetextureInner}/>;
   }
 }
+
+JsvVideo.propTypes = {
+  usetexture: PropTypes.bool,
+  videoref: PropTypes.func,
+};
 export default JsvVideo;
