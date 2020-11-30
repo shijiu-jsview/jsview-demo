@@ -1,6 +1,6 @@
 // Release entry
-module.exports = require("jsview-react/dist/jsviewreact.min.js");
+export * from "jsview-react/jsviewreact.min"
 
 // Debug entry
 // TODO: 进行编译(yarn build)时，需要关闭掉此require
-// module.exports = require("./code/index_jsv_hook.js")
+// export * from "jsview-react/index_jsv_hook"

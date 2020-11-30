@@ -93,6 +93,9 @@ main_run()
 	cd patch_package
 	./update.sh
 	cd ..
+
+	# 同步jsview-react
+	npm install src/jsview-utils/jsview-react/bin/jsview-react-package.tgz
 		
 	# 编译JS
 	npm run-script build
