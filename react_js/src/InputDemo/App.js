@@ -137,6 +137,17 @@ class MainScene extends FocusBlock {
                   height: 50,
                   backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`文字输入--右对齐(数字）`}</div>
+                 <div style={{
+                   textAlign: "center",
+                   fontSize: "24px",
+                   lineHeight: "30px",
+                   color: "#ffffff",
+                   left: 850,
+                   top: 550,
+                   width: 400,
+                   height: 30,
+                   backgroundColor: "rgba(0,0,0,0.5)"
+                 }}>{`（提示：只能输入数字）`}</div>
                 <div style={{ left: 850, top: 100 }}>
                     <InputPanel
                         type={JsvInput.type.NUMBER}
@@ -146,6 +157,7 @@ class MainScene extends FocusBlock {
                         onEdge={this._OnEdge}
                     />
                 </div>
+
             </div>
       );
     }

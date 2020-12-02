@@ -41,17 +41,21 @@ class Cursor extends Component {
     this.state = {
       visibility: "inherit"
     };
-    this._startBlink();
+    this.startBlink();
   }
 
-  _stopBlink() {
+  stopBlink(show) {
     if (this._IntervalHandler) {
       clearInterval(this._IntervalHandler);
       this._IntervalHandler = null;
     }
+    const v = (show === false ? "hidden" : "inherit");
+    this.setState({
+      visibility: v
+    });
   }
 
-  _startBlink() {
+  startBlink() {
     this._IntervalHandler = setInterval(() => {
       const v = this.state.visibility === "inherit" ? "hidden" : "inherit";
       this.setState({
@@ -74,7 +78,7 @@ class Cursor extends Component {
   }
 
   componentWillUnmount() {
-    this._stopBlink();
+    this.stopBlink(false);
   }
 }
 
@@ -119,6 +123,9 @@ class Input extends FocusBlock {
       curOffset: this.props.value.length,
       textLeft: this._calculateSlide(this.props.value, this.props.value, this.props.value.length),
     };
+
+    this._CursorRef = null;
+    this._CursorPauseTimer = null;
   }
 
   _updateTextWidth(text) {
@@ -136,11 +143,15 @@ class Input extends FocusBlock {
 
 
     _onTextChanged = (text, cursor_pos, moved) => {
+      if (moved) {
+        // 移动时，光标不闪烁
+        this.pauseCursorBlink();
+      }
       if (text.length > 0) {
         const start = cursor_pos - 1;
         const end = cursor_pos;
         const add_text = text.slice(start, end);
-        if (!ifDigital(add_text) && this.props.type === Forge.TextInputType.NUMBER) {
+        if (add_text && !ifDigital(add_text) && this.props.type === Forge.TextInputType.NUMBER) {
           console.log(`onTextChanged add text failed, add_text:${add_text}, when input type is number!`);
           if (this._InputView) {
             this._InputView.updateCursorOffset(this.state.fullString, this.state.curOffset);
@@ -412,13 +423,34 @@ class Input extends FocusBlock {
       }
     }
 
+    clearCursorPauseTimer() {
+      if (this._CursorPauseTimer) {
+        clearTimeout(this._CursorPauseTimer);
+        this._CursorPauseTimer = null;
+      }
+    }
+
+    pauseCursorBlink=() => {
+      if (this._CursorRef) {
+        this._CursorRef.stopBlink(true);
+      }
+      this.clearCursorPauseTimer();
+      this._CursorPauseTimer = setTimeout(() => {
+        if (this._CursorRef) {
+          this._CursorRef.startBlink();
+        }
+      }, 500);
+    }
+
     onKeyDown(keyEvent) {
       let key_used = false;
       let pre_index = this.state.curOffset;
       let cur_index;
       let valid_move = false;
+
       switch (keyEvent.keyCode) {
         case 37:// left
+          this.pauseCursorBlink();
           if (pre_index !== 0) {
             valid_move = true;
             cur_index = --pre_index;
@@ -426,6 +458,7 @@ class Input extends FocusBlock {
           }
           break;
         case 39:// right
+          this.pauseCursorBlink();
           if (pre_index < this.state.fullString.length) {
             valid_move = true;
             cur_index = ++pre_index;
@@ -534,7 +567,7 @@ class Input extends FocusBlock {
                 </div>
                 {
                     this.props.cursorShow ?
-                        <Cursor left={cursor_left} height={ this.props.height } color={ cursor_color }
+                        <Cursor ref={this.initCursorRef} left={cursor_left} height={ this.props.height } color={ cursor_color }
                                 width={this.props.cursorWidth}/> : null
                 }
                 <div jsv_innerview={ this._InnerViewId}/>
@@ -542,8 +575,13 @@ class Input extends FocusBlock {
       );
     }
 
+    initCursorRef=(ref) => {
+      this._CursorRef = ref;
+    }
+
     componentWillUnmount() {
       this.props.dispatcher.unregisterComponent(this);
+      this.clearCursorPauseTimer();
     }
 
     componentDidMount() {
