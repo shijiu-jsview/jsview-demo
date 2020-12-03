@@ -85,6 +85,7 @@ class JsvTabWidget extends FdivWrapper {
 
     this.state = {
       curId: 0,
+      focusComponent: this.props.initFocusComponent ? this.props.initFocusComponent : "body",
       frameData: this._generateFrameData(this.props.bodyData)
     };
   }
@@ -152,6 +153,7 @@ class JsvTabWidget extends FdivWrapper {
         type: SWidgetDispatcher.Type.setFocusId,
         data: 0
       });
+      this.setState({ "focusComponent": "body" });
       this.changeFocus(`${this.props.branchName}/body`);
     } else {
       if (this.props.onEdge) {
@@ -160,6 +162,7 @@ class JsvTabWidget extends FdivWrapper {
     }
   }
 
+
   _bodyOnEdge(edge_info) {
     if (this.props.tabFocusable && edge_info.direction === this._getTabPosition()) {
       this._dispatcherMap.get("tab").dispatch({
@@ -167,6 +170,7 @@ class JsvTabWidget extends FdivWrapper {
         data: this.state.curId
       });
       this.changeFocus(`${this.props.branchName}/tab`);
+      this.setState({ "focusComponent": "tab" });
     } else {
       if (this.props.onEdge) {
         this.props.onEdge(edge_info);
@@ -197,6 +201,9 @@ class JsvTabWidget extends FdivWrapper {
         });
       }
     });
+    if (this.props.tabOnItemFocus) {
+      this.props.tabOnItemFocus(item);
+    }
   }
 
   _frameOnItemFocus(item, pre_rect, query) {
@@ -255,7 +262,7 @@ class JsvTabWidget extends FdivWrapper {
   }
 
   onFocus() {
-    if (this.props.initFocusComponent === "body") {
+    if (this.state.focusComponent === "body") {
       this._dispatcherMap.get("body").dispatch({
         type: SWidgetDispatcher.Type.setFocusId,
         data: this.state.curId
@@ -292,6 +299,7 @@ class JsvTabWidget extends FdivWrapper {
                     onEdge={ this._tabOnEdge }
                     onClick={ this.props.tabOnClick }
                     onItemFocus={ this._tabOnItemFocus }
+                    onItemBlur={ this.props.tabOnItemBlur}
                     initFocusId={ this.props.initFocusId }/>
 
                 <SimpleWidget
