@@ -1,20 +1,20 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { FdivRoot } from './jsview-utils/jsview-react/index_widget';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import { FdivRoot } from "./jsview-utils/jsview-react/index_widget";
+import "./index.css";
 
 import App from "./transitPage/App";
 
 function getHostName() {
   const full_url = window.location.href;
-  let idx = full_url.indexOf('://');
+  let idx = full_url.indexOf("://");
   // const protocol = (idx > 0 ? full_url.substring(0, idx + 1) : "");
-  const host_path = (idx > 1 ? full_url.substring(idx + 3) : "");
+  const host_path = idx > 1 ? full_url.substring(idx + 3) : "";
 
-  idx = host_path.indexOf('/');
-  const host = (idx > 0 ? host_path.substring(0, idx) : "");
+  idx = host_path.indexOf("/");
+  const host = idx > 0 ? host_path.substring(0, idx) : "";
 
   return host;
 }
@@ -24,9 +24,15 @@ function startApp(confirm_entry) {
     // 运行在JsView引擎中
 
     // 检查配套引擎的版本
-    if (window.JsView.CodeRevision !== 578 /* Native引擎版本(由APK启动参数 CORE 决定) */
-      || window.Forge.Version !== "1.0.735" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */) {
-      console.warn("Warning: JsView Engine version miss matched, some effect will be lost");
+    if (
+      window.JsView.CodeRevision !==
+        586 /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
+      window.Forge.Version !==
+        "1.0.735" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
+    ) {
+      console.warn(
+        "Warning: JsView Engine version miss matched, some effect will be lost"
+      );
       /* Engine js 735 版本地址: http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r735.jsv.49b94b3a.js */
     }
 
@@ -38,12 +44,22 @@ function startApp(confirm_entry) {
     window.JsView.enableStorageNames("value1", "value2");
 
     // React相关配置
-    window.JsView.React.Render = function() {
-      ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
+    window.JsView.React.Render = function () {
+      ReactDOM.render(
+        <FdivRoot>
+          <App />
+        </FdivRoot>,
+        document.getElementById("root")
+      );
     };
     confirm_entry();
   } else {
-    ReactDOM.render(<FdivRoot><App /></FdivRoot>, document.getElementById('root'));
+    ReactDOM.render(
+      <FdivRoot>
+        <App />
+      </FdivRoot>,
+      document.getElementById("root")
+    );
   }
 }
 
