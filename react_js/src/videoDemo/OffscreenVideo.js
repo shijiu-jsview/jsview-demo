@@ -290,6 +290,10 @@ class OffscreenVideo extends FocusBlock {
   // finished jumping to a new time
   handleSeeked(...args) {
     console.log("handleSeeked");
+    if (this.video.currentTime > this.video.duration) {
+      this.video.currentTime = this.video.duration;
+    }
+    this.setState({ currentTime: this.video.currentTime });
   }
 
   // Handle Fullscreen Change
