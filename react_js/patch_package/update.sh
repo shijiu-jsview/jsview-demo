@@ -1,19 +1,5 @@
 #!/bin/bash
 
-# 已经在package.json做关联,不需在此拷贝了
-#echo UPDATE jsview-react
-if [ -f "../node_modules/jsview-react/folder_mark.txt" ];then
-    rm ../node_modules/jsview-react/folder_mark.txt
-fi
-
-touch jsview-react/folder_mark.txt
-if [ ! -f "../node_modules/jsview-react/folder_mark.txt" ];then
-	echo UPDATE jsview-react
-	cp -a jsview-react ../node_modules/
-else
-	echo jsview-react is soft-linked to node_modules
-fi
-
 echo UDPATE react-script/config/webpack.config.js
 cp react-scripts/config/webpack.config.js ../node_modules/react-scripts/config/webpack.config.js
 

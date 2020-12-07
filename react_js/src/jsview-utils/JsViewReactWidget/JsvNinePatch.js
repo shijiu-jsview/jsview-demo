@@ -18,33 +18,34 @@
 
 import React from 'react';
 
-class SquareNinePatch extends React.Component{
-    render() {
-        if(this.props.waitForInit && (!this.props.style || this.props.style.width === 0 || this.props.style.height === 0)) {
-            return null;
-        }
-
-        let transition = null;
-        if (this.props.animTime) {
-            transition = `left ${this.props.animTime}s, top ${this.props.animTime}s, width ${this.props.animTime}s, height ${this.props.animTime}s`
-        }
-        let slice_w = Math.ceil((this.props.imageWidth - this.props.contentWidth) / 2);
-        return (
-            <div style={{...this.props.style, transition: transition,
-                borderImage: `url(${this.props.imageUrl}) ${slice_w} fill`,
-                borderImageWidth: slice_w + 'px',
-                borderImageOutset: this.props.borderOutset + "px",
-            }}/>
-        )
+class SquareNinePatch extends React.Component {
+  render() {
+    if (this.props.waitForInit && (!this.props.style || this.props.style.width === 0 || this.props.style.height === 0)) {
+      return null;
     }
+
+    let transition = null;
+    if (this.props.animTime) {
+      transition = `left ${this.props.animTime}s, top ${this.props.animTime}s, width ${this.props.animTime}s, height ${this.props.animTime}s`;
+    }
+    const slice_w = Math.ceil((this.props.imageWidth - this.props.contentWidth) / 2);
+    return (
+            <div style={{ ...this.props.style,
+              transition,
+              borderImage: `url(${this.props.imageUrl}) ${slice_w} fill`,
+              borderImageWidth: `${slice_w}px`,
+              borderImageOutset: `${this.props.borderOutset}px`,
+            }}/>
+    );
+  }
 }
 SquareNinePatch.defaultProps = {
-    top: 0,
-    left: 0,
-    borderOutset: 0,
-    waitForInit: true,
-}
+  top: 0,
+  left: 0,
+  borderOutset: 0,
+  waitForInit: true,
+};
 
-export{
-    SquareNinePatch as JsvSquareNinePatch
-}
+export {
+  SquareNinePatch as JsvSquareNinePatch
+};

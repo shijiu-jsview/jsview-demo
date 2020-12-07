@@ -1,12 +1,14 @@
-import Forge from "../ForgeDefine"
+import Forge from "../ForgeDefine";
+
 class LayoutViewDebugClass {
+  SetTextureTracer (to_enable) {
 
-    SetTextureTracer (to_enable) {
+  }
 
-    };
-    GetTextureTracer () {
-        return null;
-    }
+  GetTextureTracer () {
+    return null;
+  }
 }
 Forge.LayoutViewDebugClass = LayoutViewDebugClass;
-window["ForgeDebug"] = Forge.ForgeDebug = new Forge.LayoutViewDebugClass(); // export global variable
+Forge.ForgeDebug = new Forge.LayoutViewDebugClass(); // export global variable
+window.ForgeDebug = Forge.ForgeDebug;

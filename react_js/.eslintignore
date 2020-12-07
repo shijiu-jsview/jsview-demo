@@ -1,0 +1,5 @@
+/patch_package/*
+/public/*
+/build/*
+/node_modules/*
+/src/jsview-utils/jsview-react/code/*

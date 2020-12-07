@@ -18,218 +18,157 @@
  *      onTextOverflow {function} 文字过长回调，文字最长为3倍的width
  *      onEdge {function} 方向键到达边缘回调
  *          @params edge_info 边缘信息{direction: EdgeDirection, rect: {x: value,y: value, widht: value,height: value}}
- *      onTextChange {function} 文字改动回调 
+ *      onTextChange {function} 文字改动回调
  *          @params string 当前文字
  *
  * 【技巧说明】
  * Q: 如何修改输入框中的文字?
  * A: 通过JsvInputDispatcher，具体的三个事件的示例可见App的_keyboardOnClick函数
- * 
+ *
  * Q: 如何获取输入框中的文字?
  * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
  */
+import React from 'react';
+import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import { JsvInput } from '../jsview-utils/JsViewReactWidget/JsvInput';
+import InputPanel from "./InputPanel";
 
-import React, { Component } from 'react'
-import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput'
-import { SimpleWidget, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js"
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
-
-class FullKeyboard extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._Data = this._initData();
-        this._ScaleRate = 1.05;
-
-        this._renderItem = this._renderItem.bind(this);
-        this._renderFocus = this._renderFocus.bind(this);
-        this._renderBlur = this._renderBlur.bind(this);
-        this._measures = this._measures.bind(this);
-        this._onClick = this._onClick.bind(this);
-    }
-
-    _initData() {
-        let result = [];
-        result.push({
-            blocks: {
-                w: 120,
-                h: 40,
-            },
-            focusable: true,
-            content: "删除",
-        })
-        result.push({
-            blocks: {
-                w: 120,
-                h: 40,
-            },
-            focusable: true,
-            content: "清空",
-        })
-        for (let i = 0; i < 36; ++i) {
-            result.push({
-                blocks: {
-                    w: 40,
-                    h: 40,
-                },
-                focusable: true,
-                content: i < 26 ? String.fromCharCode(i + 65) : String.fromCharCode(i - 26 + 48),
-            })
-        }
-        return result;
-    }
-
-    _measures(item) {
-        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub)
-    }
-
-    _renderItem(item, onedge) {
-        return (
-            <div style={{ width: item.blocks.w, height: item.blocks.h, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF" }}>
-                {item.content}
-            </div>
-        )
-    }
-
-    _renderFocus(item) {
-        let width = item.blocks.w * this._ScaleRate;
-        let height = item.blocks.h * this._ScaleRate;
-        let x = (item.blocks.w - width) / 2
-        let y = (item.blocks.h - height) / 2
-        return (
-            <div style={{ animation: "focusScale 0.5s", backgroundColor: "#44DD00", top: y, left: x, width: width, height: height, fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF" }}>
-                {item.content}
-            </div>
-        )
-    }
-
-    _renderBlur(item, callback) {
-        return (
-            <div style={{
-                animation: "blurScale 0.5s", width: item.blocks.w, height: item.blocks.h,
-                fontSize: "25px", textAlign: "center", lineHeight: item.blocks.h + "px", color: "#FFFFFF"
-            }}
-                onAnimationEnd={callback}>
-                {item.content}
-            </div>
-        )
-    }
-
-    _onClick(item) {
-        if (this.props.onClick) {
-            this.props.onClick(item.content);
-        }
-    }
-
-    onFocus() {
-        this.changeFocus(this.props.branchName + "/full_keyboard");
-    }
-
-    renderContent() {
-        return (
-            <SimpleWidget
-                width={260}
-                height={300}
-                padding={{ left: 10, right: 10, top: 10, bottom: 10 }}
-                direction={VERTICAL}
-                data={this._Data}
-                onClick={this._onClick}
-                renderBlur={this._renderBlur}
-                onEdge={this.props.onEdge}
-                renderItem={this._renderItem}
-                renderFocus={this._renderFocus}
-                measures={this._measures}
-                branchName={this.props.branchName + "/full_keyboard"}
-            />
-        )
-    }
-}
 
 class MainScene extends FocusBlock {
-    constructor(props) {
-        super(props);
-        this._Ref = null;
-        this._dispatcher = new JsvInputDispatcher();
-        this._keyboardOnEdge = this._keyboardOnEdge.bind(this);
-        this._keyboardOnClick = this._keyboardOnClick.bind(this);
-        this._editableTextOnEdge = this._editableTextOnEdge.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this._FocusName = "InputPanel1";
+  }
 
-    _editableTextOnEdge(edge_info) {
-        if (edge_info.direction === EdgeDirection.bottom) {
-            this.changeFocus(this.props.branchName + "/keyboard")
-        }
-    }
+    _OnEdge=(edge_info) => {
+      let used = false;
+      switch (edge_info.direction) {
+        case EdgeDirection.left:
+          if (this._FocusName === "InputPanel2") {
+            this._FocusName = "InputPanel1";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          } else if (this._FocusName === "InputPanel3") {
+            this._FocusName = "InputPanel2";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          }
+          break;
+        case EdgeDirection.right:
+          if (this._FocusName === "InputPanel1") {
+            this._FocusName = "InputPanel2";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          } else if (this._FocusName === "InputPanel2") {
+            this._FocusName = "InputPanel3";
+            this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
+            used = true;
+          }
+          break;
+        default:
+          break;
+      }
 
-    _keyboardOnEdge(edge_info) {
-        if (edge_info.direction === EdgeDirection.top) {
-            this.changeFocus(this.props.branchName + "/etext")
-        }
-    }
-
-    _keyboardOnClick(char) {
-        if (char === '删除') {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.delete,
-            })
-        } else if (char === '清空') {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.clear,
-            })
-        } else {
-            this._dispatcher.dispatch({
-                type: JsvInputDispatcher.Type.add,
-                data: char
-            })
-        }
+      return used;
     }
 
     onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-            if (this._NavigateHome) {
-                this._NavigateHome();
-            }
-            return true;
+      if (ev.keyCode === 10000 || ev.keyCode === 27) {
+        if (this._NavigateHome) {
+          this._NavigateHome();
         }
-        return false;
+        return true;
+      }
+      return false;
     }
 
     renderContent() {
-        return (
-            <div style={{ backgroundColor: "#000000", width: 1280, height: 720 }}>
-                <div style={{ left: 50, top: 50, width: 150, height: 40, backgroundColor: '#FF0000' }} />
-                <JsvInput
-                    left={50}
-                    top={50}
-                    height={40}
-                    width={150}
-                    fontStyle={{ color: '#FFFFFF', fontSize: '20px' }}
-                    dispatcher={this._dispatcher}
-                    branchName={this.props.branchName + "/etext"}
-                    onEdge={this._editableTextOnEdge}
-                    cursorColor="#999900"
-                    cursorWidth={2}
-                    onTextChange={(str) => { console.log("ontextChange " + str) }}
-                    onTextOverflow={() => { console.log("too long") }}
-                />
-                <div style={{ top: 100 }}>
-                    <FullKeyboard
-                        onClick={this._keyboardOnClick}
-                        onEdge={this._keyboardOnEdge}
-                        branchName={this.props.branchName + '/keyboard'}
+      return (
+            <div style={{ backgroundColor: "#0e0f5a", width: 1280, height: 720 }}>
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 50,
+                  top: 50,
+                  width: 300,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
+                }}>{`文字输入--左对齐`}</div>
+                <div style={{ left: 50, top: 100 }}>
+                    <InputPanel
+                        type={JsvInput.type.TEXT}
+                        textAlign="left"
+                        placeholder="请输入文字"
+                        branchName={`${this.props.branchName}/InputPanel1`}
+                        onEdge={this._OnEdge}
                     />
                 </div>
+
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 400,
+                  top: 50,
+                  width: 400,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
+                }}>{`文字输入--右对齐(密码）`}</div>
+                <div style={{ left: 400, top: 100 }}>
+                    <InputPanel
+                        type={JsvInput.type.PASSWORD}
+                        textAlign="right"
+                        placeholder="请输入密码"
+                        branchName={`${this.props.branchName}/InputPanel2`}
+                        onEdge={this._OnEdge}
+                    />
+                </div>
+
+                <div style={{ textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 850,
+                  top: 50,
+                  width: 400,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
+                }}>{`文字输入--右对齐(数字）`}</div>
+                 <div style={{
+                   textAlign: "center",
+                   fontSize: "24px",
+                   lineHeight: "30px",
+                   color: "#ffffff",
+                   left: 850,
+                   top: 550,
+                   width: 400,
+                   height: 30,
+                   backgroundColor: "rgba(0,0,0,0.5)"
+                 }}>{`（提示：只能输入数字）`}</div>
+                <div style={{ left: 850, top: 100 }}>
+                    <InputPanel
+                        type={JsvInput.type.NUMBER}
+                        textAlign="right"
+                        placeholder="请输入数字"
+                        branchName={`${this.props.branchName}/InputPanel3`}
+                        onEdge={this._OnEdge}
+                    />
+                </div>
+
             </div>
-        )
+      );
     }
 
     componentDidMount() {
-        this.changeFocus(this.props.branchName + "/keyboard");
+      this.changeFocus(`${this.props.branchName}/${this._FocusName}`);
     }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-    App, // 独立运行时的入口
-    MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

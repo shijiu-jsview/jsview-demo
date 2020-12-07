@@ -1,1 +1,1 @@
-export {default} from "../jsview-utils/JsViewReactTools/StandaloneApp"
+export { default } from "../jsview-utils/JsViewReactTools/StandaloneApp";

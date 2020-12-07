@@ -1,20 +1,16 @@
 class BridgeProxy {
-	constructor() {
+  indicateHomePageLoadDone() {
+    const bridge = this._GetBridge();
+    if (bridge && bridge.indicateHomePageLoadDone) {
+      bridge.indicateHomePageLoadDone();
+    }
+  }
 
-	}
-
-	indicateHomePageLoadDone() {
-		let bridge = this._GetBridge();
-		if (bridge && bridge.indicateHomePageLoadDone) {
-			bridge.indicateHomePageLoadDone();
-		}
-	}
-
-	_GetBridge() {
-		return window.jContentShellJBridge;
-	}
+  _GetBridge() {
+    return window.jContentShellJBridge;
+  }
 }
 
-let instance = new BridgeProxy();
+const instance = new BridgeProxy();
 
-export {instance as JSBridge}
+export { instance as JSBridge };

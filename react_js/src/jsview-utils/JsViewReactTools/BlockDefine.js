@@ -5,7 +5,7 @@
 /*
  * 【模块 export 内容】
  * FocusBlock: React高阶组件/ 面向对象的类，被FdivRouter统一管理的可获焦控件，
- *			控制按键事件按照焦点链进行流转
+ *      控制按键事件按照焦点链进行流转
  *
  *      props说明:
  *          branchName {String} 节点名称，用于changeFocus时指定的参数
@@ -39,88 +39,87 @@
  * convertToFocusBlock: 函数，将一个React组件包装成FocusBlock，注意:描画函数不用改成renderContent
  */
 
-import React from 'react';
-import { FdivWrapper,enableFocusable } from "../jsview-react/index_widget.js"
+import { FdivWrapper, enableFocusable } from "../jsview-react/index_widget";
 
 class FocusBlock extends FdivWrapper {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		// TODO: 将来吧 _NavigateHome 这个与 FocusBlock 无关，但所有Demo界面用到的属性封装到外部
-		this._NavigateHome = null;
-		if (props) {
-			this._NavigateHome = props.navigateHome;
-		}
-	}
+    // TODO: 将来吧 _NavigateHome 这个与 FocusBlock 无关，但所有Demo界面用到的属性封装到外部
+    this._NavigateHome = null;
+    if (props) {
+      this._NavigateHome = props.navigateHome;
+    }
+  }
 
-	/*
-	 * changeFocus 参数说明:
-	 *      branch_name (String) 焦点切换目标FocusBlock的名字
-	 *      keep_child_focus (Boolean) 是否延续子焦点的获焦状态，
-	 *                              例如指定目标控件为一个父控件，在此父控件失焦前，其某个子控件是焦点。
-	 *                              当这个父控件重新获焦时，子控件获焦的焦点链继续保持
-	 *  返回值
-	 *      boolean     branch_name对应的控件是否找到
-	 */
-	changeFocus(branch_name, keep_child_focus) {
-		return super.changeFocus(branch_name, keep_child_focus)
-	}
+  /*
+     * changeFocus 参数说明:
+     *      branch_name (String) 焦点切换目标FocusBlock的名字
+     *      keep_child_focus (Boolean) 是否延续子焦点的获焦状态，
+     *                              例如指定目标控件为一个父控件，在此父控件失焦前，其某个子控件是焦点。
+     *                              当这个父控件重新获焦时，子控件获焦的焦点链继续保持
+     *  返回值
+     *      boolean     branch_name对应的控件是否找到
+     */
+  changeFocus(branch_name, keep_child_focus) {
+    return super.changeFocus(branch_name, keep_child_focus);
+  }
 
-	/*
-	 * renderContent 参数说明:
-	 *      无
-	 */
-	renderContent() {
+  /*
+     * renderContent 参数说明:
+     *      无
+     */
+  renderContent() {
 
-	}
+  }
 
-	/*
-	 * onKeyDown 参数说明:
-	 *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
-	 */
-	onKeyDown(ev) {
-		return false;
-	}
+  /*
+     * onKeyDown 参数说明:
+     *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
+     */
+  onKeyDown(ev) {
+    return false;
+  }
 
-	/*
-	 * onKeyUp 参数说明:
-	 *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
-	 */
-	onKeyUp(ev) {
-		return false;
-	}
+  /*
+     * onKeyUp 参数说明:
+     *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
+     */
+  onKeyUp(ev) {
+    return false;
+  }
 
-	/*
-	 * onDispatchKeyDown 参数说明:
-	 *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
-	 */
-	onDispatchKeyDown(ev) {
-		return false;
-	}
+  /*
+     * onDispatchKeyDown 参数说明:
+     *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
+     */
+  onDispatchKeyDown(ev) {
+    return false;
+  }
 
-	/*
-	 * onDispatchKeyUp 参数说明:
-	 *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
-	 */
-	onDispatchKeyUp(ev) {
-		return false;
-	}
+  /*
+     * onDispatchKeyUp 参数说明:
+     *      ev (Object) 标准html的按键事件格式，含有keyCode, repeat
+     */
+  onDispatchKeyUp(ev) {
+    return false;
+  }
 
-	/*
-	 * onFocus 参数说明:
-	 *      无
-	 */
-	onFocus() {
+  /*
+     * onFocus 参数说明:
+     *      无
+     */
+  onFocus() {
 
-	}
+  }
 
-	/*
-	 * onBlur 参数说明:
-	 *      无
-	 */
-	onBlur() {
+  /*
+     * onBlur 参数说明:
+     *      无
+     */
+  onBlur() {
 
-	}
+  }
 }
 
 /*
@@ -131,10 +130,10 @@ class FocusBlock extends FdivWrapper {
  *                                  转化完成后，可以使用this.changeFocus来切换焦点
  */
 function convertToFocusBlock(base_class) {
-	return enableFocusable(base_class);
+  return enableFocusable(base_class);
 }
 
 export {
-	FocusBlock,
-	convertToFocusBlock
-}
+  FocusBlock,
+  convertToFocusBlock
+};

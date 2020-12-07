@@ -6,7 +6,7 @@
   "dependencies": {
     "core-js": "3.6.4",
     "crypto-js": "4.0.0",
-    "jsview-react": "file:./patch_package/jsview-react",
+    "jsview-react": "file:src/jsview-utils/jsview-react/bin/jsview-react-package.tgz",
     "md5": "2.2.1",
     "qr.js": "0.0.0",
     "react": "16.12.0",
@@ -31,9 +31,23 @@
       "not op_mini all"
     ],
     "development": [
-      "last 5 chrome version",
-      "last 5 firefox version",
-      "last 5 safari version"
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.2.0",
+    "@typescript-eslint/parser": "^2.2.0",
+    "babel-eslint": "10.0.3",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "13.2.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-loader": "3.0.2",
+    "eslint-plugin-flowtype": "3.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "6.2.3",
+    "eslint-plugin-react": "7.14.3",
+    "eslint-plugin-react-hooks": "^1.6.1"
   }
 }

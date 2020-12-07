@@ -1,5 +1,5 @@
-import Forge from "../ForgeDefine"
+import Forge from "../ForgeDefine";
 
 Forge.ReactUtils = {
-	StyleClassMap: {}	// Style class 缓存区
+  StyleClassMap: {}, // Style class 缓存区
 };

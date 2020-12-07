@@ -1,50 +1,50 @@
 import React from 'react';
-import {Fdiv} from "../../../jsview-utils/jsview-react/index_widget"
-import PageTheme from "../../common/PageTheme"
-import ConstantVar from "../../common/ConstantVar"
-import { FocusBlock } from "../../../demoCommon/BlockDefine"
-class TipsPage extends FocusBlock{
-    constructor(props) {
-        super(props);
-        this._PageTheme = PageTheme.get().TipsPage;
-        this.state = {
-            visible: "hidden",
-            focusBranchName: "GetWelfare"
-        }
-    }
+import PageTheme from "../../common/PageTheme";
+import ConstantVar from "../../common/ConstantVar";
+import { FocusBlock } from "../../../demoCommon/BlockDefine";
 
-    onFocus() {
-        this.setState({visible: "visible"});
-    }
+class TipsPage extends FocusBlock {
+  constructor(props) {
+    super(props);
+    this._PageTheme = PageTheme.get().TipsPage;
+    this.state = {
+      visible: "hidden",
+      focusBranchName: "GetWelfare"
+    };
+  }
 
-    onBlur() {
-        this.setState({visible: "hidden"})
-    }
+  onFocus() {
+    this.setState({ visible: "visible" });
+  }
 
-    onKeyDown(ev) {
-        let use_key = true;
-        switch(ev.keyCode) {
-            case ConstantVar.KeyCode.Back:
-                use_key = false;
-                break;
-            default:
-                break;
-        }
-        return use_key;
-    }
+  onBlur() {
+    this.setState({ visible: "hidden" });
+  }
 
-    renderContent() {
-        return (
-            <div style={{visibility:this.state.visible}}>
+  onKeyDown(ev) {
+    let use_key = true;
+    switch (ev.keyCode) {
+      case ConstantVar.KeyCode.Back:
+        use_key = false;
+        break;
+      default:
+        break;
+    }
+    return use_key;
+  }
+
+  renderContent() {
+    return (
+            <div style={{ visibility: this.state.visible }}>
                 <div style={this._PageTheme.bgStyle}/>
                 <div style={this._PageTheme.tips.style}>{this._PageTheme.tips.text}</div>
             </div>
-        )
-    }
+    );
+  }
 
-    componentDidMount() {
-        //nothing to do
-    }
+  componentDidMount() {
+    // nothing to do
+  }
 }
 
 

@@ -55,58 +55,58 @@
  *    为该场景的根Fdiv，并且keepChildFocus设置为true，则Fdiv系统会自动将焦点落在此场景失焦时的最后获焦位置。）
  */
 
-import React, { Suspense } from 'react';
-import {MainArea} from './MainArea'
-import {SideBarArea} from './SideBarArea'
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import { FocusBlock } from "../demoCommon/BlockDefine"
+import React from 'react';
+import { MainArea } from './MainArea';
+import { SideBarArea } from './SideBarArea';
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../demoCommon/BlockDefine";
 
-class MainScene extends FocusBlock{
-	constructor(props) {
-		super(props);
-		this._FocusControl = null;
-	}
+class MainScene extends FocusBlock {
+  constructor(props) {
+    super(props);
+    this._FocusControl = null;
+  }
 
-    onKeyDown(ev) {
-        if (ev.keyCode === 10000 || ev.keyCode === 27) {
-	        if (this._NavigateHome) {
-		        this._NavigateHome();
-	        }
-        }
-        return true;
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
     }
+    return true;
+  }
 
-	renderContent() {
-		return (
-			<div>
-				<div style={{
-					textAlign: "center",
-					fontSize: "30px",
-					lineHeight: "50px",
-					color: "#ffffff",
-					left: 100,
-					top: 50,
-					width: 400,
-					height: 50,
-					backgroundColor: "rgba(27,38,151,0.8)"
-				}}>{`可上下左右切换焦点`}</div>
-				<div style={{left:100, top:120}}>
-					<MainArea style={{left:0}}/>
-					<SideBarArea style={{left:300}}/>
-				</div>
+  renderContent() {
+    return (
+            <div>
+                <div style={{
+                  textAlign: "center",
+                  fontSize: "30px",
+                  lineHeight: "50px",
+                  color: "#ffffff",
+                  left: 100,
+                  top: 50,
+                  width: 400,
+                  height: 50,
+                  backgroundColor: "rgba(27,38,151,0.8)"
+                }}>{`可上下左右切换焦点`}</div>
+                <div style={{ left: 100, top: 120 }}>
+                    <MainArea style={{ left: 0 }}/>
+                    <SideBarArea style={{ left: 300 }}/>
+                </div>
 
-			</div>
-		)
-	}
+            </div>
+    );
+  }
 
-	componentDidMount() {
-		this.changeFocus("/main/L0C0");
-		//this.changeFocus("/sideBar/L0C0");
-	}
+  componentDidMount() {
+    this.changeFocus("/main/L0C0");
+    // this.changeFocus("/sideBar/L0C0");
+  }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-	App, // 独立运行时的入口
-	MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

@@ -26,3 +26,7 @@ yarn-error.log*
 
 # jsview-patch temp file
 folder_mark.txt
+
+# vscode
+.vscode
+*.code-workspace

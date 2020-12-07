@@ -20,45 +20,42 @@
 
 import React from 'react';
 import './App.css';
-import {FocusBlock} from "../demoCommon/BlockDefine"
-import createStandaloneApp from "../demoCommon/StandaloneApp"
-import MainPage from "./views/MainPage"
-import ConstantVar from "./common/ConstantVar"
+import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../demoCommon/StandaloneApp";
+import MainPage from "./views/MainPage";
+import ConstantVar from "./common/ConstantVar";
 
-class MainScene extends FocusBlock{
-	constructor(props) {
-		super(props);
+class MainScene extends FocusBlock {
+  renderContent() {
+    return (
+            <div>
+                <MainPage branchName={`${this.props.branchName}/MainPage`}/>
+            </div>
+    );
+  }
 
-	}
-
-	renderContent() {
-		return (
-			<div>
-				<MainPage branchName={this.props.branchName+"/MainPage"}/>
-			</div>
-		)
-	}
-    onKeyDown(ev) {
-        if (ev.keyCode === ConstantVar.KeyCode.Back || ev.keyCode === ConstantVar.KeyCode.Back2) {
-	        if (this._NavigateHome) {
-		        this._NavigateHome();
-	        }
-            return true;
-        }
-        return false;
+  onKeyDown(ev) {
+    if (ev.keyCode === ConstantVar.KeyCode.Back || ev.keyCode === ConstantVar.KeyCode.Back2) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
+      }
+      return true;
     }
-	componentDidMount() {
-        console.log("NineSquared App componentDidMount in");
-		this.changeFocus(this.props.branchName + "/MainPage");
-	}
-    componentWillUnmount() {
-        console.log("NineSquared App componentWillUnmount in");
-    }
+    return false;
+  }
 
+  componentDidMount() {
+    console.log("NineSquared App componentDidMount in");
+    this.changeFocus(`${this.props.branchName}/MainPage`);
+  }
+
+  componentWillUnmount() {
+    console.log("NineSquared App componentWillUnmount in");
+  }
 }
-let App = createStandaloneApp(MainScene);
+const App = createStandaloneApp(MainScene);
 
 export {
-	App, // 独立运行时的入口
-	MainScene as SubApp, // 作为导航页的子入口时
+  App, // 独立运行时的入口
+  MainScene as SubApp, // 作为导航页的子入口时
 };

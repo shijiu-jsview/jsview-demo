@@ -22,103 +22,104 @@ import { combinedStyles, JsvTextStyleClass } from "../JsViewReactTools/JsvStyleC
 
 const JSV_TEXT_VERTICAL_ALIGN_NAME = "jsv_text_vertical_align";
 class JsvTextBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this._LayoutStyle = null;
-        this._FontStyle = null;
-        this._FontStyleClass = null;
-        this._TokenProcessed = null;
-    }
+  constructor(props) {
+    super(props);
+    this._LayoutStyle = null;
+    this._FontStyle = null;
+    this._FontStyleClass = null;
+    this._TokenProcessed = null;
+  }
 
-    shouldComponentUpdate(next_props, next_state) {
-        return (
-            next_props.styleToken !== this.props.styleToken
+  shouldComponentUpdate(next_props, next_state) {
+    return (
+      next_props.styleToken !== this.props.styleToken
             || next_props.verticalAlign !== this.props.verticalAlign
             || next_props.children !== this.props.children
-        );
-    }
+    );
+  }
 
-    render() {
-        this._AnalyzeStyleChange();
+  render() {
+    this._AnalyzeStyleChange();
 
-        if (window.JsvDisableReactWrapper) {
-            return (
+    if (window.JsvDisableReactWrapper) {
+      return (
                 <div style={this._LayoutStyle}>
                     <div style={{ position: "static", display: 'table' }}>
                         <div className={this._FontStyleClass}
                              style={{
-                                 position: "static",
-                                 display: 'table-cell',
-                                 width: this._LayoutStyle.width, height: this._LayoutStyle.height,
-                                 ...this._FontStyle,
-                                 verticalAlign: this.props.verticalAlign,
+                               position: "static",
+                               display: 'table-cell',
+                               width: this._LayoutStyle.width,
+                               height: this._LayoutStyle.height,
+                               ...this._FontStyle,
+                               verticalAlign: this.props.verticalAlign,
                              }}
                         >{this.props.children}</div>
                     </div>
                 </div>
-            )
-        } else {
-            return (
+      );
+    }
+    return (
                 <div style={this._LayoutStyle}>
                     <div className={this._FontStyleClass}
                          jsv_text_vertical_align={this.props.verticalAlign}
                          style={{
-                             width: this._LayoutStyle.width, height: this._LayoutStyle.height,
-                             ...this._FontStyle,
+                           width: this._LayoutStyle.width,
+                           height: this._LayoutStyle.height,
+                           ...this._FontStyle,
                          }}
                     >{this.props.children}</div>
-                </div>)
+                </div>);
+  }
+
+  _AnalyzeStyleChange() {
+    if (this.props.styleToken !== this._TokenProcessed) {
+      // Token变化时，重新解析style array
+      const layout_set = combinedStyles(this.props.layoutStyles, true);
+      const font_set = combinedStyles(this.props.fontStyles);
+
+      this._LayoutStyle = layout_set.combinedStyle;
+      this._FontStyle = font_set.combinedStyle;
+
+      this._FontStyleClass = font_set.combinedClass;
+      if (this._FontStyleClass.length === 0) {
+        this._FontStyleClass = null;
+      }
+
+      // 校验 vertical align 变化，看是否能加速文字描画
+      if (this.props.fontStyles.length === 1 && this.props.fontStyles[0] instanceof JsvTextStyleClass) {
+        if (!this.props.fontStyles[0].appendJsvAttributes(JSV_TEXT_VERTICAL_ALIGN_NAME, this.props.verticalAlign)) {
+          console.warn("WARN: found vertical align changed of class, may cause lower performance");
         }
+      }
+
+      this._TokenProcessed = this.props.styleToken;
     }
-
-    _AnalyzeStyleChange() {
-        if (this.props.styleToken !== this._TokenProcessed) {
-            // Token变化时，重新解析style array
-            let layout_set = combinedStyles(this.props.layoutStyles, true);
-            let font_set = combinedStyles(this.props.fontStyles);
-
-            this._LayoutStyle = layout_set.combinedStyle;
-            this._FontStyle = font_set.combinedStyle;
-
-            this._FontStyleClass = font_set.combinedClass;
-            if (this._FontStyleClass.length === 0) {
-                this._FontStyleClass = null;
-            }
-
-            // 校验 vertical align 变化，看是否能加速文字描画
-            if (this.props.fontStyles.length === 1 && this.props.fontStyles[0] instanceof JsvTextStyleClass) {
-                if (!this.props.fontStyles[0].appendJsvAttributes(JSV_TEXT_VERTICAL_ALIGN_NAME, this.props.verticalAlign)) {
-                    console.warn("WARN: found vertical align changed of class, may cause lower performance");
-                }
-            }
-
-            this._TokenProcessed = this.props.styleToken;
-        }
-    }
+  }
 }
 
 JsvTextBox.propTypes = {
-    verticalAlign: PropTypes.string, // "top", "middle", "bottom"
-    layoutStyles: PropTypes.array, // 布局样式(包含x,y,width,height,backgroundColor)
-    fontStyles: PropTypes.array, // 文字样式
-    styleToken: PropTypes.string, // 样式是否变更的标识位
-}
+  verticalAlign: PropTypes.string, // "top", "middle", "bottom"
+  layoutStyles: PropTypes.array, // 布局样式(包含x,y,width,height,backgroundColor)
+  fontStyles: PropTypes.array, // 文字样式
+  styleToken: PropTypes.string, // 样式是否变更的标识位
+};
 
 JsvTextBox.defaultProps = {
-    verticalAlign: 'middle',
-    layoutStyles: [{
-        left: 0,
-        top: 0,
-        width: 100,
-        height: 20,
-        backgroundColor: undefined,
-    }],
-    fontStyle: [{
-        color: 'rgba(255,255,255,1.0)',
-        fontSize: 10,
-        textAlign: 'center',
-        lineHeight: '20px'
-    }]
-}
+  verticalAlign: 'middle',
+  layoutStyles: [{
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 20,
+    backgroundColor: undefined,
+  }],
+  fontStyle: [{
+    color: 'rgba(255,255,255,1.0)',
+    fontSize: 10,
+    textAlign: 'center',
+    lineHeight: '20px'
+  }]
+};
 
-export default JsvTextBox
+export default JsvTextBox;
