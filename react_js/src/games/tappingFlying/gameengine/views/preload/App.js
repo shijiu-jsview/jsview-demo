@@ -107,15 +107,19 @@ class App extends GameAppBase {
     console.log("Preload app componentDidMount");
     this._ProgreessRef.play();
     if (!this.game.Config) {
-      const requestConfig = Utils.requestConfig(`${this.game.serverUrl}/${this.game.difficult}/${this.game.appname}/config.json`);
-      requestConfig.then((config) => {
-        console.log("Preload config:", config);
-        this.game.Config = config;
-        this.game.assetData = Utils.dataFromatAsstes(Game.Config);
-        if (this._GoToNext) {
-          this.gotoNextState();
-        }
-      });
+      // 目前：config.json 根据不同的难易程度，放在相应的zip包中，无需下载
+      this.game.Config = require("../../../config.json");
+      this.game.assetData = Utils.dataFromatAsstes(Game.Config);
+      // 根据难易程度，下载不同的config
+      // const requestConfig = Utils.requestConfig(`${this.game.serverUrl}/${this.game.difficult}/${this.game.appname}/config.json`);
+      // requestConfig.then((config) => {
+      //   console.log("Preload config:", config);
+      //   this.game.Config = config;
+      //   this.game.assetData = Utils.dataFromatAsstes(Game.Config);
+      //   if (this._GoToNext) {
+      //     this.gotoNextState();
+      //   }
+      // });
     }
   }
 }
