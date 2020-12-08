@@ -37,6 +37,7 @@
  *          bodyMeasures {function} body的measures (必选)
  *          bodyPadding {function} 同SimpleWidget的padding
  *          bodySlideStyle { Symbol } body的SlideStyle
+ *          bodyOnClick {function} body的点击事件
  */
 
 import React from "react";
@@ -252,6 +253,7 @@ class JsvTabWidget extends FdivWrapper {
                 renderFocus={ this.props.bodyRenderFocus }
                 onItemFocus={ this.props.bodyOnItemFocus }
                 onItemBlur={ this.props.bodyOnItemBlur}
+                onClick={ this.props.bodyOnClick }
                 measures={ this.props.bodyMeasures }
                 branchName={ `${this.props.branchName}/body${item.tabIndex}` }/>
     );
