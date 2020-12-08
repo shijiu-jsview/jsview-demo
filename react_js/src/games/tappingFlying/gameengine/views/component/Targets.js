@@ -32,7 +32,7 @@ class Targets extends ScrollPage {
     this.width = this.props.worldWidth;
     this.height = this.props.worldHeight;
     this._TotalDistance = 0;
-    this.state = { itemList: [], successEffectVisible: "hidden", successEffectLeft: 0, successEffectTop: 0 };
+    this.state = { itemList: [], successEffectVisible: "hidden", impactObj: null };
     this._Control = new TranslateControl();
     this._Control.speed(this.props.scrollSpeed);
     this.targetTime = this.props.targetTime;
@@ -74,10 +74,41 @@ class Targets extends ScrollPage {
     this.setState({ itemList: [] });
   }
 
+  renderSuccessEffect() {
+    const successEffectInfo = window.GameSource["star_burst_big.json"];
+    if (!successEffectInfo
+      || this.state.successEffectVisible !== "visible"
+      || !this.state.impactObj) {
+      return null;
+    }
+
+    const impactObj = this.state.impactObj;
+    const width = impactObj.spriteInfo.frames[0].target.w;
+    const height = impactObj.spriteInfo.frames[0].target.h;
+    const left = impactObj.left + (width - successEffectInfo.viewSize.w) / 2;
+    const top = impactObj.top + (height - successEffectInfo.viewSize.h) / 2;
+
+    return (
+        <div style={{
+          visibility: this.state.successEffectVisible,
+          left,
+          top
+        }}>
+            <JsvSpriteAnim
+                    spriteInfo={successEffectInfo}
+                    loop="infinite"
+                    autostart={true}
+                    viewSize={successEffectInfo.viewSize}
+                    duration={successEffectInfo.frames.length / 15}
+                    imageUrl={`url(${Game.requireUrl("star_burst_big.png")})`}/>
+        </div>
+    );
+  }
+
   render() {
     const itemList = this.state.itemList;
     this._InitItemImpactTracer(this.props.roleRef);
-    const successEffectInfo = window.GameSource["star_burst_big.json"];
+
     return (
             <div>
                 <JsvSpriteTranslate key="TargetsTranslate"
@@ -103,7 +134,7 @@ class Targets extends ScrollPage {
                                             autostart={true}
                                             viewSize={item.spriteStaticInfo.viewSize}
                                             duration={0.8}
-                                            imageUrl={`url(${require(`../../../${Game.apppath}/assets/atlas/${this.targetConfig.value}`)})`}/>
+                                            imageUrl={`url(${Game.requireUrl(this.targetConfig.value)})`}/>
                                     </div>
                                     <div style={{ visibility: item.showStatic ? "hidden" : "visible" }}>
                                         <JsvSpriteAnim
@@ -112,12 +143,12 @@ class Targets extends ScrollPage {
                                             autostart={true}
                                             viewSize={item.spriteInfo.viewSize}
                                             duration={0.8}
-                                            imageUrl={`url(${require(`../../../${Game.apppath}/assets/atlas/${this.targetConfig.value}`)})`}/>
+                                            imageUrl={`url(${Game.requireUrl(this.targetConfig.value)})`}/>
 
                                     </div>
                                     <div ref={ele => this._InitItemEle(item, ele)}
                                          style={{
-                                           backgroundColor: "rgba(0,0,0,0.0)",
+                                           backgroundColor: "rgba(0,0,0,0)",
                                            left: 45,
                                            top: 30,
                                            width: item.spriteInfo.frames[0].target.w - 90,
@@ -128,22 +159,7 @@ class Targets extends ScrollPage {
                           );
                         })
                     }
-                    <div style={{
-                      visibility: this.state.successEffectVisible,
-                      left: this.state.successEffectLeft,
-                      top: this.state.successEffectTop
-                    }}>
-                        {
-                            successEffectInfo ? <JsvSpriteAnim
-                                spriteInfo={successEffectInfo}
-                                loop="infinite"
-                                autostart={true}
-                                viewSize={successEffectInfo.viewSize}
-                                duration={successEffectInfo.frames.length / 15}
-                                imageUrl={`url(${require(`../../../${Game.apppath}/assets/atlas/star_burst_big.png`)})`}/>
-                              : null
-                        }
-                    </div>
+                    { this.renderSuccessEffect()}
                 </JsvSpriteTranslate>
 
             </div>
@@ -180,8 +196,7 @@ class Targets extends ScrollPage {
   _scaleAnimationEnd() {
     this.setState({
       successEffectVisible: "hidden",
-      successEffectLeft: 0,
-      successEffectTop: 0,
+      impactObj: null,
 
     });
   }
@@ -210,8 +225,7 @@ class Targets extends ScrollPage {
                 item.showStatic = false;
                 this.setState({
                   successEffectVisible: "visible",
-                  successEffectLeft: item.left,
-                  successEffectTop: item.top,
+                  impactObj: item,
                 });
                 this.props.onTargetImpactTracer(item);
               }

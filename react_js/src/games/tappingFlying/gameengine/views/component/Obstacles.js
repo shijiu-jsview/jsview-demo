@@ -119,7 +119,7 @@ class Obstacles extends ScrollPage {
                                     imageUrl={`url(${Game.requireUrl(this.obstacleConfig.value)})`}/>
                                 <div ref={ele => this._InitItemEle(item, ele)}
                                      style={{
-                                       backgroundColor: "rgba(0,0,0,0.0)",
+                                       backgroundColor: "rgba(0,0,0,0)",
                                        left: bodySize.x,
                                        top: bodySize.y,
                                        width: bodySize.w,

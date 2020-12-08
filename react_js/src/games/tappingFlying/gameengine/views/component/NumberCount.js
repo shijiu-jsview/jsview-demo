@@ -26,7 +26,7 @@ class NumberCount extends React.Component {
               top: 360 + this._CounterOffset.y,
               width: 162,
               height: 80,
-              backgroundImage: `url(${require(`../../../${Game.apppath}/assets/images/number_counter.png`)})`
+              backgroundImage: `url(${Game.requireUrl("number_counter.png", "images")})`
             }}>
                 {
                     <div style={{
@@ -34,7 +34,7 @@ class NumberCount extends React.Component {
                       top: this._Config.y,
                       width: 81,
                       height: 51,
-                      backgroundImage: `url(${require(`../../../${Game.apppath}/assets/images/${this._Config.icon}`)})`
+                      backgroundImage: `url(${Game.requireUrl(`${this._Config.icon}`, "images")})`
                     }}></div>
                 }
                 <div style={{ left: 33 + 70, top: 2, width: 200, height: 60, lineHeight: 60, fontSize: 30, color: "#ffff00" }}>{`${count}/${target_num}`}</div>

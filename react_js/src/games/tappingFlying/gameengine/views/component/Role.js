@@ -151,7 +151,7 @@ class Role extends FocusBlock {
     const clashObstacleViewSize = clashObstacleDetailInfo.viewSize;
     const clashObstacle_duration = clashObstacleDetailInfo.frames.length / clashObstacleConfig.rate;
     let bodySize = this.bodySize;
-    if (!bodySize) {
+    if (!bodySize || !this.isFlyingMode) {
       bodySize = { x: 15, y: 30, w: this.props.rolesList[0].viewSize.w - 30, h: this.props.rolesList[0].viewSize.h - 60 };
     }
     const imgUrl = Game.requireUrl(clashObstacleConfig.value);
