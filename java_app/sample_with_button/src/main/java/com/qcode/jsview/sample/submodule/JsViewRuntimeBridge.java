@@ -2,8 +2,12 @@ package com.qcode.jsview.sample.submodule;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,11 +19,9 @@ import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.utils.MD5Util;
 import com.qcode.jsview.sample.utils.Mac;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.Stack;
 
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
@@ -160,5 +162,76 @@ public class JsViewRuntimeBridge {
 		} catch (Exception e) {
 			Log.d(TAG, "error", e);
 		}
+	}
+
+
+	public static final String CONTENT = "content://";
+	public static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
+	public static final String CONTENT_URI = CONTENT + AUTHORITY;
+	public static final String OPTION_CLEAR = "clear";
+	public static final String OPTION_DEL = "del";
+	public static final String OPTION_QUERY = "query";
+	public static final String OPTION_INSERT = "insert";
+	public static final String OPTION_QUERYALL = "queryall";
+	//这里的AUTHORITY就是我们在AndroidManifest.xml中配置的authorities
+	public static final String BASE_PATH = "sp";// SharedPreference 缩写
+	private static final String URI_PATH = CONTENT_URI + "/" + BASE_PATH;
+
+	@JavascriptInterface
+	public void setFavouriteItem(String key, String value) {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key);
+		ContentValues cv = new ContentValues();
+		cv.put("value", value);
+		cr.update(uri, cv, null, null);
+	}
+
+	@JavascriptInterface
+	public String getFavouriteItem(String key) {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
+		String rtn = cr.getType(uri);
+		if (rtn == null) {
+			return "";
+		}
+		return rtn;
+	}
+
+	@JavascriptInterface
+	public String getFavouriteAll() {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERYALL);
+		Cursor cursor = cr.query(uri, null,null,null,null);
+		JSONArray favourite_list = new JSONArray();
+		if (cursor != null) {
+			for(cursor.moveToFirst();
+				cursor.isAfterLast() == false;
+				cursor.moveToNext()) {
+				String key = cursor.getString(0);
+				String value = cursor.getString(1);
+				JSONObject key_value = new JSONObject();
+				try {
+					key_value.put(key, value);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				favourite_list.put(key_value);
+			}
+		}
+		return favourite_list.toString();
+	}
+
+	@JavascriptInterface
+	public void removeFavouriteItem(String key) {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key);
+		cr.delete(uri, null, null);
+	}
+
+	@JavascriptInterface
+	public void clearFavourites() {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
+		cr.delete(uri, null, null);
 	}
 }
