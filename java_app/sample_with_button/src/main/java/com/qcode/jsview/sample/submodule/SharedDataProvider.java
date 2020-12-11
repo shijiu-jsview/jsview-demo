@@ -32,6 +32,7 @@ public class SharedDataProvider extends ContentProvider {
     private Context mContext;
     private SharedPreferences mSharedPreferences = null;
     private String mSharedPreferencesName = null;
+
     static {
         //匹配不成功返回NO_MATCH(-1)
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -41,13 +42,13 @@ public class SharedDataProvider extends ContentProvider {
         // BASE/queryall/
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_QUERYALL, PREFERENCE_MATCH_CODE);
         // BASE/clear/
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_CLEAR, PREFERENCE_MATCH_CODE);
+        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_CLEAR + "/*", PREFERENCE_MATCH_CODE);
         // BASE/query/key
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_QUERY + "/*", KEY_PREFERENCE_MATCH_CODE);
         // BASE/del/key
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_DEL + "/*", KEY_PREFERENCE_MATCH_CODE);
+        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_DEL + "/*/*", KEY_PREFERENCE_MATCH_CODE);
         // BASE/insert/key
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_INSERT + "/*", KEY_PREFERENCE_MATCH_CODE);
+        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_INSERT + "/*/*", KEY_PREFERENCE_MATCH_CODE);
     }
 
     private SharedPreferences getSharedPreference(String name) {
@@ -68,7 +69,8 @@ public class SharedDataProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         synchronized (sLock) {
             int match = uriMatcher.match(uri);
-            if (match == PREFERENCE_MATCH_CODE) {
+            if (match == PREFERENCE_MATCH_CODE
+                && uri.getPathSegments().size() >= 2) {
                 String name = uri.getPathSegments().get(1);
                 SharedPreferences sp = getSharedPreference(name);
                 Map<String, ?> all = sp.getAll();
@@ -91,7 +93,8 @@ public class SharedDataProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         synchronized (sLock) {
-            if (uriMatcher.match(uri) == KEY_PREFERENCE_MATCH_CODE) {
+            if (uriMatcher.match(uri) == KEY_PREFERENCE_MATCH_CODE
+                && uri.getPathSegments().size() >= 4) {
                 String name = uri.getPathSegments().get(1);
                 SharedPreferences sp = getSharedPreference(name);
                 String key = uri.getPathSegments().get(3);
@@ -104,7 +107,10 @@ public class SharedDataProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         synchronized (sLock) {
-            if (uriMatcher.match(uri) == KEY_PREFERENCE_MATCH_CODE) {
+            String packageName = mContext.getPackageName();
+            if (uriMatcher.match(uri) == KEY_PREFERENCE_MATCH_CODE
+                && uri.getPathSegments().size() >= 5
+                && packageName.equals(uri.getPathSegments().get(4))) {
                 String name = uri.getPathSegments().get(1);
                 SharedPreferences sp = getSharedPreference(name);
                 String key = uri.getPathSegments().get(3);
@@ -126,23 +132,30 @@ public class SharedDataProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int delCount = 0;
         synchronized (sLock) {
+            String packageName = mContext.getPackageName();
             int match = uriMatcher.match(uri);
             if (match == PREFERENCE_MATCH_CODE) {
-                String name = uri.getPathSegments().get(1);
-                SharedPreferences sp = getSharedPreference(name);
-                delCount = sp.getAll().size();
-                sp.edit().clear().commit();
-                notifyChange(uri);
+                if (uri.getPathSegments().size() >= 4
+                    && packageName.equals(uri.getPathSegments().get(3))) {
+                    String name = uri.getPathSegments().get(1);
+                    SharedPreferences sp = getSharedPreference(name);
+                    delCount = sp.getAll().size();
+                    sp.edit().clear().commit();
+                    notifyChange(uri);
+                }
                 return delCount;
             } else if (match == KEY_PREFERENCE_MATCH_CODE) {
-                String name = uri.getPathSegments().get(1);
-                SharedPreferences sp = getSharedPreference(name);
-                String key = uri.getPathSegments().get(3);
-                if (sp.contains(key)) {
-                    sp.edit().remove(key).commit();
-                    delCount = 1;
+                if (uri.getPathSegments().size() >= 5
+                    && packageName.equals(uri.getPathSegments().get(4))) {
+                    String name = uri.getPathSegments().get(1);
+                    SharedPreferences sp = getSharedPreference(name);
+                    String key = uri.getPathSegments().get(3);
+                    if (sp.contains(key)) {
+                        sp.edit().remove(key).commit();
+                        delCount = 1;
+                    }
+                    notifyChange(uri);
                 }
-                notifyChange(uri);
                 return delCount;
             }
         }

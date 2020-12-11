@@ -165,34 +165,50 @@ public class JsViewRuntimeBridge {
 	}
 
 
-	public static final String CONTENT = "content://";
-	public static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
-	public static final String CONTENT_URI = CONTENT + AUTHORITY;
-	public static final String OPTION_CLEAR = "clear";
-	public static final String OPTION_DEL = "del";
-	public static final String OPTION_QUERY = "query";
-	public static final String OPTION_INSERT = "insert";
-	public static final String OPTION_QUERYALL = "queryall";
+	private static final String CONTENT = "content://";
+	private static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
+	private static final String CONTENT_URI = CONTENT + AUTHORITY;
+	private static final String OPTION_CLEAR = "clear";
+	private static final String OPTION_DEL = "del";
+	private static final String OPTION_QUERY = "query";
+	private static final String OPTION_INSERT = "insert";
+	private static final String OPTION_QUERYALL = "queryall";
 	//这里的AUTHORITY就是我们在AndroidManifest.xml中配置的authorities
-	public static final String BASE_PATH = "sp";// SharedPreference 缩写
+	private static final String BASE_PATH = "sp";// SharedPreference 缩写
 	private static final String URI_PATH = CONTENT_URI + "/" + BASE_PATH;
 
+	/**
+	 *
+	 * @param key	唯一标识
+	 * @param value	JSON 字符串
+	 */
 	@JavascriptInterface
-	public void setFavouriteItem(String key, String value) {
+	public void addFavourite(String key, String value) {
+		//获取当前包名
+		String packageName =  mContext.getPackageName();
+		String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
 		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key);
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key+"/"+packageName);
 		ContentValues cv = new ContentValues();
-		cv.put("value", value);
+		JSONObject key_value = new JSONObject();
+		try {
+			key_value.put("packageName", packageName);
+			key_value.put("action", action);
+			key_value.put("params", new JSONObject(value));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		cv.put("value", key_value.toString());
 		cr.update(uri, cv, null, null);
 	}
 
 	@JavascriptInterface
-	public String getFavouriteItem(String key) {
+	public String getFavourite(String key) {
 		ContentResolver cr = mContext.getContentResolver();
 		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
 		String rtn = cr.getType(uri);
 		if (rtn == null) {
-			return "";
+			return null;
 		}
 		return rtn;
 	}
@@ -202,36 +218,40 @@ public class JsViewRuntimeBridge {
 		ContentResolver cr = mContext.getContentResolver();
 		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERYALL);
 		Cursor cursor = cr.query(uri, null,null,null,null);
-		JSONArray favourite_list = new JSONArray();
 		if (cursor != null) {
+			JSONArray favouriteList = new JSONArray();
 			for(cursor.moveToFirst();
 				cursor.isAfterLast() == false;
 				cursor.moveToNext()) {
-				String key = cursor.getString(0);
 				String value = cursor.getString(1);
-				JSONObject key_value = new JSONObject();
 				try {
-					key_value.put(key, value);
+					favouriteList.put(new JSONObject(value));
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				favourite_list.put(key_value);
 			}
+			return favouriteList.toString();
 		}
-		return favourite_list.toString();
+		return null;
 	}
 
 	@JavascriptInterface
-	public void removeFavouriteItem(String key) {
+	public void removeFavourite(String key) {
+		//安全性如何保障,目前只能删除自身域名下的数据
+		//只在当前包名下可删除项目
+		String packageName =  mContext.getPackageName();
 		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key);
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key+"/"+packageName);
 		cr.delete(uri, null, null);
 	}
 
 	@JavascriptInterface
 	public void clearFavourites() {
+		//安全性如何保障,目前只能删除自身域名下的数据
+		//只在当前包名下可删除项目
+		String packageName =  mContext.getPackageName();
 		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR+"/"+packageName);
 		cr.delete(uri, null, null);
 	}
 }
