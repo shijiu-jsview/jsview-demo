@@ -64,7 +64,8 @@
         <provider
             android:name=".submodule.SharedDataProvider"
             android:authorities="com.qcode.jsview.sp.SharedDataProvider"
-            android:exported="true" />
+            android:exported="true"
+            android:multiprocess="false" />
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
