@@ -266,11 +266,8 @@ public class JsViewRuntimeBridge {
 			Bundle title_icon = getFavouriteTitleIcon(rtn);
 
 			if (!denied) {
-				//安全性如何保障,目前只能删除自身域名下的数据
-				//只在当前包名下可删除项目
-				String packageName = mContext.getPackageName();
 				cr = mContext.getContentResolver();
-				uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key + "/" + packageName);
+				uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key);
 				cr.delete(uri, null, null);
 
 				promise.resolve(0);
@@ -287,8 +284,6 @@ public class JsViewRuntimeBridge {
 			boolean denied = false;
 
 			if (!denied) {
-				//安全性如何保障,目前只能删除自身域名下的数据
-				//只在当前包名下可删除项目
 				ContentResolver cr = mContext.getContentResolver();
 				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
 				cr.delete(uri, null, null);

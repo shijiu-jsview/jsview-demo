@@ -60,8 +60,7 @@ function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, e
       if (callback) {
         callback(true)
       }
-    });
-    async_message.catch((reason)=>{
+    }).catch((reason)=>{
       if (callback) {
         callback(false, reason);
       }
@@ -83,8 +82,7 @@ function removeFavourite(domain, alias, callback) {
       if (callback) {
         callback(true)
       }
-    });
-    async_message.catch((reason)=>{
+    }).catch((reason)=>{
       if (callback) {
         callback(false, reason);
       }
@@ -126,8 +124,7 @@ function clearFavourites(callback) {
       if (callback) {
         callback(true)
       }
-    });
-    async_message.catch((reason)=>{
+    }).catch((reason)=>{
       if (callback) {
         callback(false, reason);
       }
