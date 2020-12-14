@@ -39,15 +39,15 @@ public class SharedDataProvider extends ContentProvider {
 
         //添加我们需要匹配的uri
         uriMatcher.addURI(AUTHORITY, BASE_PATH, PREFERENCE_MATCH_CODE);
-        // BASE/queryall/
+        // BASE/queryall
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_QUERYALL, PREFERENCE_MATCH_CODE);
-        // BASE/clear/
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_CLEAR + "/*", PREFERENCE_MATCH_CODE);
-        // BASE/query/key
+        // BASE/clear
+        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_CLEAR, PREFERENCE_MATCH_CODE);
+        // BASE/query/key/info
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_QUERY + "/*", KEY_PREFERENCE_MATCH_CODE);
-        // BASE/del/key
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_DEL + "/*/*", KEY_PREFERENCE_MATCH_CODE);
-        // BASE/insert/key
+        // BASE/del/key/info
+        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_DEL + "/*", KEY_PREFERENCE_MATCH_CODE);
+        // BASE/insert/key/info/packageName
         uriMatcher.addURI(AUTHORITY, BASE_PATH + "/*/" + OPTION_INSERT + "/*/*", KEY_PREFERENCE_MATCH_CODE);
     }
 
@@ -132,11 +132,9 @@ public class SharedDataProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int delCount = 0;
         synchronized (sLock) {
-            String packageName = mContext.getPackageName();
             int match = uriMatcher.match(uri);
             if (match == PREFERENCE_MATCH_CODE) {
-                if (uri.getPathSegments().size() >= 4
-                    && packageName.equals(uri.getPathSegments().get(3))) {
+                if (uri.getPathSegments().size() >= 3) {
                     String name = uri.getPathSegments().get(1);
                     SharedPreferences sp = getSharedPreference(name);
                     delCount = sp.getAll().size();
@@ -145,8 +143,7 @@ public class SharedDataProvider extends ContentProvider {
                 }
                 return delCount;
             } else if (match == KEY_PREFERENCE_MATCH_CODE) {
-                if (uri.getPathSegments().size() >= 5
-                    && packageName.equals(uri.getPathSegments().get(4))) {
+                if (uri.getPathSegments().size() >= 4) {
                     String name = uri.getPathSegments().get(1);
                     SharedPreferences sp = getSharedPreference(name);
                     String key = uri.getPathSegments().get(3);

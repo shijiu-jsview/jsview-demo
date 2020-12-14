@@ -27,18 +27,21 @@ function build_api(name) {
 
 /**
  * 添加收藏
+ * @param {string} domain 域名
  * @param {string} alias 别名（唯一的名称）
- * @param {string} appUrl app url 或者AppId
- * @param {string} subUrl  sub url
- * @param {string} params  其他参数
+ * @param {string} appUrl app url 或者 AppId
+ * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
+ * @param {string} params  其他参数(添加到url的 ? 后的内容)
  * @param {string} coreversionRange  引擎内核版本
  * @param {string} engine  js引擎地址
- * @param {string} startImg  启动图
+ * @param {string} title  显示名称(http地址)
+ * @param {string} icon  显示图标(http地址)
+ * @param {string} startImg  启动图(http地址)
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function addFavourite(alias, appUrl, subUrl, params, coreversionRange, engine, startImg) {
+function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, engine, title, icon, startImg, callback) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
-    const domain = window.location.hostname;
     const key = `${domain}_${alias}`;
     const value = JSON.stringify({
       domain,
@@ -47,22 +50,45 @@ function addFavourite(alias, appUrl, subUrl, params, coreversionRange, engine, s
       subUrl,
       coreversionRange,
       engine,
-      startImg,
       params,
+      startImg,
+      title,
+      icon
     });
-    window.jJsvRuntimeBridge.addFavourite(key, value);
+    let async_message = window.jJsvRuntimeBridge.addFavourite(key, value);
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    });
+    async_message.catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
   }
 }
 
 /**
  * 删除指定收藏
+ * @param {string} domain 域名
  * @param {string} alias 别名
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
  */
-function removeFavourite(alias) {
+function removeFavourite(domain, alias, callback) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
-    const domain = window.location.hostname;
     const key = `${domain}_${alias}`;
-    window.jJsvRuntimeBridge.removeFavourite(key);
+    let async_message = window.jJsvRuntimeBridge.removeFavourite(key);
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    });
+    async_message.catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
   }
 }
 
@@ -91,12 +117,22 @@ function getFavouriteAll() {
 
 /**
  * 删除该域名下所有收藏
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
  */
-function clearFavourites() {
+function clearFavourites(callback) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.clearFavourites === "function") {
-    return window.jJsvRuntimeBridge.clearFavourites();
+    let async_message = window.jJsvRuntimeBridge.clearFavourites();
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    });
+    async_message.catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
   }
-  return null;
 }
 
 // 显示声明，可以提高执行速度和利用上编辑器的成员名提示功能

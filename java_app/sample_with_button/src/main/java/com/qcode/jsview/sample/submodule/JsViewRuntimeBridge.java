@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.qcode.jsview.JsPromise;
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.utils.MD5Util;
 import com.qcode.jsview.sample.utils.Mac;
@@ -35,6 +37,7 @@ public class JsViewRuntimeBridge {
 	private Context mContext = null;
 	private JsView mHostJsView = null;
 	private PageStatusListener mPageStatusListener = null;
+	private Handler mMainThreadHandler;
 
 	private Stack<UrlInfo> mUrlStack = new Stack<>();
 
@@ -54,6 +57,7 @@ public class JsViewRuntimeBridge {
 		mContext = host_activity;
 		mHostJsView = host_jsview;
 		mPageStatusListener = page_listener;
+		mMainThreadHandler = new Handler(Looper.getMainLooper());
 	}
 
 	// JS接口: 退出当前页面
@@ -62,7 +66,7 @@ public class JsViewRuntimeBridge {
 		Log.d(TAG, "closePage...");
 
 		// 放入主线程完成
-		new Handler(Looper.getMainLooper()).post(()->{
+		mMainThreadHandler.post(()->{
 			if (!mUrlStack.empty()) {
 				UrlInfo url = mUrlStack.pop();
 				mHostJsView.loadUrl2(url.engineUrl, url.appUrl);
@@ -183,23 +187,35 @@ public class JsViewRuntimeBridge {
 	 * @param value	JSON 字符串
 	 */
 	@JavascriptInterface
-	public void addFavourite(String key, String value) {
-		//获取当前包名
-		String packageName =  mContext.getPackageName();
-		String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
-		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key+"/"+packageName);
-		ContentValues cv = new ContentValues();
-		JSONObject key_value = new JSONObject();
-		try {
-			key_value.put("packageName", packageName);
-			key_value.put("action", action);
-			key_value.put("params", new JSONObject(value));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		cv.put("value", key_value.toString());
-		cr.update(uri, cv, null, null);
+	public void addFavourite(String key, String value, JsPromise promise) {
+		mMainThreadHandler.post(()->{
+			// TODO: 做个用户确认界面(使用title和icon做用户提示, icon为http的网络图片)
+			boolean denied = false;
+			Bundle display = getFavouriteTitleIcon(value);
+
+			if (!denied) {
+				//获取当前包名
+				String packageName =  mContext.getPackageName();
+				String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
+				ContentResolver cr = mContext.getContentResolver();
+				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key+"/"+packageName);
+				ContentValues cv = new ContentValues();
+				JSONObject key_value = new JSONObject();
+				try {
+					key_value.put("packageName", packageName);
+					key_value.put("action", action);
+					key_value.put("params", new JSONObject(value));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				cv.put("value", key_value.toString());
+				cr.update(uri, cv, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
 	}
 
 	@JavascriptInterface
@@ -236,22 +252,68 @@ public class JsViewRuntimeBridge {
 	}
 
 	@JavascriptInterface
-	public void removeFavourite(String key) {
-		//安全性如何保障,目前只能删除自身域名下的数据
-		//只在当前包名下可删除项目
-		String packageName =  mContext.getPackageName();
-		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key+"/"+packageName);
-		cr.delete(uri, null, null);
+	public void removeFavourite(String key, JsPromise promise) {
+		mMainThreadHandler.post(()->{
+			// TODO: 需要做个用户确认界面
+			boolean denied = false;
+			ContentResolver cr = mContext.getContentResolver();
+			Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
+			String rtn = cr.getType(uri);
+			if (rtn == null) {
+				promise.reject("noFound");
+				return;
+			}
+			Bundle title_icon = getFavouriteTitleIcon(rtn);
+
+			if (!denied) {
+				//安全性如何保障,目前只能删除自身域名下的数据
+				//只在当前包名下可删除项目
+				String packageName = mContext.getPackageName();
+				cr = mContext.getContentResolver();
+				uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key + "/" + packageName);
+				cr.delete(uri, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
 	}
 
 	@JavascriptInterface
-	public void clearFavourites() {
-		//安全性如何保障,目前只能删除自身域名下的数据
-		//只在当前包名下可删除项目
-		String packageName =  mContext.getPackageName();
-		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR+"/"+packageName);
-		cr.delete(uri, null, null);
+	public void clearFavourites(JsPromise promise) {
+		mMainThreadHandler.post(()-> {
+			// TODO: 需要做个用户确认界面
+			boolean denied = false;
+
+			if (!denied) {
+				//安全性如何保障,目前只能删除自身域名下的数据
+				//只在当前包名下可删除项目
+				ContentResolver cr = mContext.getContentResolver();
+				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
+				cr.delete(uri, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
+	}
+
+	private Bundle getFavouriteTitleIcon(String set_value) {
+		Bundle title_icon = new Bundle();
+
+		try {
+			JSONObject set = new JSONObject(set_value);
+
+			title_icon.putString("icon", set.getString("icon"));
+			title_icon.putString("title", set.getString("title"));
+		} catch (JSONException e) {
+			Log.e(TAG, "getFavouriteTitleIcon failed");
+			title_icon.putString("icon", "");
+			title_icon.putString("title", "");
+		}
+
+		return title_icon;
 	}
 }
