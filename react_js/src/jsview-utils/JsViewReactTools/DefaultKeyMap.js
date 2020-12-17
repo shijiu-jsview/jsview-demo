@@ -1,4 +1,4 @@
-
+// 10000以内的按键值同网页的键值，参照ASCII码
 const DefaultKeyCodeMap = {
   Left: 37,
   Up: 38,
