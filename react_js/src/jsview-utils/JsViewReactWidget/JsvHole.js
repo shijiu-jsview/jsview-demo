@@ -22,12 +22,21 @@ class JsvHole extends React.Component {
     // info of JsView
     this._InnerViewId = -1;
     this._JsvMainView = null;
+    this.width = 0;
+    this.height = 0;
   }
 
   render() {
     if (!window.JsView || !this.props.style) {
       return null;
     }
+
+    if (this.width !== this.props.style.width
+    || this.height !== this.props.style.height) {
+      this._ClearViews();
+    }
+    this.width = this.props.style.width;
+    this.height = this.props.style.height;
 
     if (this._JsvMainView === null) {
       const videoTexture = ForgeExtension.TextureManager.GetColorTexture("rgba(0,0,0,0)");
@@ -40,15 +49,19 @@ class JsvHole extends React.Component {
         new Forge.ViewInfo(this._JsvMainView, { x: 0, y: 0 })
       );
     }
-    return (<div jsv_innerview={this._InnerViewId}></div>);
+    return (<div key={`${this.width}_${this.height}`} jsv_innerview={this._InnerViewId}></div>);
   }
 
-  componentWillUnmount() {
+  _ClearViews() {
     if (this._InnerViewId !== -1) {
       ForgeExtension.RootActivity.ViewStore.remove(this._InnerViewId);
       this._InnerViewId = -1;
       this._JsvMainView = null;
     }
+  }
+
+  componentWillUnmount() {
+    this._ClearViews();
   }
 }
 JsvHole.propTypes = {
