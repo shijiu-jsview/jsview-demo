@@ -37,6 +37,8 @@ import React from 'react';
 import './JsvSpriteAnim.css';
 import { getKeyFramesGroup } from './JsvDynamicKeyFrames';
 
+const TRANSFORM_ORIGIN_LEFT_TOP = "left top";
+
 function _getTransformInfo(source_obj, target_obj, canvas_width, canvas_height) {
   const result = { csw: 1, csh: 1, cx: 0, cy: 0, sw: 1, sh: 1, x: 0, y: 0 };
 
@@ -185,7 +187,7 @@ class JsvSpriteAnim extends React.Component {
 
     cache.clipStyle = {
       transform: _createTransformStyle(tr.csw, tr.csh, tr.cx, tr.cy),
-      transformOrigin: "left top",
+      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
       overflow: "hidden",
       left: 0,
       top: 0,
@@ -195,7 +197,7 @@ class JsvSpriteAnim extends React.Component {
 
     cache.imageStyle = {
       backgroundImage: image_url,
-      transformOrigin: "left top",
+      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
       transform: _createTransformStyle(tr.sw, tr.sh, tr.x, tr.y),
       width: source_width,
       height: source_height,
@@ -220,7 +222,8 @@ class JsvSpriteAnim extends React.Component {
       if (i !== frame_info_list.length) {
         item = frame_info_list[i];
       } else {
-        item = frame_info_list[0];
+        // 追加一个最后一帧以保证最后一帧可见
+        item = frame_info_list[frame_info_list.length - 1];
       }
 
       // Header
@@ -272,6 +275,8 @@ class JsvSpriteAnim extends React.Component {
       overflow: "hidden",
       width: canvas_width,
       height: canvas_height,
+      transform: null, // 重置 transform，以免影响keyframe动画
+      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
       animation: null, // 外部设置，需要时间和loop信息
     };
 
@@ -279,6 +284,8 @@ class JsvSpriteAnim extends React.Component {
       backgroundImage: image_url,
       width: source_width,
       height: source_height,
+      transform: null, // 重置 transform，以免影响keyframe动画
+      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
       animation: null, // 外部设置，需要时间和loop信息
     };
   }
@@ -352,12 +359,24 @@ class JsvSpriteAnim extends React.Component {
     );
   }
 
+  onAnimEndDelegate = ()=>{
+    // 在onAnimEnd之前进行Stop，以防onAnimEnd内部继续发生别的操作
+    this.setState({
+      stopped: true,
+      stopFrame: "end"
+    });
+
+    if (this.props.onAnimEnd) {
+      this.props.onAnimEnd();
+    }
+  };
+
   render() {
     const transform_style = this._AnalyzeProp();
     return (
             <div id="canvas">
                 <div key={this.state.innerId} id="clip" style={{ ...transform_style.clipStyle }}>
-                    <div key={this.state.innerId} id="image" style={{ ...transform_style.imageStyle }} onAnimationEnd={this.props.onAnimEnd}></div>
+                    <div key={this.state.innerId} id="image" style={{ ...transform_style.imageStyle }} onAnimationEnd={this.onAnimEndDelegate}></div>
                 </div>
             </div>
     );
