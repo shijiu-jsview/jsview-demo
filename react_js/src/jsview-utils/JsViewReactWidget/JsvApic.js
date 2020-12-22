@@ -53,7 +53,7 @@ class JsvApic extends React.Component {
     render() {
         if (window.JsView) {
             return (
-                <img ref={(ele) => { this._Element = ele; }} src={this.props.src} style={this.props.style} />
+                <img ref={(ele) => { this._Element = ele; }} jsv_auto_play="false" src={this.props.src} style={this.props.style} />
             )
         } else {
             return (
@@ -61,6 +61,20 @@ class JsvApic extends React.Component {
             )
         }
     }
+
+    componentDidMount() {
+        if (this.props.autoPlay) {
+            this.play();
+        }
+    }
+
+    componentWillUnmount() {
+        this.stop()
+    }
+}
+
+JsvApic.defaultProps = {
+    autoPlay: true,
 }
 
 export {
