@@ -173,7 +173,7 @@ class JsvStyleClass {
     this._RecycleInner();
 
     this._Name = `JsvStyle_${CONST_GLOBAL_TOKEN}_${sIdGenerator++}`; // 重新命名以触发react的className属性变化
-    this._Styles = styles_define;
+    this._Styles = Object.assign({}, styles_define);
 
     if (window.JsvDisableReactWrapper) {
       // 纯WebView场景: 动态生成css
@@ -231,28 +231,34 @@ class JsvTextStyleClass extends JsvStyleClass {
   constructor(styles_define) {
     super(styles_define);
 
-    this._JsvTextAttributes = {}; // 例如 jsv_text_vertical_align 属性
+    this.jsvTextAttributes = {
+      jsv_text_vertical_align: "top", // 文字区域内垂直对齐方式
+      jsv_text_line_align: "middle", // 文字行内垂直对齐方式
+    };
+  }
+
+  setVerticalAlign(new_align) {
+    this.jsvTextAttributes.jsv_text_vertical_align = new_align;
+  }
+
+  setLineAlign(new_align) {
+    this.jsvTextAttributes.jsv_text_line_align = new_align;
   }
 
   // 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
   // 非hoc由于调用时机控制不正确，可能产生设置无效的问题
-  appendJsvAttributes(name, value) {
-    if (!name.startsWith("jsv_text_")) {
-      // Error: should start with 'jsv_text_'
-      return false;
-    }
-
-    if (this._JsvTextAttributes.hasOwnProperty(name) && this._JsvTextAttributes[name] !== value) {
-      // Error: should set once
-      return false;
-    }
-
-    this._JsvTextAttributes[name] = value;
-    return true;
+  getJsvTextAttributes() {
+    return this.jsvTextAttributes;
   }
 
-  getTextJsvAttributes() {
-    return this._JsvTextAttributes;
+  // 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
+  getVerticalAlign() {
+    return this.jsvTextAttributes.jsv_text_vertical_align;
+  }
+
+  // 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
+  getLineAlign() {
+    return this.jsvTextAttributes.jsv_text_line_align;
   }
 
   // 与jsviewreact.min.js对接的内部接口
