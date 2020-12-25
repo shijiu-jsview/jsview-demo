@@ -118,6 +118,12 @@ function _ConvertStyles(styles_define) {
 const CONST_TYPE_BASE = null;
 const CONST_TYPE_TEXT = "text";
 
+// 全局多实例互斥
+if (typeof window.__JsvStyleClassMutex === 'undefined') {
+  window.__JsvStyleClassMutex = 0;
+}
+const CONST_GLOBAL_TOKEN = window.__JsvStyleClassMutex++;
+
 class JsvStyleClass {
   /*
      * constructor 参数说明:
@@ -166,7 +172,7 @@ class JsvStyleClass {
   _UpdateInner(styles_define) {
     this._RecycleInner();
 
-    this._Name = `JsvStyle_${sIdGenerator++}`; // 重新命名以触发react的className属性变化
+    this._Name = `JsvStyle_${CONST_GLOBAL_TOKEN}_${sIdGenerator++}`; // 重新命名以触发react的className属性变化
     this._Styles = styles_define;
 
     if (window.JsvDisableReactWrapper) {
