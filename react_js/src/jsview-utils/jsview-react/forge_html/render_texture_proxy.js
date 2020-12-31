@@ -7,6 +7,12 @@ class RenderTextureDelegateManager {
     this._CheckExpiredTime = 0;
   }
 
+  CreateTextureHeadStatus() {
+    var texture = new Forge.RenderTextureDelegate(this, 0);
+    texture.DoRef();
+    return texture;
+  }
+  
   CreateTextureStatus() {
     const texture = new Forge.RenderTextureDelegate(this, 0);
     texture.DoRef();

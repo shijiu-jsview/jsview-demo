@@ -285,6 +285,38 @@ class UrlImageTexture extends Forge.ImageTexture {
 }
 Forge.UrlImageTexture = UrlImageTexture;
 
+class TextStyleTexture extends Forge.ImageTexture {
+  constructor(texture_manage, str, tsp, has_load_callback, rect_area, font_size, line_height, is_instant, latex_mode) {
+    var name ="TST";
+    var resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(texture_manage.GetId(), name);
+
+    resource_info["Set"] = {
+      "ST": str,
+      "IDS": tsp.GetIdsPack(),
+      "W": parseInt(rect_area.width + 0.5),
+      "H": parseInt(rect_area.height + 0.5),
+      "FS": font_size,
+      "LA": latex_mode,
+      "LH": parseInt(line_height + 0.5),
+      "ILD": (is_instant ? 1 : 0),
+      "TLC": (has_load_callback ? 1 : 0),
+    };
+
+    super( texture_manage, resource_info);
+
+    this.Name = name;
+    this._TextStylePack = tsp;
+    tsp.DoRef();
+  }
+
+  // Override
+  UnloadTex() {
+    this._TextStylePack.UnRef();
+    super.UnloadTex();
+  }
+}
+Forge.TextStyleTexture = TextStyleTexture;
+
 class CachedTextureManager {
   constructor(texture_manager) {
     this._TextureManager = texture_manager;
@@ -491,6 +523,34 @@ class TextureManager {
     }
 
     return image_texture;
+  }
+
+  /**
+   * 通过TextStylePack设定创建TextTexture
+   *
+   * @public
+   * @func BuildTextView
+   * @memberof Forge.TextureManager
+   * @param {String} str                 文件内容
+   * @param {Forge.TextStylePack} tsp    文字配置信息
+   * @param {boolean} has_load_callback   是否有加载回调函数
+   * @param {Object} rect_area	        文字描画区域，有宽高即可{width:xxxx, height:xxxx}, 当height为0表示按照文字长度处理高
+   * @param {int} font_size               字号
+   * @param {int} line_height             文字行高
+   * @param {int} is_instant 是否立即加载
+   * @param {boolean} latex_mode 多格式混排模式
+   * @return {Forge.TextStyleTexture} 文字Texture
+   **/
+  GetTextTextureFromStylePack(str, tsp, has_load_callback,
+                              rect_area, font_size, line_height,
+                              is_instant, latex_mode) {
+    if (str == null || str.length == 0) {
+      return null;
+    }
+
+    return new Forge.TextStyleTexture(
+        this, str, tsp, has_load_callback, rect_area, font_size, line_height, is_instant, latex_mode
+    );
   }
 
   _getParamsId(string_with_font, attr, shader) {
