@@ -8,11 +8,11 @@ class RenderTextureDelegateManager {
   }
 
   CreateTextureHeadStatus() {
-    var texture = new Forge.RenderTextureDelegate(this, 0);
+    const texture = new Forge.RenderTextureDelegate(this, 0);
     texture.DoRef();
     return texture;
   }
-  
+
   CreateTextureStatus() {
     const texture = new Forge.RenderTextureDelegate(this, 0);
     texture.DoRef();
@@ -20,13 +20,15 @@ class RenderTextureDelegateManager {
   }
 
   CreateTexture() {
-    const texture = new Forge.RenderTextureDelegate(this, this._IdTokenGenerator++);
+    const texture = new Forge.RenderTextureDelegate(
+      this,
+      this._IdTokenGenerator++
+    );
     texture.DoRef();
     return texture;
   }
 
-  RecycleTexture(texture) {
-  }
+  RecycleTexture(texture) {}
 
   CreateResourceInfo(tm_id, func_name) {
     const resource_info = {
@@ -145,7 +147,7 @@ class RenderTextureDelegate {
   }
 
   IsLoaded() {
-    return (this.LoadTime !== 0 && !this.Unloaded);
+    return this.LoadTime !== 0 && !this.Unloaded;
   }
 }
 Forge.RenderTextureDelegate = RenderTextureDelegate;

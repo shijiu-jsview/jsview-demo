@@ -1,8 +1,37 @@
 import Forge from "../ForgeDefine";
 
+// 当TextView需要父View时，搭建一个中转类，将针对TextView的设置转发到TextView中
+class TextParentViewProxy extends Forge.LayoutView {
+  constructor() {
+    super();
+    this._ChildTextView = null;
+  }
+
+  PutChildTextView(child_view) {
+    this._ChildTextView = child_view; // 记录TextView
+    this.AddView(child_view);
+  }
+
+  // 代理EnableAutoHeight
+  EnableAutoHeight() {
+    this._ChildTextView.EnableAutoHeight();
+  }
+}
+
 class TextUtils {
-  StringWithFont(_str, _size, _font, _alignment, _vertical_align, _text_color, _italic,
-    _bold, _shadow, _stroke_width, _vertical_area_align) {
+  StringWithFont(
+    _str,
+    _size,
+    _font,
+    _alignment,
+    _vertical_align,
+    _text_color,
+    _italic,
+    _bold,
+    _shadow,
+    _stroke_width,
+    _vertical_area_align
+  ) {
     if (!_size) _size = TextUtils._sDefaultFontSize;
     if (!_font) _font = TextUtils._sDefaultFont;
 
@@ -14,7 +43,7 @@ class TextUtils {
     if (_bold === true) {
       bold = "bold";
     }
-    if (!_alignment)_alignment = "left";
+    if (!_alignment) _alignment = "left";
     if (!_vertical_align) _vertical_align = "middle";
     if (!_text_color) _text_color = TextUtils._sDefaultFontColor;
     if (!_shadow) _shadow = null;
@@ -54,28 +83,75 @@ class TextUtils {
 
   GetTextRect(str, max_rect, font_params, text_attr, line_height) {
     if (typeof window.PlatformUtils !== "undefined") {
-      return window.PlatformUtils.GetTextRect(str, max_rect, font_params, text_attr, line_height);
+      return window.PlatformUtils.GetTextRect(
+        str,
+        max_rect,
+        font_params,
+        text_attr,
+        line_height
+      );
     }
     return { width: max_rect.width, height: max_rect.height };
   }
 
   GetTextInfo(str, max_rect, font_params, text_attr, line_height) {
     if (typeof window.PlatformUtils !== "undefined") {
-      return window.PlatformUtils.GetTextInfo(str, max_rect, font_params, text_attr, line_height);
+      return window.PlatformUtils.GetTextInfo(
+        str,
+        max_rect,
+        font_params,
+        text_attr,
+        line_height
+      );
     }
-    return { start: 0, end: str.length, width: max_rect.width, height: max_rect.height };
+    return {
+      start: 0,
+      end: str.length,
+      width: max_rect.width,
+      height: max_rect.height,
+    };
   }
 
-  GetCursorOffset(str, max_rect, font_params, text_attr, line_height, pos_x, pos_y) {
+  GetCursorOffset(
+    str,
+    max_rect,
+    font_params,
+    text_attr,
+    line_height,
+    pos_x,
+    pos_y
+  ) {
     if (typeof window.PlatformUtils !== "undefined") {
-      return window.PlatformUtils.GetCursorOffset(str, max_rect, font_params, text_attr, line_height, pos_x, pos_y);
+      return window.PlatformUtils.GetCursorOffset(
+        str,
+        max_rect,
+        font_params,
+        text_attr,
+        line_height,
+        pos_x,
+        pos_y
+      );
     }
     return 0;
   }
 
-  GetCursorPosition(str, max_rect, font_params, text_attr, line_height, cursor_offset) {
+  GetCursorPosition(
+    str,
+    max_rect,
+    font_params,
+    text_attr,
+    line_height,
+    cursor_offset
+  ) {
     if (typeof window.PlatformUtils !== "undefined") {
-      return window.PlatformUtils.GetCursorPosition(str, max_rect, font_params, text_attr, line_height, cursor_offset);
+      return window.PlatformUtils.GetCursorPosition(
+        str,
+        max_rect,
+        font_params,
+        text_attr,
+        line_height,
+        cursor_offset
+      );
     }
     return { x: 0, y: 0 };
   }
@@ -96,8 +172,18 @@ class TextUtils {
    * @param {boolean} is_instant 是否立即加载(0/1)
    * @param {boolean} latex_mode 多格式混排模式
    * @return {Forge.LayoutView} 文字View
-   **/
-  BuildTextView(manager, str, tsp, load_callback, area, font_size, line_height, is_instant, latex_mode) {
+   */
+  BuildTextView(
+    manager,
+    str,
+    tsp,
+    load_callback,
+    area,
+    font_size,
+    line_height,
+    is_instant,
+    latex_mode
+  ) {
     // 规范化数值内容，以免崩溃
     area.width = isNaN(area.width) ? 0 : area.width;
     area.height = isNaN(area.height) ? 0 : area.height;
@@ -107,13 +193,20 @@ class TextUtils {
     let text_view = new Forge.LayoutView();
 
     // 创建Texture
-    let text_texture = manager.GetTextTextureFromStylePack(
-        str, tsp, (!!load_callback), area, font_size, line_height, is_instant, latex_mode
+    const text_texture = manager.GetTextTextureFromStylePack(
+      str,
+      tsp,
+      !!load_callback,
+      area,
+      font_size,
+      line_height,
+      is_instant,
+      latex_mode
     );
 
     // Texture加载完成的回调处理
     if (load_callback) {
-      text_texture.RegisterLoadImageCallback(null, load_callback, null)
+      text_texture.RegisterLoadImageCallback(null, load_callback, null);
     }
 
     // 创建失败
@@ -123,7 +216,9 @@ class TextUtils {
     }
 
     // 采用普通的TextureSetting，保证View在离开RootView后自动释放Texture
-    text_view.ResetTexture(new Forge.TextureSetting(text_texture, null, null, true));
+    text_view.ResetTexture(
+      new Forge.TextureSetting(text_texture, null, null, true)
+    );
 
     // 为了增加调试性，加入以内容为命名的ID
     if (str.length < 10) {
@@ -134,12 +229,20 @@ class TextUtils {
     }
 
     // 配置宽高
-    text_view.ResetLayoutParams({x:0, y:0, width: area.width, height: area.height});
+    text_view.ResetLayoutParams({
+      x: 0,
+      y: 0,
+      width: area.width,
+      height: area.height,
+    });
 
     // 处理区域对齐属性
-    let ds_describe = tsp.DS.Describe;
-    if (ds_describe.vertical_area_align === "middle" || ds_describe.vertical_area_align === "bottom") {
-      let parent_view = new TextParentViewProxy();
+    const ds_describe = tsp.DS.Describe;
+    if (
+      ds_describe.vertical_area_align === "middle" ||
+      ds_describe.vertical_area_align === "bottom"
+    ) {
+      const parent_view = new TextParentViewProxy();
       parent_view.PutChildTextView(text_view);
       text_view.Element.style.display = "table-cell";
       text_view.Element.style.position = "static";
@@ -151,24 +254,6 @@ class TextUtils {
     }
 
     return text_view;
-  }
-}
-
-// 当TextView需要父View时，搭建一个中转类，将针对TextView的设置转发到TextView中
-class TextParentViewProxy extends Forge.LayoutView {
-  constructor() {
-    super();
-    this._ChildTextView = null;
-  }
-
-  PutChildTextView(child_view) {
-    this._ChildTextView = child_view; // 记录TextView
-    this.AddView(child_view);
-  }
-
-  // 代理EnableAutoHeight
-  EnableAutoHeight() {
-    this._ChildTextView.EnableAutoHeight();
   }
 }
 
