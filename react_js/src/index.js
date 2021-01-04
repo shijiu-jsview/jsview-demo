@@ -1,5 +1,3 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime";
 import { loadJsViewProxy, initEntry, confirmEntry } from './jsview-utils/jsview-react/index_hook';
 
 initEntry();
