@@ -5,6 +5,7 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.qcode.jsview.AckEventListener;
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.submodule.CurActivityInfo;
 import com.qcode.jsview.sample.submodule.DownloadCoreProgress;
@@ -13,6 +14,7 @@ import com.qcode.jsview.sample.submodule.JsViewRuntimeBridge;
 import com.qcode.jsview.sample.submodule.PageStatusListener;
 import com.qcode.jsview.sample.submodule.StartIntentParser;
 import com.qcode.jsview.sample.submodule.StartingImage;
+import com.qcode.jsview.shared_defined.AckEventDefine;
 
 public class ViewLoader {
 	static private final String TAG = "ViewLoader";
@@ -21,6 +23,7 @@ public class ViewLoader {
 			Activity host_activity,
 			StartIntentParser parsed_intent,
 			PageStatusListener status_listener) {
+
 		// 若主JS的URL未设置，使用BuildConfig中配置的默认值
 		if (parsed_intent.jsUrl.isEmpty()) {
 			parsed_intent.jsUrl = BuildConfig.APP_URL;
@@ -56,7 +59,22 @@ public class ViewLoader {
 		DebugSettings.load(jsview);
 
 		/* 加载Java穿透接口 JsDemoInterface */
-		jsview.addJavascriptInterface(new JsDemoInterface(host_activity), "jDemoInterface");
+		JsDemoInterface demo = new JsDemoInterface(host_activity);
+		demo.useJsView(jsview); // 绑定JsView句柄，样例中的调用会使用
+		jsview.addJavascriptInterface(demo, "jDemoInterface");
+
+
+		// 测试样例: 监听 JsContext 的声明周期(reload时会发生JsContext重建)
+		jsview.listenerToAckEvent(
+				AckEventDefine.CATEGORY_JSC,
+				AckEventDefine.TYPE_JS_CONTEXT_LIFECYCLE,
+				null,
+				event_data -> {
+					Log.d(TAG, " reset of act=" + event_data.getString("act")
+							+ " id=" + event_data.getInt("contextId")
+					);
+				}
+		);
 
 		/*
 		 * Java穿透给JS的JsViewRuntimeBridge

@@ -7,6 +7,7 @@
  * JsvPreload：React高阶组件，图片预加载的控件
  *      preloadList: 预加载的信息列表，通过buildPreloadInfo构建
  *      downloadList: 预下载的信息列表，通过buildDownloadInfo构建
+ *      onPreloading: 预加载中回调，返回预加载进度
  *      onPreloadDone: 预加载完成回调
  *      onDownloadDone: 预下载完成回调
  *      sprayStyle {object}  (必需)粒子效果配置
@@ -40,8 +41,7 @@ const buildPreloadInfo = (url,
   width = 0,
   height = 0,
   color_type = "RGBA_8888",
-  net_setting = null
-) => {
+  net_setting = null) => {
   return {
     url,
     width,
@@ -59,8 +59,7 @@ const buildPreloadInfo = (url,
  *      net_setting {Object}    预留，未使用，图片的网络加载header设置
  */
 const buildDownloadInfo = (url,
-  net_setting = null
-) => {
+  net_setting = null) => {
   return {
     url,
     netSetting: net_setting,
@@ -76,6 +75,8 @@ class JsvPreload extends React.Component {
 
     this._PreloadStateList = [];
     this._DownloadStateList = [];
+
+    this._PreloadResultMap = {};
   }
 
   _releaseForgeView() {
@@ -123,16 +124,22 @@ class JsvPreload extends React.Component {
   }
 
   _checkPreload() {
-    for (const state of this._PreloadStateList) {
-      if (!state) return;
+    let loadedNum = 0;
+    this._PreloadStateList.forEach(state => {
+      loadedNum = state ? ++loadedNum : loadedNum;
+    });
+    if (this.props.onPreloading) {
+      this.props.onPreloading(loadedNum / this._PreloadStateList.length);
     }
-    if (this.props.onPreloadDone) {
-      this.props.onPreloadDone();
+    if (this.props.onPreloadDone && loadedNum === this._PreloadStateList.length) {
+      this.props.onPreloadDone(this._PreloadResultMap);
     }
   }
 
   _getPreloadViewIdList() {
-    if (!this.props.preloadList) { return; }
+    if (!this.props.preloadList) {
+      return;
+    }
     this._PreloadStateList = new Array(this.props.preloadList.length).fill(false);
     this._PreloadViewList = this.props.preloadList.map((item, index) => {
       if (item.magicToken !== CONST_FORMAT_TOKEN) {
@@ -150,9 +157,11 @@ class JsvPreload extends React.Component {
         target_size = { width: item.width, height: item.height };
       }
       const texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
-      texture.RegisterLoadImageCallback(null, () => {
-        // console.log("preload succeed " + image_url);
+      texture.RegisterLoadImageCallback(null, (params) => {
+        console.log(`preload succeed ${image_url}`, params);
         this._PreloadStateList[index] = true;
+        this._PreloadResultMap[item.url] = { width: params.width, height: params.height };
+        console.log(`preload succeed ${item.url}, params:${params}`);
         this._checkPreload();
       });
       const texture_setting = new Forge.ExternalTextureSetting(texture);
@@ -173,7 +182,9 @@ class JsvPreload extends React.Component {
   }
 
   _getDownloadViewIdList() {
-    if (!this.props.downloadList) { return; }
+    if (!this.props.downloadList) {
+      return;
+    }
     this._DownloadStateList = new Array(this.props.downloadList.length).fill(false);
     this._DownloadViewList = this.props.downloadList.map((item, index) => {
       if (item.magicToken !== CONST_FORMAT_TOKEN) {
@@ -205,7 +216,8 @@ class JsvPreload extends React.Component {
       const image = new Image();
       image.onload = () => {
         this._PreloadStateList[index] = true;
-        console.log(`preload succeed ${item.url}`);
+        this._PreloadResultMap[item.url] = { width: image.width, height: image.height };
+        console.log(`preload succeed ${item.url}, width:${image.width}, height:${image.height}`);
         this._checkPreload();
       };
       image.src = item.url;
@@ -232,18 +244,18 @@ class JsvPreload extends React.Component {
       this._getDownloadViewIdList();
 
       return (
-                <React.Fragment>
-                    {
-                        this._PreloadViewList.map(id => {
-                          return <div key={id} id={id} jsv_innerview={id} />;
-                        })
-                    }
-                    {
-                        this._DownloadViewList.map(id => {
-                          return <div key={id} id={id} jsv_innerview={id} />;
-                        })
-                    }
-                </React.Fragment>
+        <React.Fragment>
+          {
+            this._PreloadViewList.map(id => {
+              return <div key={id} id={id} jsv_innerview={id}/>;
+            })
+          }
+          {
+            this._DownloadViewList.map(id => {
+              return <div key={id} id={id} jsv_innerview={id}/>;
+            })
+          }
+        </React.Fragment>
       );
     }
     this._htmlPreload();
@@ -255,7 +267,8 @@ class JsvPreload extends React.Component {
   }
 }
 
-const emptyFunc = () => { };
+const emptyFunc = () => {
+};
 JsvPreload.defaultProps = {
   preloadList: [],
   downloadList: [],

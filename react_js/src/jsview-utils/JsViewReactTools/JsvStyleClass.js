@@ -266,7 +266,7 @@ class JsvTextStyleClass extends JsvStyleClass {
   // ***** Attribute中 ******
   // "jsv_text_vertical_align"
   fallbackMode(style_name) {
-    console.warn(`WARN: JsvTextStyleClass[${this.getName()}] enter fallback mode due to [${style_name}]`);
+    console.warn(`WARN: JsvTextStyleClass[${this.getName()}] perform fallback mode due to [${style_name}]`);
   }
 
   // Override

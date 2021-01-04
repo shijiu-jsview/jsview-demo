@@ -25,6 +25,113 @@ function build_api(name) {
   };
 }
 
+/**
+ * 添加收藏
+ * @param {string} domain 域名
+ * @param {string} alias 别名（唯一的名称）
+ * @param {string} appUrl app url 或者 AppId
+ * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
+ * @param {string} params  其他参数(添加到url的 ? 后的内容)
+ * @param {string} coreversionRange  引擎内核版本
+ * @param {string} engine  js引擎地址
+ * @param {string} title  显示名称(http地址)
+ * @param {string} icon  显示图标(http地址)
+ * @param {string} startImg  启动图(http地址)
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
+ *
+ */
+function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, engine, title, icon, startImg, callback) {
+  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
+    const key = `${domain}_${alias}`;
+    const value = JSON.stringify({
+      domain,
+      alias,
+      appUrl,
+      subUrl,
+      coreversionRange,
+      engine,
+      params,
+      startImg,
+      title,
+      icon
+    });
+    let async_message = window.jJsvRuntimeBridge.addFavourite(key, value);
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    }).catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
+  }
+}
+
+/**
+ * 删除指定收藏
+ * @param {string} domain 域名
+ * @param {string} alias 别名
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
+ */
+function removeFavourite(domain, alias, callback) {
+  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
+    const key = `${domain}_${alias}`;
+    let async_message = window.jJsvRuntimeBridge.removeFavourite(key);
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    }).catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
+  }
+}
+
+/**
+ * 获取指定收藏
+ * @param {string} domain 域名
+ * @param {string} alias 别名
+ */
+function getFavourite(domain, alias) {
+  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavourite === "function") {
+    const key = `${domain}_${alias}`;
+    return window.jJsvRuntimeBridge.getFavourite(key);
+  }
+  return null;
+}
+
+/**
+ * 获取该域名下所有收藏
+ */
+function getFavouriteAll() {
+  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavouriteAll === "function") {
+    return window.jJsvRuntimeBridge.getFavouriteAll();
+  }
+  return null;
+}
+
+/**
+ * 删除该域名下所有收藏
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
+ */
+function clearFavourites(callback) {
+  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.clearFavourites === "function") {
+    let async_message = window.jJsvRuntimeBridge.clearFavourites();
+    async_message.then(()=>{
+      if (callback) {
+        callback(true)
+      }
+    }).catch((reason)=>{
+      if (callback) {
+        callback(false, reason);
+      }
+    });
+  }
+}
+
 // 显示声明，可以提高执行速度和利用上编辑器的成员名提示功能
 const bridge = {
   openBlank: build_api("openBlank"),
@@ -36,8 +143,12 @@ const bridge = {
   getUUID: build_api("getUUID"),
   getAndroidId: build_api("getAndroidId"),
   openSelf: build_api("openSelf"),
+  addFavourite,
+  removeFavourite,
+  getFavourite,
+  getFavouriteAll,
+  clearFavourites,
 };
-
 
 export {
   bridge as jJsvRuntimeBridge

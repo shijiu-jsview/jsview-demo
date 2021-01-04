@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.qcode.jsview.JsView;
 
@@ -31,6 +32,9 @@ abstract public class JsViewRequestSdkProxy {
 				sSdkLoaded = true;
 			} else {
 				// 使用AAR进行内核加载
+
+				// 内部测试版本更新地址
+//				JsView.changeCoreUpdateUrl("http://launcher.cluster.qcast.cn/jsview-test/version/");
 
 				// 根据内核指定，结合本地已缓存的内核版本，选择合适的内核版本
 				String core_version = JsViewVersionUtils.parseVersion(ctx, core_version_range);

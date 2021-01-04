@@ -19,6 +19,10 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="qcode.app.action.start_jsviewdemo"/>
+            </intent-filter>
         </activity>
 
         <activity android:name=".subactivities.SubActivity0"
@@ -57,6 +61,11 @@
             android:hardwareAccelerated="true"
             android:process=":sub5">
         </activity>
+        <provider
+            android:name=".submodule.SharedDataProvider"
+            android:authorities="com.qcode.jsview.sp.SharedDataProvider"
+            android:exported="true"
+            android:multiprocess="false" />
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>

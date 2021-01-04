@@ -1,0 +1,60 @@
+{"frames": [
+
+{
+	"filename": "01.png",
+	"frame": {"x":2,"y":422,"w":198,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":9,"w":198,"h":82},
+	"sourceSize": {"w":238,"h":100}
+},
+{
+	"filename": "02.png",
+	"frame": {"x":2,"y":170,"w":200,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":9,"w":200,"h":82},
+	"sourceSize": {"w":238,"h":100}
+},
+{
+	"filename": "03.png",
+	"frame": {"x":2,"y":86,"w":200,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":9,"w":200,"h":82},
+	"sourceSize": {"w":238,"h":100}
+},
+{
+	"filename": "04.png",
+	"frame": {"x":2,"y":2,"w":200,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":30,"y":9,"w":200,"h":82},
+	"sourceSize": {"w":238,"h":100}
+},
+{
+	"filename": "05.png",
+	"frame": {"x":2,"y":338,"w":198,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":10,"w":198,"h":82},
+	"sourceSize": {"w":238,"h":100}
+},
+{
+	"filename": "06.png",
+	"frame": {"x":2,"y":254,"w":198,"h":82},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":9,"w":198,"h":82},
+	"sourceSize": {"w":238,"h":100}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "plane.png",
+	"format": "RGBA8888",
+	"size": {"w":256,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:08f86fb06546f85d3bb1e633a5502236$"
+}
+}

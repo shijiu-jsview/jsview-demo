@@ -216,6 +216,12 @@ const demoSceneInfos = [
     name: "小狗跨栏游戏",
     path: "/users/games1",
     class: lazy(() => import('../games/tappingFlying/apps/dog/App').then(m => ({ default: m.SubApp }))),
+  },
+  {
+    name: "小鸟",
+    path: "/users/games2",
+    params: "appname=birdflying&difficult=hard",
+    class: lazy(() => import('../games/tappingFlying/gameengine/App').then(m => ({ default: m.SubApp }))),
   }
 ];
 const color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];

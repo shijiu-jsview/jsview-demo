@@ -1,7 +1,7 @@
 1. 恢复react-app的依赖库
 - 进入react_js目录
-- 若为MAC平台:将package-lock.json-mac文件恢复(重命名)为package-lock.json
-- 执行npm i
+- 将package-lock.json-mac文件恢复(重命名)为package-lock.json
+- 执行npm install
 
 2. 打入jsview-react补丁
 - 进入react_js/patch_package

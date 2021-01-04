@@ -349,17 +349,17 @@ Forge.TextViewControl = TextViewEx;
 
 class CopiedTextViewEx {
   /**
-     * 通过TextViewEx.GetDuplicateBuilder获得信息快速构建的文字View控件<br>
-     * 【重要】该控件主要为React场景服务，不支持Maquee和needQuick模式
-     *
-     * @public
-     * @param texture_manager {Forge.TextureManager}
-     * @param {String} text_string 文本
-     * @param {Object} duplicate_info_bag TextViewEx.GetDuplicateBuilder得到的结构体(不要进行改动)
-     * @param {Object} text_area_size 文字展示区域，格式 {width:xxx, height:xxx}
-     * @param {Function} texture_onload_callbacks 加载完成后的回调
-     * @class Forge.CopiedTextViewEx
-     * */
+   * 通过TextViewEx.GetDuplicateBuilder获得信息快速构建的文字View控件<br>
+   * 【重要】该控件主要为React场景服务，不支持Maquee和needQuick模式
+   *
+   * @public
+   * @param texture_manager {Forge.TextureManager}
+   * @param {String} text_string 文本
+   * @param {Object} text_area_size 文字展示区域，格式 {width:xxx, height:xxx}
+   * @param {Object} duplicate_info_bag TextViewEx.GetDuplicateBuilder得到的结构体(不要进行改动)
+   * @param {Function} texture_onload_callbacks 加载完成后的回调
+   * @class Forge.CopiedTextViewEx
+   **/
   constructor(texture_manager, text_string, text_area_size, duplicate_info_bag, texture_onload_callbacks) {
     const text_area = { x: 0, y: 0, width: text_area_size.width, height: text_area_size.height };
 

@@ -1,0 +1,36 @@
+{"frames": [
+
+{
+	"filename": "2_1.png",
+	"frame": {"x":0,"y":0,"w":189,"h":123},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":189,"h":123},
+	"sourceSize": {"w":189,"h":123}
+},
+{
+	"filename": "2_2.png",
+	"frame": {"x":189,"y":0,"w":189,"h":123},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":189,"h":123},
+	"sourceSize": {"w":189,"h":123}
+},
+{
+	"filename": "2_3.png",
+	"frame": {"x":378,"y":0,"w":189,"h":123},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":189,"h":123},
+	"sourceSize": {"w":189,"h":123}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "obstacle_2.png",
+	"format": "RGBA8888",
+	"size": {"w":567,"h":123},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:121f7b4133624a651a50732be6cf42de:646d19a7df2bbc8c45d232bc982e0f22:f39772f0bd06fbddc57bf18d34c3ae21$"
+}
+}

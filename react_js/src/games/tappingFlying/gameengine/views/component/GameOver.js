@@ -67,14 +67,15 @@ class GameOver extends FocusBlock {
           case GameOver.Btn.controlBtn:
             if (this.props.result === "complete") {
               this.contBtnSound.play();
+              this.game.close();
             } else {
               this.tryAgainSound.play();
+              this.game.state.restart();
             }
-            this.game.state.restart();
             break;
           case GameOver.Btn.closeBtn:
             this.completeSound.play();
-            this.game.state.close();
+            this.game.close();
             break;
           default:
             break;

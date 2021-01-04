@@ -1,0 +1,124 @@
+{"frames": [
+
+{
+	"filename": "Star_Burst_02.png",
+	"frame": {"x":1174,"y":562,"w":128,"h":120},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":191,"y":192,"w":128,"h":120},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_04.png",
+	"frame": {"x":1174,"y":394,"w":180,"h":166},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":159,"y":169,"w":180,"h":166},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_07.png",
+	"frame": {"x":1148,"y":756,"w":236,"h":222},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":123,"y":140,"w":236,"h":222},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_08.png",
+	"frame": {"x":1066,"y":1068,"w":258,"h":240},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":113,"y":130,"w":258,"h":240},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_10.png",
+	"frame": {"x":768,"y":1068,"w":296,"h":276},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":94,"y":112,"w":296,"h":276},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_12.png",
+	"frame": {"x":816,"y":756,"w":330,"h":310},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":76,"y":98,"w":330,"h":310},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_14.png",
+	"frame": {"x":816,"y":414,"w":356,"h":340},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":63,"y":85,"w":356,"h":340},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_16.png",
+	"frame": {"x":436,"y":414,"w":378,"h":366},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":53,"y":73,"w":378,"h":366},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_18.png",
+	"frame": {"x":858,"y":2,"w":400,"h":390},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":42,"y":62,"w":400,"h":390},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_20.png",
+	"frame": {"x":436,"y":2,"w":420,"h":410},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":54,"w":420,"h":410},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_22.png",
+	"frame": {"x":2,"y":442,"w":428,"h":426},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":31,"y":48,"w":428,"h":426},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_24.png",
+	"frame": {"x":2,"y":2,"w":432,"h":438},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":41,"w":432,"h":438},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_27.png",
+	"frame": {"x":2,"y":870,"w":384,"h":450},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":55,"y":37,"w":384,"h":450},
+	"sourceSize": {"w":512,"h":512}
+},
+{
+	"filename": "Star_Burst_28.png",
+	"frame": {"x":388,"y":870,"w":378,"h":374},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":60,"y":39,"w":378,"h":374},
+	"sourceSize": {"w":512,"h":512}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker ",
+	"version": "1.0",
+	"image": "2.png",
+	"format": "RGBA8888",
+	"size": {"w":1386,"h":1386},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:c718a49f10a0df1f483478a076f642d2:1/1$"
+}
+}

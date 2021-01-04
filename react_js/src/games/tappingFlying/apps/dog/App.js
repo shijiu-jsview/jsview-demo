@@ -8,9 +8,9 @@ import { createMemoryHistory } from 'history';
 import Game from "../../gameengine/common/Game";
 import createStandaloneApp from "../../../../demoCommon/StandaloneApp";
 import GameAppBase from "../../gameengine/views/base/GameAppBase";
-import PreloadTheme from "./common/PreloadTheme";
-import GamePlayTheme from "./common/GamePlayTheme";
-import Until from "../../gameengine/common/Until";
+import PreloadTheme from "../../gameengine/common/PreloadTheme";
+import GamePlayTheme from "../../gameengine/common/GamePlayTheme";
+import Utils from "../../gameengine/common/Utils";
 
 const globalHistory = createMemoryHistory();
 
@@ -26,7 +26,7 @@ class MainScene extends GameAppBase {
     this.game.GamePlayTheme = GamePlayTheme;// 游戏主页面
     this.game.Config = require("./config/config.json");
     this.game.apppath = "apps/dog";
-    this.game.assetData = Until.dataFromatAsstes(Game.Config);
+    this.game.assetData = Utils.dataFromatAsstes(Game.Config);
     this.game.state.goHome = this._NavigateHome;
     this.game.state.globalHistory = globalHistory;
     this.game.state.add({

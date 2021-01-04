@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import React, { lazy } from 'react';
 import {
   Switch,
@@ -8,9 +9,9 @@ import { createMemoryHistory } from 'history';
 import Game from "../../gameengine/common/Game";
 import createStandaloneApp from "../../../../demoCommon/StandaloneApp";
 import GameAppBase from "../../gameengine/views/base/GameAppBase";
-import Until from "../../gameengine/common/Until";
-import PreloadTheme from "./common/PreloadTheme";
-import GamePlayTheme from "./common/GamePlayTheme";
+import Utils from "../../gameengine/common/Utils";
+import PreloadTheme from "../../gameengine/common/PreloadTheme";
+import GamePlayTheme from "../../gameengine/common/GamePlayTheme";
 
 const globalHistory = createMemoryHistory();
 class MainScene extends GameAppBase {
@@ -27,7 +28,7 @@ class MainScene extends GameAppBase {
     this.game.apppath = "apps/birdflying";
     this.game.state.goHome = this._NavigateHome;
     this.game.state.globalHistory = globalHistory;
-    this.game.assetData = Until.dataFromatAsstes(Game.Config);
+    this.game.assetData = Utils.dataFromatAsstes(Game.Config);
     this.game.state.add({
       name: "Boot", // name 随意命名
       path: "/state/bird/boot",

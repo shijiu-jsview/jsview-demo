@@ -2,24 +2,28 @@ package com.qcode.jsview.sample.submodule;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.qcode.jsview.JsPromise;
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.utils.MD5Util;
 import com.qcode.jsview.sample.utils.Mac;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.Stack;
 
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
@@ -33,6 +37,7 @@ public class JsViewRuntimeBridge {
 	private Context mContext = null;
 	private JsView mHostJsView = null;
 	private PageStatusListener mPageStatusListener = null;
+	private Handler mMainThreadHandler;
 
 	private Stack<UrlInfo> mUrlStack = new Stack<>();
 
@@ -52,6 +57,7 @@ public class JsViewRuntimeBridge {
 		mContext = host_activity;
 		mHostJsView = host_jsview;
 		mPageStatusListener = page_listener;
+		mMainThreadHandler = new Handler(Looper.getMainLooper());
 	}
 
 	// JS接口: 退出当前页面
@@ -60,7 +66,7 @@ public class JsViewRuntimeBridge {
 		Log.d(TAG, "closePage...");
 
 		// 放入主线程完成
-		new Handler(Looper.getMainLooper()).post(()->{
+		mMainThreadHandler.post(()->{
 			if (!mUrlStack.empty()) {
 				UrlInfo url = mUrlStack.pop();
 				mHostJsView.loadUrl2(url.engineUrl, url.appUrl);
@@ -160,5 +166,149 @@ public class JsViewRuntimeBridge {
 		} catch (Exception e) {
 			Log.d(TAG, "error", e);
 		}
+	}
+
+
+	private static final String CONTENT = "content://";
+	private static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
+	private static final String CONTENT_URI = CONTENT + AUTHORITY;
+	private static final String OPTION_CLEAR = "clear";
+	private static final String OPTION_DEL = "del";
+	private static final String OPTION_QUERY = "query";
+	private static final String OPTION_INSERT = "insert";
+	private static final String OPTION_QUERYALL = "queryall";
+	//这里的AUTHORITY就是我们在AndroidManifest.xml中配置的authorities
+	private static final String BASE_PATH = "sp";// SharedPreference 缩写
+	private static final String URI_PATH = CONTENT_URI + "/" + BASE_PATH;
+
+	/**
+	 *
+	 * @param key	唯一标识
+	 * @param value	JSON 字符串
+	 */
+	@JavascriptInterface
+	public void addFavourite(String key, String value, JsPromise promise) {
+		mMainThreadHandler.post(()->{
+			// TODO: 做个用户确认界面(使用title和icon做用户提示, icon为http的网络图片)
+			boolean denied = false;
+			Bundle display = getFavouriteTitleIcon(value);
+
+			if (!denied) {
+				//获取当前包名
+				String packageName =  mContext.getPackageName();
+				String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
+				ContentResolver cr = mContext.getContentResolver();
+				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key+"/"+packageName);
+				ContentValues cv = new ContentValues();
+				JSONObject key_value = new JSONObject();
+				try {
+					key_value.put("packageName", packageName);
+					key_value.put("action", action);
+					key_value.put("params", new JSONObject(value));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				cv.put("value", key_value.toString());
+				cr.update(uri, cv, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
+	}
+
+	@JavascriptInterface
+	public String getFavourite(String key) {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
+		String rtn = cr.getType(uri);
+		if (rtn == null) {
+			return null;
+		}
+		return rtn;
+	}
+
+	@JavascriptInterface
+	public String getFavouriteAll() {
+		ContentResolver cr = mContext.getContentResolver();
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERYALL);
+		Cursor cursor = cr.query(uri, null,null,null,null);
+		if (cursor != null) {
+			JSONArray favouriteList = new JSONArray();
+			for(cursor.moveToFirst();
+				cursor.isAfterLast() == false;
+				cursor.moveToNext()) {
+				String value = cursor.getString(1);
+				try {
+					favouriteList.put(new JSONObject(value));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			return favouriteList.toString();
+		}
+		return null;
+	}
+
+	@JavascriptInterface
+	public void removeFavourite(String key, JsPromise promise) {
+		mMainThreadHandler.post(()->{
+			// TODO: 需要做个用户确认界面
+			boolean denied = false;
+			ContentResolver cr = mContext.getContentResolver();
+			Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
+			String rtn = cr.getType(uri);
+			if (rtn == null) {
+				promise.reject("noFound");
+				return;
+			}
+			Bundle title_icon = getFavouriteTitleIcon(rtn);
+
+			if (!denied) {
+				cr = mContext.getContentResolver();
+				uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key);
+				cr.delete(uri, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
+	}
+
+	@JavascriptInterface
+	public void clearFavourites(JsPromise promise) {
+		mMainThreadHandler.post(()-> {
+			// TODO: 需要做个用户确认界面
+			boolean denied = false;
+
+			if (!denied) {
+				ContentResolver cr = mContext.getContentResolver();
+				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
+				cr.delete(uri, null, null);
+
+				promise.resolve(0);
+			} else {
+				promise.reject("denied");
+			}
+		});
+	}
+
+	private Bundle getFavouriteTitleIcon(String set_value) {
+		Bundle title_icon = new Bundle();
+
+		try {
+			JSONObject set = new JSONObject(set_value);
+
+			title_icon.putString("icon", set.getString("icon"));
+			title_icon.putString("title", set.getString("title"));
+		} catch (JSONException e) {
+			Log.e(TAG, "getFavouriteTitleIcon failed");
+			title_icon.putString("icon", "");
+			title_icon.putString("title", "");
+		}
+
+		return title_icon;
 	}
 }

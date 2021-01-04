@@ -36,12 +36,21 @@ class State {
     }
   }
 
+  static init () {
+    State.list = [];
+    State.current = null;
+    State.focusControl = null;
+    State.goHome = null;
+    State.globalHistory = null;
+  }
+
   static close() {
     // 恢复现场
     State.start("Boot", true);
     if (State.goHome) {
       State.goHome();
     }
+    State.init();
   }
 }
 

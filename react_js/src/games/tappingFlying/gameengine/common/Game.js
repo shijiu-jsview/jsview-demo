@@ -3,33 +3,40 @@
  */
 import State from "./State";
 import math from "./math";
+import { JsvSoundPool } from '../../../../jsview-utils/JsViewReactWidget/JsvSoundPool';
 
 class AudioProxy {
-  constructor(audio, name) {
-    this.audio = audio;
-    this.audiopath = null;
+  constructor(name) {
+    this.audioController = null;
     try {
-      this.audiopath = require(`../../${Game.apppath}/assets/audio/${name}`);
+      const assets = Game.apppath ? `${Game.apppath}/assets` : `assets`;
+      Game.SoundPool.request(`url(${require(`../../${assets}/audio/${name}`)})`, null, 1, (state, audioController) => {
+        if (state === 0) {
+          this.audioController = audioController;
+        }
+      });
     } catch (e) {
-      console.log("AudioProxy file not exist:", `../../${Game.apppath}/assets/audio/${name}`);
+      console.log("AudioProxy request error:", e);
     }
   }
 
   play() {
-    if (this.audiopath) {
-      this.audio.src = this.audiopath;
-      console.log(`audio play src:${this.audiopath}`);
-      this.audio.play();// TODO 调整声音
+    if (this.audioController) {
+      this.audioController.play();
     }
   }
 
   pause() {
-    this.audio.pause();
+    if (this.audioController) {
+      this.audioController.pause();
+    }
   }
 
   stop() {
-    this.pause();
-    this.audio.unload();
+    if (this.audioController) {
+      this.audioController.stop();
+      this.audioController = null;
+    }
   }
 }
 
@@ -40,14 +47,14 @@ class Game {
   }
 
   static enableAudio() {
-    if (!Game.Audio) {
-      Game.Audio = new window.Audio();
+    if (!Game.SoundPool) {
+      Game.SoundPool = new JsvSoundPool(10);
     }
   }
 
   static audio(audio_name) {
     Game.enableAudio();
-    return new AudioProxy(Game.Audio, audio_name);// jsview 系统支持2个audio标签。其中一个作为背景音使用，另一个用于效果音
+    return new AudioProxy(audio_name);// jsview 系统支持2个audio标签。其中一个作为背景音使用，另一个用于效果音
   }
 
   static convertToSpriteInfo(config_json) {
@@ -67,14 +74,35 @@ class Game {
     return info;
   }
 
-  static requireUrl(path) {
-    const url = require(`../../${Game.apppath}/assets/atlas/${path}`);
+  static close() {
+    Game.state.close();
+    Game.init();
+  }
+
+  static init() {
+    Game.roundIndex = 0;
+    Game.stageIndex = 0;
+    Game.Config = null;
+    Game.assetData = null;
+    Game.apppath = "";
+    Game.appname = "";
+    Game.activityId = "";
+    Game.difficult = "easy";
+    Game.deviceModel = "";
+    Game.env = "production";
+    Game.SoundPool = null;
+  }
+
+  static requireUrl(fileName, path) {
+    const pathInner = path || "atlas";
+    const assets = Game.apppath ? `${Game.apppath}/assets` : `assets`;
+    const url = require(`../../${assets}/${pathInner}/${fileName}`);
     return url;
   }
 }
-Game.Math = math;
+Game.serverUrl = "http://mp.einsim.com/upload_assets/game";
 
-Game.Audio = null;
+Game.Math = math;
 
 Game.roundIndex = 0;
 
@@ -87,8 +115,13 @@ Game.assetData = null;
 Game.state = State;
 
 Game.apppath = "";
-
+Game.appname = "";
+Game.activityId = "";
+Game.difficult = "easy";
+Game.deviceModel = "";
 Game.env = "production";
+
+Game.SoundPool = null;
 
 export default Game;
 

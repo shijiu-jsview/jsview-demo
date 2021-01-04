@@ -9,6 +9,7 @@ import ProgressBar from "../component/ProgressBar";
 import GameOver from "../component/GameOver";
 import NumberCount from "../component/NumberCount";
 import Targets from "../component/Targets";
+import { ReaxAudios } from "../../common/ReaxAudios";
 
 class App extends GameAppBase {
   constructor(props) {
@@ -31,18 +32,32 @@ class App extends GameAppBase {
     this._Init();
   }
 
-  _Init() {
+  _Init(restart) {
     this._IsPlaying = true;
-    this.state = {
-      // visible:"hidden",
-      progress: 1,
-      count: 0,
-      repeatCount: this.repeatCount,
-      stageIndex: this.stageIndex,
-      roundIndex: this.roundIndex,
-      roleRef: null,
-      gameResult: "uncomplete",
-    };
+    if (restart) {
+      this.setState({
+        // visible:"hidden",
+        progress: 1,
+        count: 0,
+        repeatCount: this.repeatCount,
+        stageIndex: this.stageIndex,
+        roundIndex: this.roundIndex,
+        roleRef: null,
+        gameResult: "uncomplete",
+      });
+    } else {
+      this.state = {
+        // visible:"hidden",
+        progress: 1,
+        count: 0,
+        repeatCount: this.repeatCount,
+        stageIndex: this.stageIndex,
+        roundIndex: this.roundIndex,
+        roleRef: null,
+        gameResult: "uncomplete",
+      };
+    }
+
     this._InitGame();
     this._Create();
   }
@@ -114,9 +129,7 @@ class App extends GameAppBase {
     this.pause = false;
     this.icon = null;
     this.addSprite = false;
-    this.isHit = false;
     this.isObstacleOffset = false;
-    this.hitObsNums = 0;
     this.distancePos = 400;
     if (this.game.Config.common.ratio === "4/3") {
       this.width = 960;
@@ -175,7 +188,7 @@ class App extends GameAppBase {
     Object.keys(cur_stage.assets).forEach((o) => {
       const json_name = cur_stage.assets[o].json;
       if (json_name && !window.GameSource[json_name]) {
-        const config_json = require(`../../../${this.game.apppath}/assets/atlas/${json_name}`);
+        const config_json = Game.requireUrl(json_name);
         window.GameSource[json_name] = this.game.convertToSpriteInfo(config_json);
       }
       // 生成精灵信息
@@ -183,7 +196,7 @@ class App extends GameAppBase {
         rolesList.push({
           key: o,
           spriteInfo: window.GameSource[json_name],
-          imageUrl: `url(${require(`../../../${this.game.apppath}/assets/atlas/${cur_stage.assets[o].value}`)})`,
+          imageUrl: `url(${Game.requireUrl(cur_stage.assets[o].value)})`,
           duration: window.GameSource[json_name].frames.length / cur_stage.assets[o].rate,
           viewSize: window.GameSource[json_name].viewSize,
           bodySize: cur_stage.assets[o].bodySize,
@@ -194,7 +207,7 @@ class App extends GameAppBase {
             rolesList.push({
               key: "clashObstacleRole",
               spriteInfo: { frames: [window.GameSource[json_name].frames[0]], meta: window.GameSource[json_name].meta },
-              imageUrl: `url(${require(`../../../${this.game.apppath}/assets/atlas/${cur_stage.assets[o].value}`)})`,
+              imageUrl: `url(${Game.requireUrl(cur_stage.assets[o].value)})`,
               duration: window.GameSource[json_name].frames.length / cur_stage.assets[o].rate,
               bodySize: cur_stage.assets[o].bodySize,
               viewSize: window.GameSource[json_name].viewSize
@@ -203,7 +216,7 @@ class App extends GameAppBase {
             rolesList.push({
               key: "clashObstacleRole",
               spriteInfo: window.GameSource[json_name],
-              imageUrl: `url(${require(`../../../${this.game.apppath}/assets/atlas/${cur_stage.assets[o].value}`)})`,
+              imageUrl: `url(${Game.requireUrl(cur_stage.assets[o].value)})`,
               duration: window.GameSource[json_name].frames.length / cur_stage.assets[o].rate,
               viewSize: window.GameSource[json_name].viewSize,
               bodySize: cur_stage.assets[o].bodySize,
@@ -216,7 +229,7 @@ class App extends GameAppBase {
     // 附加star_burst_big资源
     try {
       if (!window.GameSource["star_burst_big.json"]) {
-        const config_json = require(`../../../${this.game.apppath}/assets/atlas/star_burst_big.json`);
+        const config_json = Game.requireUrl("star_burst_big.json");
         window.GameSource["star_burst_big.json"] = this.game.convertToSpriteInfo(config_json);
       }
       cur_stage.assets.star_burst_big = {
@@ -246,7 +259,7 @@ class App extends GameAppBase {
 
   createAudios() {
     // 创建音频对象
-    // jsview同一时间只支持2个audio标签，背景音乐占用一个audio，其他的特效音使用一个audio
+    this.audioReas = new ReaxAudios(this.game);
     this.flySound = this.game.audio(this.flySoundKey);
     this.ambientSound = this.game.audio(this.ambientMusicKey);
     if (this.isTarget === true) {
@@ -257,7 +270,7 @@ class App extends GameAppBase {
     }
     this.clickSound = this.game.audio(this.clickSoundKey);
 
-    this._bgUrl = require(`../../../${this.game.apppath}/assets/audio/${this.backgroundSoundKey}`);
+    this._bgUrl = Game.requireUrl(this.backgroundSoundKey, "audio");
   }
 
   getRoundIndex() {
@@ -320,7 +333,7 @@ class App extends GameAppBase {
 
   restart() {
     // 初始化变量，刷新页面
-    this._Init();
+    this._Init(true);
     const repeat_count = ++this.repeatCount;
     this._StartGame(repeat_count);
   }
@@ -349,6 +362,7 @@ class App extends GameAppBase {
       return;
     }
     this.crossTargetSound.play();
+    this.audioReas.showPositiveHumm();
     if (this.count < this.targetNum) {
       this.count++;
     }
@@ -365,6 +379,7 @@ class App extends GameAppBase {
 
     // 发生碰撞,游戏暂停，并更新角色、进度条的显示状态
     this.clashSound.play();
+    this.audioReas.showNegativeHumm();
     this._RoleRef.pause();
     this._BgRef.pause();
     if (this._ObstaclesRef) {
@@ -401,6 +416,95 @@ class App extends GameAppBase {
     }, this.isFlyingMode ? 2000 : 1500);
   }
 
+  renderBackground(basekey) {
+    return (<BackGround key={`${basekey}_BackGround`} ref={(ref) => { this._BgRef = ref; }}
+                        style={{ left: 0, top: 0, width: this.width, height: this.height, backgroundImage: `url(${Game.requireUrl(this.backgroundKey, "images")})` }}
+                        scrollPageNums={this.midImageNum}
+                        scrollSpeed={this.scrollSpeed}
+                        distancePos={ this.distancePos}
+                        direction="horizontal"/>
+    );
+  }
+
+  renderObstacle(basekey) {
+    if (!this.isObstacle) {
+      return null;
+    }
+    return <Obstacles key={`${basekey}_Obstacles`} roleRef={this._RoleRef}
+                               worldWidth={this.width}
+                               worldHeight={this.height}
+                               direction="horizontal"
+                               config={this.currStage.assets.obstacle}
+                               obstacleNum={this.obstacleNum}
+                               obstacleMinY={this.obstacleMinY}
+                               obstacleMaxY={this.obstacleMaxY}
+                               isFlyingMode={this.isFlyingMode}
+                               obstacleTime={this.obstacleTime}
+                               distancePos={ this.distancePos}
+                               scrollSpeed={this.obstacleSpeed}
+                               ref={(ref) => { this._ObstaclesRef = ref; }}
+                               onImpactTracer={this._onImpactTracer}
+                      />;
+  }
+
+  renderTarget(basekey) {
+    if (!this.isTarget) {
+      return null;
+    }
+    return <Targets key={`${basekey}_Targets`} roleRef={this._RoleRef}
+                                  worldWidth={this.width}
+                                  worldHeight={this.height}
+                                  direction="horizontal"
+                                  config={this.currStage.assets.targetUp}
+                                  appearNum={this.appearNum}
+                                  targetMinY={this.targetMinY}
+                                  targetMaxY={this.targetMaxY}
+                                  targetTime={this.targetTime}
+                                  distancePos={ this.distancePos}
+                                  scrollSpeed={this.targetSpeed}
+                                  ref={(ref) => { this._TargetsRef = ref; }}
+                                  onTargetImpactTracer={this._onTargetImpactTracer}
+      />;
+  }
+
+  renderRole(basekey) {
+    return <Role key={`${basekey}_Role`}
+                branchName={`${this.props.branchName ? this.props.branchName : ""}/role`} ref={(ref) => { this._InitRoleRef(ref); }}
+                worldSize={{ width: this.width, height: this.height }}
+                offsetX={this.offsetX}
+                clickSound={this.clickSound}
+                isFlyingMode={this.isFlyingMode}
+                roleUpSpeed = {this.velocityUp}
+                roleDownSpeed = { this.garavity}
+                isTarget = {this.isTarget}
+                onTransitionEnd={this._RoleTranslateEnd}
+                rolesList={this.currStage.rolesList}
+                clashObstacle={{
+                  config: this.currStage.assets.clashObstacle
+                }}/>;
+  }
+
+  renderProgressBar(basekey) {
+    return <ProgressBar key={`${basekey}_ProgressBar`} ref={(ref) => { this._ProgreessRef = ref; }}
+                        style={this.Theme.play.ProgressBar}
+                        speed={this.Theme.play.ProgressBar.width * this.scrollSpeed / (this.totalDistance)}
+                        totalBG={`url(${Game.requireUrl("progress_bar_1.png", "images")})`}
+                        progressBG={`url(${Game.requireUrl("progress_bar_2.png", "images")})`}
+                        direction="horizontal"
+                        onEnd={this._OnProgress}/>;
+  }
+
+  renderNumberCount(basekey) {
+    if (!this.isTarget) {
+      return null;
+    }
+    return <NumberCount NumberCount key={`${basekey}_NumberCount`}
+                        config={{ icon: this.iconImageKey, x: this.iconImageX, y: this.iconImageY }}
+                        count={this.state.count} targetNum={this.targetNum}
+                        worldWidth={this.width} worldHeight={this.height}
+                        counterOffset={this.counterOffset}/>;
+  }
+
   /**
      * 描画部分：背景、角色、障碍物、进度条、背景音乐audio、用于越过的障碍物(透明的border)
      * @return {XML}
@@ -409,78 +513,22 @@ class App extends GameAppBase {
     const basekey = `Game_${this.state.stageIndex}_${this.state.roundIndex}${this.state.repeatCount}`;
     return (<div key={basekey}>
             {/* 滚动背景 */}
-            <BackGround key={`${basekey}_BackGround`} ref={(ref) => { this._BgRef = ref; }}
-                        style={{ left: 0, top: 0, width: this.width, height: this.height, backgroundImage: `url(${require(`../../../${this.game.apppath}/assets/images/${this.backgroundKey}`)})` }}
-                        scrollPageNums={this.midImageNum}
-                        scrollSpeed={this.scrollSpeed}
-                        distancePos={ this.distancePos}
-                        direction="horizontal"/>
+            { this.renderBackground(basekey) }
 
             {/* 碰撞物 */}
-            {
-                this.isObstacle ? <Obstacles key={`${basekey}_Obstacles`} roleRef={this._RoleRef}
-                                         worldWidth={this.width}
-                                         worldHeight={this.height}
-                                         direction="horizontal"
-                                         config={this.currStage.assets.obstacle}
-                                         obstacleNum={this.obstacleNum}
-                                         obstacleMinY={this.obstacleMinY}
-                                         obstacleMaxY={this.obstacleMaxY}
-                                         isFlyingMode={this.isFlyingMode}
-                                         obstacleTime={this.obstacleTime}
-                                         distancePos={ this.distancePos}
-                                         scrollSpeed={this.obstacleSpeed}
-                                         ref={(ref) => { this._ObstaclesRef = ref; }}
-                                         onImpactTracer={this._onImpactTracer}
-                                /> : null
-            }
+            { this.renderObstacle(basekey) }
+
             {/* 目标物 */}
-            {
-                this.isTarget ? <Targets key={`${basekey}_Targets`} roleRef={this._RoleRef}
-                                            worldWidth={this.width}
-                                            worldHeight={this.height}
-                                            direction="horizontal"
-                                            config={this.currStage.assets.targetUp}
-                                            appearNum={this.appearNum}
-                                            targetMinY={this.targetMinY}
-                                            targetMaxY={this.targetMaxY}
-                                            targetTime={this.targetTime}
-                                            distancePos={ this.distancePos}
-                                            scrollSpeed={this.targetSpeed}
-                                            ref={(ref) => { this._TargetsRef = ref; }}
-                                            onTargetImpactTracer={this._onTargetImpactTracer}
-                /> : null
-            }
+            { this.renderTarget(basekey) }
+
             {/* 角色 */}
-            <Role key={`${basekey}_Role`}
-                  branchName={`${this.props.branchName ? this.props.branchName : ""}/role`} ref={(ref) => { this._InitRoleRef(ref); }}
-                  worldSize={{ width: this.width, height: this.height }}
-                  offsetX={this.offsetX}
-                  clickSound={this.clickSound}
-                  isFlyingMode={this.isFlyingMode}
-                  roleUpSpeed = {this.velocityUp}
-                  roleDownSpeed = { this.garavity}
-                  isTarget = {this.isTarget}
-                  onTransitionEnd={this._RoleTranslateEnd}
-                  rolesList={this.currStage.rolesList}
-                  clashObstacle={{
-                    config: this.currStage.assets.clashObstacle
-                  }}/>
+            { this.renderRole(basekey) }
 
             {/* 进度条 */}
-           <ProgressBar key={`${basekey}_ProgressBar`} ref={(ref) => { this._ProgreessRef = ref; }}
-                        style={this.Theme.play.ProgressBar}
-                        speed={this.Theme.play.ProgressBar.width * this.scrollSpeed / (this.totalDistance)}
-                        totalBG={`url(${require(`../../../${this.game.apppath}/assets/images/progress_bar_1.png`)})`}
-                        progressBG={`url(${require(`../../../${this.game.apppath}/assets/images/progress_bar_2.png`)})`}
-                        direction="horizontal"
-                        onEnd={this._OnProgress}/>
-            {
-                this.isTarget ? <NumberCount NumberCount key={`${basekey}_NumberCount`} config={{ icon: this.iconImageKey, x: this.iconImageX, y: this.iconImageY }}
-                                             count={this.state.count} targetNum={this.targetNum}
-                                             worldWidth={this.width} worldHeight={this.height}
-                                             counterOffset={this.counterOffset}/> : null
-            }
+            { this.renderProgressBar(basekey) }
+
+            { this.renderNumberCount(basekey) }
+
             <GameOver key={`${basekey}_GameOver`}
                       result={this.state.gameResult}
                       branchName={`${this.props.branchName ? this.props.branchName : ""}/gameover`}

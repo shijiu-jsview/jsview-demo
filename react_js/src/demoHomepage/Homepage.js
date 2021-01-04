@@ -64,7 +64,11 @@ class Home extends FdivWrapper {
     }
 
     _onClick(item) {
-      globalHistory.push(item.path);
+      let path = item.path;
+      if (item.params) {
+        path += `?${item.params}`;
+      }
+      globalHistory.push(path);
       this.changeFocus(item.path, true);
     }
 
