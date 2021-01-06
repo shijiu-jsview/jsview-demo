@@ -3,6 +3,7 @@ import { MetroPage, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
 import Commodity from "./Commodity";
 import { FocusBlock } from "../demoCommon/BlockDefine";
 import createStandaloneApp from "../demoCommon/StandaloneApp";
+import "./App.css"
 
 class MainScene extends FocusBlock {
     constructor(props) {
@@ -65,7 +66,10 @@ class MainScene extends FocusBlock {
     _renderLoadView = () => {
         return (
             <div style={{ width: 1253, height: 50, backgroundColor: "rgba(255,0,0,0.5)", textAlign: 'center', fontSize: "40px" }}>
-                加载中
+                <div style={{ width: 1253, height: 50, textAlign: 'center', fontSize: "40px" }}>
+                    加载中
+                </div>
+                <div style={{top: 10, left: 500, width: 30, height: 30, backgroundColor: "#FFFFFF", animation: "myRotate 1s infinite"}}/>
             </div>
         )
     }
