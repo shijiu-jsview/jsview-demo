@@ -193,7 +193,7 @@ function binl_md5(x, len) {
     c = safe_add(c, oldc);
     d = safe_add(d, oldd);
   }
-  return Number.Array(a, b, c, d);
+  return Array(a, b, c, d);
 }
 
 /*
