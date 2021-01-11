@@ -24,7 +24,7 @@ function startApp(confirm_entry) {
     // 检查配套引擎的版本
     if (
       window.JsView.CodeRevision !==
-        616 /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
+        619 /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
       window.Forge.Version !==
         "1.0.744" /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
     ) {
