@@ -8,7 +8,8 @@
  *      prop说明:
  *          onEdge {function} 边缘回调
  *          flowDirection {Symbol} 控件的方向 (必选)
- *          initFocusId {int} 初始的焦点
+ *          initFocusId {int} 初始的tab焦点
+ *          initBodyFocusId {int} 初始的body焦点
  *          tabFocusable {boolean} tab是否可获得焦点
  *          onWidgetMount{function} 控件挂载完成回调
  *
@@ -85,7 +86,8 @@ class JsvTabWidget extends FdivWrapper {
     this._dispatcherMap.set("body", new SWidgetDispatcher());
 
     this.state = {
-      curId: 0,
+      curId: this.props.initFocusId || 0,
+      curBodyId: this.props.initBodyFocusId || 0,
       focusComponent: this.props.initFocusComponent ? this.props.initFocusComponent : "body",
       frameData: this._generateFrameData(this.props.bodyData)
     };
@@ -152,7 +154,7 @@ class JsvTabWidget extends FdivWrapper {
       });
       this._dispatcherMap.get(`body_${this.state.curId}`).dispatch({
         type: SWidgetDispatcher.Type.setFocusId,
-        data: 0
+        data: this.state.curBodyId
       });
       this.setState({ "focusComponent": "body" });
       this.changeFocus(`${this.props.branchName}/body`);
@@ -182,7 +184,8 @@ class JsvTabWidget extends FdivWrapper {
   _tabOnItemFocus(item, edgeInfo, queryObj) {
     const pre_id = this.state.curId;
     this.setState({
-      curId: queryObj.id
+      curId: queryObj.id,
+      curBodyId: pre_id !== queryObj.id ? 0 : this.state.curBodyId,
     }, () => {
       this._updateTabItem([pre_id, queryObj.id], this.state.curId);
       this._dispatcherMap.get("body").dispatch({
@@ -196,7 +199,7 @@ class JsvTabWidget extends FdivWrapper {
         this._dispatcherMap.get(`body_${this.state.curId}`).dispatch({
           type: SWidgetDispatcher.Type.slideToItem,
           data: {
-            id: 0,
+            id: pre_id !== queryObj.id ? 0 : this.state.curBodyId,
             type: "start"
           }
         });
@@ -209,31 +212,42 @@ class JsvTabWidget extends FdivWrapper {
 
   _frameOnItemFocus(item, pre_rect, query) {
     const pre_focus = this.state.curId;
-    this.setState({ curId: item.tabIndex }, () => {
+    this.setState({ curId: item.tabIndex, curBodyId: pre_focus !== item.tabIndex ? 0 : this.state.curBodyId }, () => {
       this._updateTabItem([pre_focus, this.state.curId]);
-      let slide_to_id = 0;
-      let slide_anchor = "start";
-      let slide_do_anim = true;
-      if (pre_rect && (pre_rect.direction === EdgeDirection.left || pre_rect.direction === EdgeDirection.top)) {
-        slide_to_id = this.props.bodyData[item.tabIndex].length - 1;
-        slide_anchor = "end";
-        slide_do_anim = false;
-      }
-      const slide_info = {
-        type: SWidgetDispatcher.Type.slideToItem,
-        data: {
-          id: slide_to_id,
-          type: slide_anchor,
-          doAnim: slide_do_anim
+      if (pre_focus !== this.state.curId) {
+        let slide_to_id = this.state.curBodyId;
+        let slide_anchor = "start";
+        let slide_do_anim = true;
+        if (pre_rect && (pre_rect.direction === EdgeDirection.left || pre_rect.direction === EdgeDirection.top)) {
+          slide_to_id = this.props.bodyData[item.tabIndex].length - 1;
+          slide_anchor = "end";
+          slide_do_anim = false;
         }
-      };
-      this._dispatcherMap.get(`body_${item.tabIndex}`).dispatch(slide_info);
-      const focus_info = {
-        type: SWidgetDispatcher.Type.setFocusRect,
-        data: pre_rect,
-      };
-      this._dispatcherMap.get(`body_${item.tabIndex}`).dispatch(focus_info);
+        const slide_info = {
+          type: SWidgetDispatcher.Type.slideToItem,
+          data: {
+            id: slide_to_id,
+            type: slide_anchor,
+            doAnim: slide_do_anim
+          }
+        };
+        this._dispatcherMap.get(`body_${item.tabIndex}`).dispatch(slide_info);
+        const focus_info = {
+          type: SWidgetDispatcher.Type.setFocusRect,
+          data: pre_rect,
+        };
+        this._dispatcherMap.get(`body_${item.tabIndex}`).dispatch(focus_info);
+      }
       this.changeFocus(`${this.props.branchName}/body${item.tabIndex}`);
+    });
+  }
+
+  bodyOnItemFocus = (item, edgeInfo, queryObj) => {
+    if (this.props.bodyOnItemFocus) {
+      this.props.bodyOnItemFocus(item, edgeInfo, queryObj);
+    }
+    this.setState({
+      curBodyId: queryObj.id
     });
   }
 
@@ -251,10 +265,11 @@ class JsvTabWidget extends FdivWrapper {
                 renderBlur={ this.props.bodyRenderBlur }
                 renderItem={ this.props.bodyRenderItem }
                 renderFocus={ this.props.bodyRenderFocus }
-                onItemFocus={ this.props.bodyOnItemFocus }
+                onItemFocus={ this.bodyOnItemFocus }
                 onItemBlur={ this.props.bodyOnItemBlur}
                 onClick={ this.props.bodyOnClick }
                 measures={ this.props.bodyMeasures }
+                initFocusId={ this.props.initBodyFocusId }
                 branchName={ `${this.props.branchName}/body${item.tabIndex}` }/>
     );
   }
@@ -350,5 +365,6 @@ JsvTabWidget.defaultProps = {
   flowDirection: HORIZONTAL,
   tabFocusable: true,
   initFocusId: 0,
+  initBodyFocusId: 0,
 };
 export { JsvTabWidget };
