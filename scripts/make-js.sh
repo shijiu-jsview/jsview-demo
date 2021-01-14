@@ -97,6 +97,10 @@ main_run()
 	# 同步jsview-react
 	npm install src/jsview-utils/jsview-react/bin/jsview-react-package.tgz
 		
+	# 生成crt和pem签名文件
+	cp src/appConfig/app_sign_private_key_sample.crt src/appConfig/app_sign_private_key.crt
+	cp src/appConfig/app_sign_public_key_sample.pem src/appConfig/app_sign_public_key.pem
+		
 	# 编译JS
 	npm run-script build
 
