@@ -27,8 +27,8 @@ function build_api(name) {
 
 /**
  * 添加收藏
- * @param {string} domain 域名
- * @param {string} alias 别名（唯一的名称）
+ * @param {string} appName app name 唯一标识
+ * @param {string} signKey 签名
  * @param {string} appUrl app url 或者 AppId
  * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
  * @param {string} params  其他参数(添加到url的 ? 后的内容)
@@ -40,12 +40,9 @@ function build_api(name) {
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, engine, title, icon, startImg, callback) {
+function addFavourite(appName, signKey, appUrl, subUrl, params, coreversionRange, engine, title, icon, startImg, callback) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
-    const key = `${domain}_${alias}`;
     const value = JSON.stringify({
-      domain,
-      alias,
       appUrl,
       subUrl,
       coreversionRange,
@@ -55,7 +52,7 @@ function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, e
       title,
       icon
     });
-    let async_message = window.jJsvRuntimeBridge.addFavourite(key, value);
+    let async_message = window.jJsvRuntimeBridge.addFavourite(appName, signKey, value);
     async_message.then(()=>{
       if (callback) {
         callback(true)
@@ -70,14 +67,13 @@ function addFavourite(domain, alias, appUrl, subUrl, params, coreversionRange, e
 
 /**
  * 删除指定收藏
- * @param {string} domain 域名
- * @param {string} alias 别名
+ * @param {string} appName app name 唯一标识
+ * @param {string} signKey 签名
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  */
-function removeFavourite(domain, alias, callback) {
+function removeFavourite(appName, signKey, callback) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
-    const key = `${domain}_${alias}`;
-    let async_message = window.jJsvRuntimeBridge.removeFavourite(key);
+    let async_message = window.jJsvRuntimeBridge.removeFavourite(appName, signKey);
     async_message.then(()=>{
       if (callback) {
         callback(true)
@@ -92,13 +88,12 @@ function removeFavourite(domain, alias, callback) {
 
 /**
  * 获取指定收藏
- * @param {string} domain 域名
- * @param {string} alias 别名
+ * @param {string} appName app name 唯一标识
+ * @param {string} signKey 签名
  */
-function getFavourite(domain, alias) {
+function getFavourite(appName, signKey) {
   if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavourite === "function") {
-    const key = `${domain}_${alias}`;
-    return window.jJsvRuntimeBridge.getFavourite(key);
+    return window.jJsvRuntimeBridge.getFavourite(appName, signKey);
   }
   return null;
 }
