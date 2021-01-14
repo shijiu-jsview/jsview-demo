@@ -1,3 +1,17 @@
+2021.1.14
+====================================
+加入应用命名签名机制
+影响文件(使用者更新时需要更新的文件)
+react_js/src/index.js (更新方式: 文件覆盖)
+react_js/package.json (更新方式: 文件覆盖 + 删掉node_modules，重新npm i)
+react_js/src/appConfig/* (更新方式: 文件覆盖)
+react_js/patch_package/react-scripts/scripts/build.js (更新方式:文件覆盖 + 执行react_js/patch_package/upate.sh)
+
+2020.11.30
+====================================
+1. jsview-react对应的min.js(3个)从react_js/patch_package移动到了react_js/src/jsview-utils/jsview-react/bin/中。
+   jsview-utils更新时，开发者把整个jsview-utils覆盖到自工程后，
+   执行npm i /path/to/jsview-react/bin/jsview-react-package.tgz来更新node_module/jsview-react的内容
 
 2020.7.06
 ====================================
@@ -17,10 +31,3 @@
 	需要配合react_js/node_modules/jsview-react/dist/jsviewreact.min.js更新一起使用。
 	否则会出现在盒子的JsView运行环境中，无法进入界面的问题。
 	更新min.js文件的方法是进入react_js/patch_package/，执行update.sh
-
-2020.11.30
-====================================
-1. jsview-react对应的min.js(3个)从react_js/patch_package移动到了react_js/src/jsview-utils/jsview-react/bin/中。
-   jsview-utils更新时，开发者把整个jsview-utils覆盖到自工程后，
-   执行npm i /path/to/jsview-react/bin/jsview-react-package.tgz来更新node_module/jsview-react的内容
-

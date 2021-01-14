@@ -1,4 +1,5 @@
 import { loadJsViewProxy, initEntry, confirmEntry } from './jsview-utils/jsview-react/index_hook';
+import AppData from './appConfig/app_config.json'
 
 initEntry();
 
@@ -15,4 +16,4 @@ loadJsViewProxy(() => {
 // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
 //                                     默认值是画布宽度1280px, 清晰度为1.0
 
-console.log("index.js loaded");
+console.log("index.js loaded AppName=" + AppData.AppName);
