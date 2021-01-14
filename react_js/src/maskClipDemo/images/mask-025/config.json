@@ -1,0 +1,29 @@
+{
+  "style": "Irregular",
+  "type":"Regular",
+  "age": [3, 4],
+  "level": 1,
+  "grade": "Easy",
+  "components": [
+    {
+      "key": "1",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "key": "2",
+      "x": 227,
+      "y": 0
+    },
+    {
+      "key": "3",
+      "x": 0,
+      "y": 327
+    },
+    {
+      "key": "4",
+      "x": 327,
+      "y": 227
+    }
+  ]
+}

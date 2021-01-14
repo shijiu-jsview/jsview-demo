@@ -183,7 +183,12 @@ const demoFuncInfos = [
     name: "触控--滑动",
     path: "/users/touchDemo",
     class: lazy(() => import('../touchDemo/App').then(m => ({ default: m.SubApp }))),
-  }
+  },
+  {
+    name: "拼图demo",
+    path: "/users/maskClipDemo",
+    class: lazy(() => import('../maskClipDemo/App').then(m => ({ default: m.SubApp }))),
+  },
 ];
 const demoSceneInfos = [
   // 场景

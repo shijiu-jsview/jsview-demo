@@ -30,7 +30,6 @@ import {
 class JsvMaskClipDiv extends React.Component {
   constructor(props) {
     super(props);
-
     this._JsvMainView = null;
     this._InnerViewId = -1;
     this._StyleDetail = null;
@@ -66,6 +65,59 @@ class JsvMaskClipDiv extends React.Component {
     return this.props.stylesList !== nextProps.stylesList;
   }
 
+  drawClip=(canvas, clip_image, clip_ready, bg_image, bg_ready) => {
+    const ctx = canvas.getContext("2d");
+    if (!clip_ready || !bg_ready) {
+      return;
+    }
+    const canvasW = this.props.maskWidth * bg_image.width;
+    const canvasH = this.props.maskHeight * bg_image.height;
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    ctx.drawImage(clip_image, 0, 0, canvasW, canvasH);
+    ctx.globalCompositeOperation = "source-atop";
+    ctx.drawImage(bg_image, -this.props.maskLeft * bg_image.width, -this.props.maskTop * bg_image.height, bg_image.width, bg_image.height);
+    console.log(`w=${bg_image.width} h=${bg_image.height}`);
+  }
+
+  initRef=(ref) => {
+    if (ref) {
+      const canvas = window.originDocument.createElement("canvas");
+      if (ref.jsvMainView) {
+        ref.jsvMainView.Element.appendChild(canvas);
+      } else if (ref.jsvMaskView) {
+        ref.jsvMaskView.Element.appendChild(canvas);
+      }
+
+      const clip_image = new Image();
+      const bg_image = new Image();
+      clip_image.src = this.props.maskSrc;
+      bg_image.src = this.props.viewSrc;
+      let clip_ready = false;
+      let bg_ready = false;
+
+      clip_image.onload = () => {
+        clip_ready = true;
+        this.drawClip(canvas, clip_image, clip_ready, bg_image, bg_ready);
+      };
+
+      bg_image.onload = () => {
+        bg_ready = true;
+        this.drawClip(canvas, clip_image, clip_ready, bg_image, bg_ready);
+      };
+    }
+  }
+
+  renderHtmlView() {
+    return <div
+          ref={this.initRef}
+          style={{
+            top: this._StyleDetail.top,
+            left: this._StyleDetail.left,
+          }}
+          ></div>;
+  }
+
   render() {
     this._AnalyzeStyleList();
 
@@ -75,7 +127,7 @@ class JsvMaskClipDiv extends React.Component {
     }
 
     // TODO: 使用canvas(jsvcanvas)进行描画
-    return <div></div>;
+    return this.renderHtmlView();
   }
 
   renderJsView() {
