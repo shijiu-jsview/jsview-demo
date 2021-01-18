@@ -10,7 +10,7 @@ loadJsViewProxy(() => {
     entry.default(confirmEntry);
     console.log("main.js done...");
   });
-}, "/static/js/", { screenWidth: 1280, displayScale: 1.0 });
+}, "/static/js/", { screenWidth: 1280, displayScale: 1.0 }, AppData.AppName);
 // 补充说明：
 // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
 // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，

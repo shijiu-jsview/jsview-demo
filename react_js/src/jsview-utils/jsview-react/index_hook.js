@@ -35,9 +35,12 @@ function initDesignedMap(input_designed_map) {
 
 // eslint-disable-next-line no-unused-vars
 let sForgeReactAppDefine = null;
-function loadJsViewProxy(callback, js_sub_path, input_designed_map) {
+function loadJsViewProxy(callback, js_sub_path, input_designed_map, app_name) {
   initDesignedMap(input_designed_map);
   if (window.JsView) {
+    if (app_name && window.JsView.notifyAppName) {
+      window.JsView.notifyAppName(app_name);
+    }
     initHeaderScriptLoader(js_sub_path);
     import("./jsv_hook_wrapper.js").then((app_define) => {
       sForgeReactAppDefine = app_define.ForgeReactApp;
