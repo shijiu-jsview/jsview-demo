@@ -52,7 +52,7 @@ function _getTransformInfo(source_obj, target_obj, canvas_width, canvas_height) 
   result.cy = target_obj.y / clip_scale_h;
 
   // Image在Clip div之内，所以以Clip为基准进行缩放和平移, 对clip的缩放进行反处理以还原尺寸
-  // 将子图左上角对齐原点后再缩放，所以x,y不需要进行举例缩放补偿
+  // 将子图左上角对齐原点后再缩放，所以x,y不需要进行缩放补偿
   result.sw = source_obj.w / target_obj.w / clip_scale_w;
   result.sh = source_obj.h / target_obj.h / clip_scale_h;
   result.x = -source_obj.x;
