@@ -676,6 +676,13 @@ class LayoutViewBase {
     let cs_describe = Forge.sTextStyleCache.GetCsFromId(
       resource_info.Set.IDS.CS
     ).Describe;
+    // special style
+    let ss_describe = null;
+    if (resource_info.Set.IDS.SS !== "DISABLE") {
+      ss_describe = Forge.sTextStyleCache.GetSsFromId(
+          resource_info.Set.IDS.SS
+      ).Describe;
+    }
 
     // font
     this.Element.style.fontFamily = fs_describe.font;
@@ -719,6 +726,13 @@ class LayoutViewBase {
     }
     if (!opacity) {
       this.Element.style.backgroundColor = bg_color;
+    }
+
+    // Text stroke
+    if (ss_describe) {
+      if (ss_describe.stroke_width > 0) {
+        this.Element.style.WebkitTextStroke = `${ss_describe.stroke_width}px ${ss_describe.stroke_color}`;
+      }
     }
 
     // 显示width x height

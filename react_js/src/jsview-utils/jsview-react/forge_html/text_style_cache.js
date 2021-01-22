@@ -9,7 +9,7 @@ import Forge from "../ForgeDefine";
 
   class TextStyleObjectBase {
     constructor(type, fix_named_id) {
-      this._ID = fix_named_id ? fix_named_id : type + sTextStyleIdGen++;
+      this._ID = (fix_named_id ? fix_named_id : type + (sTextStyleIdGen++));
       this.Describe = {};
       this._RefCount = 0;
       this._Recycled = false; // 预留属性, 未来由于ref == 0，而从列表中移除后，设置标识位
@@ -44,7 +44,7 @@ import Forge from "../ForgeDefine";
     }
   }
 
-  // 代表不激活的style，例如ShadowStyle场景
+  // 代表不激活的style，例如SpecialStyle场景
   const sDisableStyle = new FixNameStyle("DISABLE");
 
   const sDefaultDisplayStyle = {
@@ -55,21 +55,9 @@ import Forge from "../ForgeDefine";
     word_wrap: "normal",
   };
   // 注意:NamesList的顺序需要和constructor的参数顺序相同
-  const sDisplayStyleNames = [
-    "alignment",
-    "vertical_align",
-    "vertical_area_align",
-    "text_overflow",
-    "word_wrap",
-  ];
+  const sDisplayStyleNames = ["alignment", "vertical_align", "vertical_area_align", "text_overflow", "word_wrap"];
   class DisplayStyle extends TextStyleObjectBase {
-    constructor(
-      alignment,
-      vertical_align,
-      vertical_area_align,
-      text_overflow,
-      word_wrap
-    ) {
+    constructor(alignment, vertical_align, vertical_area_align, text_overflow, word_wrap) {
       super("DS", null);
 
       // 具体化Describe信息
@@ -82,21 +70,21 @@ import Forge from "../ForgeDefine";
 
     GetSyncData() {
       return {
-        T: 0, // type
-        ID: this._ID,
-        A: this.Describe["alignment"],
-        VA: this.Describe["vertical_align"],
-        VAA: this.Describe["vertical_area_align"],
-        TO: this.Describe["text_overflow"],
-        WW: this.Describe["word_wrap"],
-      };
+        "T": 0, // type
+        "ID": this._ID,
+        "A": this.Describe["alignment"],
+        "VA": this.Describe["vertical_align"],
+        "VAA": this.Describe["vertical_area_align"],
+        "TO": this.Describe["text_overflow"],
+        "WW": this.Describe["word_wrap"],
+      }
     }
   }
 
   const sDefaultFontStyle = {
     font: "黑体",
     italic: false,
-    bold: false,
+    bold: false
   };
   // 注意:NamesList的顺序需要和constructor的参数顺序相同
   const sFontStyleNames = ["font", "italic", "bold"];
@@ -112,12 +100,12 @@ import Forge from "../ForgeDefine";
 
     GetSyncData() {
       return {
-        T: 1, // type
-        ID: this._ID,
-        F: this.Describe["font"],
-        I: this.Describe["italic"],
-        B: this.Describe["bold"],
-      };
+        "T": 1, // type
+        "ID": this._ID,
+        "F": this.Describe["font"],
+        "I": this.Describe["italic"],
+        "B": this.Describe["bold"],
+      }
     }
   }
 
@@ -137,46 +125,53 @@ import Forge from "../ForgeDefine";
 
     GetSyncData() {
       return {
-        T: 2, // type
-        ID: this._ID,
-        TC: this.Describe["text_color"],
-        BC: this.Describe["bg_color"],
-      };
+        "T": 2, // type
+        "ID": this._ID,
+        "TC": this.Describe["text_color"],
+        "BC": this.Describe["bg_color"],
+      }
     }
   }
 
-  const sDefaultShadowStyle = {
+  const sDefaultSpecialStyle = {
     shadow_offset_x: 0,
     shadow_offset_y: 0,
     shadow_blur: 1,
-    shadow_color: "rgba(0,0,0,1)",
+    shadow_color: null,
+    stroke_width: 0,
+    stroke_color: null,
   };
   // 注意:NamesList的顺序需要和constructor的参数顺序相同
-  const sShadowStyleNames = [
+  const sSpecialStyleNames = [
     "shadow_offset_x",
     "shadow_offset_y",
     "shadow_blur",
     "shadow_color",
-  ];
-  class ShadowStyle extends TextStyleObjectBase {
-    constructor(shadow_offset_x, shadow_offset_y, shadow_blur, shadow_color) {
+    "stroke_width",
+    "stroke_color"];
+  class SpecialStyle extends TextStyleObjectBase {
+    constructor(shadow_offset_x, shadow_offset_y, shadow_blur, shadow_color, stroke_width, stroke_color) {
       super("SS", null);
 
       this.Describe["shadow_offset_x"] = shadow_offset_x;
       this.Describe["shadow_offset_y"] = shadow_offset_y;
       this.Describe["shadow_blur"] = shadow_blur;
       this.Describe["shadow_color"] = shadow_color;
+      this.Describe["stroke_width"] = stroke_width;
+      this.Describe["stroke_color"] = stroke_color;
     }
 
     GetSyncData() {
       return {
-        T: 3, // type
-        ID: this._ID,
-        OX: this.Describe["shadow_offset_x"],
-        OY: this.Describe["shadow_offset_y"],
-        B: this.Describe["shadow_blur"],
-        C: this.Describe["shadow_color"],
-      };
+        "T": 3, // type
+        "ID": this._ID,
+        "OX": this.Describe["shadow_offset_x"],
+        "OY": this.Describe["shadow_offset_y"],
+        "B": this.Describe["shadow_blur"],
+        "C": this.Describe["shadow_color"],
+        "SW": this.Describe["stroke_width"],
+        "SC": this.Describe["stroke_color"],
+      }
     }
   }
 
@@ -185,7 +180,7 @@ import Forge from "../ForgeDefine";
       this.DS = Forge.sTextStyleCache.GetDisplayStyle(style_define);
       this.FS = Forge.sTextStyleCache.GetFontStyle(style_define);
       this.CS = Forge.sTextStyleCache.GetColorStyle(style_define);
-      this.SS = Forge.sTextStyleCache.GetShadowStyle(style_define);
+      this.SS = Forge.sTextStyleCache.GetSpecialStyle(style_define);
       this._IdsCache = null;
     }
 
@@ -206,10 +201,10 @@ import Forge from "../ForgeDefine";
     GetIdsPack() {
       if (!this._IdsCache) {
         this._IdsCache = {
-          DS: this.DS.GetId(),
-          FS: this.FS.GetId(),
-          CS: this.CS.GetId(),
-          SS: this.SS.GetId(),
+          "DS": this.DS.GetId(),
+          "FS": this.FS.GetId(),
+          "CS": this.CS.GetId(),
+          "SS": this.SS.GetId(),
         };
       }
 
@@ -226,8 +221,8 @@ import Forge from "../ForgeDefine";
       this._FontStyleIds = new Map();
       this._ColorStyleMap = new Map();
       this._ColorStyleIds = new Map();
-      this._ShadowStyleMap = new Map();
-      this._ShadowStyleIds = new Map();
+      this._SpecialStyleMap = new Map();
+      this._SpecialStyleIds = new Map();
 
       // 供native同步时的新 TextStyleObjectBase 队列
       this._NewStyleList = [];
@@ -238,109 +233,114 @@ import Forge from "../ForgeDefine";
 
       // 成员变量属性名称转换和对应
       let style_define = {
-        alignment:
-          typeof style_define_origin["hAlign"] != "undefined"
-            ? style_define_origin["hAlign"]
-            : sDefaultDisplayStyle.alignment,
-        vertical_align:
-          typeof style_define_origin["vAlign"] != "undefined"
-            ? style_define_origin["vAlign"]
-            : sDefaultDisplayStyle.vertical_align,
-        vertical_area_align:
-          typeof style_define_origin["vAreaAlign"] != "undefined"
-            ? style_define_origin["vAreaAlign"]
-            : sDefaultDisplayStyle.vertical_area_align,
-        text_overflow:
-          typeof style_define_origin["textOverflow"] != "undefined"
-            ? style_define_origin["textOverflow"]
-            : sDefaultDisplayStyle.text_overflow,
-        word_wrap:
-          typeof style_define_origin["wordWrap"] != "undefined"
-            ? style_define_origin["wordWrap"]
-            : sDefaultDisplayStyle.word_wrap,
-        font:
-          typeof style_define_origin["font"] != "undefined"
-            ? style_define_origin["font"]
-            : sDefaultFontStyle.font,
-        italic:
-          typeof style_define_origin["italic"] != "undefined"
-            ? style_define_origin["italic"]
-            : sDefaultFontStyle.italic,
-        bold:
-          typeof style_define_origin["bold"] != "undefined"
-            ? style_define_origin["bold"]
-            : sDefaultFontStyle.bold,
-        text_color:
-          typeof style_define_origin["textColor"] != "undefined"
-            ? style_define_origin["textColor"]
-            : sDefaultColorStyle.text_color,
-        bg_color:
-          typeof style_define_origin["backgroundColor"] != "undefined"
-            ? style_define_origin["backgroundColor"]
-            : sDefaultColorStyle.bg_color,
-        shadow_enable: false,
+        alignment: (typeof style_define_origin["hAlign"] != "undefined" ?
+            style_define_origin["hAlign"] : sDefaultDisplayStyle.alignment),
+        vertical_align: (typeof style_define_origin["vAlign"] != "undefined" ?
+            style_define_origin["vAlign"] : sDefaultDisplayStyle.vertical_align),
+        vertical_area_align: (typeof style_define_origin["vAreaAlign"] != "undefined" ?
+            style_define_origin["vAreaAlign"] : sDefaultDisplayStyle.vertical_area_align),
+        text_overflow: (typeof style_define_origin["textOverflow"] != "undefined" ?
+            style_define_origin["textOverflow"] : sDefaultDisplayStyle.text_overflow),
+        word_wrap: (typeof style_define_origin["wordWrap"] != "undefined" ?
+            style_define_origin["wordWrap"] : sDefaultDisplayStyle.word_wrap),
+        font: (typeof style_define_origin["font"] != "undefined" ?
+            style_define_origin["font"] : sDefaultFontStyle.font),
+        italic: (typeof style_define_origin["italic"] != "undefined" ?
+            style_define_origin["italic"] : sDefaultFontStyle.italic),
+        bold: (typeof style_define_origin["bold"] != "undefined" ?
+            style_define_origin["bold"] : sDefaultFontStyle.bold),
+        text_color: (typeof style_define_origin["textColor"] != "undefined" ?
+            style_define_origin["textColor"] : sDefaultColorStyle.text_color),
+        bg_color: (typeof style_define_origin["backgroundColor"] != "undefined" ?
+            style_define_origin["backgroundColor"] : sDefaultColorStyle.bg_color),
         shadow_offset_x: 0,
         shadow_offset_y: 0,
         shadow_blur: 1,
         shadow_color: null,
+        stroke_width: 0,
+        stroke_color: null,
       };
 
       // Shadow处理
-      if (typeof style_define_origin.shadow !== "undefined") {
+      if (style_define_origin.shadow) {
         const shadow_set = style_define_origin.shadow;
-        style_define.shadow_enable = true;
         style_define.shadow_offset_x = shadow_set.shadowOffsetX;
         style_define.shadow_offset_y = shadow_set.shadowOffsetY;
         style_define.shadow_blur = shadow_set.shadowBlur;
         style_define.shadow_color = shadow_set.shadowColor;
       }
 
+      // Stroke处理
+      if (style_define_origin.stroke) {
+        const stroke_set = style_define_origin.stroke;
+        style_define.stroke_width = stroke_set.strokeWidth;
+        style_define.stroke_color = stroke_set.strokeColor;
+      }
+
       return new TextStylePack(style_define);
+    }
+
+    PrepareSyncNewStyles() {
+      if (this._NewStyleList.length > 0) {
+        let sync_styles = [];
+
+        for (let new_style of this._NewStyleList) {
+          sync_styles.push(new_style.GetSyncData());
+        }
+
+        var status_texture = Forge.sRenderTextureDelegateManager.CreateTextureHeadStatus();
+        status_texture.SetResourceInfo({
+          "STA": {
+            "Nam": "TST",
+            "Sta": sync_styles
+          }
+        });
+
+        // 清空 new style 列表
+        this._NewStyleList = [];
+      }
     }
 
     GetDisplayStyle(style_define) {
       return this._GetStyle(
-        style_define,
-        sDisplayStyleNames,
-        DisplayStyle,
-        this._DisplayStyleMap,
-        this._DisplayStyleIds
-      );
+          style_define,
+          sDisplayStyleNames,
+          DisplayStyle,
+          this._DisplayStyleMap,
+          this._DisplayStyleIds);
     }
 
     GetFontStyle(style_define) {
       return this._GetStyle(
-        style_define,
-        sFontStyleNames,
-        FontStyle,
-        this._FontStyleMap,
-        this._FontStyleIds
-      );
+          style_define,
+          sFontStyleNames,
+          FontStyle,
+          this._FontStyleMap,
+          this._FontStyleIds);
     }
 
     GetColorStyle(style_define) {
       return this._GetStyle(
-        style_define,
-        sColorStyleNames,
-        ColorStyle,
-        this._ColorStyleMap,
-        this._ColorStyleIds
-      );
+          style_define,
+          sColorStyleNames,
+          ColorStyle,
+          this._ColorStyleMap,
+          this._ColorStyleIds);
     }
 
-    GetShadowStyle(style_define) {
-      if (!style_define.shadow_enable) {
+    GetSpecialStyle(style_define) {
+      if (style_define.shadow_offset_x == 0
+          && style_define.shadow_offset_y == 0
+          && style_define.stroke_width == 0) {
         return sDisableStyle;
       }
 
       return this._GetStyle(
-        style_define,
-        sShadowStyleNames,
-        sDefaultShadowStyle,
-        ShadowStyle,
-        this._ShadowStyleMap,
-        this._ShadowStyleIds
-      );
+          style_define,
+          sSpecialStyleNames,
+          SpecialStyle,
+          this._SpecialStyleMap,
+          this._SpecialStyleIds);
     }
 
     // interface for forge_html
@@ -357,17 +357,17 @@ import Forge from "../ForgeDefine";
     }
 
     GetSsFromId(id) {
-      return this._ShadowStyleIds.get(id);
+      return this._SpecialStyleIds.get(id);
     }
 
     _GetStyle(style_define, prop_name_list, class_define, map_ref, ids_ref) {
-      const props_values = [];
-      for (const name of prop_name_list) {
+      let props_values = [];
+      for (let name of prop_name_list) {
         props_values.push(style_define[name]);
       }
 
       // 制作style key
-      const map_key = props_values.join(":");
+      let map_key = props_values.join(":");
 
       // 查找Map，获取或新建
       let style_object = null;
@@ -378,8 +378,10 @@ import Forge from "../ForgeDefine";
         map_ref.set(map_key, style_object);
         ids_ref.set(style_object.GetId(), style_object);
 
-        // 加入预备同步native的队列中
-        // this._NewStyleList.push(style_object); // forge html中不需要进行同步
+        // 加入预备同步native的队列中(解决PC版本的兼容处理，加上了window.JsView判断)
+        if (window.JsView) {
+          this._NewStyleList.push(style_object);
+        }
       } else {
         style_object = map_ref.get(map_key);
       }
