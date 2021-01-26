@@ -52,7 +52,7 @@ function _getTransformInfo(source_obj, target_obj, canvas_width, canvas_height) 
   result.cy = target_obj.y / clip_scale_h;
 
   // Image在Clip div之内，所以以Clip为基准进行缩放和平移, 对clip的缩放进行反处理以还原尺寸
-  // 将子图左上角对齐原点后再缩放，所以x,y不需要进行缩放补偿
+  // 将子图左上角对齐原点后再缩放，所以x,y不需要进行举例缩放补偿
   result.sw = source_obj.w / target_obj.w / clip_scale_w;
   result.sh = source_obj.h / target_obj.h / clip_scale_h;
   result.x = -source_obj.x;
@@ -89,12 +89,13 @@ class SpriteController {
 
   /*
    * start()  启动精灵图
-   * 参数说明: 无
+   * 参数说明:
+   *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
    */
-  start() {
+  start(end_frame) {
     if (!this.Used) { this.Used = true; }
     if (this._SpriteImage) {
-      this._SpriteImage.start();
+      this._SpriteImage.start(end_frame);
     }
   }
 
@@ -179,13 +180,14 @@ class JsvSpriteAnim extends React.Component {
     });
   }
 
-  start() {
+  start(end_frame) {
     if (this.props.spriteInfo.frames && this.props.spriteInfo.frames.length === 1) {
       return;
     }
     this.setState({
       innerId: this.state.innerId + 1,
-      stopped: false
+      stopped: false,
+      stopFrame: end_frame || "end",
     });
   }
 
@@ -449,9 +451,7 @@ class JsvSpriteAnim extends React.Component {
     // 在onAnimEnd之前进行Stop，以防onAnimEnd内部继续发生别的操作
     this.setState({
       stopped: true,
-      stopFrame: "end"
     });
-
     if (this.props.onAnimEnd) {
       this.props.onAnimEnd();
     }
