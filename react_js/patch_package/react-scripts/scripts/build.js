@@ -179,7 +179,7 @@ checkBrowsers(paths.appPath, isInteractive)
 
         // 组装AppData
         let targetAppData = {};
-        targetAppData.AppName = appDataOriginJson.AppName;
+        Object.assign(targetAppData, appDataOriginJson); // 同步包括AppName在内的所有信息
         targetAppData.PublicKeys = [publicKeyDerText]; // 使用签名数组，支持后续追加签名
         targetAppData.EncryptCodes = [encryptCodeBase64]; // 同样使用数组，支持后续追加
 
