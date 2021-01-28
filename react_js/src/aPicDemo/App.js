@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-12-10 19:20:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2021-01-27 18:17:45
+ * @LastEditTime: 2021-01-28 11:03:24
  * @Description: file content
  */
 import React from 'react';
@@ -53,8 +53,8 @@ class MainScene extends FocusBlock {
 
     renderContent() {
         return (
-            <div>
-                <div style={{ left: 50, top: 50, width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
+            <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
+                <div style={{ left: 50, top: 50 }}>
                     <JsvApic ref={ele => this._WebPRef = ele} src={`url(${catRun})`} style={{ width: 380, height: 450 }} autoPlay={true} onStart={() => { console.log("webp onstart") }} onEnd={() => { console.log("webp onend") }} />
                     <div style={{ top: 400, color: "#000000", fontSize: "50px" }}>WEBP</div>
                 </div>
