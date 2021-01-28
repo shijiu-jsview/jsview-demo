@@ -22,7 +22,7 @@ class TextFontStyle extends React.Component {
                         width: blockWidth + 20,
                         left: (blockWidth + gap) * 2 - 10,
                         fontFamily: '黑体',
-                        fontSize: '24',
+                        fontSize: 24,
                         height: 28,
                         WebkitTextStroke: "1px rgba(255,255,0,1.0)"
                     }}>
