@@ -49,11 +49,17 @@ function loadJsViewProxy(callback, js_sub_path, input_designed_map, app_name) {
       callback();
     });
   } else {
-    import("./forge_html/index.js").then(() => {
-      import("./browser_hook_wrapper.js").then(() => {
-        callback();
-      });
-    });
+      import("./forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
+          import("./forge_html/apic_decoder/demux.js").then(() => {
+              import("./forge_html/apic_decoder/gifDecoder.js").then(() => {
+                  import("./forge_html/index.js").then(() => {
+                      import("./browser_hook_wrapper.js").then(() => {
+                          callback();
+                      });
+                  });
+              })
+          })
+      })
   }
 }
 
