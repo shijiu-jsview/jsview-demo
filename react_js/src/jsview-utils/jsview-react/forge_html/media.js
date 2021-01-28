@@ -211,6 +211,7 @@ class Audio extends Media {
     super("audio");
   }
 }
+window._ExtAudio = Audio;
 
 class Video extends Media {
   constructor() {
@@ -267,6 +268,7 @@ class Video extends Media {
     super.onLoad(event);
   }
 }
+window._ExtVideo = Video;
 
 class OffscreenVideoPlayer extends BaseMedia {
   constructor() {
@@ -321,6 +323,7 @@ class OffscreenVideoPlayer extends BaseMedia {
     return this.Ele.videoWidth;
   }
 }
+window._ExtOVP = OffscreenVideoPlayer;
 
 window.Audio = Audio;
 window.Video = Video;
