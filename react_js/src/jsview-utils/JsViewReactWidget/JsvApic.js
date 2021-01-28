@@ -28,9 +28,9 @@ class ApicData {
     this.decode(array_buffer);
   }
 
-  decode(array_buffer) {}
+  decode(array_buffer) { }
 
-  toImage(frame_index, canvas, canvas_ctx) {}
+  toImage(frame_index, canvas, canvas_ctx) { }
 }
 
 class WebpData extends ApicData {
@@ -125,11 +125,11 @@ class WebpData extends ApicData {
       frame["frameData"] = frame["rgba"]
         ? header
           ? this._Context.getImageData(
-              0,
-              0,
-              header["canvas_width"],
-              header["canvas_height"]
-            ).data
+            0,
+            0,
+            header["canvas_width"],
+            header["canvas_height"]
+          ).data
           : rgba
         : null;
       if (frame["dispose"] === 1) {
@@ -268,13 +268,12 @@ class Viewer {
   play() {
     clearTimeout(this._TimeoutId);
     this._FrameIndex = 0;
+    this._LoopCount = 0;
     let duration = this.renderFrame(0);
     this._TimeoutId = setTimeout(() => {
       this.renderLoop();
     }, duration);
-    if (this._Listener?.onStart) {
-      this._Listener.onStart();
-    }
+    this._Listener?.onstart?.();
   }
 
   renderLoop() {
@@ -288,9 +287,11 @@ class Viewer {
       } else {
         //有限循环
         this._LoopCount++;
-        if (this._LoopCount <= this._ApicData.LoopCount) {
+        if (this._LoopCount < this._ApicData.LoopCount) {
           draw_next = true;
           next_index = 0;
+        } else {
+          this._Listener?.onend?.();
         }
       }
     } else {
