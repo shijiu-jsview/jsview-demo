@@ -3,3 +3,5 @@
 /build/*
 /node_modules/*
 /src/jsview-utils/jsview-react/code/*
+/src/jsview-utils/jsview-react/forge_html/*.min.js
+
