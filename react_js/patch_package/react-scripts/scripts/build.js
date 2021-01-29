@@ -199,7 +199,8 @@ checkBrowsers(paths.appPath, isInteractive)
                  appDataInfo = prepareMainAppData(jsvAppMd5);
 
                  // 格式化jsvapp信息 /*jsvapp:内容长度:{内容}*/
-                 const infoLen = appDataInfo.length;
+				 // 使用TextEncoder解决中文长度问题
+                 const infoLen = new TextEncoder().encode(appDataInfo).length; 
                  appDataInfo = "/*jsvapp:" + infoLen + ":" + appDataInfo + "*/";
                }
                jsvAppContents = "/*jsvmd5:" + jsvAppMd5 + "*/" + appDataInfo + jsvAppContents;
