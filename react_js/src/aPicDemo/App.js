@@ -2,7 +2,7 @@
  * @Author: ChenChanghua
  * @Date: 2020-12-10 19:20:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2021-01-28 16:12:40
+ * @LastEditTime: 2021-01-29 14:51:25
  * @Description: file content
  */
 import React from "react";
@@ -45,7 +45,6 @@ class MainScene extends FocusBlock {
         }
       }
     } else if (ev.keyCode === 39) {
-      console.log("cchtest onkey")
       if (this._WebpOnceRef) {
         if (this._WebpOncePlay) {
           this._WebpOnceRef.stop();
@@ -66,8 +65,8 @@ class MainScene extends FocusBlock {
             src={`url(${catRun})`}
             style={{ width: 400, height: 400 }}
             autoPlay={true}
-            onStart={() => { this._WebpPlay = true; console.log("webp onstart") }}
-            onEnd={() => { this._WebpPlay = false; console.log("webp onend") }} />
+            onStart={() => { this._WebpPlay = true; console.log("webp onstart " + this._WebpPlay) }}
+            onEnd={() => { this._WebpPlay = false; console.log("webp onend " + this._WebpPlay) }} />
           <div style={{ top: 440, color: "#000000", fontSize: "50px" }}>WEBP</div>
         </div>
         <div style={{ left: 500, top: 50 }}>
@@ -76,8 +75,8 @@ class MainScene extends FocusBlock {
             src={`url(${girlRun})`}
             style={{ width: 350, height: 300 }}
             autoPlay={true}
-            onStart={() => { this._GifPlay = true; console.log("gif onstart") }}
-            onEnd={() => { this._GifPlay = false; console.log("gif onend") }} />
+            onStart={() => { this._GifPlay = true; console.log("gif onstart " + this._GifPlay) }}
+            onEnd={() => { this._GifPlay = false; console.log("gif onend " + this._GifPlay, this) }} />
           <div style={{ top: 440, color: "#000000", fontSize: "50px" }}>GIF</div>
         </div>
         <div style={{ left: 900, top: 50 }}>
@@ -86,8 +85,8 @@ class MainScene extends FocusBlock {
             src={`url(${quan})`}
             style={{ width: 380, height: 450 }}
             autoPlay={true}
-            onStart={() => { this._WebpOncePlay = true; console.log("webp2 onstart") }}
-            onEnd={() => { this._WebpOncePlay = false; console.log("wepb2 onend") }} />
+            onStart={() => { this._WebpOncePlay = true; console.log("webp2 onstart " + this._WebpOncePlay) }}
+            onEnd={() => { this._WebpOncePlay = false; console.log("wepb2 onend " + this._WebpOncePlay) }} />
           <div style={{ top: 440, color: "#000000", fontSize: "50px" }}>WEBP</div>
         </div>
         <div style={{ left: 50, top: 600, color: "#000000", fontSize: "50px" }}>左键控制左图, OK键控制中图, 右键控制右图</div>
