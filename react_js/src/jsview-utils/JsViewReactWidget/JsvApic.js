@@ -28,9 +28,9 @@ class ApicData {
     this.decode(array_buffer);
   }
 
-  decode(array_buffer) { }
+  decode(array_buffer) {}
 
-  toImage(frame_index, canvas, canvas_ctx) { }
+  toImage(frame_index, canvas, canvas_ctx) {}
 }
 
 class WebpData extends ApicData {
@@ -125,11 +125,11 @@ class WebpData extends ApicData {
       frame["frameData"] = frame["rgba"]
         ? header
           ? this._Context.getImageData(
-            0,
-            0,
-            header["canvas_width"],
-            header["canvas_height"]
-          ).data
+              0,
+              0,
+              header["canvas_width"],
+              header["canvas_height"]
+            ).data
           : rgba
         : null;
       if (frame["dispose"] === 1) {
@@ -273,7 +273,9 @@ class Viewer {
     this._TimeoutId = setTimeout(() => {
       this.renderLoop();
     }, duration);
-    this._Listener?.onstart?.();
+    if (this._Listener?.onstart) {
+      this._Listener.onstart();
+    }
   }
 
   renderLoop() {
@@ -291,7 +293,9 @@ class Viewer {
           draw_next = true;
           next_index = 0;
         } else {
-          this._Listener?.onend?.();
+          if (this._Listener?.onend) {
+            this._Listener.onend();
+          }
         }
       }
     } else {
