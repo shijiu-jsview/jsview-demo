@@ -190,7 +190,7 @@ const demoFuncInfos = [
         class: lazy(() => import('../maskClipDemo/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        name: "动图示例",
+        name: "Web/Gif播放控制",
         path: "/users/apicDemo",
         class: lazy(() => import('../aPicDemo/App').then(m => ({ default: m.SubApp }))),
     }
