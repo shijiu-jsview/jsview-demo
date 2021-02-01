@@ -3,9 +3,10 @@
  */
 
 const TargetRevision = {
-    CoreRevision: 623,
-    JseRevision: "1.0.744",
-    JseUrl: "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r744.jsv.2fd2d0e1.js",
+  CoreRevision: 644,
+  JseRevision: "1.0.748",
+  JseUrl:
+    "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r748.jsv.45651502.js",
 };
 
 export default TargetRevision;
