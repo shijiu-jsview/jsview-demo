@@ -62,7 +62,7 @@ class MainScene extends FocusBlock {
           <div style={{ left: 10, top: (720 - 654 / 2) / 2, width: 654 / 2, height: 654 / 2, backgroundImage: `url(${bg_pic})` }}></div>
           <div style={{ left: 654 / 2 + 150 }}>
           <JsvMaskClipDiv
-              stylesList={[{ top: 20, left: 10, width: 327, height: 427 }]}
+              stylesList={[{ top: 120, left: 10, width: 196, height: 256 }]}
               viewSrc={bg_pic}
               maskSrc={mask1_pic}
               maskLeft={0 / 654}
@@ -71,7 +71,7 @@ class MainScene extends FocusBlock {
               maskHeight={427 / 654}
           />
            <JsvMaskClipDiv
-              stylesList={[{ top: 20, left: 10 + 327 + 20, width: 427, height: 327 }]}
+              stylesList={[{ top: 120, left: 10 + 196, width: 256, height: 196 }]}
               viewSrc={bg_pic}
               maskSrc={mask2_pic}
               maskLeft={227 / 654}
@@ -80,7 +80,7 @@ class MainScene extends FocusBlock {
               maskHeight={327 / 654}
           />
            <JsvMaskClipDiv
-              stylesList={[{ top: 20 + 327 + 30, left: 10, width: 427, height: 327 }]}
+              stylesList={[{ top: 120 + 256 + 10, left: 10, width: 256, height: 196 }]}
               viewSrc={bg_pic}
               maskSrc={mask3_pic}
               maskLeft={0 / 654}
@@ -89,7 +89,7 @@ class MainScene extends FocusBlock {
               maskHeight={327 / 690}
           />
           <JsvMaskClipDiv
-              stylesList={[{ top: 20 + 227 + 20, left: 10 + 427 + 20, width: 327, height: 427 }]}
+              stylesList={[{ top: 120 + 196 + 10, left: 10 + 256, width: 196, height: 256 }]}
               viewSrc={bg_pic}
               maskSrc={mask4_pic}
               maskLeft={327 / 654}
