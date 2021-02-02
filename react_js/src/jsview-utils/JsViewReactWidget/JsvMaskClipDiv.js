@@ -83,9 +83,9 @@ class JsvMaskClipDiv extends React.Component {
   initRef=(ref) => {
     if (ref) {
       const canvas = window.originDocument.createElement("canvas");
-      if (ref.jsvMainView) {
-        ref.jsvMainView.Element.appendChild(canvas);
-      } else if (ref.jsvMaskView) {
+      canvas.style.width = this._StyleDetail.width + "px";
+      canvas.style.height = this._StyleDetail.height + "px";
+      if (ref.jsvMaskView) {
         ref.jsvMaskView.Element.appendChild(canvas);
       }
 
@@ -126,7 +126,6 @@ class JsvMaskClipDiv extends React.Component {
       return this.renderJsView();
     }
 
-    // TODO: 使用canvas(jsvcanvas)进行描画
     return this.renderHtmlView();
   }
 
