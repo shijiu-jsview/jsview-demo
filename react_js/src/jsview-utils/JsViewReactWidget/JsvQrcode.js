@@ -59,6 +59,7 @@ const DEFAULT_PROPS = {
   bgColor: '#FFFFFF',
   fgColor: '#000000',
   includeMargin: false,
+  imageSettings:null,
 };
 
 const PROP_TYPES =
@@ -143,7 +144,7 @@ class QRCodeSVG extends Component {
 
   getImageSettings(props,) {
     const { imageSettings, size } = props;
-    if (imageSettings === null) {
+    if (!imageSettings) {
       return null;
     }
     const w = imageSettings.width;
@@ -259,7 +260,7 @@ class QRCodeSVG extends Component {
     const numCells = cells.length + margin * 2;
     const calculatedImageSettings = this.getImageSettings(this.props);
     let image = null;
-    if (imageSettings !== null) {
+    if (imageSettings) {
       image = (
                 <div
                     style={{
