@@ -86,14 +86,14 @@ class MainScene extends FocusBlock {
               maskLeft={0 / 654}
               maskTop={327 / 654}
               maskWidth={427 / 654}
-              maskHeight={327 / 690}
+              maskHeight={327 / 654}
           />
           <JsvMaskClipDiv
               stylesList={[{ top: 120 + 196 + 10, left: 10 + 256, width: 196, height: 256 }]}
               viewSrc={bg_pic}
               maskSrc={mask4_pic}
               maskLeft={327 / 654}
-              maskTop={227 / 690}
+              maskTop={227 / 654}
               maskWidth={327 / 654}
               maskHeight={427 / 654}
           />
