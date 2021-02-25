@@ -49,7 +49,7 @@ const directionPair = {};
 directionPair[EdgeDirection.left] = EdgeDirection.right;
 directionPair[EdgeDirection.right] = EdgeDirection.left;
 directionPair[EdgeDirection.top] = EdgeDirection.bottom;
-directionPair[EdgeDirection.left] = EdgeDirection.top;
+directionPair[EdgeDirection.bottom] = EdgeDirection.top;
 
 class TabItem extends React.Component {
   render() {
