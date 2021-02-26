@@ -35,9 +35,12 @@ function initDesignedMap(input_designed_map) {
 
 // eslint-disable-next-line no-unused-vars
 let sForgeReactAppDefine = null;
-function loadJsViewProxy(callback, js_sub_path, input_designed_map) {
+function loadJsViewProxy(callback, js_sub_path, input_designed_map, app_name) {
   initDesignedMap(input_designed_map);
   if (window.JsView) {
+    if (app_name && window.JsView.notifyAppName) {
+      window.JsView.notifyAppName(app_name);
+    }
     initHeaderScriptLoader(js_sub_path);
     import("./jsv_hook_wrapper.js").then((app_define) => {
       sForgeReactAppDefine = app_define.ForgeReactApp;
@@ -46,11 +49,17 @@ function loadJsViewProxy(callback, js_sub_path, input_designed_map) {
       callback();
     });
   } else {
-    import("./forge_html/index.js").then(() => {
-      import("./browser_hook_wrapper.js").then(() => {
-        callback();
-      });
-    });
+      import("./forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
+          import("./forge_html/apic_decoder/demux.js").then(() => {
+              import("./forge_html/apic_decoder/gifDecoder.js").then(() => {
+                  import("./forge_html/index.js").then(() => {
+                      import("./browser_hook_wrapper.js").then(() => {
+                          callback();
+                      });
+                  });
+              })
+          })
+      })
   }
 }
 

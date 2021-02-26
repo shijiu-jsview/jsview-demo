@@ -101,11 +101,11 @@ function _ConvertStyles(styles_define) {
         const alias_array = sCssNamesMap[prop];
         // 找到别名，若为多别名，则每个别名都设置
         for (const alias of alias_array) {
-          styles_result += (`${alias}:${value};`);
+          styles_result += `${alias}:${value};`;
         }
       } else {
         // 名字不变
-        styles_result += (`${prop}:${value};`);
+        styles_result += `${prop}:${value};`;
       }
     }
   }
@@ -118,11 +118,17 @@ function _ConvertStyles(styles_define) {
 const CONST_TYPE_BASE = null;
 const CONST_TYPE_TEXT = "text";
 
+// 全局多实例互斥
+if (typeof window.__JsvStyleClassMutex === 'undefined') {
+  window.__JsvStyleClassMutex = 0;
+}
+const CONST_GLOBAL_TOKEN = window.__JsvStyleClassMutex++;
+
 class JsvStyleClass {
   /*
-     * constructor 参数说明:
-     *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
-     */
+   * constructor 参数说明:
+   *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
+   */
   constructor(styles_define) {
     this._Name = null;
     this._Styles = null;
@@ -137,28 +143,28 @@ class JsvStyleClass {
   }
 
   /*
-     * reset 参数说明:
-     *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
-     */
+   * reset 参数说明:
+   *      styles_define   (Object)    style定义，例如{top:xxx, left:xxx, width:xxx, height:xxxx}
+   */
   reset(styles_define) {
     // 创建新的Css Style，替代原缓存，并生成新的name
     this._UpdateInner(styles_define);
   }
 
   /*
-     * getName 参数说明:
-     *
-     * 返回值
-     *      String  系统分配给这个JsvStyleClass的 className
-     */
+   * getName 参数说明:
+   *
+   * 返回值
+   *      String  系统分配给这个JsvStyleClass的 className
+   */
   getName() {
     return this._Name;
   }
 
   /*
-     * recycle 参数说明:
-     *      无
-     */
+   * recycle 参数说明:
+   *      无
+   */
   recycle() {
     this._RecycleInner();
   }
@@ -166,8 +172,8 @@ class JsvStyleClass {
   _UpdateInner(styles_define) {
     this._RecycleInner();
 
-    this._Name = `JsvStyle_${sIdGenerator++}`; // 重新命名以触发react的className属性变化
-    this._Styles = styles_define;
+    this._Name = `JsvStyle_${CONST_GLOBAL_TOKEN}_${sIdGenerator++}`; // 重新命名以触发react的className属性变化
+    this._Styles = Object.assign({}, styles_define);
 
     if (window.JsvDisableReactWrapper) {
       // 纯WebView场景: 动态生成css
@@ -207,7 +213,6 @@ class JsvStyleClass {
     return this._Styles;
   }
 
-
   // 约定接口，
   // 用于存储配置转化出来的缓存信息和标识位
   getAttach() {
@@ -225,48 +230,28 @@ class JsvTextStyleClass extends JsvStyleClass {
   constructor(styles_define) {
     super(styles_define);
 
-    this._JsvTextAttributes = {}; // 例如 jsv_text_vertical_align 属性
+    this.jsvTextAttributes = {
+      jsv_text_line_align: "middle", // 文字行内垂直对齐方式
+      jsv_text_vertical_align: "top", // 文字区域内垂直对齐方式
+    };
+  }
+
+  setVerticalAlign(new_align) {
+    this.jsvTextAttributes.jsv_text_vertical_align = new_align;
+  }
+
+  setLineAlign(new_align) {
+    this.jsvTextAttributes.jsv_text_line_align = new_align;
   }
 
   // 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
-  // 非hoc由于调用时机控制不正确，可能产生设置无效的问题
-  appendJsvAttributes(name, value) {
-    if (!name.startsWith("jsv_text_")) {
-      // Error: should start with 'jsv_text_'
-      return false;
-    }
-
-    if (this._JsvTextAttributes.hasOwnProperty(name) && this._JsvTextAttributes[name] !== value) {
-      // Error: should set once
-      return false;
-    }
-
-    this._JsvTextAttributes[name] = value;
-    return true;
+  getVerticalAlign() {
+    return this.jsvTextAttributes.jsv_text_vertical_align;
   }
 
-  getTextJsvAttributes() {
-    return this._JsvTextAttributes;
-  }
-
-  // 与jsviewreact.min.js对接的内部接口
-  // 加速功能失效，失效的原因由style name给出
-  // 导致加速失效的属性为下列列表中的属性在class的style定义之外被设置成其他值:
-  // ***** Style中 ******
-  // "textOverflow",
-  // "wordWrap",
-  // "textShadow",
-  // "fontSize",
-  // "lineHeight",
-  // "color",
-  // "fontFamily",
-  // "fontStyle",
-  // "fontWeight",
-  // "textAlign",
-  // ***** Attribute中 ******
-  // "jsv_text_vertical_align"
-  fallbackMode(style_name) {
-    console.warn(`WARN: JsvTextStyleClass[${this.getName()}] perform fallback mode due to [${style_name}]`);
+  // 注意:此接口仅提供给JsViewReactWidget中的hoc调用，
+  getLineAlign() {
+    return this.jsvTextAttributes.jsv_text_line_align;
   }
 
   // Override
@@ -298,12 +283,8 @@ function combinedStyles(style_array, extract_all) {
 
   return {
     combinedClass: name_list.join(" "),
-    combinedStyle: normal_style
+    combinedStyle: normal_style,
   };
 }
 
-export {
-  JsvStyleClass,
-  JsvTextStyleClass,
-  combinedStyles
-};
+export { JsvStyleClass, JsvTextStyleClass, combinedStyles };

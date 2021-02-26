@@ -125,6 +125,66 @@ checkBrowsers(paths.appPath, isInteractive)
       );
 
       console.log("JsView Update...");
+      // main.js处理AppData信息
+      function prepareMainAppData(file_md5) {
+        const cryptoWorker = require('crypto');
+
+        // 加载私钥文件
+        const privateKeyText = fs.readFileSync("./src/appConfig/app_sign_private_key.crt");
+        if (privateKeyText.indexOf("-----BEGIN PRIVATE KEY-----") < 0) {
+          console.error("Get private from src/appConfig/app_sign_private_key.crt failed.");
+          process.exit(1);
+        }
+
+        // 加载公钥文件
+        const publicKeyText = fs.readFileSync("./src/appConfig/app_sign_public_key.pem");
+        if (publicKeyText.indexOf("-----BEGIN PUBLIC KEY-----") < 0) {
+          console.error("Get private from src/appConfig/app_sign_public_key.pem failed.");
+          process.exit(1);
+        }
+        // 公钥格式转化pem -> der，因为java中的解码处理只识别der格式
+        let publicKeyDerText = publicKeyText.toString();
+        if (publicKeyDerText.indexOf('\r') >= 0) {
+          publicKeyDerText = publicKeyDerText.replace(/\r/g, '');
+        }        
+        if (publicKeyDerText.indexOf('\n') >= 0) {
+          publicKeyDerText = publicKeyDerText.replace(/\n/g, '');
+        }
+        publicKeyDerText = publicKeyDerText.replace('-----BEGIN PUBLIC KEY-----', '');
+        publicKeyDerText = publicKeyDerText.replace('-----END PUBLIC KEY-----', '');
+
+        // 编码md5值
+        let binary_data = Buffer.from(file_md5);
+        const encryptCodeBase64 = cryptoWorker.privateEncrypt({
+            key: privateKeyText, 
+            padding: cryptoWorker.constants.RSA_PKCS1_PADDING
+          }, 
+          Buffer.from(file_md5)
+        ).toString('base64');
+
+        // 校验publicKey是否是配对的
+        const decryptCode = cryptoWorker.publicDecrypt({
+            key: publicKeyText,
+            padding: cryptoWorker.constants.RSA_PKCS1_PADDING
+          }, 
+          Buffer.from(encryptCodeBase64, 'base64')
+        ).toString();
+        if (decryptCode !== file_md5) {
+          console.error("Error: public key dismath to private key!");
+          process.exit(1);
+        }
+
+        // 获取AppData信息
+        const appDataOriginJson = JSON.parse(fs.readFileSync("./src/appConfig/app_config.json"));
+
+        // 组装AppData
+        let targetAppData = {};
+        Object.assign(targetAppData, appDataOriginJson); // 同步包括AppName在内的所有信息
+        targetAppData.PublicKeys = [publicKeyDerText]; // 使用签名数组，支持后续追加签名
+        targetAppData.EncryptCodes = [encryptCodeBase64]; // 同样使用数组，支持后续追加
+
+        return JSON.stringify(targetAppData);
+      }
       const  md5 = require('md5');
       stats.toJson({ all: false, assets: true })
            .assets.filter(asset => asset.name.startsWith('static/js') && asset.name.endsWith('js'))
@@ -133,7 +193,17 @@ checkBrowsers(paths.appPath, isInteractive)
                console.log("Updating " + jsFile);
                var jsvAppContents = fs.readFileSync(jsFile);
                const jsvAppMd5 = md5(jsvAppContents);
-               jsvAppContents = "/*jsvmd5:" + jsvAppMd5 + "*/" + jsvAppContents;
+               let appDataInfo = "";
+               if (asset.name.indexOf("main.jsv.") > 0) {
+                 // 对main文件加入应用头信息
+                 appDataInfo = prepareMainAppData(jsvAppMd5);
+
+                 // 格式化jsvapp信息 /*jsvapp:内容长度:{内容}*/
+				 // 使用TextEncoder解决中文长度问题
+                 const infoLen = new TextEncoder().encode(appDataInfo).length; 
+                 appDataInfo = "/*jsvapp:" + infoLen + ":" + appDataInfo + "*/";
+               }
+               jsvAppContents = "/*jsvmd5:" + jsvAppMd5 + "*/" + appDataInfo + jsvAppContents;
                fs.writeFileSync(jsFile, jsvAppContents);
            });
     },

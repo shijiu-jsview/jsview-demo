@@ -16,7 +16,45 @@ DESCRIPTION
        build sample_with_button APK. auto setup code revision
        Example: ./make-js 
 	   
+OPTIONS
+		--certpath=Path(from folder react_js) of certification, such as src/appConfig = react_js/src/appConfig/
+			default value is src/appConfig
+		-h, --help
+                 Optional. Print help infomation and exit successfully.;
     ';
+}
+
+parse_options()
+{
+	cmd_getopt="getopt";
+	if [ "$KERNEL_NAME" == "Darwin" ]; then
+		cmd_getopt="/usr/local/Cellar/gnu-getopt/1.1.6/bin/getopt";
+	fi
+
+	options=`$cmd_getopt -o h \
+			 --long "certpath:,help" \
+			 -n 'make-js' -- "$@"`;
+	eval set -- "$options"
+	while true; do
+		case "$1" in
+			(-h | --help)
+				print_usage;
+				exit 0;
+				;;
+			(--certpath)
+				CERT_PATH=$2;
+				shift 2;
+				;;
+			(- | --)
+				shift;
+				break;
+				;;
+			(*)
+				echo "Internal error!";
+				exit 1;
+				;;
+		esac
+	done
 }
 
 logdbg()
@@ -75,12 +113,16 @@ PROJECT_DIR=$(dirname "$SCRIPT_DIR");
 PROJECT_DIR=$(dirname "$PROJECT_DIR");
 KERNEL_NAME=$(uname -s);
 DEBUG_VERBOSE=false;
+CERT_PATH=src/appConfig
 
 # specific variable
 CODE_REVISION=0;
 
 main_run()
 {
+	loginfo "parsing options";
+	parse_options $@;
+	
 	loginfo "prepare env";
 	prepare_env;
 
@@ -96,6 +138,12 @@ main_run()
 
 	# 同步jsview-react
 	npm install src/jsview-utils/jsview-react/bin/jsview-react-package.tgz
+		
+	loginfo "CERT_PATH=${CERT_PATH}"	
+		
+	# 生成crt和pem签名文件
+	cp ${CERT_PATH}/app_sign_private_key_sample.crt src/appConfig/app_sign_private_key.crt
+	cp ${CERT_PATH}/app_sign_public_key_sample.pem src/appConfig/app_sign_public_key.pem
 		
 	# 编译JS
 	npm run-script build

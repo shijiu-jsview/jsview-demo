@@ -168,7 +168,6 @@ public class JsViewRuntimeBridge {
 		}
 	}
 
-
 	private static final String CONTENT = "content://";
 	private static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
 	private static final String CONTENT_URI = CONTENT + AUTHORITY;
@@ -182,28 +181,47 @@ public class JsViewRuntimeBridge {
 	private static final String URI_PATH = CONTENT_URI + "/" + BASE_PATH;
 
 	/**
-	 *
-	 * @param key	唯一标识
+	 * 检查收藏请求是否合法
+	 * @param appName app name 唯一标识
+	 * @param signKey 签名信息
+	 * @return
+	 */
+	public boolean checkAppName(String appName,String signKey) {
+		// String appUrl = mHostJsView.getAppUrl();
+		//TODO 通过appUrl判断appName、signKey是否合法：[正确格式jsv_main_appName_signKey]
+		return true;
+	}
+
+	/**
+	 * @param appName	唯一标识
+	 * @param signKey	签名
 	 * @param value	JSON 字符串
 	 */
 	@JavascriptInterface
-	public void addFavourite(String key, String value, JsPromise promise) {
+	public void addFavourite(String appName, String signKey, String value, JsPromise promise) {
 		mMainThreadHandler.post(()->{
-			// TODO: 做个用户确认界面(使用title和icon做用户提示, icon为http的网络图片)
-			boolean denied = false;
-			Bundle display = getFavouriteTitleIcon(value);
-
+			boolean denied = !checkAppName(appName, signKey);
 			if (!denied) {
+				// TODO: 做个用户确认界面(使用title和icon做用户提示, icon为http的网络图片)
+				Bundle display = getFavouriteTitleIcon(value);
+				String rtn = getFavourite(appName, signKey);
+				if (rtn == null) {
+					promise.reject("denied");
+					return;
+				}
+
 				//获取当前包名
 				String packageName =  mContext.getPackageName();
 				String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
 				ContentResolver cr = mContext.getContentResolver();
-				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + key+"/"+packageName);
+				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + appName+"/"+packageName);
 				ContentValues cv = new ContentValues();
 				JSONObject key_value = new JSONObject();
 				try {
 					key_value.put("packageName", packageName);
 					key_value.put("action", action);
+					key_value.put("appName", appName);
+					key_value.put("signKey", signKey);
 					key_value.put("params", new JSONObject(value));
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -213,22 +231,45 @@ public class JsViewRuntimeBridge {
 
 				promise.resolve(0);
 			} else {
+				Log.d(TAG, "addFavourite appName or signKey is not valid, appName:"+appName+", signKey:"+signKey);
 				promise.reject("denied");
 			}
 		});
 	}
 
+	/**
+	 * 获取指定app收藏信息
+	 * @param appName	唯一标识
+	 * @param signKey	签名
+	 * @return
+	 */
 	@JavascriptInterface
-	public String getFavourite(String key) {
+	public String getFavourite(String appName, String signKey) {
 		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
+		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + appName);
 		String rtn = cr.getType(uri);
 		if (rtn == null) {
-			return null;
+			return "";// not found
+		}
+		try {
+			//若数据存在，通过signKey校验
+			JSONObject value = new JSONObject(rtn);
+			String signKeyLocal = value.getString("signKey");
+			if (!signKeyLocal.equals(signKey)) {
+				Log.d(TAG, "getFavourite signKey not valid, signKey:"+signKey+", signKeyLocal:"+signKeyLocal);
+				rtn = null;// not valid
+			}
+		} catch (Exception e) {
+			Log.d(TAG, "getFavourite signKey not valid!", e);
+			rtn = null; // not valid
 		}
 		return rtn;
 	}
 
+	/**
+	 * 获取全部收藏
+	 * @return
+	 */
 	@JavascriptInterface
 	public String getFavouriteAll() {
 		ContentResolver cr = mContext.getContentResolver();
@@ -250,30 +291,34 @@ public class JsViewRuntimeBridge {
 		}
 		return null;
 	}
-
+	/**
+	 * 删除指定收藏
+	 * @param appName	唯一标识
+	 * @param signKey	签名
+	 * @return
+	 */
 	@JavascriptInterface
-	public void removeFavourite(String key, JsPromise promise) {
-		mMainThreadHandler.post(()->{
-			// TODO: 需要做个用户确认界面
-			boolean denied = false;
-			ContentResolver cr = mContext.getContentResolver();
-			Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + key);
-			String rtn = cr.getType(uri);
+	public void removeFavourite(String appName, String signKey, JsPromise promise) {
+		mMainThreadHandler.post(() -> {
+			String rtn = getFavourite(appName, signKey);
 			if (rtn == null) {
-				promise.reject("noFound");
-				return;
-			}
-			Bundle title_icon = getFavouriteTitleIcon(rtn);
-
-			if (!denied) {
-				cr = mContext.getContentResolver();
-				uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + key);
-				cr.delete(uri, null, null);
-
-				promise.resolve(0);
-			} else {
 				promise.reject("denied");
+			} else if (rtn.isEmpty()) {
+				promise.reject("noFound");
+			} else {
+				// TODO: 需要做个用户确认界面
+				boolean denied = false;
+				if (!denied) {
+					Bundle title_icon = getFavouriteTitleIcon(rtn);
+					ContentResolver cr = mContext.getContentResolver();
+					Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + appName);
+					cr.delete(uri, null, null);
+					promise.resolve(0);
+				} else {
+					promise.reject("denied");
+				}
 			}
+
 		});
 	}
 
@@ -282,12 +327,10 @@ public class JsViewRuntimeBridge {
 		mMainThreadHandler.post(()-> {
 			// TODO: 需要做个用户确认界面
 			boolean denied = false;
-
 			if (!denied) {
 				ContentResolver cr = mContext.getContentResolver();
 				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
 				cr.delete(uri, null, null);
-
 				promise.resolve(0);
 			} else {
 				promise.reject("denied");

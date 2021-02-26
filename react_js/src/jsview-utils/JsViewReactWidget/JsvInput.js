@@ -123,7 +123,7 @@ class Input extends FocusBlock {
       curOffset: this.props.value.length,
       textLeft: this._calculateSlide(this.props.value, this.props.value, this.props.value.length),
     };
-
+    this.isFocus = false;
     this._CursorRef = null;
     this._CursorPauseTimer = null;
   }
@@ -146,6 +146,14 @@ class Input extends FocusBlock {
       if (moved) {
         // 移动时，光标不闪烁
         this.pauseCursorBlink();
+      } else {
+        if (text.length >= this.props.maxlength) {
+          text = this.state.fullString;
+          if (this._InputView && this.isFocus) {
+            this._InputView.updateCursorOffset(this.state.fullString, this.state.curOffset);
+          }
+          return;
+        }
       }
       if (text.length > 0) {
         const start = cursor_pos - 1;
@@ -244,10 +252,14 @@ class Input extends FocusBlock {
 
     _getLeftWithDelChar(current_cursor_position, target_str) {
       let new_left = this.state.textLeft;
+      // console.log(` _getLeftWithDelChar target_str:${target_str}, new_left:${new_left}, this._textWidth:${this._textWidth}`);
       let offset = 0;
-      if ((current_cursor_position - this.props.cursorWidth > 0)
-            && (current_cursor_position - this.props.cursorWidth < this._VisibleAreaCurStart)) {
-        offset = (current_cursor_position - this._VisibleAreaCurPos);
+      if (current_cursor_position === 0) {
+        offset = -new_left;
+        new_left = 0;
+      } else if ((current_cursor_position - this.props.cursorWidth > 0)
+            && (current_cursor_position - this.props.cursorWidth <= this._VisibleAreaCurStart)) {
+        offset = this._VisibleAreaCurPos - current_cursor_position;
         if (new_left < 0 && new_left + offset + this._textWidth < this.props.width) {
           // 删除字符时，可视区域内字符串显示不全，对left做调整
           offset = this.props.width - (new_left + this._textWidth);
@@ -256,10 +268,12 @@ class Input extends FocusBlock {
         if (new_left > 0) {
           new_left = 0;
         } else {
-          const text_real_width = this._getFullStringLength(target_str);
-          if (new_left > text_real_width - this._MaxWidth) {
-            new_left = text_real_width - this._MaxWidth;
-            offset = this._VisibleAreaCurStart + new_left;
+          if (this.props.fontStyle.textAlign === "right") {
+            const text_real_width = this._getFullStringLength(target_str);
+            if (new_left > text_real_width - this._MaxWidth) {
+              new_left = text_real_width - this._MaxWidth;
+              offset = this._VisibleAreaCurStart + new_left;
+            }
           }
         }
       } else {
@@ -284,6 +298,7 @@ class Input extends FocusBlock {
       }
 
       this._updateVisibleAreaCursor(-offset);
+      // console.log(` _getLeftWithDelChar2 target_str:${target_str}, new_left:${new_left}, this._textWidth:${this._textWidth}`);
 
       return new_left;
     }
@@ -377,9 +392,9 @@ class Input extends FocusBlock {
         option_mode = "op_add";// 字符追加
       } else {
         if (moved) {
-          if (current_cursor_position < this._VisibleAreaCurStart) {
+          if (current_cursor_position <= this._VisibleAreaCurStart) {
             option_mode = "op_move_left";// 边界左移动
-          } else if (current_cursor_position > this._VisibleAreaCurEnd) {
+          } else if (current_cursor_position >= this._VisibleAreaCurEnd) {
             option_mode = "op_move_right";// 边界右移动
           }
         }
@@ -411,12 +426,14 @@ class Input extends FocusBlock {
 
     onFocus() {
       console.log("Input Focus");
+      this.isFocus = true;
       if (this._InputView && !this.props.readonly) {
         this._InputView.showIme(this.props.type, this.state.fullString, this.state.curOffset);
       }
     }
 
     onBlur() {
+      this.isFocus = false;
       console.log("Input Blur");
       if (this._InputView && !this.props.readonly) {
         this._InputView.hideIme();

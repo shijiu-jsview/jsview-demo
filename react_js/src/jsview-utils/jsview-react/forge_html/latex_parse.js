@@ -260,7 +260,7 @@ function parseLatex(text) {
 
   leaf_list.forEach((n, index, arr) => {
     let node = n.parent;
-    while (node !== null) {
+    while (node) {
       n.styleList.push(node.textStyle);
       node = node.parent;
     }

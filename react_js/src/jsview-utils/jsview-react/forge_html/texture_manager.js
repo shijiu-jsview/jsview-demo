@@ -15,7 +15,7 @@ Forge.QRCodeLevel = {
   L: 1,
   M: 0,
   Q: 3,
-  H: 2
+  H: 2,
 };
 const CONST_CACHE_MAX_SIZE = 100;
 
@@ -140,7 +140,6 @@ class ImageTexture {
       return;
     }
 
-
     if (on_load_callback !== null) {
       this._OnLoadCallback.push({ callback: on_load_callback, params });
       if (this._CallbackIdToken === 0) {
@@ -174,7 +173,7 @@ class ImageTexture {
    * @return {boolean} 图片是否加载进内存
    * */
   IsLoaded() {
-    return (this.LoadTime !== 0 && !this.Unloaded);
+    return this.LoadTime !== 0 && !this.Unloaded;
   }
 
   SetTextureTracerDescript(descript) {
@@ -190,14 +189,17 @@ Forge.ImageTexture = ImageTexture;
 class UrlImageTexture extends Forge.ImageTexture {
   constructor(texture_manage, url, is_forever, size, color_space, net_setting) {
     const name = "IMG";
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(texture_manage.GetId(), name);
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      texture_manage.GetId(),
+      name
+    );
     resource_info.Set = {
       URL: url,
       Siz: size,
       Clr: color_space || "",
       IsF: is_forever ? 1 : 0,
       NtS: net_setting,
-      ILd: 0// instant decode 0:false 1:true
+      ILd: 0, // instant decode 0:false 1:true
     };
     super(texture_manage, resource_info);
 
@@ -210,7 +212,7 @@ class UrlImageTexture extends Forge.ImageTexture {
     this.ColorSpace = color_space || "";
     /* Forge.ColorSpace */
     this.NetSetting = net_setting || null;
-    this._InstantLoad = 0;// 默认为0 //instant decode 0:false 1:true
+    this._InstantLoad = 0; // 默认为0 //instant decode 0:false 1:true
     this._ImageElement = new Image();
     this._ImageElement.onload = function () {
       this._Loaded();
@@ -260,7 +262,7 @@ class UrlImageTexture extends Forge.ImageTexture {
     }
 
     // if (this.RenderTexture === null) {
-    // 	Forge.LogD("ReallocRenderTexture(): Render texture still alive");
+    //  Forge.LogD("ReallocRenderTexture(): Render texture still alive");
     // }
     const url = this.Source;
     const target_size = this.TargetSize;
@@ -269,13 +271,16 @@ class UrlImageTexture extends Forge.ImageTexture {
     /* Forge.ColorSpace */
 
     const is_forever = this.IsForever;
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Manager.GetId(), this.Name);
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Manager.GetId(),
+      this.Name
+    );
     resource_info.Set = {
       URL: url,
       Siz: target_size,
       Clr: color_space,
       IsF: is_forever,
-      ILd: this._InstantLoad// instant decode 0:false 1:true
+      ILd: this._InstantLoad, // instant decode 0:false 1:true
     };
 
     this.RenderTexture = Forge.sRenderTextureDelegateManager.CreateTexture();
@@ -284,6 +289,51 @@ class UrlImageTexture extends Forge.ImageTexture {
   }
 }
 Forge.UrlImageTexture = UrlImageTexture;
+
+class TextStyleTexture extends Forge.ImageTexture {
+  constructor(
+    texture_manage,
+    str,
+    tsp,
+    has_load_callback,
+    rect_area,
+    font_size,
+    line_height,
+    is_instant,
+    latex_mode
+  ) {
+    const name = "TST";
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      texture_manage.GetId(),
+      name
+    );
+
+    resource_info["Set"] = {
+      ST: str,
+      IDS: tsp.GetIdsPack(),
+      W: Math.floor(rect_area.width + 0.5),
+      H: Math.floor(rect_area.height + 0.5),
+      FS: font_size,
+      LA: latex_mode,
+      LH: Math.floor(line_height + 0.5),
+      ILD: is_instant ? 1 : 0,
+      TLC: has_load_callback ? 1 : 0,
+    };
+
+    super(texture_manage, resource_info);
+
+    this.Name = name;
+    this._TextStylePack = tsp;
+    tsp.DoRef();
+  }
+
+  // Override
+  UnloadTex() {
+    this._TextStylePack.UnRef();
+    super.UnloadTex();
+  }
+}
+Forge.TextStyleTexture = TextStyleTexture;
 
 class CachedTextureManager {
   constructor(texture_manager) {
@@ -304,11 +354,15 @@ class CachedTextureManager {
     const stack_length = this._CachedTextureStack.length;
     for (let i = stack_length - 1; i >= 0; i--) {
       const compare_texture = this._CachedTextureStack[i];
-      if (compare_texture.Source === url
-        && (size === compare_texture.TargetSize
-        || (size !== null && size.Equals(compare_texture.TargetSize)))
-        && (color_space === compare_texture.ColorSpace)) {
-        if (compare_texture.RenderTexture === null) { continue; }
+      if (
+        compare_texture.Source === url &&
+        (size === compare_texture.TargetSize ||
+          (size !== null && size.Equals(compare_texture.TargetSize))) &&
+        color_space === compare_texture.ColorSpace
+      ) {
+        if (compare_texture.RenderTexture === null) {
+          continue;
+        }
         return compare_texture;
       }
     }
@@ -368,7 +422,11 @@ class TextureManager {
     this.CachedTextureManager = new Forge.CachedTextureManager(this);
     this._ForeverCachedTextureManager = new Forge.CachedTextureManager(this);
 
-    this._AtlasDataInfo = { atlas_data: [], buffer_data_offset: 0, textures: [] };
+    this._AtlasDataInfo = {
+      atlas_data: [],
+      buffer_data_offset: 0,
+      textures: [],
+    };
 
     // Cached image stack cleaner
     this._ClearTimer = -1;
@@ -385,7 +443,10 @@ class TextureManager {
 
   StartScavengerCachedTimer() {
     if (this._ClearTimer === -1) {
-      this._ClearTimer = Forge.ForegroundTimer.setInterval(this.ScavengerCached.bind(this), 30000);
+      this._ClearTimer = Forge.ForegroundTimer.setInterval(
+        this.ScavengerCached.bind(this),
+        30000
+      );
     }
   }
 
@@ -407,7 +468,14 @@ class TextureManager {
       Forge.LogI("GetImage, url is null!");
       return null;
     }
-    const texture_new = this._GetImageInternal(url, null, Forge.ColorSpace.RGBA_8888, is_forever, false, net_setting);
+    const texture_new = this._GetImageInternal(
+      url,
+      null,
+      Forge.ColorSpace.RGBA_8888,
+      is_forever,
+      false,
+      net_setting
+    );
     return texture_new;
   }
 
@@ -424,27 +492,64 @@ class TextureManager {
         } else {
           color_space = Forge.ColorSpace.RGB_ETC1;
         }
-      } else { color_space = Forge.ColorSpace.RGB_565; }
+      } else {
+        color_space = Forge.ColorSpace.RGB_565;
+      }
     }
-    const texture_new = this._GetImageInternal(url, formated_target_size, color_space, is_forever, false, net_setting);
+    const texture_new = this._GetImageInternal(
+      url,
+      formated_target_size,
+      color_space,
+      is_forever,
+      false,
+      net_setting
+    );
     return texture_new;
   }
 
-  _GetImageInternal(url, target_size, color_space, is_forever, is_gif, net_setting) {
+  _GetImageInternal(
+    url,
+    target_size,
+    color_space,
+    is_forever,
+    is_gif,
+    net_setting
+  ) {
     // 先尝试从Cache中拿取ImageTexture
     if (!is_forever) {
-      const texture = this.CachedTextureManager._FindTexture(url, target_size, color_space);
+      const texture = this.CachedTextureManager._FindTexture(
+        url,
+        target_size,
+        color_space
+      );
       if (texture) {
         return texture;
       }
     } else {
-      const texture = this._ForeverCachedTextureManager._FindTexture(url, target_size, color_space);
-      if (texture) { return texture; }
+      const texture = this._ForeverCachedTextureManager._FindTexture(
+        url,
+        target_size,
+        color_space
+      );
+      if (texture) {
+        return texture;
+      }
     }
-    const texture_new = new Forge.UrlImageTexture(this, url, is_forever, target_size, color_space, net_setting);
+    const texture_new = new Forge.UrlImageTexture(
+      this,
+      url,
+      is_forever,
+      target_size,
+      color_space,
+      net_setting
+    );
 
     // 加入到Cache中
-    if (!texture_new.IsForever) { this.CachedTextureManager.CacheTheTexture(texture_new); } else { this._ForeverCachedTextureManager.CacheTheTexture(texture_new); }
+    if (!texture_new.IsForever) {
+      this.CachedTextureManager.CacheTheTexture(texture_new);
+    } else {
+      this._ForeverCachedTextureManager.CacheTheTexture(texture_new);
+    }
 
     return texture_new;
   }
@@ -453,22 +558,40 @@ class TextureManager {
     return this.GetCustomCornerMask(rect_area, rad, rad, rad, rad);
   }
 
-  GetCustomCornerMask(rect_area, rad_left_top, rad_right_top, rad_left_bottom, rad_right_bottom) {
+  GetCustomCornerMask(
+    rect_area,
+    rad_left_top,
+    rad_right_top,
+    rad_left_bottom,
+    rad_right_bottom
+  ) {
     const formatted_rect_area = Forge.sRectUitls.FormatRectArea(rect_area);
-    const max_rad = Math.max(rad_left_top, rad_right_top, rad_left_bottom, rad_right_bottom);
-    if (max_rad > formatted_rect_area.width / 2 || max_rad > formatted_rect_area.height / 2) {
-      Forge.LogE(`TextureManager.GetRoundCornerMask(): radius is too large, radius=${max_rad
-      } w=${formatted_rect_area.width} h=${formatted_rect_area.height}`);
+    const max_rad = Math.max(
+      rad_left_top,
+      rad_right_top,
+      rad_left_bottom,
+      rad_right_bottom
+    );
+    if (
+      max_rad > formatted_rect_area.width / 2 ||
+      max_rad > formatted_rect_area.height / 2
+    ) {
+      Forge.LogE(
+        `TextureManager.GetRoundCornerMask(): radius is too large, radius=${max_rad} w=${formatted_rect_area.width} h=${formatted_rect_area.height}`
+      );
       return null;
     }
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Id, "CCM");
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Id,
+      "CCM"
+    );
     resource_info.Set = {
       W: formatted_rect_area.width,
       H: formatted_rect_area.height,
       LT: rad_left_top,
       RT: rad_right_top,
       LB: rad_left_bottom,
-      RB: rad_right_bottom
+      RB: rad_right_bottom,
     };
     const image_texture = new Forge.ImageTexture(this, resource_info);
 
@@ -480,9 +603,12 @@ class TextureManager {
   }
 
   GetOneCornerMask(rad) {
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Id, "OCM");
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Id,
+      "OCM"
+    );
     resource_info.Set = {
-      Rad: rad
+      Rad: rad,
     };
     const image_texture = new Forge.ImageTexture(this, resource_info);
 
@@ -491,6 +617,49 @@ class TextureManager {
     }
 
     return image_texture;
+  }
+
+  /**
+   * 通过TextStylePack设定创建TextTexture
+   *
+   * @public
+   * @func BuildTextView
+   * @memberof Forge.TextureManager
+   * @param {String} str                 文件内容
+   * @param {Forge.TextStylePack} tsp    文字配置信息
+   * @param {boolean} has_load_callback   是否有加载回调函数
+   * @param {Object} rect_area         文字描画区域，有宽高即可{width:xxxx, height:xxxx}, 当height为0表示按照文字长度处理高
+   * @param {int} font_size               字号
+   * @param {int} line_height             文字行高
+   * @param {int} is_instant 是否立即加载
+   * @param {boolean} latex_mode 多格式混排模式
+   * @return {Forge.TextStyleTexture} 文字Texture
+   */
+  GetTextTextureFromStylePack(
+    str,
+    tsp,
+    has_load_callback,
+    rect_area,
+    font_size,
+    line_height,
+    is_instant,
+    latex_mode
+  ) {
+    if (!str || str.length === 0) {
+      return null;
+    }
+
+    return new Forge.TextStyleTexture(
+      this,
+      str,
+      tsp,
+      has_load_callback,
+      rect_area,
+      font_size,
+      line_height,
+      is_instant,
+      latex_mode
+    );
   }
 
   _getParamsId(string_with_font, attr, shader) {
@@ -513,7 +682,14 @@ class TextureManager {
     const word_wrap = attr.word_wrap;
 
     const fs_key = [font, italic, bold, shadow, stroke_width].join(":");
-    const ds_key = [size, alignment, vertical_align, vertical_area_align, text_overflow, word_wrap].join(":");
+    const ds_key = [
+      size,
+      alignment,
+      vertical_align,
+      vertical_area_align,
+      text_overflow,
+      word_wrap,
+    ].join(":");
     let fs_id = "";
     let ds_id = "";
     if (!TEXT_FONT_STYLE_CACHE.has(fs_key)) {
@@ -534,11 +710,17 @@ class TextureManager {
     return [fs_id, ds_id, text_color, bg_color];
   }
 
-  GetTextTextureByMultiRows(t_StringWithFont, t_TextAttr,
-    t_RectArea, line_height,
+  GetTextTextureByMultiRows(
+    t_StringWithFont,
+    t_TextAttr,
+    t_RectArea,
+    line_height,
     need_quick,
-    shader, is_instant, latex_mode,
-    duplicate_info_bag) {
+    shader,
+    is_instant,
+    latex_mode,
+    duplicate_info_bag
+  ) {
     const text = t_StringWithFont.str;
     if (text === null || text.length === 0) {
       return null;
@@ -554,7 +736,9 @@ class TextureManager {
     rect_area.width *= display_scale_ratio;
     rect_area.height *= display_scale_ratio;
     const string_with_font = Object.assign(t_StringWithFont);
-    string_with_font.size = Math.ceil(string_with_font.size * display_scale_ratio);
+    string_with_font.size = Math.ceil(
+      string_with_font.size * display_scale_ratio
+    );
     line_height *= display_scale_ratio;
 
     // Create TextTexture Setting Info
@@ -565,29 +749,31 @@ class TextureManager {
         // 顺序不能调整，native按顺序而非key-value读取
         // 字段追加只能放在末尾
         TO: t_TextAttr.text_overflow,
-        WW: t_TextAttr.word_wrap
+        WW: t_TextAttr.word_wrap,
       }),
       RA: JSON.stringify({
         X: parseInt(rect_area.x + 0.5, 10),
         Y: parseInt(rect_area.y + 0.5, 10),
         W: parseInt(rect_area.width + 0.5, 10),
-        H: parseInt(rect_area.height + 0.5, 10)
+        H: parseInt(rect_area.height + 0.5, 10),
       }),
       LA: latex_mode,
       LH: parseInt(line_height + 0.5, 10),
-      ILD: typeof is_instant !== "undefined" ? is_instant : 1
+      ILD: typeof is_instant !== "undefined" ? is_instant : 1,
     };
 
     // 若有shader，则传输
     if (shader) {
       texture_set.SH = JSON.stringify({
         T: shader.Type, // type
-        P: shader.Params// params
+        P: shader.Params, // params
       });
     }
-    if (typeof window.JsView !== 'undefined'
-      && typeof window.JsView.ForgeNativeRevision !== 'undefined'
-      && window.JsView.ForgeNativeRevision > 0) {
+    if (
+      typeof window.JsView !== "undefined" &&
+      typeof window.JsView.ForgeNativeRevision !== "undefined" &&
+      window.JsView.ForgeNativeRevision > 0
+    ) {
       const ids = this._getParamsId(string_with_font, t_TextAttr, shader);
       texture_set.PI = {
         FS: ids[0],
@@ -598,7 +784,10 @@ class TextureManager {
     }
 
     // 创建TextTexture
-    const texture = this._BuildTextTextureAndSerialStatus(texture_set, string_with_font);
+    const texture = this._BuildTextTextureAndSerialStatus(
+      texture_set,
+      string_with_font
+    );
 
     // 填充Duplicate信息
     if (duplicate_info_bag !== null) {
@@ -615,7 +804,13 @@ class TextureManager {
 
     let real_height = rect_area.height;
     if (typeof window.PlatformUtils !== "undefined" && need_quick === false) {
-      const real_rect = window.PlatformUtils.GetTextRect(text, rect_area, string_with_font, t_TextAttr, line_height);
+      const real_rect = window.PlatformUtils.GetTextRect(
+        text,
+        rect_area,
+        string_with_font,
+        t_TextAttr,
+        line_height
+      );
       real_height = real_rect.height;
     }
 
@@ -631,7 +826,7 @@ class TextureManager {
 
     return {
       texture, // export member
-      real_height // export member
+      real_height, // export member
     };
   }
 
@@ -648,11 +843,20 @@ class TextureManager {
    * @param {bool} if_texture_onload_callback 是否texture加载回调
    * @return {Forge.TextTexture} 创建完成的文字Texture
    * */
-  GetCopiedTextTexture(text, text_area, duplicate_info_bag, if_texture_onload_callback) {
+  GetCopiedTextTexture(
+    text,
+    text_area,
+    duplicate_info_bag,
+    if_texture_onload_callback
+  ) {
     // 取出TextureSetting和StringWithFont信息
     const texture_set = Object.assign({}, duplicate_info_bag.Set);
     texture_set.ST = text;
-    texture_set.TLC = (typeof if_texture_onload_callback !== 'undefined' && if_texture_onload_callback ? 1 : 0);
+    texture_set.TLC =
+      typeof if_texture_onload_callback !== "undefined" &&
+      if_texture_onload_callback
+        ? 1
+        : 0;
     const string_with_font = duplicate_info_bag.Swf;
 
     // 重新配置Size
@@ -661,11 +865,14 @@ class TextureManager {
       X: parseInt(text_area.x * display_scale_ratio + 0.5, 10),
       Y: parseInt(text_area.y * display_scale_ratio + 0.5, 10),
       W: parseInt(text_area.width * display_scale_ratio + 0.5, 10),
-      H: parseInt(text_area.height * display_scale_ratio + 0.5, 10)
+      H: parseInt(text_area.height * display_scale_ratio + 0.5, 10),
     });
 
     // 创建TextTexture
-    const texture = this._BuildTextTextureAndSerialStatus(texture_set, string_with_font);
+    const texture = this._BuildTextTextureAndSerialStatus(
+      texture_set,
+      string_with_font
+    );
 
     if (Forge.ForgeDebug.EnableTextureTracer && text) {
       let descript = text;
@@ -680,7 +887,10 @@ class TextureManager {
 
   // 创建文字的Texture，文字信息传输时，共通的信息会通过串行化的同步发送的Status传递
   _BuildTextTextureAndSerialStatus(texture_set, string_with_font) {
-    Forge.sRenderTextureDelegateManager.AppendFontStatusIfNeed(texture_set, string_with_font);
+    Forge.sRenderTextureDelegateManager.AppendFontStatusIfNeed(
+      texture_set,
+      string_with_font
+    );
     let status = null;
 
     if (texture_set.FO) {
@@ -688,20 +898,26 @@ class TextureManager {
       status = {
         STA: {
           Nam: "T",
-          Sta: texture_set.FO
-        }
+          Sta: texture_set.FO,
+        },
       };
     }
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Id, "T");
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Id,
+      "T"
+    );
     resource_info.Set = texture_set;
 
     return new Forge.ImageTexture(this, resource_info, status);
   }
 
   GetColorTexture(fill_style) {
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Id, "CT");
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Id,
+      "CT"
+    );
     resource_info.Set = {
-      Clr: fill_style
+      Clr: fill_style,
     };
     const image_texture = new Forge.ImageTexture(this, resource_info);
 
@@ -720,7 +936,10 @@ class TextureManager {
   }
 
   GetOffScreenMediaTexture(video_player_hdl) {
-    if (typeof window.OffscreenVideoPlayer === "undefined" || !(video_player_hdl instanceof window.OffscreenVideoPlayer)) {
+    if (
+      typeof window.OffscreenVideoPlayer === "undefined" ||
+      !(video_player_hdl instanceof window.OffscreenVideoPlayer)
+    ) {
       // 未运行在JsView中
       return null;
     }
@@ -738,14 +957,19 @@ class TextureManager {
   }
 
   _BuildVideoTexture(video_player_hdl) {
-    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(this._Id, "VPLY");
+    const resource_info = Forge.sRenderTextureDelegateManager.CreateResourceInfo(
+      this._Id,
+      "VPLY"
+    );
     resource_info.Set = {
-      Hdl: video_player_hdl.mediaHandler()
+      Hdl: video_player_hdl.mediaHandler(),
     };
 
     const image_texture = new Forge.ImageTexture(this, resource_info);
     if (Forge.ForgeDebug.EnableTextureTracer) {
-      image_texture.SetTextureTracerDescript(`Video[${video_player_hdl.mediaHandler()}]`);
+      image_texture.SetTextureTracerDescript(
+        `Video[${video_player_hdl.mediaHandler()}]`
+      );
     }
 
     return image_texture;
@@ -754,6 +978,4 @@ class TextureManager {
 TextureManager.sTextureManagerToken = 100;
 Forge.TextureManager = TextureManager;
 window.TextureManager = Forge.TextureManager; // export class
-export {
-  TextureManager,
-};
+export { TextureManager };

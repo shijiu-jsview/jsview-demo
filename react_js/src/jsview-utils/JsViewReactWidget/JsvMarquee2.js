@@ -11,8 +11,7 @@
  *                                         样式对象内容为{left:0, top:0, width:xxx, height:xxx}，
  *                                         布局样式为数组中所有样式的合并。
  *                  fontStyles {array} 字体样式数组(必需)，由object或JsvTextStyleClass组成
- *                                                          布局样式为数组中所有样式的合并。
- *                                                          数组中只有单个JsvTextStyleClass时，可加速渲染性能
+ *                                       布局样式为数组中所有样式的合并。可加速渲染性能
  *                  styleToken {string}  类似于react html元素的key，当style变化时，由使用者改变此Token通知hoc进行style重新识别。
  *                                      Token不变的场景，props变化不会引起render，以提高渲染性能
  */
@@ -21,9 +20,28 @@ import React from 'react';
 import './JsvMarquee.css';
 import PropTypes from "prop-types";
 import { Forge } from "../jsview-react/index_widget";
-import { combinedStyles } from "../JsViewReactTools/JsvStyleClass";
+import { JsvStyleClass, JsvTextStyleClass, combinedStyles } from "../JsViewReactTools/JsvStyleClass";
 
-const CONST_SLIDE_SPEED = 60; // 80px per second
+const CONST_SLIDE_SPEED = 60; // 60px per second
+
+
+const sDefaultLayoutStyle = new JsvStyleClass({
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 20,
+});
+
+const sDefaultFontStyle = new JsvTextStyleClass({
+  color: 'rgba(255,255,255,1.0)',
+  fontSize: 10,
+  textAlign: 'center',
+  lineHeight: '20px'
+});
+
+const sCommonFontStyle = new JsvTextStyleClass({
+  whiteSpace: 'nowrap'
+});
 
 class JsvMarquee2 extends React.Component {
   constructor(props) {
@@ -144,8 +162,7 @@ class JsvMarquee2 extends React.Component {
                     <div key="text" ref={this._textRef}
                          className={this._FontStyleClass}
                          style={{ ...this._FontStyle,
-                           height: this._LayoutStyle.height,
-                           whiteSpace: 'nowrap' }}
+                           height: this._LayoutStyle.height}}
                     >
                         {this.props.text}
                     </div>
@@ -158,7 +175,7 @@ class JsvMarquee2 extends React.Component {
     if (this.props.styleToken !== this._TokenProcessed) {
       // Token变化时，重新解析style array
       const layout_set = combinedStyles(this.props.layoutStyles, true);
-      const font_set = combinedStyles(this.props.fontStyles);
+      const font_set = combinedStyles([...this.props.fontStyles, sCommonFontStyle]);
 
       this._LayoutStyle = layout_set.combinedStyle;
       this._FontStyle = font_set.combinedStyle;
@@ -182,18 +199,8 @@ JsvMarquee2.propTypes = {
 
 JsvMarquee2.defaultProps = {
   text: '',
-  layoutStyles: [{
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 20,
-  }],
-  fontStyle: [{
-    color: 'rgba(255,255,255,1.0)',
-    fontSize: 10,
-    textAlign: 'center',
-    lineHeight: '20px'
-  }]
+  layoutStyles: [sDefaultLayoutStyle],
+  fontStyle: [sDefaultFontStyle]
 };
 
 export default JsvMarquee2;

@@ -64,20 +64,20 @@ function _getTransformInfo(source_obj, target_obj, canvas_width, canvas_height) 
 function _createTransformStyle(w_scale, h_scale, x, y) {
   let output = "";
   output = `${output}scale3d(${
-    parseFloat(w_scale).toPrecision(5)},${
-    parseFloat(h_scale).toPrecision(5)},1) `
-        + `translate3d(${
-          parseFloat(x).toPrecision(5)}px,${
-          parseFloat(y).toPrecision(5)}px,0)`;
+      parseFloat(w_scale).toPrecision(5)},${
+      parseFloat(h_scale).toPrecision(5)},1) `
+    + `translate3d(${
+      parseFloat(x).toPrecision(5)}px,${
+      parseFloat(y).toPrecision(5)}px,0)`;
   return output;
 }
 
 class SpriteController {
   /**
-     * 方法说明
-     *      start() 启动动图
-     *      stop(end_frame) 停止动图 end_frame: "start", "end"
-     */
+   * 方法说明
+   *      start() 启动动图
+   *      stop(end_frame) 停止动图 end_frame: "start", "end"
+   */
   constructor() {
     this._SpriteImage = null;
     this.Used = false;
@@ -88,25 +88,42 @@ class SpriteController {
   }
 
   /*
-     * start()  启动精灵图
-     * 参数说明: 无
-     */
-  start() {
+   * start()  启动精灵图
+   * 参数说明:
+   *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
+   */
+  start(end_frame) {
     if (!this.Used) { this.Used = true; }
     if (this._SpriteImage) {
-      this._SpriteImage.start();
+      this._SpriteImage.start(end_frame);
     }
   }
 
   /*
-     * stop(end_frame)  停止精灵图
-     * 参数说明:
-     *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
-     */
+   * stop(end_frame)  停止精灵图
+   * 参数说明:
+   *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
+   */
   stop(end_frame) {
     if (!this.Used) { this.Used = true; }
     if (this._SpriteImage) {
       this._SpriteImage.stop(end_frame);
+    }
+  }
+
+  /**
+   * blink() 对精灵图做闪烁动画（忽隐忽现）
+   * 参数说明:
+   *      alpha {Array} 透明度变化
+   *      duration {int}  时长(秒)
+   *      delay {int}     时长（秒）
+   *      ease {string}
+   *      repeat {int} 动画完成后是否应该自动重新启动？如果要使其永久运行，请设置为-1
+   */
+  blink(alpha, duration, ease, delay, repeat) {
+    if (!this.Used) { this.Used = true; }
+    if (this._SpriteImage) {
+      this._SpriteImage.blink(alpha, duration, ease, delay, repeat);
     }
   }
 }
@@ -127,6 +144,7 @@ class JsvSpriteAnim extends React.Component {
 
     this._FrozeFrameCache = {
       clipStyle: {},
+      transStyle: {},
       imageStyle: {
         backgroundImage: null,
       }
@@ -134,6 +152,7 @@ class JsvSpriteAnim extends React.Component {
 
     this._AnimateFrameCache = {
       clipStyle: {},
+      transStyle: {},
       imageStyle: {
         backgroundImage: null,
       },
@@ -146,7 +165,9 @@ class JsvSpriteAnim extends React.Component {
       innerId: 0,
       stopped: false,
       stopFrame: "start",
+      blinkAnim: null,
     };
+    this.blinkAnimCache = null;
   }
 
   stop(end_frame) {
@@ -159,14 +180,68 @@ class JsvSpriteAnim extends React.Component {
     });
   }
 
-  start() {
+  start(end_frame) {
     if (this.props.spriteInfo.frames && this.props.spriteInfo.frames.length === 1) {
       return;
     }
     this.setState({
       innerId: this.state.innerId + 1,
-      stopped: false
+      stopped: false,
+      stopFrame: end_frame || "end",
     });
+  }
+
+  blink(alphas, duration, ease, delay, repeat) {
+    // 注意：比较数组是否相同仅在此场景下使用toString，其他场景
+    if (!this.blinkAnimCache
+      || (this.blinkAnimCache.alphas.toString() !== alphas.toString()
+      || this.blinkAnimCache.duration !== duration
+      || this.blinkAnimCache.ease !== ease
+      || this.blinkAnimCache.delay !== delay
+      || this.blinkAnimCache.repeat !== repeat)) {
+      const anim_name_base = this._getAnimNameBase();
+      const anim_name_blink = `${anim_name_base}-blink`;
+      let image_keyframs = `@keyframes ${anim_name_blink} {`;
+      const frame_percent = 1 / (alphas.length);
+      for (let i = 0; i < alphas.length; i++) {
+        const alpha = alphas[i];
+        let header;
+        if (i !== alphas.length - 1) {
+          header = `${parseFloat(frame_percent * i * 100).toFixed(2)}% {`;
+        } else {
+          header = '100% {';
+        }
+        image_keyframs += header;
+
+        if (alpha) {
+          const tr_str = ` opacity:${alpha};`;
+          image_keyframs += tr_str;
+        }
+
+        image_keyframs += '}';
+        image_keyframs += "\n";
+      }
+      image_keyframs += '}';
+      if (this._KeyFrameStyleSheet) {
+        this._KeyFrameStyleSheet.insertRule(image_keyframs);
+      }
+      this.blinkAnimCache = {
+        alphas,
+        duration,
+        ease,
+        delay,
+        repeat,
+        blinkAnimName: anim_name_blink
+      };
+    }
+
+    // 参数格式化
+    ease = ease || "";
+    delay = delay || 0;
+    repeat = (repeat === -1) ? "infinite" : (repeat || 1);
+
+    const animName = `${this.blinkAnimCache.blinkAnimName} ${duration}s ${ease} ${delay}s ${repeat}`;
+    this.setState({ blinkAnim: animName });
   }
 
   _getAnimNameBase() {
@@ -174,8 +249,8 @@ class JsvSpriteAnim extends React.Component {
   }
 
   _updateFrozeFrameCache(image_url, frame_info_list,
-    canvas_width, canvas_height,
-    source_width, source_height) {
+                         canvas_width, canvas_height,
+                         source_width, source_height) {
     const cache = this._FrozeFrameCache;
 
     const index = this.state.stopFrame === "start" ? 0 : frame_info_list.length - 1;
@@ -195,18 +270,23 @@ class JsvSpriteAnim extends React.Component {
       height: canvas_height,
     };
 
-    cache.imageStyle = {
-      backgroundImage: image_url,
+    cache.transStyle = {
       transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
       transform: _createTransformStyle(tr.sw, tr.sh, tr.x, tr.y),
+      width: source_width,
+      height: source_height,
+    };
+
+    cache.imageStyle = {
+      backgroundImage: image_url,
       width: source_width,
       height: source_height,
     };
   }
 
   _updateAnimateFrameCache(image_url, frame_info_list,
-    canvas_width, canvas_height,
-    source_width, source_height) {
+                           canvas_width, canvas_height,
+                           source_width, source_height) {
     this._clearExpiredKeyFrames();
 
     if (!frame_info_list) { return; }
@@ -280,13 +360,18 @@ class JsvSpriteAnim extends React.Component {
       animation: null, // 外部设置，需要时间和loop信息
     };
 
+    cache.transStyle = {
+      transform: null, // 重置 transform，以免影响keyframe动画
+      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
+      animation: null, // 外部设置，需要时间和loop信息
+      width: source_width,
+      height: source_height,
+    };
+
     cache.imageStyle = {
       backgroundImage: image_url,
       width: source_width,
       height: source_height,
-      transform: null, // 重置 transform，以免影响keyframe动画
-      transformOrigin: TRANSFORM_ORIGIN_LEFT_TOP,
-      animation: null, // 外部设置，需要时间和loop信息
     };
   }
 
@@ -319,6 +404,7 @@ class JsvSpriteAnim extends React.Component {
 
       return {
         clipStyle: this._FrozeFrameCache.clipStyle,
+        transStyle: this._FrozeFrameCache.transStyle,
         imageStyle: this._FrozeFrameCache.imageStyle,
       };
     }
@@ -337,12 +423,13 @@ class JsvSpriteAnim extends React.Component {
 
     // 使用duration和loop信息更新动画设定
     this._AnimateFrameCache.clipStyle.animation =
-            `${this._AnimateFrameCache.clipAnimName} ${this.props.duration}s steps(1,start) ${this.props.loop}`;
-    this._AnimateFrameCache.imageStyle.animation =
-            `${this._AnimateFrameCache.imageAnimName} ${this.props.duration}s steps(1,start) ${this.props.loop}`;
+      `${this._AnimateFrameCache.clipAnimName} ${this.props.duration}s steps(1,end) ${this.props.loop}`;
+    this._AnimateFrameCache.transStyle.animation =
+      `${this._AnimateFrameCache.imageAnimName} ${this.props.duration}s steps(1,end) ${this.props.loop}`;
 
     return {
       clipStyle: this._AnimateFrameCache.clipStyle,
+      transStyle: this._AnimateFrameCache.transStyle,
       imageStyle: this._AnimateFrameCache.imageStyle,
     };
   }
@@ -350,35 +437,43 @@ class JsvSpriteAnim extends React.Component {
   shouldComponentUpdate(next_props, next_state) {
     return (
       (this.props.imageUrl !== next_props.imageUrl)
-            || (this.props.onAnimEnd !== next_props.onAnimEnd)
-            || (this.props.duration !== next_props.duration)
-            || (this.props.loop !== next_props.loop)
-            || (this.props.autostart !== next_props.autostart)
-            || this.state.innerId !== next_state.innerId
-            || this.state.stopped !== next_state.stopped
+      || (this.props.onAnimEnd !== next_props.onAnimEnd)
+      || (this.props.duration !== next_props.duration)
+      || (this.props.loop !== next_props.loop)
+      || (this.props.autostart !== next_props.autostart)
+      || this.state.innerId !== next_state.innerId
+      || this.state.stopped !== next_state.stopped
+      || this.state.blinkAnim !== next_state.blinkAnim
     );
   }
 
-  onAnimEndDelegate = ()=>{
+  onAnimEndDelegate = () => {
     // 在onAnimEnd之前进行Stop，以防onAnimEnd内部继续发生别的操作
     this.setState({
       stopped: true,
-      stopFrame: "end"
     });
-
     if (this.props.onAnimEnd) {
       this.props.onAnimEnd();
     }
   };
 
+  onBlinkAnimEnd = () => {
+    // 在onAnimEnd之前进行Stop，以防onAnimEnd内部继续发生别的操作
+    this.setState({
+      blinkAnim: null
+    });
+  };
+
   render() {
     const transform_style = this._AnalyzeProp();
     return (
-            <div id="canvas">
-                <div key={this.state.innerId} id="clip" style={{ ...transform_style.clipStyle }}>
-                    <div key={this.state.innerId} id="image" style={{ ...transform_style.imageStyle }} onAnimationEnd={this.onAnimEndDelegate}></div>
-                </div>
-            </div>
+      <div id="canvas">
+        <div key={this.state.innerId} id="clip" style={{ ...transform_style.clipStyle }}>
+          <div key={this.state.innerId} id="trans" style={{ ...transform_style.transStyle }} onAnimationEnd={this.onAnimEndDelegate}>
+            <div key={this.state.innerId} id="image" style={{ ...transform_style.imageStyle, animation: this.state.blinkAnim }} onAnimationEnd={this.onBlinkAnimEnd}></div>
+          </div>
+        </div>
+      </div>
     );
   }
 
