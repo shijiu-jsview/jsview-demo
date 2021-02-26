@@ -206,7 +206,14 @@ class TextUtils {
 
     // Texture加载完成的回调处理
     if (load_callback) {
-      text_texture.RegisterLoadImageCallback(null, load_callback, null);
+      // PC端特别处理，抓取TextView element的内容来完成回调
+      setTimeout(()=>{
+        load_callback({
+          width: text_view.Element.clientWidth,
+          height: text_view.Element.clientHeight
+        });
+      });
+      // text_texture.RegisterLoadImageCallback(null, load_callback, null);
     }
 
     // 创建失败
