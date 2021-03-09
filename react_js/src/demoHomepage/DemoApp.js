@@ -193,6 +193,11 @@ const demoFuncInfos = [
         name: "Web/Gif播放控制",
         path: "/users/apicDemo",
         class: lazy(() => import('../aPicDemo/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        name: "图片缓存",
+        path: "/users/imageCache",
+        class: lazy(() => import('../imageCache/App').then(m => ({ default: m.SubApp }))),
     }
 ];
 const demoSceneInfos = [
