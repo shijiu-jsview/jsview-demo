@@ -249,7 +249,7 @@ class JsvSpriteAnim extends React.Component {
     repeat = (repeat === -1) ? "infinite" : (repeat || 1);
 
     const animName = `${this.blinkAnimCache.blinkAnimName} ${duration}s ${ease} ${delay}s ${repeat}`;
-    this.setState({ blinkAnim: animName });
+    this.setState({ blinkAnim: animName, stopped: true });
   }
 
   _getAnimNameBase() {
