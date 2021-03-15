@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.qcode.jsview.JsView;
+import com.qcode.jsview.sample.submodule.JsViewActivitySupports;
 import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
 import com.qcode.jsview.sample.submodule.PageStatusListener;
 import com.qcode.jsview.sample.submodule.StartIntentParser;
@@ -27,6 +28,7 @@ public class StartupProc {
 
 	public static void startWhenConnectReady(
 						Activity host_activity,
+						JsViewActivitySupports supports,
 						Intent starter_intent,
 						Listener listener,
 						boolean from_on_new_intent) {
@@ -45,7 +47,7 @@ public class StartupProc {
 
 		// 准备SDK, devtools 调试端口为9226
 		if (isConnected(host_activity)) {
-			addViewToContainer(host_activity, parsed_intent, listener);
+			addViewToContainer(host_activity, supports, parsed_intent, listener);
 		} else {
 			Toast.makeText(host_activity, "网络已断开，请连接网络", Toast.LENGTH_LONG).show();
 			TimerInterval timer = new TimerInterval();
@@ -54,7 +56,7 @@ public class StartupProc {
 				boolean connect = isConnected(host_activity);
 				if (connect) {
 					timer.stopTimer();
-					addViewToContainer(host_activity, parsed_intent, listener);
+					addViewToContainer(host_activity, supports, parsed_intent, listener);
 				}
 			}, 1000);
 		}
@@ -73,6 +75,7 @@ public class StartupProc {
 	}
 
 	static private void addViewToContainer(Activity host_activity,
+	                                       JsViewActivitySupports supports,
 	                                       StartIntentParser parsed_intent,
 	                                       Listener listener) {
 		// 清理前一个JsView
@@ -89,7 +92,7 @@ public class StartupProc {
 			}
 		};
 
-		JsView view = ViewLoader.loadJsView(host_activity, parsed_intent, page_listener);
+		JsView view = ViewLoader.loadJsView(host_activity, supports, parsed_intent, page_listener);
 
 		FrameLayout container = host_activity.findViewById(R.id.JsViewContainer);
 		container.addView(view);
