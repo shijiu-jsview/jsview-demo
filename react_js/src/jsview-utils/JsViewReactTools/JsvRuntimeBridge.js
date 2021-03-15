@@ -1,150 +1,363 @@
-/**
- * Created by donglin.lu@qcast.cn on 11/13/2020.
- */
+let feature_supports = null;
 
-/*
- * 【模块 export 内容】
- * jJsvRuntimeBridge：接口句柄
- *      功能函数：(参数说明见函数本体)
- *          closePage()     通知Native端关闭当前页面(如果这个页面为当前Activity唯一则关闭Actviity)
- *          notifyPageLoaded() 通知Native端去掉启动图，并停止异常状态的计时
- *          getMac()        获取Native端的MAC(有线地址优先)
- *          getWireMac()    获取Native端的有线MAC
- *          getWifiMac()    获取Native端的无线MAC
- *          getUUID()       获取设备的UUID(各平台Native有各自的算法，未强制统一
- *          getAndroidId()  获取设备的Android ID信息
- *          openBlank()     (实验性接口,未开放)
- *          openSelf()      (实验性接口,未开放)
- */
-
-function build_api(name) {
-  return (...args) => {
-    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge[name] === "function") {
-      return window.jJsvRuntimeBridge[name](...args);
+let direct_call_map = {};
+function direct_call(name, ...args) {
+    if (direct_call_map.hasOwnProperty(name)) {
+        let func = direct_call_map[name];
+        if (func) {
+            return func(...args);
+        }
+    } else {
+        let func = null;
+        if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge[name] === "function") {
+            func = window.jJsvRuntimeBridge[name];
+        } else if (name) {
+            if (window.jContentShellJBridge && typeof window.jContentShellJBridge[name] === "function") {
+                func = window.jContentShellJBridge[name];
+            }
+        }
+        direct_call_map[name] = func;
+        if (func) {
+            return func(...args);
+        }
     }
-  };
+}
+
+function getExtFeatureSupports() {
+    if (!feature_supports) {
+        feature_supports = direct_call("getExtFeaturesSupport");
+    }
+    return feature_supports;
+}
+
+/**
+ * 获取设备mac地址，优先获取有线mac，无则获取wifi mac
+ * @returns {string} mac address
+ *
+ */
+function getMac(){
+    return direct_call("getMac");
+}
+
+/**
+ * 获取设备有线mac地址
+ * @returns {string} mac address
+ *
+ */
+function getWireMac(){
+    return direct_call("getWireMac");
+}
+
+/**
+ * 获取设备wifi mac地址
+ * @returns {string} mac address
+ *
+ */
+function getWifiMac(){
+    return direct_call("getWifiMac");
+}
+
+/**
+ * 获取设备UUID
+ * @returns {string} UUID
+ *
+ */
+function getDeviceUUID(){
+    return direct_call("getDeviceUUID");
+}
+
+/**
+ * 获取设备Android ID
+ * @returns {string} Android ID
+ *
+ */
+function getAndroidId(){
+    return direct_call("getAndroidId");
+}
+
+/**
+ * 打开另外一个小程序
+ * @param {string} url 小程序url
+ * @param {string} startupImage 启动图url
+ * @param {string} engineUrl 引擎url
+ * @param {string} coreVersionRange 内核版本范围
+ * @param {string} appConfigUrl 小程序启动配置url
+ *
+ */
+function openWindow(url, startupImage, engineUrl, coreVersionRange, appConfigUrl){
+    if(typeof window.jJsvRuntimeBridge != "undefined" && typeof window.jJsvRuntimeBridge.openWindow != "undefined"){
+        let setting = {};
+        if(startupImage != null && startupImage != "")
+            setting.startup_image = startupImage;
+
+        if(engineUrl != null && engineUrl != "")
+            setting.engine_url = engineUrl;
+
+        if(coreVersionRange != null && coreVersionRange != "")
+            setting.core_version_range = coreVersionRange;
+
+        if(appConfigUrl != null && appConfigUrl != "")
+            setting.app_config_url = appConfigUrl;
+
+        window.jJsvRuntimeBridge.openWindow(url, JSON.stringify(setting));
+    }
+}
+
+/**
+ * 关闭当前小程序
+ *
+ */
+function closePage(){
+    return direct_call("closePage");
+}
+
+/**
+ * 获取设备UUID
+ * @param {string} key 属性名称
+ * @returns {string} 属性值
+ *
+ */
+function getSystemProperty(key){
+    return direct_call("getSystemProperty", key);
+}
+
+/**
+ * 获取已安装应用列表
+ * @returns {string} 应用列表，JSON结构的数组
+ *
+ */
+let func_getInstalledApps;
+function getInstalledApps(){
+    return direct_call("getInstalledApps");
+}
+
+/**
+ * 启动安卓APP
+ * @param {string} packageName 包名
+ * @param {string} activity Activity方式启动
+ * @param {string} action Action方式启动
+ * @param {string} uri Uri方式启动
+ * @param {Array} flags 数组，用于intent.addFlags
+ * @param {Array} param JSON格式数组，用于intent.putExtra
+ *
+ */
+function startNativeApp(packageName, activity, action, uri, flags, param){
+    var obj = {};
+    if(packageName != null && packageName != "")
+        obj.packageName = packageName;
+
+    if(activity != null && activity != "")
+        obj.activity = activity;
+
+    if(action != null && action != "")
+        obj.action = action;
+
+    if(uri != null && uri != "")
+        obj.uri = uri;
+
+    if(flags != null && flags.length > 0)
+        obj.flags = flags;
+
+    if(param != null && param.length > 0)
+        obj.param = param;
+
+    return direct_call("startNativeApp", JSON.stringify(obj));
+}
+
+/**
+ * 获取设备信息
+ * @returns {string} 终端设备信息，JSON数据结构
+ *
+ */
+function getDeviceInfo() {
+    return direct_call("getDeviceInfo");
+}
+
+/**
+ * 页面加载成功后调用去除启动图
+ *
+ */
+function notifyPageLoadDone() {
+    notifyPageLoaded();
+}
+
+function notifyPageLoaded() {
+    direct_call("notifyPageLoaded");
+}
+
+/**
+ * 是否支持收藏功能
+ * @returns {boolean} true支持，false不支持
+ *
+ */
+function hasFavouriteFunction(){
+    let features = getExtFeatureSupports();
+    if (features && features.indexOf("favourite") >= 0) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * 是否支持收藏功能
+ * @returns {Object} 包含
+ *      COREVERSIONRANGE: 启动时设定的内核版本范围
+ *      ENGINE: 启动时设定的Js引擎的URL
+ */
+function getStartParams() {
+    let json = direct_call("getStartParams");
+    if (json) {
+        return JSON.parse(json);
+    } else {
+        return null;
+    }
 }
 
 /**
  * 添加收藏
  * @param {string} appName app name 唯一标识
- * @param {string} signKey 签名
+ * @param {string} appConfigUrl 启动配置url
  * @param {string} appUrl app url 或者 AppId
  * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
- * @param {string} params  其他参数(添加到url的 ? 后的内容)
  * @param {string} coreversionRange  引擎内核版本
  * @param {string} engine  js引擎地址
- * @param {string} title  显示名称(http地址)
+ * @param {string} title  显示名称
  * @param {string} icon  显示图标(http地址)
  * @param {string} startImg  启动图(http地址)
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function addFavourite(appName, signKey, appUrl, subUrl, params, coreversionRange, engine, title, icon, startImg, callback) {
-  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
-    const value = JSON.stringify({
-      appUrl,
-      subUrl,
-      coreversionRange,
-      engine,
-      params,
-      startImg,
-      title,
-      icon
-    });
-    let async_message = window.jJsvRuntimeBridge.addFavourite(appName, signKey, value);
-    async_message.then(()=>{
-      if (callback) {
-        callback(true)
-      }
-    }).catch((reason)=>{
-      if (callback) {
-        callback(false, reason);
-      }
-    });
-  }
+function addFavourite(appName, appConfigUrl, appUrl, subUrl, coreVersionRange, engine, title, icon, startImg, callback) {
+    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
+        const value = JSON.stringify({
+            appConfigUrl,
+            appUrl,
+            subUrl,
+            coreVersionRange,
+            engine,
+            startImg,
+            title,
+            icon
+        });
+        let async_message = window.jJsvRuntimeBridge.addFavourite(appName, value);
+        async_message.then((result)=>{
+            if (callback) {
+                callback(result)
+            }
+        }).catch((result)=>{
+            if (callback) {
+                callback(result);
+            }
+        });
+    }
+}
+
+/**
+ * 更新收藏
+ * @param {string} appName app name 唯一标识
+ * @param {string} appConfigUrl 启动配置url
+ * @param {string} appUrl app url 或者 AppId
+ * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
+ * @param {string} coreversionRange  引擎内核版本
+ * @param {string} engine  js引擎地址
+ * @param {string} title  显示名称
+ * @param {string} icon  显示图标(http地址)
+ * @param {string} startImg  启动图(http地址)
+ * @param {function} callback  执行接口回调, 处理可能被用户否决
+ *
+ */
+function updateFavourite(appName, appConfigUrl, appUrl, subUrl, coreversionRange, engine, title, icon, startImg, callback) {
+    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.updateFavourite === "function") {
+        const value = JSON.stringify({
+            appConfigUrl,
+            appUrl,
+            subUrl,
+            coreversionRange,
+            engine,
+            startImg,
+            title,
+            icon
+        });
+        let async_message = window.jJsvRuntimeBridge.updateFavourite(appName, value);
+        async_message.then((result)=>{
+            if (callback) {
+                callback(result)
+            }
+        }).catch((result)=>{
+            if (callback) {
+                callback(result);
+            }
+        });
+    }
 }
 
 /**
  * 删除指定收藏
  * @param {string} appName app name 唯一标识
- * @param {string} signKey 签名
  * @param {function} callback  执行接口回调, 处理可能被用户否决
+ *
  */
-function removeFavourite(appName, signKey, callback) {
-  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
-    let async_message = window.jJsvRuntimeBridge.removeFavourite(appName, signKey);
-    async_message.then(()=>{
-      if (callback) {
-        callback(true)
-      }
-    }).catch((reason)=>{
-      if (callback) {
-        callback(false, reason);
-      }
-    });
-  }
+function removeFavourite(appName, callback) {
+    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
+        let async_message = window.jJsvRuntimeBridge.removeFavourite(appName);
+        async_message.then((result)=>{
+            if (callback) {
+                callback(result)
+            }
+        }).catch((result)=>{
+            if (callback) {
+                callback(result);
+            }
+        });
+    }
 }
 
 /**
  * 获取指定收藏
  * @param {string} appName app name 唯一标识
- * @param {string} signKey 签名
  */
-function getFavourite(appName, signKey) {
-  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavourite === "function") {
-    return window.jJsvRuntimeBridge.getFavourite(appName, signKey);
-  }
-  return null;
+function getFavourite(appName) {
+    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavourite === "function") {
+        return window.jJsvRuntimeBridge.getFavourite(appName);
+    }
+    return null;
 }
 
 /**
- * 获取该域名下所有收藏
+ * 获取所有收藏
+ *
  */
 function getFavouriteAll() {
-  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavouriteAll === "function") {
-    return window.jJsvRuntimeBridge.getFavouriteAll();
-  }
-  return null;
-}
-
-/**
- * 删除该域名下所有收藏
- * @param {function} callback  执行接口回调, 处理可能被用户否决
- */
-function clearFavourites(callback) {
-  if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.clearFavourites === "function") {
-    let async_message = window.jJsvRuntimeBridge.clearFavourites();
-    async_message.then(()=>{
-      if (callback) {
-        callback(true)
-      }
-    }).catch((reason)=>{
-      if (callback) {
-        callback(false, reason);
-      }
-    });
-  }
+    if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavouriteAll === "function") {
+        return window.jJsvRuntimeBridge.getFavouriteAll();
+    }
+    return null;
 }
 
 // 显示声明，可以提高执行速度和利用上编辑器的成员名提示功能
 const bridge = {
-  openBlank: build_api("openBlank"),
-  closePage: build_api("closePage"),
-  notifyPageLoaded: build_api("notifyPageLoaded"),
-  getMac: build_api("getMac"),
-  getWireMac: build_api("getWireMac"),
-  getWifiMac: build_api("getWifiMac"),
-  getUUID: build_api("getUUID"),
-  getAndroidId: build_api("getAndroidId"),
-  openSelf: build_api("openSelf"),
-  addFavourite,
-  removeFavourite,
-  getFavourite,
-  getFavouriteAll,
-  clearFavourites,
+    getMac,
+    getWireMac,
+    getWifiMac,
+    getDeviceUUID,
+    getAndroidId,
+    openWindow,
+    closePage,
+    getStartParams,
+    getSystemProperty,
+    getInstalledApps,
+    startNativeApp,
+    getDeviceInfo,
+    notifyPageLoadDone,
+    notifyPageLoaded,
+    hasFavouriteFunction,
+    addFavourite,
+    updateFavourite,
+    removeFavourite,
+    getFavourite,
+    getFavouriteAll
 };
 
 export {
-  bridge as jJsvRuntimeBridge
+    bridge as jJsvRuntimeBridge
 };
