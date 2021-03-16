@@ -83,9 +83,7 @@ public class ViewLoader {
 		 * Java穿透给JS的JsViewRuntimeBridge
 		 * 建议所有容器都含有该接口，并命名为jJsvRuntime，方便形成统一的JS APP调用规范，提高应用的兼容性
 		 */
-		JsViewState jsview_state = new JsViewState();
-		jsview_state.view = jsview;
-		jsview_state.startIntent = parsed_intent;
+		JsViewState jsview_state = new JsViewState(jsview, parsed_intent);
 		JsViewRuntimeBridge.enableBridge(
 				host_activity,
 				supports.getViewsManager(),

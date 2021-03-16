@@ -17,7 +17,7 @@ import java.util.Stack;
 
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
 
-public class ViewsManager {
+public class ViewsManager extends ViewsManagerDefine {
 	final static String TAG = "ViewsManager";
 
 	Handler mMainThreadHandler = null;
@@ -35,6 +35,7 @@ public class ViewsManager {
 		mMainThreadHandler = new Handler(Looper.getMainLooper());
 	}
 
+	@Override
 	public void closePage(JsView host_view) {
 		// 放入主线程完成
 		mMainThreadHandler.post(()->{
@@ -48,30 +49,66 @@ public class ViewsManager {
 		});
 	}
 
+	@Override
 	public void openWindow(JsView host_view, String url, String setting) {
-		String engine_url = "";
-		String startup_image = "";
-		String core_version_range = "";
+		mMainThreadHandler.post(()->{
+			String engine_url = "";
+			String startup_image = "";
+			String core_version_range = "";
 
-		try {
-			JSONObject obj = new JSONObject(setting);
-			if(obj.has("startup_image")) {
-				startup_image = obj.getString("startup_image");
+			try {
+				JSONObject obj = new JSONObject(setting);
+				if(obj.has("startup_image")) {
+					startup_image = obj.getString("startup_image");
+				}
+
+				if(obj.has("engine_url")){
+					engine_url = obj.getString("engine_url");
+				}
+
+				if(obj.has("core_version_range")){
+					core_version_range = obj.getString("core_version_range");
+				}
+
+				openBlank(host_view, engine_url, url, startup_image, core_version_range);
+			} catch (JSONException e) {
+				Log.e(TAG, "JSON error:" + setting, e);
+				return;
 			}
+		});
+	}
 
-			if(obj.has("engine_url")){
-				engine_url = obj.getString("engine_url");
-			}
+	@Override
+	public int warmUpView(JsView starter_view, String engine_js_url, String app_url) {
+		// TODO: Activity view暂时不支持预热
+		return 0;
+	}
 
-			if(obj.has("core_version_range")){
-				core_version_range = obj.getString("core_version_range");
-			}
+	@Override
+	public void warmLoadView(int view_refer_id, String app_url) {
+		// TODO: Activity view暂时不支持预热
+	}
 
-			openBlank(host_view, engine_url, url, startup_image, core_version_range);
-		} catch (JSONException e) {
-			Log.e(TAG, "JSON error:" + setting, e);
-			return;
-		}
+	@Override
+	public void closeWarmedView(int view_refer_id) {
+		// TODO: Activity view暂时不支持预热
+	}
+
+	@Override
+	public void popupAbsolutePosition(
+			JsView host_view, double left, double top, double width, double height) {
+		Log.w(TAG, "popupAbsolutePosition: No in popup view manager");
+	}
+
+	@Override
+	public void popupRelativePosition(
+			JsView host_view, String align, double max_width, double max_height, double aspect) {
+		Log.w(TAG, "popupRelativePosition: No in popup view manager");
+	}
+
+	@Override
+	public void popupGainFocus() {
+		Log.w(TAG, "popupGainFocus No in popup view manager");
 	}
 
 	@Deprecated
@@ -92,6 +129,7 @@ public class ViewsManager {
 		});
 	}
 
+	// private function
 	private void openBlank(JsView host_view, String engine_url, String app_url, String start_img_url, String jsview_version) {
 		// 新开Activity来展示新开的JsView
 		// TODO: 在同一个Activity内通过内部管理生成多个JsView

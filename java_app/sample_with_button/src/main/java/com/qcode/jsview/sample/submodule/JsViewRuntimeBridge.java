@@ -38,7 +38,7 @@ import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore
 public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	private static final String TAG = "JsViewRuntimeBridge";
 	private Context mContext = null;
-	private ViewsManager mViewsManager = null;
+	private ViewsManagerDefine mViewsManager = null;
 	private FavouriteSupport mFavouriteSupport = null;
 	private JsViewState mHostJsViewState = null;
 	private PageStatusListener mPageStatusListener = null;
@@ -46,14 +46,14 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 
 	// 启用Java->JS功能接口，在JS端的调用接口为 jJsvRuntimeBridge.XXXXX()
 	public static void enableBridge(
-			Activity host_activity,
-			ViewsManager views_manager,
+			Context host_context,
+			ViewsManagerDefine views_manager,
 			FavouriteSupport favourite_support,
 			JsViewState host_jsview,
 			PageStatusListener page_listener) {
 		if (host_jsview != null) {
 			JsViewRuntimeBridge bridge = new JsViewRuntimeBridge(
-					host_activity,
+					host_context,
 					views_manager,
 					favourite_support,
 					host_jsview,
@@ -67,12 +67,12 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	}
 
 	private JsViewRuntimeBridge(
-			Activity host_activity,
-			ViewsManager views_manager,
+			Context host_context,
+			ViewsManagerDefine views_manager,
 			FavouriteSupport favourite_support,
 			JsViewState host_jsview,
 			PageStatusListener page_listener) {
-		mContext = host_activity;
+		mContext = host_context;
 		mViewsManager = views_manager;
 		mFavouriteSupport = favourite_support;
 		mHostJsViewState = host_jsview;
@@ -348,5 +348,63 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	public String getAndroidId() {
 		String android_id = Settings.System.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 		return android_id;
+	}
+	
+	// 页面预热接口，预热页面将会将以一个新的FrameLayout(内含JsView)的方式加载一个新的应用
+	// 但这个应用在warmLoadView之前，不会创建texture/surface的实际描画资源，也不会加载图片
+	// 仅加载所有JS代码，并正常走完所有启动逻辑(包括描画逻辑)，但不会走setTimeout对应的延时逻辑，也不会显示
+	// 预热的界面可以极大加速界面切换的时间，例如应用跳转到购物类界面
+	// app_url可以传null，若为null仅预热engine js部分
+	@JavascriptInterface
+	public int warmUpView(String engine_js_url, String app_url) {
+		if (mViewsManager != null) {
+			return mViewsManager.warmUpView(mHostJsViewState.view, engine_js_url, app_url);
+		} else {
+			Log.e(TAG, "Not support warm up JsView");
+			return -1;
+		}
+	}
+
+	// 若warmUpView中app_url不为null，进行了全预热，则本调用的app_url可以为null
+	// 当warmUpView中app_url不为null时，仍可以使用history变化调整显示内容，
+	// 例如:"http//origin/app/url#/newHistoryHash?newKey=newValue"
+	@Override
+	@JavascriptInterface
+	public void warmLoadView(int view_refer_id, String app_url) {
+		if (mViewsManager != null) {
+			mViewsManager.warmLoadView(view_refer_id, app_url);
+		} else {
+			Log.e(TAG, "Not support warm load JsView");
+		}
+	}
+
+	// 关闭预热好的View，例如warm过但不再需要显示的View
+	@Override
+	@JavascriptInterface
+	public void closeWarmedView(int view_refer_id) {
+		if (mViewsManager != null) {
+			mViewsManager.closeWarmedView(view_refer_id);
+		} else {
+			Log.e(TAG, "Not support close warmed JsView");
+		}
+	}
+
+	@Override
+	@JavascriptInterface
+	public void popupAbsolutePosition(double left, double top, double width, double height) {
+		mViewsManager.popupAbsolutePosition(
+				mHostJsViewState.view, left, top, width, height);
+	}
+
+	@Override
+	@JavascriptInterface
+	public void popupRelativePosition(String align, double max_width, double max_height, double aspect) {
+		mViewsManager.popupRelativePosition(
+				mHostJsViewState.view, align, max_width, max_height, aspect);
+	}
+
+	@JavascriptInterface
+	public void popupGainFocus() {
+		mViewsManager.popupGainFocus();
 	}
 }
