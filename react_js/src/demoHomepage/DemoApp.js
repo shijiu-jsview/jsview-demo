@@ -105,14 +105,9 @@ const demoFuncInfos = [
         class: lazy(() => import('../hashHistoryLike/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        name: "子页面启动(openBlank)",
-        path: "/users/openBlank",
-        class: lazy(() => import('../openBlank/App').then(m => ({ default: m.SubApp }))),
-    },
-    {
-        name: "子页面启动(openSelf)",
-        path: "/users/openSelf",
-        class: lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
+        name: "子页面启动",
+        path: "/users/openWindow",
+        class: lazy(() => import('../openWindow/App').then(m => ({ default: m.SubApp }))),
     },
     {
         name: "ScrollNum",

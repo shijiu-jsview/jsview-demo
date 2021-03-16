@@ -248,7 +248,7 @@ class Input extends FocusBlock {
                     onEdge={this._editableTextOnEdge}
                     cursorColor="#999900"
                     cursorWidth={2}
-                    defaultText={"版本号"}
+                    placeholder={"core版本号"}
                     onTextChange={this.props.onTextChange}
                     onTextOverflow={() => { console.log("too long"); }}
                 />
@@ -308,13 +308,13 @@ class MainScene extends FocusBlock {
   }
 
   _buttonOnEdge(edge_info) {
-    if (edge_info.direction === EdgeDirection.left) {
+    if (edge_info.direction === EdgeDirection.right) {
       this.changeFocus(`${this.props.branchName}/input`);
     }
   }
 
   _inputOnEdge(edge_info) {
-    if (edge_info.direction === EdgeDirection.right) {
+    if (edge_info.direction === EdgeDirection.left) {
       this.changeFocus(`${this.props.branchName}/button`);
     }
   }
@@ -333,41 +333,41 @@ class MainScene extends FocusBlock {
 
     const url = window.location.origin + window.location.pathname;
 
+    let core_version;
     if (item.name === "二级页面1") {
-      const core_version = ""; // 设置为""，表示使用当前页面一样的core
-      jJsvRuntimeBridge.openBlank(engine_js, `${url}?subCount=${this._SubCount + 1}#/users/openBlank`, start_image, core_version);
+        core_version = ""; // 设置为""，表示使用当前页面一样的core
     } else {
-      const core_version = this.state.text;
-      jJsvRuntimeBridge.openBlank(engine_js, `${url}?subCount=${this._SubCount + 1}#/users/openBlank`, start_image, core_version);
+        core_version = this.state.text;
     }
+      jJsvRuntimeBridge.openWindow(`${url}?subCount=${this._SubCount + 1}#/users/openBlank`, start_image, engine_js, core_version, null);
   }
 
   renderContent() {
     const cur_version = window.JsView ? window.JsView.CodeRevision : -1;
     return (
             <div style={{ width: 1920, height: 1080, backgroundColor: "#004455" }}>
-                <div style={{ left: 50 }}>
+                <div style={{ left: 500 }}>
                     <Input branchName={`${this.props.branchName}/input`} onEdge={this._inputOnEdge} onTextChange = {this._inputOnChange}/>
                 </div>
 
-                <div style={{ left: 400, top: 50 }}>
+                <div style={{ left: 20, top: 50 }}>
                     <Button branchName={`${this.props.branchName}/button`} onEdge={this._buttonOnEdge} onClick={this._buttonOnClick}/>
                 </div>
-                <div style={{ left: 400, top: 150, color: "#000000", fontSize: 30 }}>
+                <div style={{ left: 20, top: 150, color: "#000000", fontSize: 30 }}>
                     {
-                      "二级页面1: 使用与当前相同版本的jsview\n 二级页面2: 使用不同版本的jsview\n  "
+                      "二级页面1: 使用与当前版本的core\n二级页面2: 使用不同版本的core\n  "
                     }
                 </div>
-                <div style={{ left: 400, top: 250, color: "#000000", fontSize: 30 }}>
+                <div style={{ left: 20, top: 250, color: "#000000", fontSize: 30 }}>
                     {`当前深度${this._SubCount}`}
                 </div>
-                <div style={{ left: 400, top: 290, color: "#000000", fontSize: 30 }}>
+                <div style={{ left: 20, top: 290, color: "#000000", fontSize: 30 }}>
                     {`当前jsview core版本: ${cur_version}`}
                 </div>
-                <div style={{ left: 400, top: 330, color: "#000000", fontSize: 30 }}>
+                <div style={{ left: 20, top: 330, color: "#000000", fontSize: 30 }}>
                     {`启动subtab的jsview版本: ${this.state.text}`}
                 </div>
-                <div style={{ left: 400, top: 370, width: 400, backgroundColor: "#FFFFFF", color: "#000000", fontSize: 30 }}>
+                <div style={{ left: 20, top: 370, width: 400, backgroundColor: "#FFFFFF", color: "#000000", fontSize: 30 }}>
                     {window.location.href}
                 </div>
             </div>
