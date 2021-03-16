@@ -4,6 +4,42 @@ import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widge
 
 const CONST_ITEM_WIDTH = 300;
 const CONST_ITEM_HEIGHT = 100;
+
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
+        }
+    }
+
+    focus() {
+        this.setState({
+            focus: true,
+        })
+    }
+
+    blur() {
+        this.setState({
+            focus: false,
+        })
+    }
+
+    render() {
+        let item = this.props.data;
+        return (
+            <div>
+                {
+                    this.state.focus ? <div style={{ backgroundColor: "#0000FF", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT }}></div> : null
+                }
+                <div style={{ backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30 }}>
+                    {item.name}
+                </div>
+            </div>
+        )
+    }
+}
+
 class SimpleWidgetVertical extends FocusBlock {
   constructor(props) {
     super(props);
@@ -45,23 +81,22 @@ class SimpleWidgetVertical extends FocusBlock {
       return SimpleWidget.getMeasureObj(CONST_ITEM_WIDTH, CONST_ITEM_HEIGHT, true, false);
     }
 
-    _RenderFocus=(item) => {
-      return (
-            <div>
-                <div style={{ backgroundColor: "#0000FF", top: -5, left: -5, width: CONST_ITEM_WIDTH, height: CONST_ITEM_HEIGHT }}></div>
-                <div style={{ backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30 }}>
-                    { item.name }
-                </div>
-            </div>
-      );
+    _renderItem(item, on_edge, query, view_obj) {
+        return (
+            <Item ref={ele => view_obj.view = ele} data={item} />
+        )
     }
 
-    _RenderItem=(item) => {
-      return (
-            <div style={{ backgroundColor: item.color, width: CONST_ITEM_WIDTH - 10, height: CONST_ITEM_HEIGHT - 10, color: "#000000", fontSize: 30 }}>
-                { item.name }
-            </div>
-      );
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
+
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
     }
 
     renderContent() {
@@ -74,8 +109,9 @@ class SimpleWidgetVertical extends FocusBlock {
                         height={ 720 - 200 }
                         direction={ VERTICAL }
                         data={ this.state.data }
-                        renderItem={ this._RenderItem }
-                        renderFocus={ this._RenderFocus }
+                        renderItem={ this._renderItem }
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
                         onClick={ this._onClick }
                         measures={ this._Measures }
                         padding={{ top: 10, left: 10, right: 10, bottom: 10 }}
@@ -92,8 +128,9 @@ class SimpleWidgetVertical extends FocusBlock {
                         height={ 720 - 200 }
                         direction={ VERTICAL }
                         data={ this.state.data }
-                        renderItem={ this._RenderItem }
-                        renderFocus={ this._RenderFocus }
+                        renderItem={this._renderItem}
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
                         onClick={ this._onClick }
                         measures={ this._Measures }
                         padding={{ top: 10, left: 10, right: 10, bottom: 10 }}

@@ -29,12 +29,6 @@
  *      renderItem {function} (必选)item描画的回调
  *                @params item data中的数据
  *                @return JSX
- *      renderFocus {function} 焦点状态item描画的回调
- *                   @params item data中的数据
- *                   @return JSX
- *      renderBlur {function} 失去焦点item描画的回调
- *                  @params item data中的数据
- *                  @return JSX
  *      onFocus {function} 控件获取焦点的回调
  *      onBlur {function} 控件失去焦点的回调
  *      onItemFocus {function} item获得焦点的回调
@@ -85,213 +79,234 @@ import borderImgPath from "./border.png";
 import { JsvSquareNinePatch } from "../jsview-utils/JsViewReactWidget/JsvNinePatch";
 
 const homePageData = [
-  {
-    blocks: {
-      w: 200,
-      h: 160
+    {
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#000022",
+        content: 0
     },
-    focusable: true,
-    color: "#000022",
-    content: 0
-  },
-  {
-    blocks: {
-      w: 200,
-      h: 160
+    {
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#003300",
+        content: 1
     },
-    focusable: true,
-    color: "#003300",
-    content: 1
-  },
-  {
-    blocks: {
-      w: 200,
-      h: 160
+    {
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#000044",
+        content: 2
     },
-    focusable: true,
-    color: "#000044",
-    content: 2
-  },
-  {
-    blocks: {
-      w: 400,
-      h: 320
+    {
+        blocks: {
+            w: 400,
+            h: 320
+        },
+        focusable: true,
+        color: "#000055",
+        content: 3
     },
-    focusable: true,
-    color: "#000055",
-    content: 3
-  },
-  {
-    blocks: {
-      w: 200,
-      h: 160
+    {
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#000066",
+        content: 4
     },
-    focusable: true,
-    color: "#000066",
-    content: 4
-  },
-  {
-    blocks: {
-      w: 200,
-      h: 160
+    {
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#0000CD",
+        content: 5
     },
-    focusable: true,
-    color: "#0000CD",
-    content: 5
-  },
 ];
 
 let content = 6;
 for (let i = 0; i < 5; i++) {
-  homePageData.push({
-    blocks: {
-      w: 200,
-      h: 320
-    },
-    focusable: true,
-    color: "#000022",
-    content: content++
-  });
-  homePageData.push({
-    blocks: {
-      w: 200,
-      h: 160
-    },
-    focusable: true,
-    color: "#003300",
-    content: content++
-  });
+    homePageData.push({
+        blocks: {
+            w: 200,
+            h: 320
+        },
+        focusable: true,
+        color: "#000022",
+        content: content++
+    });
+    homePageData.push({
+        blocks: {
+            w: 200,
+            h: 160
+        },
+        focusable: true,
+        color: "#003300",
+        content: content++
+    });
+}
+
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
+            anim: null,
+        }
+    }
+
+    focus() {
+        this.setState({
+            focus: true,
+            anim: "focusScale 0.3s"
+        })
+    }
+
+    blur() {
+        this.setState({
+            focus: false,
+            anim: "blurScale 0.3s"
+        })
+    }
+
+    render() {
+        let item = this.props.data;
+        const width = this.state.focus ? (item.blocks.w - 10) * (1 / 0.9) : item.blocks.w - 10;
+        const height = this.state.focus ? (item.blocks.h - 10) * (1 / 0.9) : item.blocks.h - 10;
+        const x = this.state.focus ? ((item.blocks.w - 10) - width) / 2 : 0;
+        const y = this.state.focus ?  ((item.blocks.h - 10) - height) / 2 : 0;
+
+        return (
+            <div style={{ animation: this.state.anim, left: x, top: y, backgroundColor: this.state.focus? "#FF0000" : item.color, width: width, height: height, color: "#FFFFFF" }}>
+                {item.content}
+            </div>
+        )
+    }
 }
 
 class MainScene extends FocusBlock {
-  constructor(props) {
-    super(props);
-    this._Measures = this._Measures.bind(this);
-    this._RenderItem = this._RenderItem.bind(this);
-    this._RenderFocus = this._RenderFocus.bind(this);
-    this._RenderBlur = this._RenderBlur.bind(this);
-    this._OnClick = this._OnClick.bind(this);
-    this._OnItemFocus = this._OnItemFocus.bind(this);
-    this._OnEdge = this._OnEdge.bind(this);
-    this.state = {
-      focusStyle: {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0
-      }
-    };
-  }
-
-  _Measures(item) {
-    return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, false);
-  }
-
-  _RenderFocus(item) {
-    const width = (item.blocks.w - 10) * (1 / 0.9);
-    const height = (item.blocks.h - 10) * (1 / 0.9);
-    const x = ((item.blocks.w - 10) - width) / 2;
-    const y = ((item.blocks.h - 10) - height) / 2;
-    return (
-            <div style={{ animation: "focusScale 2s", left: x, top: y, backgroundColor: "#FF0000", width, height, color: "#FFFFFF", }}>
-                {item.content}
-            </div>
-    );
-  }
-
-  _RenderBlur(item, callback) {
-    return (
-            <div style={{ backgroundColor: "#00FF00", width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FF00FF", animation: "blurScale 2s", }}
-                onAnimationEnd={callback}>
-                {item.content}
-            </div>
-    );
-  }
-
-  _RenderItem(item) {
-    return (
-            <div style={{ backgroundColor: item.color, width: item.blocks.w - 10, height: item.blocks.h - 10, color: "#FFFFFF" }}>
-                {item.content}
-            </div>
-    );
-  }
-
-  _OnItemFocus(item, pre_dege, query) {
-    const position = query.queryPosition(query.id);
-    const width = (item.blocks.w - 10) * (1 / 0.9);
-    const height = (item.blocks.h - 10) * (1 / 0.9);
-    const x = ((item.blocks.w - 10) - width) / 2;
-    const y = ((item.blocks.h - 10) - height) / 2;
-    this.setState({
-      focusStyle: {
-        x: x + position.xPos,
-        y: y + position.yPos,
-        w: width,
-        h: height
-      }
-    });
-  }
-
-  onKeyDown(ev) {
-    if (ev.keyCode === 10000 || ev.keyCode === 27) {
-      if (this._NavigateHome) {
-        this._NavigateHome();
-      }
+    constructor(props) {
+        super(props);
+        this._measures = this._measures.bind(this);
+        this._renderItem = this._renderItem.bind(this);
+        this._onClick = this._onClick.bind(this);
+        this._OnItemFocus = this._onItemFocus.bind(this);
+        this._onItemBlur = this._onItemBlur.bind(this);
+        this._onEdge = this._onEdge.bind(this);
+        this.state = {
+            focusStyle: {
+                x: 0,
+                y: 0,
+                w: 0,
+                h: 0
+            }
+        };
     }
-    return true;
-  }
 
-  _OnClick() {
+    _measures(item) {
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, false);
+    }
 
-  }
+    _renderItem(item, on_edge, query, view_obj) {
+        return (
+            <Item ref={ele => view_obj.view = ele} data={item}/>
+        )
+    }
 
-  _OnEdge(info) {
-    console.log("SimpleWidget onEdge", info);
-  }
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
 
-  onFocus() {
-    console.log("cchtest onfocus");
-    this.changeFocus(`${this.props.branchName}/widget1`);
-  }
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        const position = query.queryPosition(query.id);
+        const width = (item.blocks.w - 10) * (1 / 0.9);
+        const height = (item.blocks.h - 10) * (1 / 0.9);
+        const x = ((item.blocks.w - 10) - width) / 2;
+        const y = ((item.blocks.h - 10) - height) / 2;
+        this.setState({
+            focusStyle: {
+                x: x + position.xPos,
+                y: y + position.yPos,
+                w: width,
+                h: height
+            }
+        });
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
+    }
 
-  renderContent() {
-    return (
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
+        }
+        return true;
+    }
+
+    _onClick() {
+
+    }
+
+    _onEdge(info) {
+        console.log("SimpleWidget onEdge", info);
+    }
+
+    onFocus() {
+        this.changeFocus(`${this.props.branchName}/widget1`);
+    }
+
+    renderContent() {
+        return (
             <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
                 <div style={{ top: 120, left: 50 }}>
-                <SimpleWidget
-                    width={1280}
-                    height={520}
-                    padding={{ left: 20, top: 20, right: 20, bottom: 20 }}
-                    direction={HORIZONTAL}
-                    data={homePageData}
-                    onClick={this._OnClick}
-                    renderBlur={this._RenderBlur}
-                    renderItem={this._RenderItem}
-                    renderFocus={this._RenderFocus}
-                    measures={this._Measures}
-                    branchName={`${this.props.branchName}/widget1`}
-                    onItemFocus={this._OnItemFocus}
-                    onEdge={this._OnEdge}
-                />
-                <div style={{ top: 20, left: 20 }}>
-                    <JsvSquareNinePatch
-                        style={{ top: this.state.focusStyle.y, left: this.state.focusStyle.x, width: this.state.focusStyle.w, height: this.state.focusStyle.h }}
-                        imageUrl={ borderImgPath }
-                        imageWidth={ 81 }
-                        contentWidth={ 21 }
-                        borderOutset={ 10 }
-                        animTime={ 0.2 }
+                    <SimpleWidget
+                        width={1280}
+                        height={520}
+                        padding={{ left: 20, top: 20, right: 20, bottom: 20 }}
+                        direction={HORIZONTAL}
+                        data={homePageData}
+                        onClick={this._onClick}
+                        renderItem={this._renderItem}
+                        measures={this._measures}
+                        branchName={`${this.props.branchName}/widget1`}
+                        onItemFocus={this._OnItemFocus}
+                        onItemBlur={this._onItemBlur}
+                        onEdge={this._onEdge}
+                    />
+                    <div style={{ top: 20, left: 20 }}>
+                        <JsvSquareNinePatch
+                            style={{ top: this.state.focusStyle.y, left: this.state.focusStyle.x, width: this.state.focusStyle.w, height: this.state.focusStyle.h }}
+                            imageUrl={borderImgPath}
+                            imageWidth={81}
+                            contentWidth={21}
+                            borderOutset={10}
+                            animTime={0.2}
                         />
-                </div>
+                    </div>
                 </div>
             </div>
-    );
-  }
+        );
+    }
 }
 
 const App = createStandaloneApp(MainScene);
 
 export {
-  App, // 独立运行时的入口
-  MainScene as SubApp, // 作为导航页的子入口时
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
 };

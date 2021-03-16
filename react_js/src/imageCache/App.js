@@ -253,32 +253,65 @@ for (let i = 0; i < urlList.length; i++) {
     data.push(obj);
 }
 
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
+        }
+    }
+
+    focus() {
+        this.setState({
+            focus: true,
+        })
+    }
+
+    blur() {
+        this.setState({
+            focus: false,
+        })
+    }
+
+    render() {
+        let item = this.props.data;
+        return (
+            <div>
+                <div style={{ width: item.w - 10, height: item.h - 10, backgroundImage: `url(${item.url})`, fontSize: "20px", color: "#00FF00" }}>
+                    {item.id + "\n" + item.url}
+                </div>
+                {this.state.focus ? <div style={{ width: 20, height: 20, backgroundColor: "#FF0000" }}></div> : null}
+            </div>
+        )
+    }
+}
+
 class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
-        this._Measures = this._Measures.bind(this);
-        this._RenderItem = this._RenderItem.bind(this);
-        this._RenderFocus = this._RenderFocus.bind(this);
+        this._measures = this._measures.bind(this);
     }
 
-    _Measures(item) {
+    _measures(item) {
         return SimpleWidget.getMeasureObj(item.w, item.h, true, false);
     }
 
-    _RenderFocus(item) {
+    _renderItem(item, on_edge, query, view_obj) {
         return (
-            <div style={{ width: item.w - 10, height: item.h - 10, backgroundImage: `url(${item.url})` }}>
-                <div style={{width: 20, height: 20, backgroundColor: "#FF0000"}}></div>
-            </div>
-        );
+            <Item ref={ele => view_obj.view = ele} data={item} />
+        )
     }
 
-    _RenderItem(item) {
-        return (
-            <div style={{ width: item.w - 10, height: item.h - 10, backgroundImage: `url(${item.url})`, fontSize: "20px", color: "#00FF00"}}>
-                {item.id + "\n" + item.url}
-            </div>
-        );
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
+
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
     }
 
     onKeyDown(ev) {
@@ -303,9 +336,10 @@ class MainScene extends FocusBlock {
                         height={600}
                         direction={VERTICAL}
                         data={data}
-                        renderItem={this._RenderItem}
-                        renderFocus={this._RenderFocus}
-                        measures={this._Measures}
+                        renderItem={this._renderItem}
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
+                        measures={this._measures}
                         branchName={`${this.props.branchName}/widget1`}
                     />
                 </div>
