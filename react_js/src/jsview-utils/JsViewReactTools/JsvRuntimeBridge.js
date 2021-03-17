@@ -11,10 +11,8 @@ function direct_call(name, ...args) {
         let func = null;
         if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge[name] === "function") {
             func = window.jJsvRuntimeBridge[name];
-        } else if (name) {
-            if (window.jContentShellJBridge && typeof window.jContentShellJBridge[name] === "function") {
-                func = window.jContentShellJBridge[name];
-            }
+        } else if (window.jContentShellJBridge && typeof window.jContentShellJBridge[name] === "function") {
+            func = window.jContentShellJBridge[name];
         }
         direct_call_map[name] = func;
         if (func) {
@@ -334,6 +332,73 @@ function getFavouriteAll() {
     return null;
 }
 
+/**
+ * 浮窗控制接口，设置浮窗显示区域，以相对定位的方式调整弹出框的位置(弹出框弹出后先以尺寸1x1的方式展现)
+ * @param {string} align    横纵对齐方式，有left, right, bottom, top, center可选择
+ *                          例如: 右下角"right bottom", 居中"center center"
+ * @param {number} max_width    显示区域最大宽度(占屏幕百分比)
+ * @param {number} max_height   显示区域最大高度(占屏幕百分比)
+ * @param {number} aspect   横纵比设定
+ * 显示区域根据 max_width, max_height, aspect 来计算出同时满足3个条件的最大区域
+ */
+function popupRelativePosition(align, max_width, max_height, aspect) {
+    direct_call("popupRelativePosition", align, max_width, max_height, aspect);
+}
+
+/**
+ * 浮窗控制接口，设置浮窗显示区域
+ * @param {number} left     显示区域X坐标(占屏幕百分比)
+ * @param {number} top      显示区域Y坐标(占屏幕百分比)
+ * @param {number} width    显示区域宽度(占屏幕百分比)
+ * @param {number} height   显示区域高度(占屏幕百分比)
+ */
+function popupAbsolutePosition(left, top, width, height) {
+    direct_call("popupAbsolutePosition", left, top, width, height);
+}
+
+/**
+ * 浮窗系统认为自己准备好后，调用此接口，获取设备的焦点。若不调用的话，默认浮窗系统捕获的焦点
+ */
+function popupGainFocus() {
+    direct_call("popupGainFocus");
+}
+
+/**
+ * 页面预热接口，预热页面将会将以一个新的FrameLayout(内含JsView)的方式加载一个新的应用
+ * 但这个应用在warmLoadView之前，不会创建texture/surface的实际描画资源，也不会加载图片
+ * 仅加载所有JS代码，并正常走完所有启动逻辑(包括描画逻辑)，但不会走setTimeout对应的延时逻辑，也不会显示
+ * 预热的界面可以极大加速界面切换的时间，例如应用跳转到购物类界面
+ * app_url可以传null，若为null仅预热engine js部分
+ * 【特别注意】warmUp起来的view，在warmLoadView调用之前，若启动者JsView关闭的话，此View应该在
+ * View管理模块被清理掉，以防泄露，但在warmLoadView完成后，就不需要进行关联清理，请管理模块务必保证此机制。
+ *
+ * @param {string} engine_js_url 加载界面的ENGINE JS地址
+ * @param {string} app_url      界面的应用地址，支持?(search)和#(hash)字段
+ */
+function warmUpView(engine_js_url, app_url) {
+    return direct_call("warmUpView", engine_js_url, app_url);
+}
+
+/**
+ * 将warmUpView后的View展示出来
+ * 若warmUpView中app_url不为null，进行了全预热，则本调用的app_url可以为null
+ * 当warmUpView中设置了app_url时，仍可以新的app_url调整history hash(#)部分进行子页面切换
+ *
+ * @param {number} view_refer_id warmUpView调用后返回来的View ID
+ * @param {string} app_url      界面的应用地址，支持?(search)和#(hash)字段
+ */
+function warmLoadView(view_refer_id, app_url) {
+    direct_call("warmLoadView", view_refer_id, app_url);
+}
+
+/**
+ * 关闭warmUp后未进行warmLoad的View，释放资源
+ * @param {number} view_refer_id warmUpView调用后返回来的View ID
+ */
+function closeWarmedView(view_refer_id) {
+    direct_call("closeWarmedView", view_refer_id);
+}
+
 // 显示声明，可以提高执行速度和利用上编辑器的成员名提示功能
 const bridge = {
     getMac,
@@ -355,7 +420,13 @@ const bridge = {
     updateFavourite,
     removeFavourite,
     getFavourite,
-    getFavouriteAll
+    getFavouriteAll,
+    popupRelativePosition,
+    popupAbsolutePosition,
+    popupGainFocus,
+    warmUpView,
+    warmLoadView,
+    closeWarmedView
 };
 
 export {

@@ -11,6 +11,7 @@ import "./homepage.css";
 import shadow_big_img from "./images/shadow_big.png";
 import shadow_small_img from "./images/shadow_small.png";
 import { getGlobalHistory } from '../demoCommon/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../demoCommon/JsvRuntimeBridge";
 import { FocusBlock } from "../demoCommon/BlockDefine";
 
 const globalHistory = getGlobalHistory();

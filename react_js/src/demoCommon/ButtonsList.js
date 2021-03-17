@@ -1,6 +1,19 @@
 /**
  * Created by ludl on 3/2/21.
  */
+
+// ButtonsList comes from JsView React Project
+/*
+ * 【控件介绍】
+ * ButtonsList：用于快速创建一个按钮列表（不适合正式产品，比较适合开发demo工作），
+ *              按钮列表自带纯色焦点框，
+ *              按钮内背景色为随机颜色，
+ *              按钮中的文字字号自动适应props中设置的高度，若过长则会自动折行(最多两行)，
+ *              文字的对齐方式固定为左对齐。
+ *              props见本文件中声明
+ *
+ */
+
 import React from "react";
 import { SimpleWidget, VERTICAL, HORIZONTAL, EdgeDirection, SWidgetDispatcher } from "../jsview-utils/jsview-react/index_widget";
 

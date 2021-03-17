@@ -8,7 +8,8 @@ import Home from './Homepage';
 import { FdivRouter } from "../jsview-utils/jsview-react/index_widget";
 import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
 
-import { getGlobalHistory } from '../demoCommon/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
+import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
 
 const globalHistory = getGlobalHistory();
 
@@ -193,8 +194,14 @@ const demoFuncInfos = [
         name: "图片缓存",
         path: "/users/imageCache",
         class: lazy(() => import('../imageCache/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        name: "浮窗+预热加载Demo",
+        path: "/users/floatViewDemo",
+        class: lazy(() => import('../floatViewDemo/App').then(m => ({ default: m.SubApp }))),
     }
 ];
+
 const demoSceneInfos = [
     // 场景
     {
@@ -234,6 +241,19 @@ const demoSceneInfos = [
         class: lazy(() => import('../games/tappingFlying/gameengine/App').then(m => ({ default: m.SubApp }))),
     }
 ];
+
+// 从首页没有入口进，只能通过url hash形式直达的页面
+const demoIsolateScene = [
+    {
+        path: "/users/IsolateScene/floatViewDemo_PopCorner",
+        class: lazy(() => import('../floatViewDemo/PopCorner').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        path: "/users/IsolateScene/floatViewDemo_PopWindow",
+        class: lazy(() => import('../floatViewDemo/PopWindow').then(m => ({ default: m.SubApp }))),
+    },
+];
+
 const color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
 for (const item of demoFuncInfos) {
@@ -281,6 +301,10 @@ class DemoApp extends React.Component {
         return demoSceneInfos;
     }
 
+    _ClosePage = (() => {
+        jJsvRuntimeBridge.closePage();
+    });
+
     render() {
         return (
             <div style={{ width: 1920, height: 1080, backgroundColor: "#000000" }}>
@@ -305,6 +329,16 @@ class DemoApp extends React.Component {
                                             <Route key={`scene_${index}`} path={item.path}>
                                                 <item.class branchName={item.path} navigateHome={this._NavigateHome} />
                                             </Route>);
+                                    })
+                                }
+                                {
+                                    demoIsolateScene.map((item, index) => {
+                                        return (
+                                            <Route key={`isolate_scene_${index}`}
+                                                   path={item.path}
+                                                   render={
+                                                       (props)=><item.class {...props} branchName={item.path} navigateHome={this._ClosePage} />
+                                                   } />);
                                     })
                                 }
                                 <Route path="/">
