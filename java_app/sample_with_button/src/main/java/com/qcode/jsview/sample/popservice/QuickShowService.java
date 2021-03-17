@@ -84,7 +84,7 @@ public class QuickShowService extends Service {
 		StartIntentBaseParser start_intent = new StartIntentBaseParser(intent);
 //		DebugStartIntent.changeStartIntent(start_intent);
 
-		if (mQuickShowViewManager != null) {
+		if (mQuickShowViewManager == null) {
 			mQuickShowViewManager = new QuickShowViewManager(
 					this,
 					start_intent.coreVersionRange,
@@ -99,6 +99,8 @@ public class QuickShowService extends Service {
 		}
 
 		mQuickShowViewManager.loadJsView(start_intent);
+
+		Log.i(TAG, "onStartCommand success");
 
 		return START_NOT_STICKY;
 	}

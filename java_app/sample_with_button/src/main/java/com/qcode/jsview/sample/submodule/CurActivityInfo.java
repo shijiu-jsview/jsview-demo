@@ -24,7 +24,7 @@ public class CurActivityInfo {
 	}
 
 	public static String getActivityNameForStartFromService() {
-		return SubActivity.class.getName() + Math.floor((double)TOTAL_ACTIVITY_NUM / 2);
+		return SubActivity.class.getName() + (int)(Math.floor((double)TOTAL_ACTIVITY_NUM / 2));
 	}
 
 	public static void onActivityCreate() {

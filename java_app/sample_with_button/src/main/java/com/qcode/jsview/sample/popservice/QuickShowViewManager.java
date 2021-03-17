@@ -171,6 +171,8 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 			String core_version_range = "";
 
 			try {
+				Log.e(TAG, "openWindow:" + setting);
+
 				JSONObject obj = new JSONObject(setting);
 				if(obj.has("startup_image")) {
 					startup_image = obj.getString("startup_image");
@@ -448,7 +450,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 			Log.d(TAG, "start sub tab " + engine_url + " " + app_url + " " + start_img_url + "  " + jsview_version + " " + class_name);
 			ComponentName component_name = new ComponentName(mContext.getPackageName(), class_name);
 			intent.setComponent(component_name);
-			intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			if (jsview_version == null || jsview_version.isEmpty()) {
 				jsview_version = JsViewVersionUtils.getCoreVersion();
 			}
