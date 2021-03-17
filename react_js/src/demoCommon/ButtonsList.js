@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { SimpleWidget, VERTICAL, HORIZONTAL, EdgeDirection, SWidgetDispatcher } from "../jsview-utils/jsview-react/index_widget";
+import { SimpleWidget, VERTICAL, HORIZONTAL } from "../jsview-utils/jsview-react/index_widget";
 
 const FRAME_BORDER_WIDTH = 5;
 const ITEM_COLOR = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];

@@ -9,7 +9,7 @@
 import React from 'react';
 import { FocusBlock } from "../demoCommon/BlockDefine";
 import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { VERTICAL, HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
+import { HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
 import {jJsvRuntimeBridge} from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"
 import { getMainPath } from "./Tools"
 
@@ -113,7 +113,7 @@ class MainScene extends FocusBlock {
                 }}>
                     {`精彩内容 ${this.state.coolDown} 秒后出现\n可以【返回】退出`}
                 </div>
-                <div key="content" style={{visibility: this.state.coolDown == 0 ? "visible" : "hidden"}}>
+                <div key="content" style={{visibility: this.state.coolDown === 0 ? "visible" : "hidden"}}>
                     <div style={{ top: 175, left:240, width: 800, height: 120,
                         fontSize: "80px", color: "#FFFFFF", textAlign: "center" }}>
                         选择启动的界面

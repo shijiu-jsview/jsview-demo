@@ -90,7 +90,7 @@ class QuitWindow extends FocusBlock {
     }
 
     onClick(item) {
-        if (item.content == "确定") {
+        if (item.content === "确定") {
             this.props.callback(true);
         } else {
             this.props.callback(false);

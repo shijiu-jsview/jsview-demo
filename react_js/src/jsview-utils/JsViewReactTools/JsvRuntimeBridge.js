@@ -85,16 +85,16 @@ function getAndroidId(){
 function openWindow(url, startupImage, engineUrl, coreVersionRange, appConfigUrl){
     if(typeof window.jJsvRuntimeBridge != "undefined" && typeof window.jJsvRuntimeBridge.openWindow != "undefined"){
         let setting = {};
-        if(startupImage != null && startupImage != "")
+        if(startupImage !== null && startupImage !== "")
             setting.startup_image = startupImage;
 
-        if(engineUrl != null && engineUrl != "")
+        if(engineUrl !== null && engineUrl !== "")
             setting.engine_url = engineUrl;
 
-        if(coreVersionRange != null && coreVersionRange != "")
+        if(coreVersionRange !== null && coreVersionRange !== "")
             setting.core_version_range = coreVersionRange;
 
-        if(appConfigUrl != null && appConfigUrl != "")
+        if(appConfigUrl !== null && appConfigUrl !== "")
             setting.app_config_url = appConfigUrl;
 
         window.jJsvRuntimeBridge.openWindow(url, JSON.stringify(setting));
@@ -124,7 +124,6 @@ function getSystemProperty(key){
  * @returns {string} 应用列表，JSON结构的数组
  *
  */
-let func_getInstalledApps;
 function getInstalledApps(){
     return direct_call("getInstalledApps");
 }
@@ -141,22 +140,22 @@ function getInstalledApps(){
  */
 function startNativeApp(packageName, activity, action, uri, flags, param){
     var obj = {};
-    if(packageName != null && packageName != "")
+    if(packageName !== null && packageName !== "")
         obj.packageName = packageName;
 
-    if(activity != null && activity != "")
+    if(activity !== null && activity !== "")
         obj.activity = activity;
 
-    if(action != null && action != "")
+    if(action !== null && action !== "")
         obj.action = action;
 
-    if(uri != null && uri != "")
+    if(uri !== null && uri !== "")
         obj.uri = uri;
 
-    if(flags != null && flags.length > 0)
+    if(flags !== null && flags.length > 0)
         obj.flags = flags;
 
-    if(param != null && param.length > 0)
+    if(param !== null && param.length > 0)
         obj.param = param;
 
     return direct_call("startNativeApp", JSON.stringify(obj));

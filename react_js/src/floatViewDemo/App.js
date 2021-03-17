@@ -31,7 +31,7 @@
 import React from 'react';
 import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { VERTICAL, HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
+import { HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
 import { getMainPath } from "./Tools"
 
 class MainScene extends FocusBlock {
@@ -125,7 +125,7 @@ class MainScene extends FocusBlock {
                     top: 370,
                     width: 1000,
                     height: 100}}>
-                    {`角标启动中\{第${this.state.Started}次\}...\n角标启动过程中，该界面仍然可以使用左右键调焦点`}
+                    {`角标启动中{第${this.state.Started}次}...\n角标启动过程中，该界面仍然可以使用左右键调焦点`}
                 </div>
             </>
         );
