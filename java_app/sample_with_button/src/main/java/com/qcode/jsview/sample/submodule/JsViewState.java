@@ -25,6 +25,7 @@ public class JsViewState {
 	}
 
 	Runnable onLoadTimeout = null;
+	int onTimerToken = 0; // 防止过期的时间处理生效的计数器
 	boolean pageLoaded = false;
 
 	public PageStatusListener buildStatusListener() {
@@ -44,10 +45,17 @@ public class JsViewState {
 		}
 
 		onLoadTimeout = on_timeout;
+		onTimerToken++;
+		final int token = onTimerToken;
 		new Handler(Looper.getMainLooper()).postDelayed(()->{
-			if (onLoadTimeout != null) {
+			if (onLoadTimeout != null && token == onTimerToken) {
 				onLoadTimeout.run();
 			}
 		}, time_ms); // 页面加载超时
+	}
+
+	public void clearLoadTimer() {
+		onTimerToken++;
+		onLoadTimeout = null;
 	}
 }

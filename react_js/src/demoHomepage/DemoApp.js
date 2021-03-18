@@ -272,11 +272,13 @@ class DemoApp extends React.Component {
 
         this._NavigateHome = (() => {
             if (globalHistory.length > 1) {
+                // 返回主页
                 globalHistory.goBack();
                 this._FocusControl.changeFocus("/");
-                return true;
+            } else {
+                // 子界面直接启动的方式，此时无主页，直接退出即可
+                globalHistory.goBack();
             }
-            return false;
         });
 
         this.focusId = 0;

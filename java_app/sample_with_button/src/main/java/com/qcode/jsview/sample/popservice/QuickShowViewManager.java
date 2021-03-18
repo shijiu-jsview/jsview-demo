@@ -71,7 +71,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		mStartIntentParser = start_intent_parser;
 
 		// 清理所有已经展示的View
-		mJsViewContainer.removeAllViews();
+		clearActiveViews();
 
 		// 启动启动页view
 		JsViewState view_wrapper = addNewView(null, null);
@@ -82,7 +82,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		view_wrapper.activeLoadTimer(()->{
 			Log.e(TAG, "FATAL: Corner page loading timeout");
 			mServiceLifeControl.stopService();
-		}, 15000); // 启动前都不可见，所以可以设置长一点的计时器
+		}, 8000); // 启动前都不可见，所以可以设置长一点的计时器
 
 		jsview.loadUrl2(
 			start_intent_parser.engineUrl,
@@ -99,7 +99,9 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 
 		mMainThreadHandler.post(()->{
 			JsViewState view_wrapper = addNewView(starter_view, wrapper);
-			view_wrapper.view.warmUp(engine_js_url, app_url);
+			if (view_wrapper != null) {
+				view_wrapper.view.warmUp(engine_js_url, app_url);
+			}
 		});
 
 		return wrapper.id;
@@ -391,21 +393,34 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 				view_wrapper,
 				view_wrapper.buildStatusListener());
 
-		// 在loadUrl之前加入到ViewContainer中，应用根据自己需要调用RuntimeBridge.setPopPosition来调整位置
-		mJsViewContainer.addView(jsview, 1, 1);
-		// 注意: 默认不给焦点,首个View自己申请焦点，或则JS通过gainFocus自我获取焦点
-
+		boolean view_expired = false;
 		if (starter_view != null) {
 			// link to owner
+			boolean found_owner = false;
 			for (JsViewState test_wrapper : mActiveViewsMap.values()) {
 				if (test_wrapper.view == starter_view) {
 					view_wrapper.starterView = test_wrapper;
+					found_owner = true;
 					break;
 				}
 			}
+
+			if (!found_owner) {
+				// 启动者已经清理掉(过期)，当前view也需要无效处理
+				view_expired = true;
+				Log.d(TAG, "View expired");
+			}
 		}
 
-		mActiveViewsMap.put(view_wrapper.id, view_wrapper);
+		if (!view_expired) {
+			// 在loadUrl之前加入到ViewContainer中，应用根据自己需要调用RuntimeBridge.setPopPosition来调整位置
+			mJsViewContainer.addView(jsview, 1, 1);
+			// 注意: 默认不给焦点,首个View自己申请焦点，或则JS通过gainFocus自我获取焦点
+
+			mActiveViewsMap.put(view_wrapper.id, view_wrapper);
+		} else {
+			view_wrapper = null;
+		}
 
 		return view_wrapper;
 	}
@@ -414,6 +429,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		for (JsViewState test_wrapper : mActiveViewsMap.values()) {
 			if (test_wrapper.view == target_view) {
 				// Found view
+				test_wrapper.clearLoadTimer();
 				mActiveViewsMap.remove(test_wrapper.id);
 				mJsViewContainer.removeView(test_wrapper.view);
 				Log.d(TAG, "Closing JsView");
@@ -425,6 +441,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		for (JsViewState test_wrapper : mActiveViewsMap.values()) {
 			if (test_wrapper.starterView != null
 					&& !mActiveViewsMap.containsKey(test_wrapper.starterView.id)) {
+				test_wrapper.clearLoadTimer();
 				mActiveViewsMap.remove(test_wrapper.id);
 				mJsViewContainer.removeView(test_wrapper.view);
 				Log.d(TAG, "Closing sub JsView");
@@ -435,6 +452,15 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 			Log.d(TAG, "No valid view, shutdown QuickShow service");
 			mServiceLifeControl.stopService();
 		}
+	}
+
+	private void clearActiveViews() {
+		Log.d(TAG, "do clearActiveViews");
+		for (JsViewState test_wrapper : mActiveViewsMap.values()) {
+			test_wrapper.clearLoadTimer();
+		}
+		mJsViewContainer.removeAllViews();
+		mActiveViewsMap.clear();
 	}
 
 	private void openBlank(JsView host_view, String engine_url, String app_url, String start_img_url, String jsview_version) {
