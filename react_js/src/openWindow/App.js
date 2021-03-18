@@ -291,10 +291,7 @@ class MainScene extends FocusBlock {
   onKeyDown(ev) {
     if (ev.keyCode === 10000 || ev.keyCode === 27) {
       if (this._NavigateHome) {
-        const result = this._NavigateHome();
-        if (!result) {
-          jJsvRuntimeBridge.closePage();
-        }
+        this._NavigateHome();
       } else {
         jJsvRuntimeBridge.closePage();
       }
