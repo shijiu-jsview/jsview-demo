@@ -69,7 +69,7 @@ class MainScene extends FocusBlock {
         this._WarmViewId = -1;
 
         this.state = {
-          coolDown: 0,
+          coolDown: 2, // 2秒coolDown预热其他页面的准备时间
         };
     }
 
