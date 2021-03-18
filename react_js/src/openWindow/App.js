@@ -339,7 +339,7 @@ class MainScene extends FocusBlock {
     } else {
         core_version = this.state.text;
     }
-      jJsvRuntimeBridge.openWindow(`${url}?subCount=${this._SubCount + 1}#/users/openBlank`, start_image, engine_js, core_version, null);
+      jJsvRuntimeBridge.openWindow(`${url}?subCount=${this._SubCount + 1}#/users/openWindow`, start_image, engine_js, core_version, null);
   }
 
   renderContent() {
