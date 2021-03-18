@@ -58,7 +58,7 @@ class MainScene extends FocusBlock {
                             `${window.JsView.CodeRevision}`,
                             null
                         );
-                        jJsvRuntimeBridge.closeWarmedView();
+                        jJsvRuntimeBridge.closeWarmedView(this._WarmViewId);
                         jJsvRuntimeBridge.closePage();
                     }
                     console.log("startView with different URL");
