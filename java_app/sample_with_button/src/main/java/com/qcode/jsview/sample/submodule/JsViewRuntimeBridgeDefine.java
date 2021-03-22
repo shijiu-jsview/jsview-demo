@@ -39,7 +39,6 @@ abstract public class JsViewRuntimeBridgeDefine {
 	// [返回值]
 	// 返回JSON字符串: 包括
 	//      engineJsUrl: 启动时JS引擎URL
-	//      startImage: 启动图URL
 	//      coreVersionRange: 启动时内核版本范围指定
 	abstract public String getStartParams();
 
@@ -49,11 +48,11 @@ abstract public class JsViewRuntimeBridgeDefine {
 
 	// JS接口:
 	// TODO: 需要补充文档
-	abstract public void addFavourite(String appName, String value, JsPromise promise);
+	abstract public void addFavourite(String url, JsPromise promise);
 
 	// JS接口:
 	// TODO: 需要补充文档
-	abstract public void updateFavourite(String appName, String value, JsPromise promise);
+	abstract public void updateFavourite(String url, JsPromise promise);
 
 	// JS接口:
 	// TODO: 需要补充文档

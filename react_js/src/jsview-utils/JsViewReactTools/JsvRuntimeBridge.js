@@ -17,8 +17,10 @@ function direct_call(name, ...args) {
         direct_call_map[name] = func;
         if (func) {
             return func(...args);
-        }
+        }        
     }
+
+    return null;
 }
 
 function getExtFeatureSupports() {
@@ -76,29 +78,25 @@ function getAndroidId(){
 /**
  * 打开另外一个小程序
  * @param {string} url 小程序url
- * @param {string} startupImage 启动图url
- * @param {string} engineUrl 引擎url
- * @param {string} coreVersionRange 内核版本范围
- * @param {string} appConfigUrl 小程序启动配置url
+ * @param {string} startup_image 启动图url
+ * @param {string} startup_video 启动视频url
+ * @param {int} startup_duration 启动图时长，默认0
+ * @param {int} add_history 是否添加历史，0不添加，1添加
  *
  */
-function openWindow(url, startupImage, engineUrl, coreVersionRange, appConfigUrl){
-    if(typeof window.jJsvRuntimeBridge != "undefined" && typeof window.jJsvRuntimeBridge.openWindow != "undefined"){
-        let setting = {};
-        if(startupImage !== null && startupImage !== "")
-            setting.startup_image = startupImage;
+function openWindow(url, startup_image, startup_video, startup_duration, add_history){
+    let setting = {};
+    if(startup_image !== null && startup_image !== "")
+        setting.startupImage = startup_image;
 
-        if(engineUrl !== null && engineUrl !== "")
-            setting.engine_url = engineUrl;
-
-        if(coreVersionRange !== null && coreVersionRange !== "")
-            setting.core_version_range = coreVersionRange;
-
-        if(appConfigUrl !== null && appConfigUrl !== "")
-            setting.app_config_url = appConfigUrl;
-
-        window.jJsvRuntimeBridge.openWindow(url, JSON.stringify(setting));
+    if(startup_video !== null && startup_video !== ""){
+        setting.startupVideo = startup_video;
     }
+
+    setting.startupDuration = startup_duration;
+    setting.addHistory = add_history;
+
+    direct_call("openWindow", url, JSON.stringify(setting));
 }
 
 /**
@@ -106,7 +104,7 @@ function openWindow(url, startupImage, engineUrl, coreVersionRange, appConfigUrl
  *
  */
 function closePage(){
-    return direct_call("closePage");
+    direct_call("closePage");
 }
 
 /**
@@ -130,7 +128,7 @@ function getInstalledApps(){
 
 /**
  * 启动安卓APP
- * @param {string} packageName 包名
+ * @param {string} package_name 包名
  * @param {string} activity Activity方式启动
  * @param {string} action Action方式启动
  * @param {string} uri Uri方式启动
@@ -138,10 +136,10 @@ function getInstalledApps(){
  * @param {Array} param JSON格式数组，用于intent.putExtra
  *
  */
-function startNativeApp(packageName, activity, action, uri, flags, param){
+function startNativeApp(package_name, activity, action, uri, flags, param){
     var obj = {};
-    if(packageName !== null && packageName !== "")
-        obj.packageName = packageName;
+    if(package_name !== null && package_name !== "")
+        obj.packageName = package_name;
 
     if(activity !== null && activity !== "")
         obj.activity = activity;
@@ -158,7 +156,7 @@ function startNativeApp(packageName, activity, action, uri, flags, param){
     if(param !== null && param.length > 0)
         obj.param = param;
 
-    return direct_call("startNativeApp", JSON.stringify(obj));
+    direct_call("startNativeApp", JSON.stringify(obj));
 }
 
 /**
@@ -196,7 +194,7 @@ function hasFavouriteFunction(){
 }
 
 /**
- * 是否支持收藏功能
+ * 获取启动内核版本和引擎
  * @returns {Object} 包含
  *      COREVERSIONRANGE: 启动时设定的内核版本范围
  *      ENGINE: 启动时设定的Js引擎的URL
@@ -212,31 +210,13 @@ function getStartParams() {
 
 /**
  * 添加收藏
- * @param {string} appName app name 唯一标识
- * @param {string} appConfigUrl 启动配置url
- * @param {string} appUrl app url 或者 AppId
- * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
- * @param {string} coreversionRange  引擎内核版本
- * @param {string} engine  js引擎地址
- * @param {string} title  显示名称
- * @param {string} icon  显示图标(http地址)
- * @param {string} startImg  启动图(http地址)
+ * @param {string} url 收藏的url
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function addFavourite(appName, appConfigUrl, appUrl, subUrl, coreVersionRange, engine, title, icon, startImg, callback) {
+function addFavourite(url, callback) {
     if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.addFavourite === "function") {
-        const value = JSON.stringify({
-            appConfigUrl,
-            appUrl,
-            subUrl,
-            coreVersionRange,
-            engine,
-            startImg,
-            title,
-            icon
-        });
-        let async_message = window.jJsvRuntimeBridge.addFavourite(appName, value);
+        let async_message = window.jJsvRuntimeBridge.addFavourite(url);
         async_message.then((result)=>{
             if (callback) {
                 callback(result)
@@ -251,31 +231,13 @@ function addFavourite(appName, appConfigUrl, appUrl, subUrl, coreVersionRange, e
 
 /**
  * 更新收藏
- * @param {string} appName app name 唯一标识
- * @param {string} appConfigUrl 启动配置url
- * @param {string} appUrl app url 或者 AppId
- * @param {string} subUrl  sub url(添加到app url或者AppId转出来的url后的内容)
- * @param {string} coreversionRange  引擎内核版本
- * @param {string} engine  js引擎地址
- * @param {string} title  显示名称
- * @param {string} icon  显示图标(http地址)
- * @param {string} startImg  启动图(http地址)
+ * @param {string} url 收藏的url
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function updateFavourite(appName, appConfigUrl, appUrl, subUrl, coreversionRange, engine, title, icon, startImg, callback) {
+function updateFavourite(url, callback) {
     if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.updateFavourite === "function") {
-        const value = JSON.stringify({
-            appConfigUrl,
-            appUrl,
-            subUrl,
-            coreversionRange,
-            engine,
-            startImg,
-            title,
-            icon
-        });
-        let async_message = window.jJsvRuntimeBridge.updateFavourite(appName, value);
+        let async_message = window.jJsvRuntimeBridge.updateFavourite(url);
         async_message.then((result)=>{
             if (callback) {
                 callback(result)
@@ -290,13 +252,13 @@ function updateFavourite(appName, appConfigUrl, appUrl, subUrl, coreversionRange
 
 /**
  * 删除指定收藏
- * @param {string} appName app name 唯一标识
+ * @param {string} app_name app name 唯一标识
  * @param {function} callback  执行接口回调, 处理可能被用户否决
  *
  */
-function removeFavourite(appName, callback) {
+function removeFavourite(app_name, callback) {
     if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.removeFavourite === "function") {
-        let async_message = window.jJsvRuntimeBridge.removeFavourite(appName);
+        let async_message = window.jJsvRuntimeBridge.removeFavourite(app_name);
         async_message.then((result)=>{
             if (callback) {
                 callback(result)
@@ -311,11 +273,11 @@ function removeFavourite(appName, callback) {
 
 /**
  * 获取指定收藏
- * @param {string} appName app name 唯一标识
+ * @param {string} app_name app name 唯一标识
  */
-function getFavourite(appName) {
+function getFavourite(app_name) {
     if (window.jJsvRuntimeBridge && typeof window.jJsvRuntimeBridge.getFavourite === "function") {
-        return window.jJsvRuntimeBridge.getFavourite(appName);
+        return window.jJsvRuntimeBridge.getFavourite(app_name);
     }
     return null;
 }
