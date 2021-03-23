@@ -6,6 +6,7 @@
  * 【模块 export 内容】
  * JsvTabWidget: React高阶组件，TAB + 多页内容的展示控件，多用于机顶盒主页的场景，接管焦点控制和导航键(上下左右)
  *      prop说明:
+ *          loadAll {bool} 是否加载所有内容
  *          onEdge {function} 边缘回调
  *          flowDirection {Symbol} 控件的方向 (必选)
  *          initFocusId {int} 初始的tab焦点
@@ -112,12 +113,12 @@ class JsvTabWidget extends FdivWrapper {
 
   _tabRenderItem(item, onedge, queryObj) {
     return (
-            <TabItem
-            item={item}
-            ifCur={ queryObj.id === this.state.curId}
-            renderItem = { this.props.tabRenderItem }
-            renderCurItem = { this.props.tabRenderCurItem }
-            />
+      <TabItem
+        item={item}
+        ifCur={ queryObj.id === this.state.curId}
+        renderItem = { this.props.tabRenderItem }
+        renderCurItem = { this.props.tabRenderCurItem }
+      />
     );
   }
 
@@ -253,24 +254,25 @@ class JsvTabWidget extends FdivWrapper {
 
   _frameRenderItem(item, onedge) {
     return (
-            <SimpleWidget
-                width={ this.props.bodyStyle.width }
-                height={ this.props.bodyStyle.height }
-                padding={ this.props.bodyPadding }
-                direction={ this.props.flowDirection }
-                dispatcher={ this._dispatcherMap.get(`body_${item.tabIndex}`) }
-                data={ this.props.bodyData[item.tabIndex] }
-                onEdge = { onedge }
-                slideStyle={ this.props.bodySlideStyle }
-                renderBlur={ this.props.bodyRenderBlur }
-                renderItem={ this.props.bodyRenderItem }
-                renderFocus={ this.props.bodyRenderFocus }
-                onItemFocus={ this.bodyOnItemFocus }
-                onItemBlur={ this.props.bodyOnItemBlur}
-                onClick={ this.props.bodyOnClick }
-                measures={ this.props.bodyMeasures }
-                initFocusId={ this.props.initBodyFocusId }
-                branchName={ `${this.props.branchName}/body${item.tabIndex}` }/>
+      <SimpleWidget
+        width={ this.props.bodyStyle.width }
+        height={ this.props.bodyStyle.height }
+        padding={ this.props.bodyPadding }
+        direction={ this.props.flowDirection }
+        dispatcher={ this._dispatcherMap.get(`body_${item.tabIndex}`) }
+        data={ this.props.bodyData[item.tabIndex] }
+        onEdge = { onedge }
+        loadAll={this.props.loadAll}
+        slideStyle={ this.props.bodySlideStyle }
+        renderBlur={ this.props.bodyRenderBlur }
+        renderItem={ this.props.bodyRenderItem }
+        renderFocus={ this.props.bodyRenderFocus }
+        onItemFocus={ this.bodyOnItemFocus }
+        onItemBlur={ this.props.bodyOnItemBlur}
+        onClick={ this.props.bodyOnClick }
+        measures={ this.props.bodyMeasures }
+        initFocusId={ this.props.initBodyFocusId }
+        branchName={ `${this.props.branchName}/body${item.tabIndex}` }/>
     );
   }
 
@@ -296,48 +298,49 @@ class JsvTabWidget extends FdivWrapper {
 
   renderContent() {
     return (
-            <div>
-                <SimpleWidget
-                    left={ this.props.tabStyle.left }
-                    top={ this.props.tabStyle.top }
-                    width={ this.props.tabStyle.width }
-                    height={ this.props.tabStyle.height }
-                    branchName={ `${this.props.branchName}/tab` }
-                    dispatcher={ this._dispatcherMap.get("tab") }
-                    direction={ this.props.flowDirection }
-                    data={ this.props.tabData }
-                    padding={ this.props.tabPadding }
-                    onFocus={ this.props.tabOnFocus }
-                    onBlur={ this.props.tabOnBlur }
-                    renderItem={ this._tabRenderItem }
-                    renderFocus={ this.props.tabRenderFocus }
-                    renderBlur={ this.props.tabRenderBlur }
-                    measures={ this.props.tabMeasures }
-                    onEdge={ this._tabOnEdge }
-                    onClick={ this.props.tabOnClick }
-                    onItemFocus={ this._tabOnItemFocus }
-                    onItemBlur={ this.props.tabOnItemBlur}
-                    initFocusId={ this.props.initFocusId }/>
+      <div>
+        <SimpleWidget
+          left={ this.props.tabStyle.left }
+          top={ this.props.tabStyle.top }
+          width={ this.props.tabStyle.width }
+          height={ this.props.tabStyle.height }
+          branchName={ `${this.props.branchName}/tab` }
+          dispatcher={ this._dispatcherMap.get("tab") }
+          direction={ this.props.flowDirection }
+          data={ this.props.tabData }
+          padding={ this.props.tabPadding }
+          onFocus={ this.props.tabOnFocus }
+          onBlur={ this.props.tabOnBlur }
+          renderItem={ this._tabRenderItem }
+          renderFocus={ this.props.tabRenderFocus }
+          renderBlur={ this.props.tabRenderBlur }
+          measures={ this.props.tabMeasures }
+          onEdge={ this._tabOnEdge }
+          onClick={ this.props.tabOnClick }
+          onItemFocus={ this._tabOnItemFocus }
+          onItemBlur={ this.props.tabOnItemBlur}
+          initFocusId={ this.props.initFocusId }/>
 
-                <SimpleWidget
-                    left={ this.props.bodyStyle.left }
-                    top={ this.props.bodyStyle.top }
-                    width={ this.props.bodyStyle.width }
-                    height={ this.props.bodyStyle.height }
-                    dispatcher={ this._dispatcherMap.get("body") }
-                    branchName={`${this.props.branchName}/body`}
-                    direction={ this.props.flowDirection }
-                    slideStyle={ SlideStyle.wholePage }
-                    onFocus={ this.props.bodyOnFocus }
-                    onBlur={ this.props.bodyOnBlur }
-                    onEdge={ this._bodyOnEdge }
-                    onClick={ this.props.bodyOnClick}
-                    onItemFocus={ this._frameOnItemFocus }
-                    renderItem={ this._frameRenderItem }
-                    measures={ this._frameMeasures }
-                    initFocusId={ this.props.initFocusId }
-                    data={ this.state.frameData }/>
-            </div>
+        <SimpleWidget
+          left={ this.props.bodyStyle.left }
+          top={ this.props.bodyStyle.top }
+          width={ this.props.bodyStyle.width }
+          height={ this.props.bodyStyle.height }
+          dispatcher={ this._dispatcherMap.get("body") }
+          branchName={`${this.props.branchName}/body`}
+          direction={ this.props.flowDirection }
+          slideStyle={ SlideStyle.wholePage }
+          onFocus={ this.props.bodyOnFocus }
+          onBlur={ this.props.bodyOnBlur }
+          onEdge={ this._bodyOnEdge }
+          loadAll={this.props.loadAll}
+          onClick={ this.props.bodyOnClick}
+          onItemFocus={ this._frameOnItemFocus }
+          renderItem={ this._frameRenderItem }
+          measures={ this._frameMeasures }
+          initFocusId={ this.props.initFocusId }
+          data={ this.state.frameData }/>
+      </div>
     );
   }
 
