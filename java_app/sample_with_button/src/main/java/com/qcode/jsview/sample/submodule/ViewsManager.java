@@ -123,6 +123,16 @@ public class ViewsManager extends ViewsManagerDefine {
 				url_tmp += "#" + fragment_tmp;
 			}
 
+			// Parse settings
+			try {
+				JSONObject set_json = new JSONObject(setting);
+				if (set_json.has("startupImage")) {
+					startup_image = set_json.getString("startupImage");
+				}
+			} catch (JSONException e) {
+				Log.e(TAG, "JSON error:", e);
+			}
+
 			openBlank(host_view, engine_url, url_tmp, startup_image, core_version_range);
 		});
 	}
