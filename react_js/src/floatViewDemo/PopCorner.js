@@ -52,12 +52,8 @@ class MainScene extends FocusBlock {
                     // 启动一个非预热的界面，同时关闭预热内容
                     if (window.JsView) {
                         jJsvRuntimeBridge.openWindow(
-                            `${getMainPath()}#/users/longText`,
-                            null,
-                            window.JsView.EngineJs,
-                            `${window.JsView.CodeRevision}`,
-                            null
-                        );
+                            `${getMainPath()}?engineUrl=${encodeURIComponent(window.JsView.EngineJs)}&coreVersionRange=${window.JsView.CodeRevision}#/users/longText`,
+                            null, null, 0, false);
                         jJsvRuntimeBridge.closeWarmedView(this._WarmViewId);
                         jJsvRuntimeBridge.closePage();
                     }

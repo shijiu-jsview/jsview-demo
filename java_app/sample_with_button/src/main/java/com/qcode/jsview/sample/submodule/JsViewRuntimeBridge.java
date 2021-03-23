@@ -136,15 +136,13 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	}
 
 	@Override
-	@JavascriptInterface
-	public void addFavourite(String appName, String value, JsPromise promise) {
-		mFavouriteSupport.addFavourite(appName, value, promise);
+	public void addFavourite(String url, JsPromise promise) {
+
 	}
 
 	@Override
-	@JavascriptInterface
-	public void updateFavourite(String appName, String value, JsPromise promise) {
-		mFavouriteSupport.updateFavourite(appName, value, promise);
+	public void updateFavourite(String url, JsPromise promise) {
+
 	}
 
 	@Override

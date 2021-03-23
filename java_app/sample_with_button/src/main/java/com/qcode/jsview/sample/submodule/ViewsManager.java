@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -13,6 +14,9 @@ import com.qcode.jsview.JsView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Set;
 import java.util.Stack;
 
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
@@ -52,29 +56,68 @@ public class ViewsManager extends ViewsManagerDefine {
 	@Override
 	public void openWindow(JsView host_view, String url, String setting) {
 		mMainThreadHandler.post(()->{
-			String engine_url = "";
-			String startup_image = "";
-			String core_version_range = "";
+			if (url == null || url.isEmpty())
+				return ;
 
-			try {
-				JSONObject obj = new JSONObject(setting);
-				if(obj.has("startup_image")) {
-					startup_image = obj.getString("startup_image");
-				}
+			Log.d(TAG, "Open window url=" + url + " settings=" + setting);
 
-				if(obj.has("engine_url")){
-					engine_url = obj.getString("engine_url");
-				}
+			Uri uri = Uri.parse(url);
+			Set<String> query_name_array = uri.getQueryParameterNames();
 
-				if(obj.has("core_version_range")){
-					core_version_range = obj.getString("core_version_range");
-				}
-
-				openBlank(host_view, engine_url, url, startup_image, core_version_range);
-			} catch (JSONException e) {
-				Log.e(TAG, "JSON error:" + setting, e);
-				return;
+			// 为了在url中去除内置的参数，创建url_tmp来存储筛选掉的内容
+			String url_tmp;
+			if(uri.getPort() > 0) {
+				url_tmp = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
+			}else{
+				url_tmp = uri.getScheme() + "://" + uri.getHost() + uri.getPath();
 			}
+
+			String engine_url = null;
+			String core_version_range = null;
+			String startup_image = null;
+
+			boolean first_query_value = true;
+
+			for (String name : query_name_array) {
+				if (name.equals("engineUrl")) {
+					// engine js URL
+					try {
+						engine_url = URLDecoder.decode(uri.getQueryParameter(name), "utf-8");
+					} catch (UnsupportedEncodingException e) {
+						Log.e(TAG, "warning:", e);
+						engine_url = null;
+					}
+				} else if (name.equals("coreVersionRange")) {
+					// 内核Core的范围设定
+					core_version_range = uri.getQueryParameter(name);
+				} else if (name.equals("startImg")) {
+					// 启动图
+					try {
+						startup_image = URLDecoder.decode(uri.getQueryParameter(name), "utf-8");
+					} catch (UnsupportedEncodingException e) {
+						Log.e(TAG, "warning:", e);
+						startup_image = null;
+					}
+				} else if (name.equals("startDuration")) {
+					// TODO: 启动图的启动时长
+
+				} else if (name.equals("updateUrl")) {
+					// TODO: 获取新的Core的获取URL
+
+				} else if (name.equals("startVideo")) {
+					// TODO: 启动Video
+				} else {
+					// 其他参数，放回到URL中
+					if (first_query_value) {
+						url_tmp += "?" + name + "=" + uri.getQueryParameter(name);
+						first_query_value = false;
+					} else {
+						url_tmp += "&" + name + "=" + uri.getQueryParameter(name);
+					}
+				}
+			}
+
+			openBlank(host_view, engine_url, url_tmp, startup_image, core_version_range);
 		});
 	}
 
