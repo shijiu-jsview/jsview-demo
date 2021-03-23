@@ -151,7 +151,7 @@ class WebpData extends ApicData {
       : frame["imgwidth"];
     let height = this._DecodedData["header"]
       ? this._DecodedData["header"]["canvas_height"]
-      : frame["imgheigth"];
+      : frame["imgheight"];
     canvas.width = width;
     canvas.height = height;
     let image_data = canvas_ctx.createImageData(width, height);

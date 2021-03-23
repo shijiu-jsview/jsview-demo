@@ -61,11 +61,19 @@
             android:hardwareAccelerated="true"
             android:process=":sub5">
         </activity>
-        <provider
-            android:name=".submodule.SharedDataProvider"
-            android:authorities="com.qcode.jsview.sp.SharedDataProvider"
+<!--        <provider-->
+<!--            android:name=".submodule.SharedDataProvider"-->
+<!--            android:authorities="com.qcode.jsview.sp.SharedDataProvider"-->
+<!--            android:exported="true"-->
+<!--            android:multiprocess="false" />-->
+        <service
+            android:name=".popservice.QuickShowService"
             android:exported="true"
-            android:multiprocess="false" />
+            android:process=":QuickShow">
+            <intent-filter>
+                <action android:name="qcode.service.quick_show" />
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>

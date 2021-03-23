@@ -9,8 +9,10 @@ import com.qcode.jsview.AckEventListener;
 import com.qcode.jsview.JsView;
 import com.qcode.jsview.sample.submodule.CurActivityInfo;
 import com.qcode.jsview.sample.submodule.DownloadCoreProgress;
+import com.qcode.jsview.sample.submodule.JsViewActivitySupports;
 import com.qcode.jsview.sample.submodule.JsViewRequestSdkProxy;
 import com.qcode.jsview.sample.submodule.JsViewRuntimeBridge;
+import com.qcode.jsview.sample.submodule.JsViewState;
 import com.qcode.jsview.sample.submodule.PageStatusListener;
 import com.qcode.jsview.sample.submodule.StartIntentParser;
 import com.qcode.jsview.sample.submodule.StartingImage;
@@ -21,6 +23,7 @@ public class ViewLoader {
 
 	static public JsView loadJsView(
 			Activity host_activity,
+			JsViewActivitySupports supports,
 			StartIntentParser parsed_intent,
 			PageStatusListener status_listener) {
 
@@ -80,7 +83,13 @@ public class ViewLoader {
 		 * Java穿透给JS的JsViewRuntimeBridge
 		 * 建议所有容器都含有该接口，并命名为jJsvRuntime，方便形成统一的JS APP调用规范，提高应用的兼容性
 		 */
-		JsViewRuntimeBridge.enableBridge(host_activity, jsview, status_listener);
+		JsViewState jsview_state = new JsViewState(jsview, parsed_intent);
+		JsViewRuntimeBridge.enableBridge(
+				host_activity,
+				supports.getViewsManager(),
+				supports.getFavouriteSupport(),
+				jsview_state,
+				status_listener);
 
 		if (!parsed_intent.engineUrl.isEmpty()) {
 			// 使用接口JS和APP JS都可配置的接口

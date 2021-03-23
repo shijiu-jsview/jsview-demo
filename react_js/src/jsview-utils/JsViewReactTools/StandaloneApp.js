@@ -23,7 +23,12 @@ function createStandaloneApp(main_scene_component) {
     }
 
     render() {
-      const scene = React.createElement(main_scene_component, { branchName: "/MySelf", standAlone: true });
+      const scene = React.createElement(main_scene_component,
+          {
+            branchName: "/MySelf",
+            standAlone: true,
+            navigateHome: ()=>{jJsvRuntimeBridge.closePage();}
+          });
       return (<FdivRouter controlRef={(ref) => {
         this._FocusControl = ref;
       }}>

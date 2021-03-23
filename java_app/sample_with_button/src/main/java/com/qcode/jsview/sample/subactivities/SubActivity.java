@@ -11,12 +11,15 @@ import com.qcode.jsview.sample.DebugDevOption;
 import com.qcode.jsview.sample.R;
 import com.qcode.jsview.sample.StartupProc;
 import com.qcode.jsview.sample.submodule.CurActivityInfo;
+import com.qcode.jsview.sample.submodule.JsViewActivitySupports;
 
 abstract public class SubActivity extends Activity {
 	private static final String TAG = "SubActivity";
 
 	// reload调试处理的View对象
 	private JsView mDebugDevTargetView = null;
+
+	private JsViewActivitySupports mJsViewActivitySupports;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,11 @@ abstract public class SubActivity extends Activity {
 		CurActivityInfo.onActivityCreate();
 		setContentView(R.layout.activity_main);
 
+		mJsViewActivitySupports = new JsViewActivitySupports(this);
+
 		// 启动主界面
 		StartupProc.startWhenConnectReady(this,
+				mJsViewActivitySupports,
 				getIntent(),
 				jsview -> mDebugDevTargetView = jsview,
 				false);
@@ -38,6 +44,7 @@ abstract public class SubActivity extends Activity {
 		Log.d(TAG + activityIndex(), "onNewIntent");
 		// 更新主界面，接受新的URL配置
 		StartupProc.startWhenConnectReady(this,
+				mJsViewActivitySupports,
 				intent,
 				jsview -> mDebugDevTargetView = jsview,
 				true);

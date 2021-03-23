@@ -48,7 +48,7 @@ abstract public class JsViewRequestSdkProxy {
 		}
 	}
 
-	public static boolean needReboot(Context ctx, StartIntentParser intent) {
+	public static boolean needReboot(Context ctx, StartIntentBaseParser intent) {
 		if (sEnableEngineCodeDebug) {
 			// 调试版内核，不需要重启
 			return false;

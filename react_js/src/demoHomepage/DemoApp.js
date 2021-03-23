@@ -8,7 +8,8 @@ import Home from './Homepage';
 import { FdivRouter } from "../jsview-utils/jsview-react/index_widget";
 import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
 
-import { getGlobalHistory } from '../demoCommon/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
+import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
 
 const globalHistory = getGlobalHistory();
 
@@ -105,14 +106,9 @@ const demoFuncInfos = [
         class: lazy(() => import('../hashHistoryLike/App').then(m => ({ default: m.SubApp }))),
     },
     {
-        name: "子页面启动(openBlank)",
-        path: "/users/openBlank",
-        class: lazy(() => import('../openBlank/App').then(m => ({ default: m.SubApp }))),
-    },
-    {
-        name: "子页面启动(openSelf)",
-        path: "/users/openSelf",
-        class: lazy(() => import('../openSelf/App').then(m => ({ default: m.SubApp }))),
+        name: "子页面启动",
+        path: "/users/openWindow",
+        class: lazy(() => import('../openWindow/App').then(m => ({ default: m.SubApp }))),
     },
     {
         name: "ScrollNum",
@@ -193,8 +189,19 @@ const demoFuncInfos = [
         name: "Web/Gif播放控制",
         path: "/users/apicDemo",
         class: lazy(() => import('../aPicDemo/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        name: "图片缓存",
+        path: "/users/imageCache",
+        class: lazy(() => import('../imageCache/App').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        name: "浮窗+预热加载Demo",
+        path: "/users/floatViewDemo",
+        class: lazy(() => import('../floatViewDemo/App').then(m => ({ default: m.SubApp }))),
     }
 ];
+
 const demoSceneInfos = [
     // 场景
     {
@@ -234,6 +241,19 @@ const demoSceneInfos = [
         class: lazy(() => import('../games/tappingFlying/gameengine/App').then(m => ({ default: m.SubApp }))),
     }
 ];
+
+// 从首页没有入口进，只能通过url hash形式直达的页面
+const demoIsolateScene = [
+    {
+        path: "/users/IsolateScene/floatViewDemo_PopCorner",
+        class: lazy(() => import('../floatViewDemo/PopCorner').then(m => ({ default: m.SubApp }))),
+    },
+    {
+        path: "/users/IsolateScene/floatViewDemo_PopWindow",
+        class: lazy(() => import('../floatViewDemo/PopWindow').then(m => ({ default: m.SubApp }))),
+    },
+];
+
 const color = ["#89BEB2", "#C9BA83", "#DED38C", "#DE9C53"];
 let index = 0;
 for (const item of demoFuncInfos) {
@@ -252,11 +272,13 @@ class DemoApp extends React.Component {
 
         this._NavigateHome = (() => {
             if (globalHistory.length > 1) {
+                // 返回主页
                 globalHistory.goBack();
                 this._FocusControl.changeFocus("/");
-                return true;
+            } else {
+                // 子界面直接启动的方式，此时无主页，直接退出即可
+                globalHistory.goBack();
             }
-            return false;
         });
 
         this.focusId = 0;
@@ -280,6 +302,10 @@ class DemoApp extends React.Component {
         }
         return demoSceneInfos;
     }
+
+    _ClosePage = (() => {
+        jJsvRuntimeBridge.closePage();
+    });
 
     render() {
         return (
@@ -305,6 +331,16 @@ class DemoApp extends React.Component {
                                             <Route key={`scene_${index}`} path={item.path}>
                                                 <item.class branchName={item.path} navigateHome={this._NavigateHome} />
                                             </Route>);
+                                    })
+                                }
+                                {
+                                    demoIsolateScene.map((item, index) => {
+                                        return (
+                                            <Route key={`isolate_scene_${index}`}
+                                                   path={item.path}
+                                                   render={
+                                                       (props)=><item.class {...props} branchName={item.path} navigateHome={this._ClosePage} />
+                                                   } />);
                                     })
                                 }
                                 <Route path="/">

@@ -644,11 +644,11 @@ class OffscreenVideo extends FocusBlock {
     }
 
     componentWillUnmount() {
-      console.log("Video App componentWillUnmount in");
+      console.log("OffScreenVideo App componentWillUnmount in");
     }
 
     componentDidMount() {
-      console.log("Video App componentDidMount in");
+      console.log("OffScreenVideo App componentDidMount in");
     }
 
     _ToggleObjectFitChange() {

@@ -6,6 +6,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -24,60 +26,70 @@ import com.qcode.jsview.sample.utils.Mac;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import static com.qcode.jsview.sample.submodule.JsViewVersionUtils.needResetCore;
 
-public class JsViewRuntimeBridge {
+public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	private static final String TAG = "JsViewRuntimeBridge";
-	private class UrlInfo{
-		String engineUrl;
-		String appUrl;
-	}
 	private Context mContext = null;
-	private JsView mHostJsView = null;
+	private ViewsManagerDefine mViewsManager = null;
+	private FavouriteSupport mFavouriteSupport = null;
+	private JsViewState mHostJsViewState = null;
 	private PageStatusListener mPageStatusListener = null;
 	private Handler mMainThreadHandler;
 
-	private Stack<UrlInfo> mUrlStack = new Stack<>();
-
 	// 启用Java->JS功能接口，在JS端的调用接口为 jJsvRuntimeBridge.XXXXX()
-	public static void enableBridge(Activity host_activity, JsView host_jsview, PageStatusListener page_listener) {
+	public static void enableBridge(
+			Context host_context,
+			ViewsManagerDefine views_manager,
+			FavouriteSupport favourite_support,
+			JsViewState host_jsview,
+			PageStatusListener page_listener) {
 		if (host_jsview != null) {
-			JsViewRuntimeBridge bridge = new JsViewRuntimeBridge(host_activity, host_jsview, page_listener);
+			JsViewRuntimeBridge bridge = new JsViewRuntimeBridge(
+					host_context,
+					views_manager,
+					favourite_support,
+					host_jsview,
+					page_listener);
 
 			// 提供给Js端的调用名为 'jJsvRuntimeBridge'
-			host_jsview.addJavascriptInterface(bridge, "jJsvRuntimeBridge");
+			host_jsview.view.addJavascriptInterface(bridge, "jJsvRuntimeBridge");
 		} else {
 			Log.e(TAG, "Error: invalid jsview");
 		}
 	}
 
-	private JsViewRuntimeBridge(Activity host_activity, JsView host_jsview, PageStatusListener page_listener) {
-		mContext = host_activity;
-		mHostJsView = host_jsview;
+	private JsViewRuntimeBridge(
+			Context host_context,
+			ViewsManagerDefine views_manager,
+			FavouriteSupport favourite_support,
+			JsViewState host_jsview,
+			PageStatusListener page_listener) {
+		mContext = host_context;
+		mViewsManager = views_manager;
+		mFavouriteSupport = favourite_support;
+		mHostJsViewState = host_jsview;
 		mPageStatusListener = page_listener;
 		mMainThreadHandler = new Handler(Looper.getMainLooper());
 	}
 
 	// JS接口: 退出当前页面
+	@Override
 	@JavascriptInterface
 	public void closePage() {
 		Log.d(TAG, "closePage...");
-
-		// 放入主线程完成
-		mMainThreadHandler.post(()->{
-			if (!mUrlStack.empty()) {
-				UrlInfo url = mUrlStack.pop();
-				mHostJsView.loadUrl2(url.engineUrl, url.appUrl);
-			} else {
-				Activity host_activity = (Activity) mContext;
-				host_activity.finish();
-			}
-		});
+		mViewsManager.closePage(mHostJsViewState.view);
 	}
 
 	// JS接口: 从JS发出界面加载完成的通知，可以触发隐藏启动图的动作
+	@Override
 	@JavascriptInterface
 	public void notifyPageLoaded() {
 		Log.d(TAG, "notifyPageLoaded...");
@@ -86,7 +98,219 @@ public class JsViewRuntimeBridge {
 		}
 	}
 
+	@Override
+	@JavascriptInterface
+	public void openWindow(String url, String setting) {
+		mViewsManager.openWindow(mHostJsViewState.view, url, setting);
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getStartParams() {
+		try {
+			JSONObject start_params_json = new JSONObject();
+			start_params_json.put("COREVERSIONRANGE", mHostJsViewState.startIntent.coreVersionRange);
+			start_params_json.put("ENGINE", mHostJsViewState.startIntent.engineUrl);
+			return start_params_json.toString();
+		} catch (JSONException e) {
+			Log.e(TAG, "JSON error:", e);
+			return null;
+		}
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getExtFeaturesSupport() {
+		StringBuilder s_builder = new StringBuilder();
+
+		// 收藏功能
+		if (mFavouriteSupport != null) {
+			s_builder.append("favourite");
+			s_builder.append(",");
+		}
+
+		// 删除最后一个逗号
+		s_builder.delete(s_builder.length() - 1, s_builder.length());
+
+		return s_builder.toString();
+	}
+
+	@Override
+	public void addFavourite(String url, JsPromise promise) {
+
+	}
+
+	@Override
+	public void updateFavourite(String url, JsPromise promise) {
+
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getFavourite(String appName) {
+		return mFavouriteSupport.getFavourite(appName);
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getFavouriteAll() {
+		return mFavouriteSupport.getFavouriteAll();
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getDeviceInfo() {
+		try {
+			JSONObject version_json_obj = new JSONObject();
+			version_json_obj.put("MODEL", Build.MODEL);
+			version_json_obj.put("SDK_INT", Build.VERSION.SDK_INT);
+			version_json_obj.put("VERSION", Build.VERSION.RELEASE);
+			version_json_obj.put("BOARD", Build.BOARD);
+			version_json_obj.put("BRAND", Build.BRAND);
+			version_json_obj.put("DEVICE", Build.DEVICE);
+			version_json_obj.put("DISPLAY", Build.DISPLAY);
+			version_json_obj.put("MANUFACTURER", Build.MANUFACTURER);
+			version_json_obj.put("PRODUCT", Build.PRODUCT);
+
+			return version_json_obj.toString();
+		} catch (JSONException e) {
+			Log.e(TAG, "getDeviceInfo JSON error");
+			return "{}";
+		}
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getSystemProperty(String key) {
+		String retStr = "";
+
+		try {
+			Class<?> c = Class.forName("android.os.SystemProperties");
+			Method get = c.getMethod("get", String.class);
+			retStr = (String)get.invoke(c, key);
+			return retStr;
+		} catch (Exception var7) {
+			Log.d("SystemInfo", "getSystemProperty(): err= " + var7.getMessage());
+			return retStr;
+		} finally {
+			;
+		}
+	}
+
+	@Override
+	@JavascriptInterface
+	public void startNativeApp(String start_params_json) {
+		Intent intent = null;
+		String activity_str = null;
+		String package_str = null;
+		String action_str = null;
+		String uri_str = null;
+
+		JSONObject obj = null;
+		try {
+			obj = new JSONObject(start_params_json);
+
+			if(obj.has("activity") &&  obj.getString("activity") != null && !obj.getString("activity").isEmpty()){
+				activity_str = obj.getString("activity");
+			}
+
+			if(obj.has("action") &&  obj.getString("action") != null && !obj.getString("action").isEmpty()){
+				action_str = obj.getString("action");
+			}
+
+			if(obj.has("packageName") &&  obj.getString("packageName") != null && !obj.getString("packageName").isEmpty()){
+				package_str = obj.getString("packageName");
+			}
+
+			if(obj.has("uri") &&  obj.getString("uri") != null && !obj.getString("uri").isEmpty()){
+				uri_str = obj.getString("uri");
+			}
+
+			if(activity_str != null){
+				intent = new Intent();
+				intent.setComponent(new ComponentName(package_str, activity_str));
+			}else if(action_str != null){
+				intent = new Intent(action_str);
+
+				if(package_str != null){
+					intent.setPackage(package_str);
+				}
+			}else if(uri_str != null){
+				intent = new Intent();
+				intent.setData(Uri.parse(uri_str));
+				if(package_str != null){
+					intent.setPackage(package_str);
+				}
+			}else if(package_str != null){
+				String packetName = obj.getString("packageName");
+				PackageManager pm = mContext.getPackageManager();
+				intent = pm.getLaunchIntentForPackage(packetName);
+			}
+
+			if(intent == null)
+				return;
+
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+			if(obj.has("flags")){
+				JSONArray flags = obj.getJSONArray("flags");
+				for(int i=0; i < flags.length(); i++){
+					intent.addFlags(flags.getInt(i));
+				}
+			}
+
+			if(obj.has("param")){
+				JSONArray params = obj.getJSONArray("param");
+				for(int i=0; i<params.length(); i++){
+					JSONObject param = params.getJSONObject(i);
+
+					Iterator<String> keys = param.keys();
+
+					while(keys.hasNext()) {
+						String key = keys.next();
+						Object value=param.get(key);
+						if(value instanceof String){
+							intent.putExtra(key, (String) value);
+						}else if (value instanceof Number){
+							intent.putExtra(key,((Number)value).intValue());
+						}else if (value instanceof Boolean){
+							intent.putExtra(key,((Boolean)value).booleanValue());
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			Log.e(TAG, "JSON error:", e);
+			return;
+		}
+
+		mContext.startActivity(intent);
+	}
+
+	@Override
+	@JavascriptInterface
+	public String getInstalledApps() {
+		try {
+			PackageManager pm = mContext.getPackageManager();
+			// Return a List of all packages that are installed on the device.
+			List<PackageInfo> packages = pm.getInstalledPackages(0);
+			JSONArray array = new JSONArray();
+			for (PackageInfo packageInfo : packages) {
+				JSONObject obj = new JSONObject();
+				obj.put("packageName", packageInfo.packageName);
+				obj.put("versionName", packageInfo.versionName);
+				obj.put("versionCode", packageInfo.versionCode);
+				array.put(obj);
+			}
+			return array.toString();
+		} catch (JSONException e) {
+			Log.e(TAG, "JSON error:", e);
+			return "{}";
+		}
+	}
+
 	// JS接口: 获取MAC信息，先获取有线MAC(因为有线MAC模块比较稳定)，若无则返回有线MAC
+	@Override
 	@JavascriptInterface
 	public String getMac() {
 		String mac = Mac.getWireMac(mContext);
@@ -94,264 +318,91 @@ public class JsViewRuntimeBridge {
 	}
 
 	// JS接口: 获取有线MAC信息
+	@Override
 	@JavascriptInterface
 	public String getWireMac() {
 		return Mac.getWireMac(mContext);
 	}
 
 	// JS接口: 获取无线MAC信息
+	@Override
 	@JavascriptInterface
 	public String getWifiMac() {
 		return Mac.getWifiMac(mContext);
 	}
 
 	// JS接口: 获取UUID，UUID需要每个平台自行定义，没有统一标准，默认使用品牌名 + MAC地址进行md5计算
+	@Override
 	@JavascriptInterface
-	public String getUUID() {
+	public String getDeviceUUID() {
 		String brankString = Build.BRAND;
 		String macString = getMac();
 		return MD5Util.encodeByMD5(brankString+macString);
 	}
 
 	// JS接口: 获取Android ID
+	@Override
 	@JavascriptInterface
 	public String getAndroidId() {
 		String android_id = Settings.System.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 		return android_id;
 	}
-
+	
+	// 页面预热接口，预热页面将会将以一个新的FrameLayout(内含JsView)的方式加载一个新的应用
+	// 但这个应用在warmLoadView之前，不会创建texture/surface的实际描画资源，也不会加载图片
+	// 仅加载所有JS代码，并正常走完所有启动逻辑(包括描画逻辑)，但不会走setTimeout对应的延时逻辑，也不会显示
+	// 预热的界面可以极大加速界面切换的时间，例如应用跳转到购物类界面
+	// app_url可以传null，若为null仅预热engine js部分
 	@JavascriptInterface
-	public void openSelf(String from_url, String to_url, String engine_url) {
-		if (engine_url == null || engine_url.trim().isEmpty()) {
-			engine_url = mHostJsView.getEngineUrl();
-		}
-		UrlInfo url_info = new UrlInfo();
-		url_info.appUrl = from_url;
-		url_info.engineUrl = mHostJsView.getEngineUrl();
-		mUrlStack.push(url_info);
-
-		Log.d(TAG, "openSelf " + from_url + " " + to_url + " " + engine_url);
-		mHostJsView.loadUrl2(engine_url, to_url);
-	}
-
-	// JS接口: 在新Activity中开启新JsView页面
-	// 若内核相同则在本进程开启activity，若内核不同则开启新进程
-	// =============================
-	// 若不需要此功能，可不用合并如下文件:
-	// subactivities/*
-	@JavascriptInterface
-	public void openBlank(String engine_url, String app_url, String start_img_url, String jsview_version) {
-		try {
-			String class_name = CurActivityInfo.getCurActivityName();
-			if (jsview_version != null && !jsview_version.isEmpty() && needResetCore(mContext, jsview_version)) {
-				class_name = CurActivityInfo.getNextActivityName();
-			}
-			Intent intent = new Intent();
-			if (engine_url == null || engine_url.trim().isEmpty()) {
-				engine_url = mHostJsView.getEngineUrl();
-			}
-			Log.d(TAG, "start sub tab " + engine_url + " " + app_url + " " + start_img_url + "  " + jsview_version + " " + class_name);
-			ComponentName component_name = new ComponentName(mContext.getPackageName(), class_name);
-			intent.setComponent(component_name);
-			intent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-			if (jsview_version == null || jsview_version.isEmpty()) {
-				jsview_version = JsViewVersionUtils.getCoreVersion();
-			}
-			intent.putExtra("COREVERSIONRANGE", jsview_version);
-			intent.putExtra("JSURL", app_url);
-			intent.putExtra("ENGINE", engine_url);
-			intent.putExtra("STARTIMG", start_img_url);
-			intent.putExtra("ISSUB", true);
-			mContext.startActivity(intent);
-		} catch (Exception e) {
-			Log.d(TAG, "error", e);
+	public int warmUpView(String engine_js_url, String app_url) {
+		if (mViewsManager != null) {
+			return mViewsManager.warmUpView(mHostJsViewState.view, engine_js_url, app_url);
+		} else {
+			Log.e(TAG, "Not support warm up JsView");
+			return -1;
 		}
 	}
 
-	private static final String CONTENT = "content://";
-	private static final String AUTHORITY = "com.qcode.jsview.sp.SharedDataProvider";
-	private static final String CONTENT_URI = CONTENT + AUTHORITY;
-	private static final String OPTION_CLEAR = "clear";
-	private static final String OPTION_DEL = "del";
-	private static final String OPTION_QUERY = "query";
-	private static final String OPTION_INSERT = "insert";
-	private static final String OPTION_QUERYALL = "queryall";
-	//这里的AUTHORITY就是我们在AndroidManifest.xml中配置的authorities
-	private static final String BASE_PATH = "sp";// SharedPreference 缩写
-	private static final String URI_PATH = CONTENT_URI + "/" + BASE_PATH;
-
-	/**
-	 * 检查收藏请求是否合法
-	 * @param appName app name 唯一标识
-	 * @param signKey 签名信息
-	 * @return
-	 */
-	public boolean checkAppName(String appName,String signKey) {
-		// String appUrl = mHostJsView.getAppUrl();
-		//TODO 通过appUrl判断appName、signKey是否合法：[正确格式jsv_main_appName_signKey]
-		return true;
-	}
-
-	/**
-	 * @param appName	唯一标识
-	 * @param signKey	签名
-	 * @param value	JSON 字符串
-	 */
+	// 若warmUpView中app_url不为null，进行了全预热，则本调用的app_url可以为null
+	// 当warmUpView中app_url不为null时，仍可以使用history变化调整显示内容，
+	// 例如:"http//origin/app/url#/newHistoryHash?newKey=newValue"
+	@Override
 	@JavascriptInterface
-	public void addFavourite(String appName, String signKey, String value, JsPromise promise) {
-		mMainThreadHandler.post(()->{
-			boolean denied = !checkAppName(appName, signKey);
-			if (!denied) {
-				// TODO: 做个用户确认界面(使用title和icon做用户提示, icon为http的网络图片)
-				Bundle display = getFavouriteTitleIcon(value);
-				String rtn = getFavourite(appName, signKey);
-				if (rtn == null) {
-					promise.reject("denied");
-					return;
-				}
-
-				//获取当前包名
-				String packageName =  mContext.getPackageName();
-				String action = "qcode.app.action.start_jsviewdemo";//替换为小程序自己的action
-				ContentResolver cr = mContext.getContentResolver();
-				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_INSERT + "/" + appName+"/"+packageName);
-				ContentValues cv = new ContentValues();
-				JSONObject key_value = new JSONObject();
-				try {
-					key_value.put("packageName", packageName);
-					key_value.put("action", action);
-					key_value.put("appName", appName);
-					key_value.put("signKey", signKey);
-					key_value.put("params", new JSONObject(value));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				cv.put("value", key_value.toString());
-				cr.update(uri, cv, null, null);
-
-				promise.resolve(0);
-			} else {
-				Log.d(TAG, "addFavourite appName or signKey is not valid, appName:"+appName+", signKey:"+signKey);
-				promise.reject("denied");
-			}
-		});
-	}
-
-	/**
-	 * 获取指定app收藏信息
-	 * @param appName	唯一标识
-	 * @param signKey	签名
-	 * @return
-	 */
-	@JavascriptInterface
-	public String getFavourite(String appName, String signKey) {
-		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERY + "/" + appName);
-		String rtn = cr.getType(uri);
-		if (rtn == null) {
-			return "";// not found
+	public void warmLoadView(int view_refer_id, String app_url) {
+		if (mViewsManager != null) {
+			mViewsManager.warmLoadView(view_refer_id, app_url);
+		} else {
+			Log.e(TAG, "Not support warm load JsView");
 		}
-		try {
-			//若数据存在，通过signKey校验
-			JSONObject value = new JSONObject(rtn);
-			String signKeyLocal = value.getString("signKey");
-			if (!signKeyLocal.equals(signKey)) {
-				Log.d(TAG, "getFavourite signKey not valid, signKey:"+signKey+", signKeyLocal:"+signKeyLocal);
-				rtn = null;// not valid
-			}
-		} catch (Exception e) {
-			Log.d(TAG, "getFavourite signKey not valid!", e);
-			rtn = null; // not valid
-		}
-		return rtn;
 	}
 
-	/**
-	 * 获取全部收藏
-	 * @return
-	 */
+	// 关闭预热好的View，例如warm过但不再需要显示的View
+	@Override
 	@JavascriptInterface
-	public String getFavouriteAll() {
-		ContentResolver cr = mContext.getContentResolver();
-		Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_QUERYALL);
-		Cursor cursor = cr.query(uri, null,null,null,null);
-		if (cursor != null) {
-			JSONArray favouriteList = new JSONArray();
-			for(cursor.moveToFirst();
-				cursor.isAfterLast() == false;
-				cursor.moveToNext()) {
-				String value = cursor.getString(1);
-				try {
-					favouriteList.put(new JSONObject(value));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			return favouriteList.toString();
+	public void closeWarmedView(int view_refer_id) {
+		if (mViewsManager != null) {
+			mViewsManager.closeWarmedView(view_refer_id);
+		} else {
+			Log.e(TAG, "Not support close warmed JsView");
 		}
-		return null;
 	}
-	/**
-	 * 删除指定收藏
-	 * @param appName	唯一标识
-	 * @param signKey	签名
-	 * @return
-	 */
-	@JavascriptInterface
-	public void removeFavourite(String appName, String signKey, JsPromise promise) {
-		mMainThreadHandler.post(() -> {
-			String rtn = getFavourite(appName, signKey);
-			if (rtn == null) {
-				promise.reject("denied");
-			} else if (rtn.isEmpty()) {
-				promise.reject("noFound");
-			} else {
-				// TODO: 需要做个用户确认界面
-				boolean denied = false;
-				if (!denied) {
-					Bundle title_icon = getFavouriteTitleIcon(rtn);
-					ContentResolver cr = mContext.getContentResolver();
-					Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_DEL + "/" + appName);
-					cr.delete(uri, null, null);
-					promise.resolve(0);
-				} else {
-					promise.reject("denied");
-				}
-			}
 
-		});
+	@Override
+	@JavascriptInterface
+	public void popupAbsolutePosition(double left, double top, double width, double height) {
+		mViewsManager.popupAbsolutePosition(
+				mHostJsViewState.view, left, top, width, height);
+	}
+
+	@Override
+	@JavascriptInterface
+	public void popupRelativePosition(String align, double max_width, double max_height, double aspect) {
+		mViewsManager.popupRelativePosition(
+				mHostJsViewState.view, align, max_width, max_height, aspect);
 	}
 
 	@JavascriptInterface
-	public void clearFavourites(JsPromise promise) {
-		mMainThreadHandler.post(()-> {
-			// TODO: 需要做个用户确认界面
-			boolean denied = false;
-			if (!denied) {
-				ContentResolver cr = mContext.getContentResolver();
-				Uri uri = Uri.parse(URI_PATH + "/favourite/" + OPTION_CLEAR);
-				cr.delete(uri, null, null);
-				promise.resolve(0);
-			} else {
-				promise.reject("denied");
-			}
-		});
-	}
-
-	private Bundle getFavouriteTitleIcon(String set_value) {
-		Bundle title_icon = new Bundle();
-
-		try {
-			JSONObject set = new JSONObject(set_value);
-
-			title_icon.putString("icon", set.getString("icon"));
-			title_icon.putString("title", set.getString("title"));
-		} catch (JSONException e) {
-			Log.e(TAG, "getFavouriteTitleIcon failed");
-			title_icon.putString("icon", "");
-			title_icon.putString("title", "");
-		}
-
-		return title_icon;
+	public void popupGainFocus() {
+		mViewsManager.popupGainFocus();
 	}
 }

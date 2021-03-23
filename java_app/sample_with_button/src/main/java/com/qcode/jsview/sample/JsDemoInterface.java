@@ -2,6 +2,8 @@ package com.qcode.jsview.sample;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,14 +20,12 @@ public class JsDemoInterface {
 	private static final String TAG = "JsDemoInterface";
 	private Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 	private Context mContext;
-	private Activity mHostActivity;
 	private JsView mJsView = null;
 
 	// 测试样例: JS层面的NativeSharedView的坐标变化监听处理
 	private HashMap<String, AckEventListener> mAckListenerMap = new HashMap<>();
 
 	public JsDemoInterface(Activity activity) {
-		mHostActivity = activity;
 		mContext = activity;
 	}
 
@@ -70,5 +70,24 @@ public class JsDemoInterface {
 	public String getShowMode() {
 		//0:demo 1:activity;
 		return BuildConfig.SHOW_MODE;
+	}
+
+	// 启动浮窗测试用例的接口，
+	// 一般浮窗程序都被系统端严格控制，此用例仅为了展示功能，真正使用场景需要和系统端(系统运营方)协商
+	@JavascriptInterface
+	public void startPopWindowPage(String engine_js_url, String app_url, String core_version_range) {
+		Intent service_intent = new Intent("qcode.service.quick_show");
+		service_intent.setPackage(mContext.getPackageName());
+
+		service_intent.putExtra("ENGINE", engine_js_url);
+		service_intent.putExtra("JSURL", app_url);
+		service_intent.putExtra("COREVERSIONRANGE", core_version_range);
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+			mContext.startService(service_intent);
+		} else {
+			// 需要调研Android O上的新API startForegroundService
+			mContext.startForegroundService(service_intent);
+		}
 	}
 }

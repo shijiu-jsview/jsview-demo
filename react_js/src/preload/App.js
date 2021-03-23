@@ -34,83 +34,119 @@ import awesome from "./awesomeface.png";
 import cat from "./cat.jpg";
 
 const data = [
-  {
-    url: rank,
-    focusUrl: rankF,
-  },
-  {
-    url: start,
-    focusUrl: startF
-  },
-  {
-    url: rule,
-    focusUrl: ruleF,
-  },
+    {
+        url: rank,
+        focusUrl: rankF,
+    },
+    {
+        url: start,
+        focusUrl: startF
+    },
+    {
+        url: rule,
+        focusUrl: ruleF,
+    },
 ];
 
-class MainScene extends FocusBlock {
-  constructor(props) {
-    super(props);
-    this._RenderItem = this._RenderItem.bind(this);
-    this._RenderFocus = this._RenderFocus.bind(this);
-    this.state = {
-      text: ""
-    };
-  }
-
-  _Measures(item) {
-    return SimpleWidget.getMeasureObj(180, 90, true, false);
-  }
-
-  _RenderFocus(item) {
-    return (
-            <div style={{ width: 166, height: 90, backgroundImage: `url(${item.focusUrl})` }}/>
-    );
-  }
-
-  _RenderItem(item) {
-    return (
-            <div style={{ width: 166, height: 90, backgroundImage: `url(${item.url})` }}/>
-    );
-  }
-
-  onKeyDown(ev) {
-    switch (ev.keyCode) {
-      case 10000:
-      case 27:
-        if (this._NavigateHome) {
-          this._NavigateHome();
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
         }
-        break;
-      default:
-        break;
     }
-    return true;
-  }
 
-  onFocus() {
-    this.changeFocus(`${this.props.branchName}/swidget`);
-  }
-
-  renderContent() {
-    const preload_info = [];
-    for (const item of data) {
-      preload_info.push(buildPreloadInfo(item.url));
-      preload_info.push(buildPreloadInfo(item.focusUrl));
+    focus() {
+        this.setState({
+            focus: true,
+        })
     }
-    const download_info = [buildDownloadInfo(awesome), buildDownloadInfo(cat)];
-    return (
+
+    blur() {
+        this.setState({
+            focus: false,
+        })
+    }
+
+    render() {
+        let item = this.props.data;
+        return (
+            <div style={{ width: 166, height: 90, backgroundImage: `url(${this.state.focus ? item.focusUrl : item.url})` }} />
+        )
+    }
+}
+
+class MainScene extends FocusBlock {
+    constructor(props) {
+        super(props);
+        this._renderItem = this._renderItem.bind(this);
+        this._onItemBlur = this._onItemBlur.bind(this);
+        this._onItemFocus = this._onItemFocus.bind(this);
+
+        this.state = {
+            text: ""
+        };
+    }
+
+    _measures(item) {
+        return SimpleWidget.getMeasureObj(180, 90, true, false);
+    }
+
+    _renderItem(item, on_edge, query, view_obj) {
+        return (
+            <Item ref={ele => view_obj.view = ele} data={item} />
+        )
+    }
+
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
+
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
+    }
+
+    onKeyDown(ev) {
+        switch (ev.keyCode) {
+            case 10000:
+            case 27:
+                if (this._NavigateHome) {
+                    this._NavigateHome();
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    onFocus() {
+        this.changeFocus(`${this.props.branchName}/swidget`);
+    }
+
+    renderContent() {
+        const preload_info = [];
+        for (const item of data) {
+            preload_info.push(buildPreloadInfo(item.url));
+            preload_info.push(buildPreloadInfo(item.focusUrl));
+        }
+        const download_info = [buildDownloadInfo(awesome), buildDownloadInfo(cat)];
+        return (
             <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
                 <div style={{
-                  textAlign: "center",
-                  fontSize: "30px",
-                  lineHeight: "50px",
-                  color: "#ffffff",
-                  left: 100,
-                  top: 20,
-                  width: (1280 - 200),
-                  height: 50,
-                  backgroundColor: "rgba(27,38,151,0.8)"
+                    textAlign: "center",
+                    fontSize: "30px",
+                    lineHeight: "50px",
+                    color: "#ffffff",
+                    left: 100,
+                    top: 20,
+                    width: (1280 - 200),
+                    height: 50,
+                    backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`预加载后，图片(按钮焦点切换)切换不闪屏`}</div>
                 <div style={{ top: 200, left: 300 }}>
                     <SimpleWidget
@@ -119,9 +155,10 @@ class MainScene extends FocusBlock {
                         direction={HORIZONTAL}
                         data={data}
                         slideStyle={SlideStyle.seamLess}
-                        renderItem={this._RenderItem}
-                        renderFocus={this._RenderFocus}
-                        measures={this._Measures}
+                        renderItem={this._renderItem}
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
+                        measures={this._measures}
                         branchName={`${this.props.branchName}/swidget`} />
                 </div>
                 <div style={{ left: 100, top: 350, width: 800, height: 800, fontSize: "30px", color: "#000000" }}>
@@ -133,13 +170,13 @@ class MainScene extends FocusBlock {
                     onPreloadDone={() => { console.log("PRELOAD DONE!"); }}
                     onDownloadDone={() => { console.log("DOWNLOAD DONE!"); this.setState({ text: `图片下载完成\n${awesome}\n${cat}` }); }} />
             </div>
-    );
-  }
+        );
+    }
 }
 
 const App = createStandaloneApp(MainScene);
 
 export {
-  App, // 独立运行时的入口
-  MainScene as SubApp, // 作为导航页的子入口时
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
 };

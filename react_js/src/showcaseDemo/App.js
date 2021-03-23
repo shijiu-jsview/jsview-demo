@@ -29,123 +29,137 @@ import createStandaloneApp from "../demoCommon/StandaloneApp";
 import { FocusBlock } from "../demoCommon/BlockDefine";
 import borderImgPath from './images/nine_patch_focus.png';
 
-class MainScene extends FocusBlock {
-  constructor(props) {
-    super(props);
-    this._Measures = this._Measures.bind(this);
-    this._RenderItem = this._RenderItem.bind(this);
-    this._RenderFocus = this._RenderFocus.bind(this);
-    this._RenderBlur = this._RenderBlur.bind(this);
-    this._onWidgetMount = this._onWidgetMount.bind(this);
-  }
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
+        }
+    }
 
-  onKeyDown(ev) {
-    if (ev.keyCode === 10000 || ev.keyCode === 27) {
-      if (this._NavigateHome) {
-        this._NavigateHome();
-      }
-    } return true;
-  }
+    focus() {
+        this.setState({
+            focus: true,
+        })
+    }
 
-  _Measures(item) {
-    return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
-  }
+    blur() {
+        this.setState({
+            focus: false,
+        })
+    }
 
-  _RenderFocus(item) {
-    const image_width = item.blocks.w - PAGE_THEME_ITEM_GAP;
-    const scale_width = parseInt(image_width * PAGE_THEME_ITEM_SCALE, 10);
-    const left = -parseInt((scale_width - image_width) / 2, 10);
-    const image_height = item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT;
-    const scale_height = parseInt(image_height * PAGE_THEME_ITEM_SCALE, 10);
-    const top = -parseInt((scale_height - image_height) / 2, 10);
-    console.log(`left:${left}, top:${top},width:${scale_width}, height:${scale_height}`);
-    return (
-            <div>
+    _renderFocus(item) {
+        const image_width = item.blocks.w - PAGE_THEME_ITEM_GAP;
+        const scale_width = parseInt(image_width * PAGE_THEME_ITEM_SCALE, 10);
+        const left = -parseInt((scale_width - image_width) / 2, 10);
+        const image_height = item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT;
+        const scale_height = parseInt(image_height * PAGE_THEME_ITEM_SCALE, 10);
+        const top = -parseInt((scale_height - image_height) / 2, 10);
+        //这种焦点框同背景是一个div的情况要添加key，否则复用renderItem的div会没有NinePatchView
+        return (
+            <div key="focus">
                 <div style={{
-                  animation: "focusScale 0.25s",
-                  backgroundImage: `url(${item.content.url})`,
-                  left,
-                  top,
-                  width: scale_width,
-                  height: scale_height,
-                  borderRadius: '8px 8px 8px 8px',
-                  borderImage: `url(${borderImgPath}) 40 fill`,
-                  borderImageWidth: '40px',
-                  borderImageOutset: "28px 28px 28px 28px",
+                    animation: "focusScale 0.25s",
+                    backgroundImage: `url(${item.content.url})`,
+                    left,
+                    top,
+                    width: scale_width,
+                    height: scale_height,
+                    borderRadius: '8px 8px 8px 8px',
+                    borderImage: `url(${borderImgPath}) 40 fill`,
+                    borderImageWidth: '40px',
+                    borderImageOutset: "28px 28px 28px 28px",
                 }}>
-
                 </div>
-
                 <JsvMarquee text={item.content.title}
                     top={image_height} left={0}
                     width={image_width} height={PAGE_THEME_ITEM_TEXT_HEIGHT}
                     fontStyle={{
-                      color: "#ffffff",
-                      fontSize: 20,
-                      lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`
+                        color: "#ffffff",
+                        fontSize: 20,
+                        lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`
                     }} />
             </div>
-    );
-  }
+        );
+    }
 
-  _RenderBlur(item, callback) {
-    return (
-            <div>
+    _renderItem(item) {
+        return (
+            <div key="normal">
                 <div style={{
-                  animation: "blurScale 0.25s",
-                  backgroundImage: `url(${item.content.url})`,
-                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                  height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                }}
-                    onAnimationEnd={callback}>
+                    backgroundImage: `url(${item.content.url})`,
+                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                    height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                }}>
                 </div>
                 <div style={{
-                  color: "#ffffff",
-                  fontSize: 20,
-                  whiteSpace: 'nowrap',
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  left: 0,
-                  top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                  lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`,
-                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                  height: PAGE_THEME_ITEM_TEXT_HEIGHT
+                    color: "#ffffff",
+                    fontSize: 20,
+                    whiteSpace: 'nowrap',
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    left: 0,
+                    top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
+                    lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`,
+                    width: item.blocks.w - PAGE_THEME_ITEM_GAP,
+                    height: PAGE_THEME_ITEM_TEXT_HEIGHT
                 }}>
                     {item.content.title}
                 </div>
             </div>
-    );
-  }
+        );
+    }
 
-  _RenderItem(item) {
-    return (
-            <div>
-                <div style={{
-                  backgroundImage: `url(${item.content.url})`,
-                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                  height: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                }}>
-                </div>
-                <div style={{
-                  color: "#ffffff",
-                  fontSize: 20,
-                  whiteSpace: 'nowrap',
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  left: 0,
-                  top: item.blocks.h - PAGE_THEME_ITEM_GAP - PAGE_THEME_ITEM_TEXT_HEIGHT,
-                  lineHeight: `${PAGE_THEME_ITEM_TEXT_HEIGHT}px`,
-                  width: item.blocks.w - PAGE_THEME_ITEM_GAP,
-                  height: PAGE_THEME_ITEM_TEXT_HEIGHT
-                }}>
-                    {item.content.title}
-                </div>
-            </div>
-    );
-  }
+    render() {
+        return (
+            this.state.focus ? this._renderFocus(this.props.data) : this._renderItem(this.props.data)
+        )
+    }
+}
 
-  renderContent() {
-    return (
+class MainScene extends FocusBlock {
+    constructor(props) {
+        super(props);
+        this._measures = this._measures.bind(this);
+        this._renderItem = this._renderItem.bind(this);
+        this._onItemFocus = this._onItemFocus.bind(this);
+        this._onItemBlur = this._onItemBlur.bind(this);
+        this._onWidgetMount = this._onWidgetMount.bind(this);
+    }
+
+    onKeyDown(ev) {
+        if (ev.keyCode === 10000 || ev.keyCode === 27) {
+            if (this._NavigateHome) {
+                this._NavigateHome();
+            }
+        } return true;
+    }
+
+    _measures(item) {
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
+    }
+
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
+    }
+
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
+
+    _renderItem(item, on_edge, query, view_obj) {
+        return (
+            <Item ref={ele => view_obj.view = ele} data={item} />
+        )
+    }
+
+    renderContent() {
+        return (
             <div key="background" style={{ top: 0, left: 0, width: 1280, height: 720, backgroundColor: "#123f80" }}>
                 <div key="title" style={{ top: 30, left: 80, width: 80, height: PAGE_THEME_ITEM_TEXT_HEIGHT, fontSize: 24, color: "#369cc4", whiteSpace: "nowrap", textAlign: "center" }}>影音</div>
                 <div key="sub_line" style={{ top: 70, left: 80, width: 80, height: 5, backgroundColor: "#2b6da1" }}></div>
@@ -156,25 +170,25 @@ class MainScene extends FocusBlock {
                         padding={{ left: 20, top: 20 }}
                         direction={VERTICAL}
                         data={HomePageData}
-                        renderBlur={this._RenderBlur}
-                        renderItem={this._RenderItem}
-                        renderFocus={this._RenderFocus}
-                        measures={this._Measures}
+                        renderItem={this._renderItem}
+                        measures={this._measures}
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
                         branchName={`${this.props.branchName}/widget`}
                         onWidgetMount={this._onWidgetMount}
                     />
                 </div>
             </div>
-    );
-  }
+        );
+    }
 
-  _onWidgetMount() {
-    this.changeFocus(`${this.props.branchName}/widget`);
-  }
+    _onWidgetMount() {
+        this.changeFocus(`${this.props.branchName}/widget`);
+    }
 }
 const App = createStandaloneApp(MainScene);
 
 export {
-  App, // 独立运行时的入口
-  MainScene as SubApp, // 作为导航页的子入口时
+    App, // 独立运行时的入口
+    MainScene as SubApp, // 作为导航页的子入口时
 };

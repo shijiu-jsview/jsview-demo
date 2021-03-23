@@ -20,7 +20,11 @@
  *      imageUrl {string}  (必需)图片地址，另外，为了减小无效的解析处理，规定只有image的URL变更时才重新解析spriteInfo
  *      duration {float}  (动图必需)动图的时间
  *      onAnimEnd {function} 动图结束回调
- *      autostart {boolean} 启动动图，默认false
+ *      autostart {string} 启动动图，默认none,
+ *                 传入为bool类型时，兼容老版本：true为start、false为none
+ *                 自动启动模式：start:精灵图自动启动，结束后显示第一帧内容、
+ *                             end:精灵图自动启动，结束后显示最后一帧内容，
+ *                             none：不自动启动
  *      loop {string} 动图的循环次数 infinite/数字，默认为infinite
  *      spriteName {string} 动图的名称，默认为null
  *      controller {SpriteController} 控制动图start,stop的对象
@@ -160,11 +164,15 @@ class JsvSpriteAnim extends React.Component {
       imageAnimName: null,
     };
 
+    let stopFrame = "start";
+    if (typeof props.autostart === "string" && props.autostart !== "none") {
+      stopFrame = this.props.autostart;
+    }
     this._KeyFrameStyleSheet = getKeyFramesGroup("sprite-tag");
     this.state = {
       innerId: 0,
       stopped: false,
-      stopFrame: "start",
+      stopFrame,
       blinkAnim: null,
     };
     this.blinkAnimCache = null;
@@ -176,7 +184,7 @@ class JsvSpriteAnim extends React.Component {
     }
     this.setState({
       stopped: true,
-      stopFrame: end_frame || "start",
+      stopFrame: end_frame || this.state.stopFrame,
     });
   }
 
@@ -187,7 +195,7 @@ class JsvSpriteAnim extends React.Component {
     this.setState({
       innerId: this.state.innerId + 1,
       stopped: false,
-      stopFrame: end_frame || "end",
+      stopFrame: end_frame || this.state.stopFrame,
     });
   }
 
@@ -241,7 +249,7 @@ class JsvSpriteAnim extends React.Component {
     repeat = (repeat === -1) ? "infinite" : (repeat || 1);
 
     const animName = `${this.blinkAnimCache.blinkAnimName} ${duration}s ${ease} ${delay}s ${repeat}`;
-    this.setState({ blinkAnim: animName });
+    this.setState({ blinkAnim: animName, stopped: true });
   }
 
   _getAnimNameBase() {
@@ -388,9 +396,19 @@ class JsvSpriteAnim extends React.Component {
     }
   }
 
+  _IsAutoStart() {
+    let autoStart = false;
+    if (typeof this.props.autostart === "boolean") {
+      autoStart = this.props.autostart;
+    } if (typeof this.props.autostart === "string" && this.props.autostart !== "none") {
+      autoStart = true;
+    }
+    return autoStart;
+  }
+
   _AnalyzeProp() {
     const used = this.props.controller && this.props.controller.Used;
-    if (this.props.spriteInfo.frames.length === 1 || (!used && !this.props.autostart) || this.state.stopped) {
+    if (this.props.spriteInfo.frames.length === 1 || (!used && !this._IsAutoStart()) || this.state.stopped) {
       // 单图模式
       // 解析图片信息
       this._updateFrozeFrameCache(

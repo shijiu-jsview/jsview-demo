@@ -52,6 +52,19 @@ class HistoryProxy {
           set.initialEntries = arr;
           set.initialIndex = arr.length - 1;
         } else {
+          if (window.JsView.takeNativeHashChange) {
+            // 抓取history hash在启动过程中的变更
+            let new_init_history_hash = window.JsView.takeNativeHashChange(this._NativeHashListener);
+            if (new_init_history_hash != null) {
+              // 将新hash融入window.location中
+              console.log("History: found init hash change to:", new_init_history_hash);
+              window.location.applyUrlInfo(new window.JsView.React.UrlRef(
+                  window.location.origin + window.location.pathname + window.location.search + new_init_history_hash,
+                  true
+              ));
+            }
+          }
+
           if (window.location.href.indexOf("#") < 0) {
             // 未设置hash定位，追加hash根的显示
             window.location.applyUrlInfo(new window.JsView.React.UrlRef(`${window.location.href}#/`, true));
@@ -130,6 +143,10 @@ class HistoryProxy {
 
   go(...args) {
     this._HistoryRef.go(...args);
+  }
+
+  _NativeHashListener = (new_hash)=>{
+    this.push(new_hash.substring(1)); // 去除#
   }
 }
 

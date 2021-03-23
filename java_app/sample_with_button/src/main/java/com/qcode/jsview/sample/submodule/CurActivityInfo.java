@@ -23,6 +23,10 @@ public class CurActivityInfo {
 		return SubActivity.class.getName() + (sActivityIndex + 1 > TOTAL_ACTIVITY_NUM ? 1 : sActivityIndex + 1);
 	}
 
+	public static String getActivityNameForStartFromService() {
+		return SubActivity.class.getName() + (int)(Math.floor((double)TOTAL_ACTIVITY_NUM / 2));
+	}
+
 	public static void onActivityCreate() {
 		sActivityCount++;
 	}

@@ -4,129 +4,147 @@ import JsvMarquee from "../../jsview-utils/JsViewReactWidget/JsvMarquee";
 import { FocusBlock } from "../../demoCommon/BlockDefine";
 
 const Title = ({ text, style }) => {
-  return <div key={text} style={style}>{text}</div>;
+    return <div key={text} style={style}>{text}</div>;
 };
 
 const ItemTitle = ({ focus, text, style }) => {
-  if (focus) {
-    return <JsvMarquee text={text} width={style.width} height={style.height} left={style.left} top={style.top}
-                           fontStyle={{
-                             color: style.color,
-                             fontSize: style.fontSize,
-                             lineHeight: `${style.height}px`
-                           }}/>;
-  }
-  return <div style={style}>{text}</div>;
+    if (focus) {
+        return <JsvMarquee text={text} width={style.width} height={style.height} left={style.left} top={style.top}
+            fontStyle={{
+                color: style.color,
+                fontSize: style.fontSize,
+                lineHeight: `${style.height}px`
+            }} />;
+    }
+    return <div style={style}>{text}</div>;
 };
 
 const ItemImage = ({ key, style, onAnimationEnd = null }) => {
-  return <div key={key} style={style} onAnimationEnd={onAnimationEnd}></div>;
+    return <div key={key} style={style} onAnimationEnd={onAnimationEnd}></div>;
 };
 
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            focus: false,
+        }
+    }
+
+    focus() {
+        this.setState({
+            focus: true,
+        })
+    }
+
+    blur() {
+        this.setState({
+            focus: false,
+        })
+    }
+
+    render() {
+        let item = this.props.data;
+        let image_style;
+        if (this.state.focus) {
+            const image_width = item.blocks.w - this.props.pageTheme.content.gap.width;
+            const scale_width = parseInt(image_width * this.props.pageTheme.content.scale);
+            const left = -parseInt((scale_width - image_width) / 2);
+            const image_height = item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.focusStyle.height;
+            const scale_height = parseInt(image_height * this.props.pageTheme.content.scale);
+            const top = -parseInt((scale_height - image_height) / 2);
+            console.log(`_RenderFocus left:${left}, top:${top},width:${scale_width}, height:${scale_height}`);
+            image_style = Object.assign({}, this.props.pageTheme.content.image.focusStyle, {
+                backgroundImage: `url(${item.content.url})`,
+                left,
+                top,
+                width: scale_width,
+                height: scale_height,
+            });
+        } else {
+            image_style = Object.assign({}, this.props.pageTheme.content.image.normalStyle, {
+                backgroundImage: `url(${item.content.url})`,
+                width: item.blocks.w - this.props.pageTheme.content.gap.width,
+                height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
+            });
+        }
+        return (
+            <div key={this.state.focus ? "focus" : "normal"}>
+                <ItemImage style={image_style} />
+                <ItemTitle focus={this.state.focus} text={item.content.title} style={this.state.focus ? this.props.pageTheme.content.title.focusStyle : this.props.pageTheme.content.title.normalStyle} />
+            </div>
+        )
+    }
+}
+
 class TitleMetroWidget extends FocusBlock {
-  constructor(props) {
-    super(props);
-    this._Measures = this._Measures.bind(this);
-    this._RenderItem = this._RenderItem.bind(this);
-    this._RenderFocus = this._RenderFocus.bind(this);
-    this._RenderBlur = this._RenderBlur.bind(this);
-  }
+    constructor(props) {
+        super(props);
+        this._measures = this._measures.bind(this);
+        this._renderItem = this._renderItem.bind(this);
+        this._onItemFocus = this._onItemFocus.bind(this);
+        this._onItemblur = this._onItemBlur.bind(this);
+    }
 
-  _Measures(item) {
-    return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
-  }
+    _measures(item) {
+        return SimpleWidget.getMeasureObj(item.blocks.w, item.blocks.h, item.focusable, item.hasSub);
+    }
 
-  _RenderFocus(item) {
-    const image_width = item.blocks.w - this.props.pageTheme.content.gap.width;
-    const scale_width = parseInt(image_width * this.props.pageTheme.content.scale);
-    const left = -parseInt((scale_width - image_width) / 2);
-    const image_height = item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.focusStyle.height;
-    const scale_height = parseInt(image_height * this.props.pageTheme.content.scale);
-    const top = -parseInt((scale_height - image_height) / 2);
-    console.log(`_RenderFocus left:${left}, top:${top},width:${scale_width}, height:${scale_height}`);
-    const image_style = Object.assign({}, this.props.pageTheme.content.image.focusStyle, {
-      backgroundImage: `url(${item.content.url})`,
-      left,
-      top,
-      width: scale_width,
-      height: scale_height,
-    });
+    _renderItem(item, on_edge, query, view_obj) {
+        return (
+            <Item ref={ele => view_obj.view = ele} data={item} pageTheme={this.props.pageTheme} />
+        )
+    }
 
-    return (
-            <div>
-                <ItemImage style={image_style}/>
-                <ItemTitle focus={true} text={item.content.title} style={this.props.pageTheme.content.title.focusStyle}/>
-            </div>
-    );
-  }
+    onFocus() {
+        this.changeFocus(`${this.props.branchName}/titleM`);
+    }
 
-  _RenderBlur(item, callback) {
-    const image_style = Object.assign({}, this.props.pageTheme.content.image.normalStyle, {
-      backgroundImage: `url(${item.content.url})`,
-      width: item.blocks.w - this.props.pageTheme.content.gap.width,
-      height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
-    });
-    return (
-            <div>
-                <ItemImage style={image_style}
-                    onAnimationEnd={callback}>
-                </ItemImage>
-                <ItemTitle focus={false} text={item.content.title} style={this.props.pageTheme.content.title.normalStyle}/>
-            </div>
-    );
-  }
+    _onItemBlur(data, qurey, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.blur();
+        }
+    }
 
-  _RenderItem(item) {
-    const image_style = Object.assign({}, this.props.pageTheme.content.image.normalStyle, {
-      backgroundImage: `url(${item.content.url})`,
-      width: item.blocks.w - this.props.pageTheme.content.gap.width,
-      height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
-    });
-    return (
-            <div>
-                <ItemImage style={image_style}/>
-                <ItemTitle focus={false} text={item.content.title} style={this.props.pageTheme.content.title.normalStyle}/>
-            </div>
-    );
-  }
+    _onItemFocus(item, pre_dege, query, view_obj) {
+        if (view_obj && view_obj.view) {
+            view_obj.view.focus();
+        }
+    }
 
-  onFocus() {
-    this.changeFocus(`${this.props.branchName}/titleM`);
-  }
-
-  renderContent() {
-    console.log("render TitleMetroWidget");
-    return (
+    renderContent() {
+        console.log("render TitleMetroWidget");
+        return (
             <div style={this.props.style}>
-                <Title text={this.props.title} style={this.props.pageTheme.title.style}/>
+                <Title text={this.props.title} style={this.props.pageTheme.title.style} />
                 <div style={{ left: this.props.pageTheme.content.left, top: this.props.pageTheme.content.top }}>
                     <SimpleWidget
-                        width={ this.props.pageTheme.content.width }
-                        height={ this.props.pageTheme.content.height}
-                        padding={ this.props.pageTheme.content.padding}
-                        direction={ VERTICAL }
-                        data={ this.props.data }
+                        width={this.props.pageTheme.content.width}
+                        height={this.props.pageTheme.content.height}
+                        padding={this.props.pageTheme.content.padding}
+                        direction={VERTICAL}
+                        data={this.props.data}
                         dispatcher={this.props.dispatcher}
-                        slideStyle={ SlideStyle.seamless }
-                        onEdge={ this.props.onEdge}
-                        renderBlur={ this._RenderBlur }
-                        renderItem={ this._RenderItem }
-                        renderFocus={ this._RenderFocus }
-                        measures={ this._Measures }
+                        slideStyle={SlideStyle.seamless}
+                        onEdge={this.props.onEdge}
+                        renderItem={this._renderItem}
+                        onItemFocus={this._onItemFocus}
+                        onItemBlur={this._onItemBlur}
+                        measures={this._measures}
                         branchName={`${this.props.branchName}/titleM`}
                     />
                 </div>
             </div>
-    );
-  }
+        );
+    }
 
-  componentWillUnmount() {
-    console.log("componentWillUnmount TitleMetroWidget");
-  }
+    componentWillUnmount() {
+        console.log("componentWillUnmount TitleMetroWidget");
+    }
 
-  componentDidMount() {
-    console.log("componentDidMount TitleMetroWidget");
-  }
+    componentDidMount() {
+        console.log("componentDidMount TitleMetroWidget");
+    }
 }
 
 export default TitleMetroWidget;

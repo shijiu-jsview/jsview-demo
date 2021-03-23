@@ -45,8 +45,7 @@ class MainScene extends FocusBlock {
                 <img alt="" style={{ left: 220, top: 300, width: 200, height: 200, borderRadius: '15px 15px 15px 15px' }} jsv_img_scaledown_tex="true" src={jpegDemo}/>
                 <img alt="" style={{ left: 440, top: 300, width: 200, height: 200, borderRadius: '15px 15px 15px 15px' }} jsv_img_scaledown_tex="true" src={jpgDemo}/>
                 <img alt="" style={{ left: 660, top: 300, width: 200, height: 200, borderRadius: '15px 15px 15px 15px' }} jsv_img_scaledown_tex="true" src={pngDemo}/>
-                <img alt="" tyle={{ left: 880, top: 300, width: 200, height: 200, borderRadius: '15px 15px 15px 15px' }} jsv_img_scaledown_tex="true" src={pngNoAlphaDemo}/>
-
+                <img alt="" style={{ left: 880, top: 300, width: 200, height: 200, borderRadius: '15px 15px 15px 15px' }} jsv_img_scaledown_tex="true" src={pngNoAlphaDemo}/>
             </div>
     );
   }
