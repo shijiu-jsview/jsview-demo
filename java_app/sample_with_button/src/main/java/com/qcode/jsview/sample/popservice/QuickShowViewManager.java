@@ -233,6 +233,12 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 				}
 			}
 
+			// 回补URL中的hash字段
+			String fragment_tmp = uri.getFragment();
+			if (fragment_tmp != null && !fragment_tmp.isEmpty()) {
+				url_tmp += "#" + fragment_tmp;
+			}
+
 			openBlank(host_view, engine_url, url_tmp, startup_image, core_version_range);
 		});
 	}
