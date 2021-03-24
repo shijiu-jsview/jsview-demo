@@ -58,8 +58,8 @@
 import React from 'react';
 import { MainArea } from './MainArea';
 import { SideBarArea } from './SideBarArea';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

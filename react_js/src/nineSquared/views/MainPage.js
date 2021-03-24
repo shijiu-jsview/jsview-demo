@@ -2,7 +2,7 @@
  * Created by luocf on 2020/4/23.
  */
 import React from 'react';
-import { FocusBlock } from "../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../jsview-utils/JsViewReactTools/BlockDefine";
 import ConstantVar from "../common/ConstantVar";
 import PageTheme from "../common/PageTheme";
 import { Button } from "../common/CommonWidget";

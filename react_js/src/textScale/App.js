@@ -1,8 +1,8 @@
 import React from 'react';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
 import { Commodity, Controller } from "./Commodity";
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 
 class MainScene extends FocusBlock {
   constructor(props) {

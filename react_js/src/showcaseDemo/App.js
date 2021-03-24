@@ -25,8 +25,8 @@ import './App.css';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
 import JsvMarquee from "../jsview-utils/JsViewReactWidget/JsvMarquee";
 import { HomePageData, PAGE_THEME_ITEM_GAP, PAGE_THEME_ITEM_SCALE, PAGE_THEME_ITEM_TEXT_HEIGHT } from "./DataProvader";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import borderImgPath from './images/nine_patch_focus.png';
 
 class Item extends React.Component {

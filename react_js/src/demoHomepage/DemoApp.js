@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Home from './Homepage';
 import { FdivRouter } from "../jsview-utils/jsview-react/index_widget";
-import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
+import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBridge';
 
 import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
 import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';

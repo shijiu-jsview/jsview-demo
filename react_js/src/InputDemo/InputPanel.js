@@ -42,7 +42,7 @@
  */
 import React from 'react';
 import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput';
 import FullKeyboard from "./FullKeyboard";
 

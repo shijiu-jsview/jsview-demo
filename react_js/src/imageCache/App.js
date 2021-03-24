@@ -1,7 +1,7 @@
 import React from 'react';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 
 const urlList = [
     "http://oss.image.51vtv.cn/homepage/20210209/0365e073eaed9304e449022df630058c.jpg",

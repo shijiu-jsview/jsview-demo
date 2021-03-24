@@ -10,9 +10,9 @@ import { FdivWrapper, SimpleWidget, HORIZONTAL, VERTICAL } from "../jsview-utils
 import "./homepage.css";
 import shadow_big_img from "./images/shadow_big.png";
 import shadow_small_img from "./images/shadow_small.png";
-import { getGlobalHistory } from '../demoCommon/RouterHistoryProxy';
-import { jJsvRuntimeBridge } from "../demoCommon/JsvRuntimeBridge";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 const globalHistory = getGlobalHistory();
 

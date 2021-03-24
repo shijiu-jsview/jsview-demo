@@ -3,9 +3,9 @@
  */
 
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import HorizontalButtonList from "./HorizontalButtonList";
-import { getGlobalHistory } from "../demoCommon/RouterHistoryProxy";
+import { getGlobalHistory } from "../jsview-utils/JsViewReactTools/RouterHistoryProxy";
 
 const CONST_BUTTON_WIDTH = 400;
 const CONST_BUTTON_HEIGHT = 80;

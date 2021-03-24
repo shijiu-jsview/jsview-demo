@@ -31,11 +31,11 @@ import './App.css';
 import Score from "./score";
 import RedPacket from "./red_packet";
 import { JsvSpriteTranslate, TranslateControl } from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
 import AudioBgUrl from "./audio/bgMusic-1.mp3";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import { getKeyFramesGroup } from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames";
 
 function _EnableCss() {

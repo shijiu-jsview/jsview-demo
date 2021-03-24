@@ -219,7 +219,7 @@ function addFavourite(url, callback) {
         let async_message = window.jJsvRuntimeBridge.addFavourite(url);
         async_message.then((result)=>{
             if (callback) {
-                callback(result)
+                callback(result);
             }
         }).catch((result)=>{
             if (callback) {
@@ -294,6 +294,15 @@ function getFavouriteAll() {
 }
 
 /**
+ * 浮窗控制接口，设置从本浮窗界面进行预热的二级浮窗的启动默认尺寸(若不设置则为全屏)
+ * @param {string} mode    全屏模式还是需要Resize的模式。取值范围: "full" 或者 "mini"
+ *                         设置成 "mini" 模式后，启动后的界面内需要调用popupResizePosition来调整尺寸才能可见
+ */
+function setPopupInitSize(mode) {
+    direct_call("setPopupInitSize", mode);
+}
+
+/**
  * 浮窗控制接口，设置浮窗显示区域，以相对定位的方式调整弹出框的位置(弹出框弹出后先以尺寸1x1的方式展现)
  * @param {string} align    横纵对齐方式，有left, right, bottom, top, center可选择
  *                          例如: 右下角"right bottom", 居中"center center"
@@ -302,19 +311,8 @@ function getFavouriteAll() {
  * @param {number} aspect   横纵比设定
  * 显示区域根据 max_width, max_height, aspect 来计算出同时满足3个条件的最大区域
  */
-function popupRelativePosition(align, max_width, max_height, aspect) {
-    direct_call("popupRelativePosition", align, max_width, max_height, aspect);
-}
-
-/**
- * 浮窗控制接口，设置浮窗显示区域
- * @param {number} left     显示区域X坐标(占屏幕百分比)
- * @param {number} top      显示区域Y坐标(占屏幕百分比)
- * @param {number} width    显示区域宽度(占屏幕百分比)
- * @param {number} height   显示区域高度(占屏幕百分比)
- */
-function popupAbsolutePosition(left, top, width, height) {
-    direct_call("popupAbsolutePosition", left, top, width, height);
+function popupResizePosition(align, max_width, max_height, aspect) {
+    direct_call("popupResizePosition", align, max_width, max_height, aspect);
 }
 
 /**
@@ -347,9 +345,10 @@ function warmUpView(engine_js_url, app_url) {
  *
  * @param {number} view_refer_id warmUpView调用后返回来的View ID
  * @param {string} app_url      界面的应用地址，支持?(search)和#(hash)字段
+ * @param {boolean} add_history 启动的界面是否进访问历史列表
  */
-function warmLoadView(view_refer_id, app_url) {
-    direct_call("warmLoadView", view_refer_id, app_url);
+function warmLoadView(view_refer_id, app_url, add_history) {
+    direct_call("warmLoadView", view_refer_id, app_url, !!add_history);
 }
 
 /**
@@ -382,8 +381,8 @@ const bridge = {
     removeFavourite,
     getFavourite,
     getFavouriteAll,
-    popupRelativePosition,
-    popupAbsolutePosition,
+    setPopupInitSize,
+    popupResizePosition,
     popupGainFocus,
     warmUpView,
     warmLoadView,

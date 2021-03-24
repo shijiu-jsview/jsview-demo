@@ -1,5 +1,5 @@
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 class Scroll extends React.Component {
   render() {

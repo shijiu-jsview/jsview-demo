@@ -368,9 +368,9 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	// 例如:"http//origin/app/url#/newHistoryHash?newKey=newValue"
 	@Override
 	@JavascriptInterface
-	public void warmLoadView(int view_refer_id, String app_url) {
+	public void warmLoadView(int view_refer_id, String app_url, boolean add_history) {
 		if (mViewsManager != null) {
-			mViewsManager.warmLoadView(view_refer_id, app_url);
+			mViewsManager.warmLoadView(view_refer_id, app_url, add_history);
 		} else {
 			Log.e(TAG, "Not support warm load JsView");
 		}
@@ -389,18 +389,18 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 
 	@Override
 	@JavascriptInterface
-	public void popupAbsolutePosition(double left, double top, double width, double height) {
-		mViewsManager.popupAbsolutePosition(
-				mHostJsViewState.view, left, top, width, height);
+	public void setPopupInitSize(String mode) {
+		mViewsManager.setPopupInitSize(mHostJsViewState.view, mode);
 	}
 
 	@Override
 	@JavascriptInterface
-	public void popupRelativePosition(String align, double max_width, double max_height, double aspect) {
-		mViewsManager.popupRelativePosition(
+	public void popupResizePosition(String align, double max_width, double max_height, double aspect) {
+		mViewsManager.popupResizePosition(
 				mHostJsViewState.view, align, max_width, max_height, aspect);
 	}
 
+	@Override
 	@JavascriptInterface
 	public void popupGainFocus() {
 		mViewsManager.popupGainFocus();

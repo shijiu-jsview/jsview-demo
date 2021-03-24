@@ -25,8 +25,8 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import LongTextScroll from './LongTextScroll';
 import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
 

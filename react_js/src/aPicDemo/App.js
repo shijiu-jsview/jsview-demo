@@ -6,8 +6,8 @@
  * @Description: file content
  */
 import React from "react";
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import { JsvApic } from "../jsview-utils/JsViewReactWidget/JsvApic";
 import { JsvStyleClass } from "../jsview-utils/JsViewReactTools/JsvStyleClass";
 import catRun from "./animated_webp.webp";

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { createMemoryHistory } from 'history';
 import Game from "../../gameengine/common/Game";
-import createStandaloneApp from "../../../../demoCommon/StandaloneApp";
+import createStandaloneApp from "../../../../jsview-utils/JsViewReactTools/StandaloneApp";
 import GameAppBase from "../../gameengine/views/base/GameAppBase";
 import PreloadTheme from "../../gameengine/common/PreloadTheme";
 import GamePlayTheme from "../../gameengine/common/GamePlayTheme";

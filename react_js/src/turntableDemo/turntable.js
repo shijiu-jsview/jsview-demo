@@ -1,5 +1,5 @@
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import CommonApi from "../api/CommonApi";
 
 class Turntable extends FocusBlock {

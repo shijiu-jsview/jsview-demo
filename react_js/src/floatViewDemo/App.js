@@ -10,7 +10,7 @@
  * 【控件介绍】
  * jJsvRuntimeBridge：
  *      预热接口: warmUpView, warmLoadView, closeWarmedView
- *      浮窗控制接口: popupRelativePosition, popupAbsolutePosition, popupGainFocus,
+ *      浮窗控制接口: popupResizePosition, popupGainFocus,
  *
  * 【技巧说明】
  * Q: 如何启动角标界面？
@@ -18,8 +18,8 @@
  *    Native端直接调起(通过Launcher运营等手段)
  *
  * Q: 角标界面如何控制自己的展示位置？
- * A: 通过jJsvRuntimeBridge的 popupRelativePosition 或 popupAbsolutePosition接口，在浮窗界面加载完成后，浮窗界面代码
- *    中(例如PopConer.js)调用 popupRelativePosition 来通知Native来调整界面的展示位置，并在同js中通过 popupGainFocus来
+ * A: 通过jJsvRuntimeBridge的 popupResizePosition 接口，在浮窗界面加载完成后，浮窗界面代码
+ *    中(例如PopConer.js)调用 popupResizePosition 来通知Native来调整界面的展示位置，并在同js中通过 popupGainFocus来
  *    让浮窗系统获得焦点，能接受按键。
  *    PS: 若浮窗不需要获取焦点，则可以不调用popupGainFocus即可
  *
@@ -40,21 +40,15 @@ class MainScene extends FocusBlock {
 
         this._ButtonsData = [
             {
-                text: "启动角标",
+                text: "启动角标(会缩放)",
                 onClick: ()=>{
-                    console.log("Do start corner...");
-                    this.setState({Started: this.state.Started + 1});
-                    if (window.jDemoInterface && window.JsView) {
-                        // 运行在JsView Demo 环境中，进行启动角标处理
-                        let main_path = getMainPath();
-                        window.jDemoInterface.startPopWindowPage(
-                            window.JsView.EngineJs,
-                            `${main_path}?warmMode=0#/users/IsolateScene/floatViewDemo_PopCorner`,
-                            window.JsView.CodeRevision
-                        );
-                    } else {
-                        console.warn("Warning: only valid in JsView Demo");
-                    }
+                    this._StartPopup("full");
+                }
+            },
+            {
+                text: "启动角标(不缩放)",
+                onClick: ()=>{
+                    this._StartPopup("mini");
                 }
             },
             {
@@ -70,6 +64,22 @@ class MainScene extends FocusBlock {
         this.state = {
             Started: 0,
         };
+    }
+
+    _StartPopup(content_view_mode) {
+        console.log(`Do start corner...(start with ${content_view_mode})`);
+        this.setState({Started: this.state.Started + 1});
+        if (window.jDemoInterface && window.JsView) {
+            // 运行在JsView Demo 环境中，进行启动角标处理
+            let main_path = getMainPath();
+            window.jDemoInterface.startPopWindowPage(
+                window.JsView.EngineJs,
+                `${main_path}?warmMode=0&sizeMode=${content_view_mode}#/users/IsolateScene/floatViewDemo_PopCorner`,
+                window.JsView.CodeRevision
+            );
+        } else {
+            console.warn("Warning: only valid in JsView Demo");
+        }
     }
 
     onKeyDown(ev) {
@@ -106,13 +116,13 @@ class MainScene extends FocusBlock {
                     height: 50,
                     backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`一个带子界面预热的角标广告`}</div>
-                <div style={{ left: 350, top: 200 }}>
+                <div style={{ left: 150, top: 200 }}>
                     <ButtonsList
                         buttonsData = {this._ButtonsData}
                         direction = {HORIZONTAL}
-                        itemWidth = {250}
-                        itemHeight = {100}
-                        itemGap = {80}
+                        itemWidth = {280}
+                        itemHeight = {80}
+                        itemGap = {60}
                         focusBranchName = {`${this.props.branchName}/Selector`}
                     />
                 </div>

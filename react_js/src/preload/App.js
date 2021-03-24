@@ -19,8 +19,8 @@
  *    预加载是将图片下载后，解码并读入到内存中，以解决类似按钮首次焦点/非焦点状态变化时的闪动问题
  */
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import { HORIZONTAL, SimpleWidget, SlideStyle } from "../jsview-utils/jsview-react/index_widget";
 import { buildPreloadInfo, buildDownloadInfo, JsvPreload } from '../jsview-utils/JsViewReactWidget/JsvPreload';
 

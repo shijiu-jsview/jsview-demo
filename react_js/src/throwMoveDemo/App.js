@@ -1,6 +1,6 @@
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import { JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
 import CssStyles from "./Styles";
 import TargetDemo from "./TargetDemo";

@@ -5,7 +5,7 @@ import {
   SlideStyle
 } from "../../../jsview-utils/jsview-react/index_widget";
 import PageTheme from "../../common/PageTheme";
-import { FocusBlock } from "../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
 
 class PrizeList extends FocusBlock {
   constructor(props) {

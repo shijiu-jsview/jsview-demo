@@ -4,8 +4,8 @@ import TipsPage from "./views/not_support/TipsPage";
 import MainPage from "./views/smash_eggs/MainPage";
 import SubPageBgUrl from "./images/subpage_bg.png";
 import CommonApi from "./common/CommonApi";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

@@ -2,7 +2,7 @@
  * Created by luocf on 2020/3/21.
  */
 import React from 'react';
-import { FocusBlock } from "../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../jsview-utils/JsViewReactTools/BlockDefine";
 
 class Button extends FocusBlock {
   constructor(props) {

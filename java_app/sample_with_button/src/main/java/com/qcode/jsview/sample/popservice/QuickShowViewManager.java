@@ -112,7 +112,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 	}
 
 	@Override
-	public void warmLoadView(int view_refer_id, String app_url) {
+	public void warmLoadView(int view_refer_id, String app_url, boolean add_history) {
 		mMainThreadHandler.post(()->{
 			JsViewState view_wrapper = mActiveViewsMap.get(view_refer_id);
 			if (view_wrapper != null) {
@@ -154,6 +154,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 
 	@Override
 	public void popupGainFocus() {
+		Log.d(TAG, "popupGainFocus");
 		mMainThreadHandler.post(()->{
 			if (!mPopupFocusable) {
 				buildFocusableView(mContext);
@@ -253,27 +254,22 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		});
 	}
 
-	// 重置界面的显示区域，以绝对定位的方式调整弹出框的位置(弹出框弹出后先以尺寸1x1的方式展现)
 	@Override
-	public void popupAbsolutePosition(
-			JsView host_view, double left, double top, double width, double height) {
+	public void setPopupInitSize(JsView host_view, String mode) {
+		if (!mode.equals("full") && !mode.equals("mini")) {
+			Log.e(TAG, "Error: setPopupInitSize not support mode=" + mode);
+			return;
+		}
+
 		mMainThreadHandler.post(()->{
-			int window_width = mGlobalWindowWidth;
-			int window_height = mGlobalWindowHeight;
-
-			FrameLayout.LayoutParams layout_params = (FrameLayout.LayoutParams)host_view.getLayoutParams();
-			layout_params.setMargins(
-					(int)(Math.floor(left * window_width)),
-					(int)(Math.floor(top * window_height)),
-					0, 0);
-
-			layout_params.width = (int)(Math.floor(width * window_width));
-			layout_params.height = (int)(Math.floor(height * window_height));
-
-			Log.d(TAG, "setPopPosition width=" + layout_params.width + " height=" + layout_params.height);
-
-			host_view.setLayoutParams(layout_params);
-			host_view.setVisibility(View.VISIBLE);
+			for (JsViewState wrapper : mActiveViewsMap.values()) {
+				if (wrapper.view == host_view) {
+					// found view
+					wrapper.popupSizeMode = mode;
+					Log.d(TAG, "setPopupInitSize to mode=" + mode);
+					break;
+				}
+			}
 		});
 	}
 
@@ -285,7 +281,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 	// aspect: 横纵比设定
 	// 显示区域根据 max_width, max_height, aspect 来计算出同时满足3个条件的最大区域
 	@Override
-	public void popupRelativePosition(
+	public void popupResizePosition(
 			JsView host_view, String align, double max_width, double max_height, double aspect) {
 		if (align == null || max_width == 0 || max_height == 0 || aspect == 0) {
 			Log.e(TAG, "Error: mistake input:"
@@ -451,18 +447,18 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 				view_wrapper.buildStatusListener());
 
 		boolean view_expired = false;
+		JsViewState owner_wrapper = null;
 		if (starter_view != null) {
 			// link to owner
-			boolean found_owner = false;
 			for (JsViewState test_wrapper : mActiveViewsMap.values()) {
 				if (test_wrapper.view == starter_view) {
 					view_wrapper.starterView = test_wrapper;
-					found_owner = true;
+					owner_wrapper = test_wrapper;
 					break;
 				}
 			}
 
-			if (!found_owner) {
+			if (owner_wrapper == null) {
 				// 启动者已经清理掉(过期)，当前view也需要无效处理
 				view_expired = true;
 				Log.d(TAG, "View expired");
@@ -470,8 +466,16 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		}
 
 		if (!view_expired) {
-			// 在loadUrl之前加入到ViewContainer中，应用根据自己需要调用RuntimeBridge.setPopPosition来调整位置
-			mJsViewContainer.addView(jsview, 1, 1);
+			if (owner_wrapper != null && owner_wrapper.popupSizeMode.equals("full")) {
+				// 使用全屏模式展示浮窗
+				mJsViewContainer.addView(jsview,
+						FrameLayout.LayoutParams.MATCH_PARENT,
+						FrameLayout.LayoutParams.MATCH_PARENT);
+			} else {
+				// 在loadUrl之前加入到ViewContainer中，应用根据自己需要调用RuntimeBridge.setPopPosition来调整位置
+				mJsViewContainer.addView(jsview, 1, 1);
+			}
+
 			// 注意: 默认不给焦点,首个View自己申请焦点，或则JS通过gainFocus自我获取焦点
 
 			mActiveViewsMap.put(view_wrapper.id, view_wrapper);

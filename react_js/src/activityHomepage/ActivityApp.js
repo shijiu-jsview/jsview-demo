@@ -16,9 +16,9 @@ import ninesquared_bg from "./images/ninesquared_bg.jpg";
 import ninesquared_icon from "./images/ninesquared_icon.jpg";
 import dog_bg from "./images/dog_bg.jpg";
 import dog_icon from "./images/dog_icon.jpg";
-import { JSBridge } from '../demoCommon/DebugContentShellJBridge';
+import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBridge';
 
-import { getGlobalHistory } from '../demoCommon/RouterHistoryProxy';
+import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
 
 const globalHistory = getGlobalHistory();
 

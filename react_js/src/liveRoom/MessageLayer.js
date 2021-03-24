@@ -1,6 +1,6 @@
 import React from 'react';
 import LiveStyle from './LiveStyle';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import roseImg from './img/rose.png';
 import eventProxy from './eventProxy';
 
