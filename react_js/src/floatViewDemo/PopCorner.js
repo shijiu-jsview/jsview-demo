@@ -81,9 +81,13 @@ class MainScene extends FocusBlock {
     onFocus() {
         if (window.JsView) {
             // 调整弹出框的显示范围
-            // jJsvRuntimeBridge.setPopupInitSize("mini");
             jJsvRuntimeBridge.popupResizePosition("right bottom", 0.4, 0.4, 16/9);
             jJsvRuntimeBridge.popupGainFocus();
+
+            // 设置再弹出界面的初始尺寸，mini为默认初始尺寸为最小值(不可见)
+            if (window.location.search.indexOf("sizeMode=mini") >= 0) {
+                jJsvRuntimeBridge.setPopupInitSize("mini");
+            }
 
             // 进行界面预加载
             let load_url = `${getMainPath()}#/users/IsolateScene/floatViewDemo_PopWindow/SubScene0?plugin=A1`;

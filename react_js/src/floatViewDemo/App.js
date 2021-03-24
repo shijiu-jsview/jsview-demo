@@ -40,16 +40,34 @@ class MainScene extends FocusBlock {
 
         this._ButtonsData = [
             {
-                text: "启动角标",
+                text: "启动角标(会缩放)",
                 onClick: ()=>{
-                    console.log("Do start corner...");
+                    console.log("Do start corner...(start with full)");
                     this.setState({Started: this.state.Started + 1});
                     if (window.jDemoInterface && window.JsView) {
                         // 运行在JsView Demo 环境中，进行启动角标处理
                         let main_path = getMainPath();
                         window.jDemoInterface.startPopWindowPage(
                             window.JsView.EngineJs,
-                            `${main_path}?warmMode=0#/users/IsolateScene/floatViewDemo_PopCorner`,
+                            `${main_path}?warmMode=0&sizeMode=full#/users/IsolateScene/floatViewDemo_PopCorner`,
+                            window.JsView.CodeRevision
+                        );
+                    } else {
+                        console.warn("Warning: only valid in JsView Demo");
+                    }
+                }
+            },
+            {
+                text: "启动角标(不缩放)",
+                onClick: ()=>{
+                    console.log("Do start corner...(start with mini)");
+                    this.setState({Started: this.state.Started + 1});
+                    if (window.jDemoInterface && window.JsView) {
+                        // 运行在JsView Demo 环境中，进行启动角标处理
+                        let main_path = getMainPath();
+                        window.jDemoInterface.startPopWindowPage(
+                            window.JsView.EngineJs,
+                            `${main_path}?warmMode=0&sizeMode=mini#/users/IsolateScene/floatViewDemo_PopCorner`,
                             window.JsView.CodeRevision
                         );
                     } else {
@@ -106,13 +124,13 @@ class MainScene extends FocusBlock {
                     height: 50,
                     backgroundColor: "rgba(27,38,151,0.8)"
                 }}>{`一个带子界面预热的角标广告`}</div>
-                <div style={{ left: 350, top: 200 }}>
+                <div style={{ left: 150, top: 200 }}>
                     <ButtonsList
                         buttonsData = {this._ButtonsData}
                         direction = {HORIZONTAL}
-                        itemWidth = {250}
-                        itemHeight = {100}
-                        itemGap = {80}
+                        itemWidth = {280}
+                        itemHeight = {80}
+                        itemGap = {60}
                         focusBranchName = {`${this.props.branchName}/Selector`}
                     />
                 </div>
