@@ -21,9 +21,9 @@ import React from 'react';
 import "./App.css";
 import { HORIZONTAL, SimpleWidget, SlideStyle } from "../jsview-utils/jsview-react/index_widget";
 import { JsvSquareNinePatch } from '../jsview-utils/JsViewReactWidget/JsvNinePatch';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import borderImgPath from './border.png';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 
 const data = [
     {

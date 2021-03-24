@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 
 import jpgDemo from "./jpgDemo.jpg";
 import jpegDemo from "./jpegDemo.jpeg";

@@ -16,8 +16,8 @@ import './App.css';
 import FlowMetroWidget from './views/FlowMetroWidget';
 import MenuWidget from './views/MenuWidget';
 import { HomePageData, HomePageStyle, MenuPageStyle, MenuPageData } from './DataProvader';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

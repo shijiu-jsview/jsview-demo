@@ -15,8 +15,8 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import LongImageScroll from './LongImageScroll';
 import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
 import LongImageSource from './1280x7200.jpg';

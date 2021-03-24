@@ -1,7 +1,7 @@
 import React from 'react';
 import { SimpleWidget, VERTICAL, SlideStyle, SWidgetDispatcher } from "../../jsview-utils/jsview-react/index_widget";
 import TitleMetroWidget from './TitleMetroWidget';
-import { FocusBlock } from "../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../jsview-utils/JsViewReactTools/BlockDefine";
 
 class FlowMetroWidget extends FocusBlock {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import { JsvActorMoveControl, JsvActorMove } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
 import CssStyles from "./Styles";
 

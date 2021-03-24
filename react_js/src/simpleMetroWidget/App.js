@@ -73,8 +73,8 @@
 import React from 'react';
 import './App.css';
 import { SimpleWidget, HORIZONTAL } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import borderImgPath from "./border.png";
 import { JsvSquareNinePatch } from "../jsview-utils/JsViewReactWidget/JsvNinePatch";
 

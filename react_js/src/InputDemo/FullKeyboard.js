@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 
 class Item extends React.Component {

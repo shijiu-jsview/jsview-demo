@@ -1,6 +1,6 @@
 import React from 'react';
 import { EdgeDirection } from "../../../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
 import PageTheme from "../../common/PageTheme";
 import ConstantVar from "../../common/ConstantVar";
 import { Button } from "../../common/CommonWidget";

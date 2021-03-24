@@ -49,8 +49,8 @@ import { HORIZONTAL, SimpleWidget } from "../jsview-utils/jsview-react/index_wid
 import { JsvTabWidget } from "../jsview-utils/JsViewReactWidget/JsvTabWidget";
 import { bodyData, tabData } from "./Data";
 import foucsNinePatch from "./images/nine_patch_focus.png";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

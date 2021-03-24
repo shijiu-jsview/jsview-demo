@@ -1,6 +1,6 @@
 import React from 'react';
 import { SimpleWidget, VERTICAL, SlideStyle } from "../../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../jsview-utils/JsViewReactTools/BlockDefine";
 
 const Title = ({ text, style }) => {
     return <div style={style}>{text}</div>;

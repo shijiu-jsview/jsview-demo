@@ -1,7 +1,7 @@
 import React from 'react';
 import PageTheme from "../../common/PageTheme";
 import ConstantVar from "../../common/ConstantVar";
-import { FocusBlock } from "../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
 
 class TipsPage extends FocusBlock {
   constructor(props) {

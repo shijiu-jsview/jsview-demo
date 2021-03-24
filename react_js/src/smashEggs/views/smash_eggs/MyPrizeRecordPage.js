@@ -10,7 +10,7 @@ import { formatDate } from '../../common/commonData';
 
 import ConstantVar from '../../common/ConstantVar';
 import { Button } from '../../common/CommonWidget';
-import { FocusBlock } from '../../../demoCommon/BlockDefine';
+import { FocusBlock } from '../../../jsview-utils/JsViewReactTools/BlockDefine';
 import CommonApi from '../../common/CommonApi';
 import Reward from './Reward';
 

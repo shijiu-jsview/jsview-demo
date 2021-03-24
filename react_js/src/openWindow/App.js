@@ -1,10 +1,10 @@
 
 import React from 'react';
-import createStandaloneApp from "../demoCommon/StandaloneApp";
-import { FocusBlock } from "../demoCommon/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import { SimpleWidget, HORIZONTAL, EdgeDirection, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
 import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput';
-import { jJsvRuntimeBridge } from "../demoCommon/JsvRuntimeBridge";
+import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
 
 const CONST_ITEM_WIDTH = 200;
 const CONST_ITEM_HEIGHT = 50;

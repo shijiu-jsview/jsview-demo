@@ -4,7 +4,7 @@
 import React from 'react';
 import { JsvSpriteAnim } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim";
 import Game from "../../common/Game";
-import { FocusBlock } from "../../../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../../../jsview-utils/JsViewReactTools/BlockDefine";
 
 class GameOver extends FocusBlock {
   /**

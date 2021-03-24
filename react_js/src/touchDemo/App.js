@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../demoCommon/BlockDefine";
-import createStandaloneApp from "../demoCommon/StandaloneApp";
+import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
 import JsvTouchContainer from "../jsview-utils/JsViewReactWidget/JsvTouchContainer";
 import TouchContainerVertical from "./TouchContainerVertical";
 import TouchContainerHorizontal from "./TouchContainerHorizontal";

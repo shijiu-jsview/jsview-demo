@@ -7,7 +7,7 @@ import NoPrizePage from "./NoPrizePage";
 import PageTheme from "../../common/PageTheme";
 import CommonApi from "../../common/CommonApi";
 import ConstantVar from "../../common/ConstantVar";
-import { FocusBlock } from "../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
 import Rules from "./Rules";
 import PrizeList from "./PrizeList";
 

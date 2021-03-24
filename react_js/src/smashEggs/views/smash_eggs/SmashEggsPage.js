@@ -9,7 +9,7 @@ import {
 import PageTheme from "../../common/PageTheme";
 import CommonApi from "../../common/CommonApi";
 import ConstantVar from "../../common/ConstantVar";
-import { FocusBlock } from "../../../demoCommon/BlockDefine";
+import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
 import JsvSpray from '../../../jsview-utils/JsViewReactWidget/JsvSpray';
 import { JsvSpriteAnim } from '../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
 
