@@ -42,37 +42,13 @@ class MainScene extends FocusBlock {
             {
                 text: "启动角标(会缩放)",
                 onClick: ()=>{
-                    console.log("Do start corner...(start with full)");
-                    this.setState({Started: this.state.Started + 1});
-                    if (window.jDemoInterface && window.JsView) {
-                        // 运行在JsView Demo 环境中，进行启动角标处理
-                        let main_path = getMainPath();
-                        window.jDemoInterface.startPopWindowPage(
-                            window.JsView.EngineJs,
-                            `${main_path}?warmMode=0&sizeMode=full#/users/IsolateScene/floatViewDemo_PopCorner`,
-                            window.JsView.CodeRevision
-                        );
-                    } else {
-                        console.warn("Warning: only valid in JsView Demo");
-                    }
+                    this._StartPopup("full");
                 }
             },
             {
                 text: "启动角标(不缩放)",
                 onClick: ()=>{
-                    console.log("Do start corner...(start with mini)");
-                    this.setState({Started: this.state.Started + 1});
-                    if (window.jDemoInterface && window.JsView) {
-                        // 运行在JsView Demo 环境中，进行启动角标处理
-                        let main_path = getMainPath();
-                        window.jDemoInterface.startPopWindowPage(
-                            window.JsView.EngineJs,
-                            `${main_path}?warmMode=0&sizeMode=mini#/users/IsolateScene/floatViewDemo_PopCorner`,
-                            window.JsView.CodeRevision
-                        );
-                    } else {
-                        console.warn("Warning: only valid in JsView Demo");
-                    }
+                    this._StartPopup("mini");
                 }
             },
             {
@@ -88,6 +64,22 @@ class MainScene extends FocusBlock {
         this.state = {
             Started: 0,
         };
+    }
+
+    _StartPopup(content_view_mode) {
+        console.log(`Do start corner...(start with ${content_view_mode})`);
+        this.setState({Started: this.state.Started + 1});
+        if (window.jDemoInterface && window.JsView) {
+            // 运行在JsView Demo 环境中，进行启动角标处理
+            let main_path = getMainPath();
+            window.jDemoInterface.startPopWindowPage(
+                window.JsView.EngineJs,
+                `${main_path}?warmMode=0&sizeMode=${content_view_mode}#/users/IsolateScene/floatViewDemo_PopCorner`,
+                window.JsView.CodeRevision
+            );
+        } else {
+            console.warn("Warning: only valid in JsView Demo");
+        }
     }
 
     onKeyDown(ev) {
