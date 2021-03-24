@@ -18,13 +18,12 @@ abstract public class ViewsManagerDefine {
 	// 若warmUpView时app_url不为null，同时warmLoadView的app_url也不为null，则仅生效#hash部分
 	// 未进行load的预热view，通过closeWarmedView来关闭
 	abstract public int warmUpView(JsView starter_view, String engine_js_url, String app_url);
-	abstract public void warmLoadView(int view_refer_id, String app_url);
+	abstract public void warmLoadView(int view_refer_id, String app_url, boolean add_history);
 	abstract public void closeWarmedView(int view_refer_id);
 
 	// 浮窗系统
-	abstract public void popupAbsolutePosition(
-			JsView host_view, double left, double top, double width, double height);
-	abstract public void popupRelativePosition(
+	abstract public void setPopupInitSize(JsView host_view, String mode);
+	abstract public void popupResizePosition(
 			JsView host_view, String align, double max_width, double max_height, double aspect);
 	abstract public void popupGainFocus();
 }

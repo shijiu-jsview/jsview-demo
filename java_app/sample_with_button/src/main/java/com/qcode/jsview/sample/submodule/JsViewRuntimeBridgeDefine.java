@@ -84,6 +84,9 @@ abstract public class JsViewRuntimeBridgeDefine {
 	//      versionCode
 	abstract public String getInstalledApps();
 
+	/*
+	 * 预热接口
+	 */
 	// 页面预热接口，预热页面将会将以一个新的FrameLayout(内含JsView)的方式加载一个新的应用
 	// 但这个应用在warmLoadView之前，不会创建texture/surface的实际描画资源，也不会加载图片
 	// 仅加载所有JS代码，并正常走完所有启动逻辑(包括描画逻辑)，但不会走setTimeout对应的延时逻辑，也不会显示
@@ -99,19 +102,17 @@ abstract public class JsViewRuntimeBridgeDefine {
 
 	// 若warmUpView中app_url不为null，进行了全预热，则本调用的app_url可以为null
 	// 当warmUpView中设置了app_url时，仍可以新的app_url调整history hash(#)部分进行子页面切换
-	abstract public void warmLoadView(int view_refer_id, String app_url);
+	abstract public void warmLoadView(int view_refer_id, String app_url, boolean add_history);
 
 	// 关闭预热好的View，例如warm过但不再需要显示的View
 	abstract public void closeWarmedView(int view_refer_id);
 
-	// 重置界面的显示区域，以绝对定位的方式调整弹出框的位置(弹出框弹出后先以尺寸1x1的方式展现)
-	// [参数]
-	//      left: X坐标，值为屏幕的百分比
-	//      top: Y坐标，值为屏幕的百分比
-	//      width: 宽度，值为屏幕的百分比
-	//      height: 高度，值为屏幕的百分比
-	abstract public void popupAbsolutePosition(
-			double left, double top, double width, double height);
+	/*
+	 * 弹窗界面专用接口
+	 */
+	// 切换从本JsView启动的下一个弹窗界面(warmUp)的初始尺寸，仅影响本JsView，未设置时，默认为全屏显示
+	// mode的内容为 "full" 或 "mini"
+	abstract public void setPopupInitSize(String mode);
 
 	// 重置界面的显示区域，以相对定位的方式调整弹出框的位置(弹出框弹出后先以尺寸1x1的方式展现)
 	// 显示区域根据 max_width, max_height, aspect 来计算出同时满足3个条件的最大区域
@@ -121,7 +122,7 @@ abstract public class JsViewRuntimeBridgeDefine {
 	//      max_width: 显示区域最大宽度(占屏幕百分比)
 	//      max_height: 显示区域最大高度(占屏幕百分比)
 	//      aspect: 横纵比设定
-	abstract public void popupRelativePosition(
+	abstract public void popupResizePosition(
 			String align, double max_width, double max_height, double aspect);
 
 	// 浮窗系统认为自己准备好后，调用此接口，获取设备的焦点。若不调用的话，默认浮窗系统捕获的焦点

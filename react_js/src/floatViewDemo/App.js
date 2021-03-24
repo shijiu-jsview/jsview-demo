@@ -10,7 +10,7 @@
  * 【控件介绍】
  * jJsvRuntimeBridge：
  *      预热接口: warmUpView, warmLoadView, closeWarmedView
- *      浮窗控制接口: popupRelativePosition, popupAbsolutePosition, popupGainFocus,
+ *      浮窗控制接口: popupResizePosition, popupGainFocus,
  *
  * 【技巧说明】
  * Q: 如何启动角标界面？
@@ -18,8 +18,8 @@
  *    Native端直接调起(通过Launcher运营等手段)
  *
  * Q: 角标界面如何控制自己的展示位置？
- * A: 通过jJsvRuntimeBridge的 popupRelativePosition 或 popupAbsolutePosition接口，在浮窗界面加载完成后，浮窗界面代码
- *    中(例如PopConer.js)调用 popupRelativePosition 来通知Native来调整界面的展示位置，并在同js中通过 popupGainFocus来
+ * A: 通过jJsvRuntimeBridge的 popupResizePosition 接口，在浮窗界面加载完成后，浮窗界面代码
+ *    中(例如PopConer.js)调用 popupResizePosition 来通知Native来调整界面的展示位置，并在同js中通过 popupGainFocus来
  *    让浮窗系统获得焦点，能接受按键。
  *    PS: 若浮窗不需要获取焦点，则可以不调用popupGainFocus即可
  *

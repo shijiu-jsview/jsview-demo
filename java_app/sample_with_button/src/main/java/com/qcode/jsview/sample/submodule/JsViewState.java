@@ -14,6 +14,7 @@ public class JsViewState {
 	public JsView view;
 	public StartIntentBaseParser startIntent;
 	public int id;
+	public String popupSizeMode = "full";
 
 	// 本View的关联启动者，若启动者关闭，则此View自动关闭
 	public JsViewState starterView;

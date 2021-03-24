@@ -25,8 +25,11 @@ class MainScene extends FocusBlock {
 
     onFocus() {
         console.log("floatViewDemo PopWindow focused");
-        jJsvRuntimeBridge.popupRelativePosition("center center", 0.6, 1, 16/9);
-        // jJsvRuntimeBridge.popupAbsolutePosition(0.2, 0.2, 0.6, 0.6);
+
+        // 演示调整尺寸，以便于识别owner界面的setPopupInitSize是否生效
+        setTimeout(()=>{
+            jJsvRuntimeBridge.popupResizePosition("center center", 0.6, 1, 16/9);
+        }, 1000);
 
         // 浮窗系统整体为一个焦点系统，不需要再次调用 jJsvRuntimeBridge.popupGainFocus
         // 角标界面消失后，焦点自动会落到此window中

@@ -144,7 +144,7 @@ public class ViewsManager extends ViewsManagerDefine {
 	}
 
 	@Override
-	public void warmLoadView(int view_refer_id, String app_url) {
+	public void warmLoadView(int view_refer_id, String app_url, boolean add_history) {
 		// TODO: Activity view暂时不支持预热
 	}
 
@@ -154,13 +154,12 @@ public class ViewsManager extends ViewsManagerDefine {
 	}
 
 	@Override
-	public void popupAbsolutePosition(
-			JsView host_view, double left, double top, double width, double height) {
-		Log.w(TAG, "popupAbsolutePosition: No in popup view manager");
+	public void setPopupInitSize(JsView host_view, String mode) {
+		// TODO: Activity view不支持浮窗设置
 	}
 
 	@Override
-	public void popupRelativePosition(
+	public void popupResizePosition(
 			JsView host_view, String align, double max_width, double max_height, double aspect) {
 		Log.w(TAG, "popupRelativePosition: No in popup view manager");
 	}
