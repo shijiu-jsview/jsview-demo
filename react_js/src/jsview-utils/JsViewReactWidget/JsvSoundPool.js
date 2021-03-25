@@ -67,21 +67,28 @@ class AudioController {
      * @description: 暂停音频(Android4.0不支持)
      */
   pause() {
-    this._SoundPool.pause(this._StreamId);
+    if (this._StreamId !== -1) {
+      this._SoundPool.pause(this._StreamId);
+    }
   }
 
   /**
      * @description: 恢复播放音频(Android4.0不支持)
      */
   resume() {
-    this._SoundPool.resume(this._StreamId);
+    if (this._StreamId !== -1) {
+      this._SoundPool.resume(this._StreamId);
+    }
   }
 
   /**
      * @description: 停止音频(Android4.0不支持)
      */
   stop() {
-    this._SoundPool.stop(this._StreamId);
+    if (this._StreamId !== -1) {
+      this._SoundPool.stop(this._StreamId);
+      this._StreamId = -1;
+    }
   }
 
   /**
