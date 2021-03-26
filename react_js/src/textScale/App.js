@@ -1,5 +1,8 @@
-import React from 'react';
-import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
+import React from "react";
+import {
+  SimpleWidget,
+  VERTICAL,
+} from "../jsview-utils/jsview-react/index_widget";
 import { Commodity, Controller } from "./Commodity";
 import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
@@ -12,74 +15,81 @@ class MainScene extends FocusBlock {
     for (let i = 0; i < 3; i++) {
       this._data.push({
         name: i,
-        controller: new Controller()
+        controller: new Controller(),
       });
     }
     window.data = this._data;
   }
 
-    _Measures = (item) => {
-      return SimpleWidget.getMeasureObj(340, 526, true, false);
-    };
+  _Measures = (item) => {
+    return SimpleWidget.getMeasureObj(340, 526, true, false);
+  };
 
-    _OnItemFocus = (item) => {
-      item.controller.focus();
-    };
+  _OnItemFocus = (item) => {
+    item.controller.focus();
+  };
 
-    _OnItemBlur = (item) => {
-      item.controller.blur();
-    };
+  _OnItemBlur = (item) => {
+    item.controller.blur();
+  };
 
-    _RenderItem = (item) => {
-      return (
-            <Commodity controller={item.controller} scale={1.0} isFocus={false} name={item.name} />
-      );
-    };
+  _RenderItem = (item) => {
+    return (
+      <Commodity
+        controller={item.controller}
+        scale={1.0}
+        isFocus={false}
+        name={item.name}
+      />
+    );
+  };
 
-    onKeyDown(ev) {
-      if (ev.keyCode === 10000 || ev.keyCode === 27) {
-        if (this._NavigateHome) {
-          this._NavigateHome();
-        }
+  onKeyDown(ev) {
+    if (ev.keyCode === 10000 || ev.keyCode === 27) {
+      if (this._NavigateHome) {
+        this._NavigateHome();
       }
-      return true;
     }
+    return true;
+  }
 
-    onFocus() {
-      this.changeFocus(`${this.props.branchName}/widget1`);
-    }
+  onFocus() {
+    this.changeFocus(`${this.props.branchName}/widget1`);
+  }
 
-    renderContent() {
-      return (
-            <div style={{ width: 1920, height: 1080, backgroundColor: "#00000F" }}>
-                <div style={{
-                  textAlign: "center",
-                  fontSize: "30px",
-                  lineHeight: "50px",
-                  color: "#ffffff",
-                  left: 100,
-                  top: 20,
-                  width: (1280 - 200),
-                  height: 50,
-                  backgroundColor: "rgba(27,38,151,0.8)"
-                }}>{`JsView环境下，放大后文字仍保持清晰显示`}</div>
-                <div style={{ top: 100, left: 80 }}>
-                    <SimpleWidget
-                        width={1840}
-                        height={1000}
-                        padding={{ left: 100, top: 100, right: 20, bottom: 20 }}
-                        direction={VERTICAL}
-                        data={this._data}
-                        renderItem={this._RenderItem}
-                        measures={this._Measures}
-                        branchName={`${this.props.branchName}/widget1`}
-                        onItemFocus={this._OnItemFocus}
-                        onItemBlur={this._OnItemBlur}
-                    />
-                </div>
-            </div>
-      );
-    }
+  renderContent() {
+    return (
+      <div style={{ width: 1920, height: 1080, backgroundColor: "#00000F" }}>
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "30px",
+            lineHeight: "50px",
+            color: "#ffffff",
+            left: 100,
+            top: 20,
+            width: 1280 - 200,
+            height: 50,
+            backgroundColor: "rgba(27,38,151,0.8)",
+          }}
+        >{`JsView环境下，放大后文字仍保持清晰显示`}</div>
+        <div style={{ top: 100, left: 80 }}>
+          <SimpleWidget
+            width={1840}
+            height={1000}
+            padding={{ left: 100, top: 100, right: 20, bottom: 20 }}
+            direction={VERTICAL}
+            data={this._data}
+            renderItem={this._RenderItem}
+            measures={this._Measures}
+            branchName={`${this.props.branchName}/widget1`}
+            onItemFocus={this._OnItemFocus}
+            onItemBlur={this._OnItemBlur}
+          />
+        </div>
+      </div>
+    );
+  }
 }
 
 const App = createStandaloneApp(MainScene);

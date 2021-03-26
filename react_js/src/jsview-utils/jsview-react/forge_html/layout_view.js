@@ -320,12 +320,13 @@ class LayoutViewBase {
       Object.keys(changed_props).forEach((name) => {
         switch (name) {
           case "jsv_enable_fade":
-            // 无论配置什么内容，都将启动
+            // 启动图片加载完成后的淡出处理，PC端无效
             break;
           case "jsv_poster_on_top":
-            // 无论配置什么内容，都将启动
+            // 启动海报层级提高优先级处理，PC端无效
             break;
           case "jsv_innerview": {
+            // 加入通过ViewStore传入的LayoutView对象
             const view_info = Forge.sViewStore.get(changed_props[name]);
             if (view_info) {
               const proxy_view = view_info.view;
@@ -345,7 +346,10 @@ class LayoutViewBase {
             break;
           }
           case "jsv_media_usetexture":
-            // nothing todo
+            // Video view中使用texture展示，已经被外部处理，此处不需再处理
+            break;
+          case "jsv_text_definition":
+            // 设置本LayoutView以及所有子View中文字的清晰度，默认为1.0x，PC端无效
             break;
           default:
             Forge.LogE(`Error: View Unknown prop name=${name}`);
