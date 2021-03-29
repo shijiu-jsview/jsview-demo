@@ -378,9 +378,13 @@ class _ActorControl extends ActorControlBase {
 
   _ReCalculateUMoveCurrent(froms, tos, progress, start_params) {
     if (start_params.xOrY === 0) {
-      this._Current[0] = Math.floor((tos[0] - froms[0]) * progress + froms[0]);
+      const value = (tos[0] - froms[0]) * progress + froms[0];
+      const direction = value >= 0 ? 1 : -1;
+      this._Current[0] = direction * Math.floor(Math.abs(value));
     } else {
-      this._Current[1] = Math.floor((tos[1] - froms[1]) * progress + froms[1]);
+      const value = (tos[1] - froms[1]) * progress + froms[1];
+      const direction = value >= 0 ? 1 : -1;
+      this._Current[1] = direction * Math.floor(Math.abs(value));
     }
   }
 
