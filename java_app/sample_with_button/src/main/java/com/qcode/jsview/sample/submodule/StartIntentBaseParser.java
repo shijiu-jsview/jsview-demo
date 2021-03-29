@@ -9,6 +9,7 @@ public class StartIntentBaseParser {
 	public String jsUrl = "";
 	public String engineUrl = "";
 	public String coreVersionRange = "";
+	public String coreUpdateUrl = null;
 
 	public StartIntentBaseParser(Intent intent) {
 		// 可选：JsView 内核版本指定范围，若不指定，则会使用当前AAR携带的版本
@@ -36,6 +37,10 @@ public class StartIntentBaseParser {
 			if (engine_url != null) {
 				engineUrl = engine_url;
 			}
+		}
+
+		if (intent.hasExtra("UPDATEURL")) {
+			coreUpdateUrl = intent.getStringExtra("UPDATEURL");
 		}
 	}
 

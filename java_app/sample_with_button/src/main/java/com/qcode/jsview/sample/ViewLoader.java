@@ -48,6 +48,7 @@ public class ViewLoader {
 		/* 加载SDK */
 		int port = CurActivityInfo.sDevPortBase++;
 		Log.d(TAG, "port:" + port + " pid:" + Process.myPid() + " js:" + parsed_intent.jsUrl);
+		JsViewRequestSdkProxy.changeCoreUpdateUrl(parsed_intent.coreUpdateUrl);
 		JsViewRequestSdkProxy.requestJsViewSdk(
 				host_activity.getApplication(),
 				parsed_intent.coreVersionRange, // 当无版本指定时，使用APK自带的版本启动

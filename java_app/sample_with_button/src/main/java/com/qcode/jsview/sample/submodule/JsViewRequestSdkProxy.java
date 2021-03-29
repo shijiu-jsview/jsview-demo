@@ -19,6 +19,9 @@ abstract public class JsViewRequestSdkProxy {
 	// 内核调试模式是否启动的标识
 	private static boolean sEnableEngineCodeDebug = false;
 
+	// 内核拉取版本时拉取的config文件的基地址
+	private static String sCoreUpdateUrl = null; // null:使用默认地址,使用官方内核发布; 当自我部署内核时(对服务器的稳定性有要求时)，请设置此值
+
 	// core_version_range格式(内核指定的格式)
 	// XXXX+
 	// XXXX-XXXX
@@ -42,10 +45,19 @@ abstract public class JsViewRequestSdkProxy {
 				// 指定内核版本
 				JsView.configEngineVersion(core_version, null);
 
+				// 指定内核版本内容查询基地址
+				if (sCoreUpdateUrl != null) {
+					JsView.changeCoreUpdateUrl(sCoreUpdateUrl);
+				}
+
 				// 开始加载内核
 				JsView.requestSdk(ctx, debug_port, wrapperCallback(ready_callback));
 			}
 		}
+	}
+
+	public static void changeCoreUpdateUrl(String new_update_url) {
+		sCoreUpdateUrl = new_update_url;
 	}
 
 	public static boolean needReboot(Context ctx, StartIntentBaseParser intent) {

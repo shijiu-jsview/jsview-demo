@@ -54,12 +54,13 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 
 	FavouriteSupport mFavouriteSupport = null;
 
-	public QuickShowViewManager(Context ctx, String core_range, ServiceLifeControl life_control) {
+	public QuickShowViewManager(Context ctx, String core_update_url, String core_range, ServiceLifeControl life_control) {
 		mContext = ctx;
 		mServiceLifeControl = life_control;
 		mMainThreadHandler = new Handler(Looper.getMainLooper());
 
 		// 加载JsView内核
+		JsViewRequestSdkProxy.changeCoreUpdateUrl(core_update_url);
 		JsViewRequestSdkProxy.requestJsViewSdk(
 				((Service)ctx).getApplication(),
 				core_range,
