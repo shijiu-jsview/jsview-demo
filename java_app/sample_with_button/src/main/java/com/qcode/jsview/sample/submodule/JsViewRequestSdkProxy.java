@@ -20,7 +20,10 @@ abstract public class JsViewRequestSdkProxy {
 	private static boolean sEnableEngineCodeDebug = false;
 
 	// 内核拉取版本时拉取的config文件的基地址
-	private static String sCoreUpdateUrl = null; // null:使用默认地址,使用官方内核发布; 当自我部署内核时(对服务器的稳定性有要求时)，请设置此值
+	// null:使用默认地址,使用官方内核发布; 当自我部署内核时(对服务器的稳定性有要求时)，请设置此值
+	// 官方地址为: http://launcher.cluster.qcast.cn/jsview/version/
+	// 官方测试内核地址为: http://launcher.cluster.qcast.cn/jsview-test/version/
+	private static String sCoreUpdateUrl = null;
 
 	// core_version_range格式(内核指定的格式)
 	// XXXX+
