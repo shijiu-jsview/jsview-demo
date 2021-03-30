@@ -109,7 +109,7 @@ class Input extends FocusBlock {
     if (this.props.dispatcher) {
       this.props.dispatcher.registerComponent(this);
     }
-    this._MaxWidth = 1920 * 2;
+    this._MaxWidth = 1920;
     const cur_position = this._calculateCursorPosition(this.props.value, this.props.value.length);
     this._VisibleAreaCurEnd = cur_position > this.props.width ? cur_position : this.props.width;// 可视区域光标结束位置，当光标位置超出这个范围，则更新start&end,并更新text left
     this._VisibleAreaCurStart = this._VisibleAreaCurEnd - this.props.width;// 可视区域光标起始位置
@@ -121,8 +121,9 @@ class Input extends FocusBlock {
     this.state = {
       fullString: this.props.value,
       curOffset: this.props.value.length,
-      textLeft: this._calculateSlide(this.props.value, this.props.value, this.props.value.length),
     };
+    this.textLeft = 0;
+    this.textLeft = this._calculateSlide("", this.props.value, this.props.value.length);
     this.isFocus = false;
     this._CursorRef = null;
     this._CursorPauseTimer = null;
@@ -169,11 +170,10 @@ class Input extends FocusBlock {
       }
 
       this._updateTextWidth(text);
-      const textLeft = this._calculateSlide(this.state.fullString, text, cursor_pos, moved);
+      this.textLeft = this._calculateSlide(this.state.fullString, text, cursor_pos, moved);
       this.setState({
         fullString: text,
         curOffset: cursor_pos,
-        textLeft,
       }, () => {
         if (this.props.onTextChange) {
           this.props.onTextChange(text);
@@ -251,8 +251,7 @@ class Input extends FocusBlock {
     }
 
     _getLeftWithDelChar(current_cursor_position, target_str) {
-      let new_left = this.state.textLeft;
-      // console.log(` _getLeftWithDelChar target_str:${target_str}, new_left:${new_left}, this._textWidth:${this._textWidth}`);
+      let new_left = this.textLeft;
       let offset = 0;
       if (current_cursor_position === 0) {
         offset = -new_left;
@@ -304,7 +303,7 @@ class Input extends FocusBlock {
     }
 
     _getLeftWithMoveRight(current_cursor_position) {
-      let new_left = this.state.textLeft;
+      let new_left = this.textLeft;
       let offset = this.props.width / 2;
       // 边界检测
       if (this._textWidth + (new_left - offset) < this.props.width) {
@@ -319,7 +318,7 @@ class Input extends FocusBlock {
     }
 
     _getLeftWithMoveLeft(current_cursor_position) {
-      let new_left = this.state.textLeft;
+      let new_left = this.textLeft;
       let offset = this.props.width / 2;
       new_left += offset;
       // 边界检测
@@ -348,7 +347,7 @@ class Input extends FocusBlock {
     }
 
     _getLeftWithAddChar(current_cursor_position, end_add) {
-      let new_left = this.state.textLeft;
+      let new_left = this.textLeft;
       if (current_cursor_position + this.props.cursorWidth >= this._VisibleAreaCurEnd) {
         let offset = (current_cursor_position - this._VisibleAreaCurPos);
         new_left -= offset;
@@ -382,7 +381,7 @@ class Input extends FocusBlock {
         return 0;
       }
 
-      let new_left = this.state.textLeft;
+      let new_left = this.textLeft;
       const current_cursor_position = this._calculateCursorPosition(target_str, cur_index);
       let option_mode = "op_vis_normal";// 可视区域内移动
       // 计算模式
@@ -503,8 +502,8 @@ class Input extends FocusBlock {
         if (valid_move) {
           this.setState({
             curOffset: cur_index,
-            textLeft: this._calculateSlide(this.state.fullString, this.state.fullString, cur_index, true),
           });
+          this.textLeft = this._calculateSlide(this.state.fullString, this.state.fullString, cur_index, true);
           if (this._InputView) {
             this._InputView.updateCursorOffset(this.state.fullString, cur_index);
           }
@@ -546,7 +545,7 @@ class Input extends FocusBlock {
     renderContent() {
       const text = this._GetShowText();
       const placeholder_visible = text.length === 0 && this.props.placeholder.length > 0;
-      const cursor_left = this._calculateCursorPosition(text, this.state.curOffset) + this.state.textLeft;
+      const cursor_left = this._calculateCursorPosition(text, this.state.curOffset) + this.textLeft;
       const cursor_color = this.props.cursorColor ? this.props.cursorColor : this.props.fontStyle.color;
       return (
             <div style={{
@@ -561,7 +560,7 @@ class Input extends FocusBlock {
                   overflow: "hidden"
                 }}>
                     <div style={{
-                      left: this.state.textLeft,
+                      left: this.textLeft,
                       width: this._textWidth,
                       height: this.props.height,
                       lineHeight: `${this.props.height}px`,
