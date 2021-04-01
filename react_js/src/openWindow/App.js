@@ -326,16 +326,17 @@ class MainScene extends FocusBlock {
     const start_image = ""; // 设置为""，则不显示启动图
     // let start_image = "http://192.168.0.50:8080/res/big_image.jpg";
 
-    const engine_js = ""; // 设置为""，则表示使用和当前页面一样的engine js
+    const engine_js = window.JsView ? window.JsView.EngineJs : "";
 
     const url = window.location.origin + window.location.pathname;
 
     let core_version;
     if (item.name === "二级页面1") {
-        core_version = ""; // 设置为""，表示使用当前页面一样的core
+        core_version = window.JsView ? window.JsView.CodeRevision : ""; // 设置为""，表示使用当前页面一样的core
     } else {
         core_version = this.state.text;
     }
+    console.log(`Do openWindow engineJs=${engine_js} coreVersionRange=${core_version}`);
       jJsvRuntimeBridge.openWindow(`${url}?subCount=${this._SubCount + 1}&engineUrl=${encodeURIComponent(engine_js)}&coreVersionRange=${core_version}&startImg=${encodeURIComponent(start_image)}#/users/openWindow`, null, null, 0, false);
   }
 
