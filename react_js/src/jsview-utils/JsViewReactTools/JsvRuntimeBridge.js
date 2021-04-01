@@ -94,7 +94,7 @@ function openWindow(url, startup_image, startup_video, startup_duration, add_his
     }
 
     setting.startupDuration = startup_duration;
-    setting.addHistory = add_history;
+    setting.addHistory = (add_history ? 1 : 0); // 兼容true/false传值
 
     direct_call("openWindow", url, JSON.stringify(setting));
 }
