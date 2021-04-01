@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { JsvSpriteAnim } from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
-import { JsvSpriteTranslate, TranslateControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
 import { FocusBlock } from "../../../../../jsview-utils/JsViewReactTools/BlockDefine";
 import Game from "../../common/Game";
 
@@ -29,8 +29,7 @@ class Role extends FocusBlock {
     this.offsetX = this.props.offsetX;
     this.Sprite = null;
     this._SpritDown = false;
-    this.TranslateControl = new TranslateControl();
-    this.TranslateControl.selectMode("AcceleratedMotion");
+    this.TranslateControl = new JsvActorMoveControl();
     this._IsPlaying = true;
     this._IsCollision = false;
     this.bodySize = this.props.rolesList[0].bodySize;
@@ -55,9 +54,13 @@ class Role extends FocusBlock {
     if (this._isTarget) {
       const target_y = this.props.worldSize.height / 3;
       console.log(`Role play target_y:${target_y}`);
-      this.TranslateControl.accelerateY(this.props.roleDownSpeed, target_y).start(() => {
-        this._onJumpEnd();
-      });
+      this.TranslateControl.throwAlongY(0, this.props.roleDownSpeed,
+          {type:"catch", position:target_y, direction: 1},
+          ()=>{
+            this._onJumpEnd();
+          },
+          null
+      );
     }
   }
 
@@ -85,7 +88,7 @@ class Role extends FocusBlock {
     console.log("Role fly");
     this._IsPrepareFlying = true;
     this.TranslateControl.pause((x, y) => {
-      this.TranslateControl.targetY(y).jump();
+      // this.TranslateControl.jumpTo(x, y);
       this._IsJump = false;
       this._IsPrepareFlying = false;
       this.jump();
@@ -104,13 +107,20 @@ class Role extends FocusBlock {
         init_v_y = this.props.roleDownSpeed;
         target_y = this.props.worldSize.height / 3;
       }
-      this.TranslateControl.decelerateY(this.props.roleDownSpeed, -init_v_y).start(() => {
-        console.log("decelerateY end!");
-        this._SpritDown = true;
-        this.TranslateControl.accelerateY(this.props.roleDownSpeed, target_y).start(() => {
-          this._onJumpEnd();
-        });
-      });
+
+      console.log(`DebugTest init_v=${init_v_y} acc=${this.props.roleDownSpeed} targetY=${target_y}`);
+      this.TranslateControl.throwAlongY(
+          -init_v_y,
+          this.props.roleDownSpeed,
+          {type:"catch", position:target_y, direction: 1},
+          ()=>{
+            this._onJumpEnd();
+          },
+          ()=>{
+            this._SpritDown = true;
+          }
+      );
+
       this.clickSound.play();
     }
   }
@@ -158,7 +168,7 @@ class Role extends FocusBlock {
     return (
             <div style={{ left: this.state.roleSpriteLeft, top: this.props.worldSize.height / 2 - 40, transition: "left 1s linear 0s" }}
                  onTransitionEnd={this.props.onTransitionEnd}>
-                <JsvSpriteTranslate key="RoleTranslate"
+                <JsvActorMove key="RoleTranslate"
                                     style={{
                                       left: 0,
                                       top: 0, }}
@@ -204,7 +214,7 @@ class Role extends FocusBlock {
                       height: isFlyingMode ? (bodySize.h - 60) : (bodySize.h - 100),
                       backgroundColor: "rgba(0,0,0,0)"
                     }}/>
-                </JsvSpriteTranslate>
+                </JsvActorMove>
 
             </div>
     );

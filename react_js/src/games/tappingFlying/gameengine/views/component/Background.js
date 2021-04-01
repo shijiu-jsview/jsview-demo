@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import ScrollPage from "./ScrollPage";
-import { JsvSpriteTranslate, TranslateControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
 
 class BackGround extends ScrollPage {
   /**
@@ -17,9 +17,7 @@ class BackGround extends ScrollPage {
   constructor(props) {
     console.log("BackGround constructor");
     super(props);
-    this._TranslateControl = new TranslateControl();
-    this._TranslateControl.allowFrameStepMode(true);
-    this._TranslateControl.speed(this.props.scrollSpeed).enableRepeatFrom(0, 0);
+    this._TranslateControl = new JsvActorMoveControl();
     this._ScrollPage = 0;
     this._ScrollPageNums = this.props.scrollPageNums;
     this._Direction = this.props.direction;
@@ -44,14 +42,14 @@ class BackGround extends ScrollPage {
     console.log(`BackGround _PlayControl this._ScrollPage:${this._ScrollPage},  this._TestCount:${++this._TestCount}`);
     if (this._Direction === 'horizontal') {
       if (this._IsPause) { // 状态切换时，回滚
-        control.targetX(-(this._DistancePos)).jump();
+        control.jumpTo(-(this._DistancePos), 0);
       }
-      control.targetX(-this._Width).start();
+      control.repeatMoveAlongX(-this._Width, this.props.scrollSpeed, 0, null);
     } else {
       if (this._IsPause) { // 状态切换时，回滚
-        control.targetY(-(this._DistancePos)).jump();
+        control.jumpTo(-(this._DistancePos), 0);
       }
-      control.targetY(-this._Height).start();
+      control.repeatMoveAlongY(-this._Height, this.props.scrollSpeed, 0, null);
     }
   }
 
@@ -64,11 +62,11 @@ class BackGround extends ScrollPage {
     console.log("Background this.props.style:", this.props.style);
     return (
             <div>
-                <JsvSpriteTranslate key="BgTranslate"
+                <JsvActorMove key="BgTranslate"
                                     style={{ width: this._Width, height: this._Height, left: this._Left, top: this._Top }}
                                     control={this._TranslateControl}>
                     <div style={this.props.style}/><div style={{ ...this.props.style, ...{ left: this._Width - 1 } }}/>
-                </JsvSpriteTranslate>
+                </JsvActorMove>
             </div>
     );
   }

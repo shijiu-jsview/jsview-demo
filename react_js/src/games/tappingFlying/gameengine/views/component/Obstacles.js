@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { createImpactTracer, createImpactCallback } from '../../../../../jsview-utils/JsViewReactTools/JsvImpactTracer';
-import { JsvSpriteTranslate, TranslateControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
 import { JsvSpriteAnim } from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
 import Game from "../../common/Game";
 
@@ -37,9 +37,7 @@ class Obstacles extends ScrollPage {
     this.state = { itemList: [], transition: "" };
     this._PauseX = 0;
     this._PauseY = 0;
-    this._Control = new TranslateControl();
-    this._Control.allowFrameStepMode(true);
-    this._Control.speed(this.props.scrollSpeed);
+    this._Control = new JsvActorMoveControl();
     this.obstacleTime = this.props.obstacleTime;
     this._InitDone = false;
     this._isFlyingMode = this.props.isFlyingMode;
@@ -51,10 +49,10 @@ class Obstacles extends ScrollPage {
     if (this._IsPause) {
       this._IsPause = false;
       // TODO 根据direction决定targetX还是targetY
-      this._Control.targetX(this._PauseX + this.distancePos).jump();
+      this._Control.jumpTo(this._PauseX + this.distancePos, 0);
     }
 
-    this._Control.targetX(-(this._TotalDistance + this.distancePos)).start(() => {
+    this._Control.moveToX(-(this._TotalDistance + this.distancePos), this.props.scrollSpeed, () => {
       console.log("Obstacles scroll end");
     });// 滚动屏幕
   }
@@ -97,7 +95,7 @@ class Obstacles extends ScrollPage {
     }
     return (
             <div>
-                <JsvSpriteTranslate key="ObstacleTranslate"
+                <JsvActorMove key="ObstacleTranslate"
                                     style={{ left: 0, top: 0, width: this.width, height: this.height }}
                                     control={this._Control}>
                 {
@@ -130,7 +128,7 @@ class Obstacles extends ScrollPage {
                       );
                     })
                 }
-                </JsvSpriteTranslate>
+                </JsvActorMove>
 
             </div>
     );

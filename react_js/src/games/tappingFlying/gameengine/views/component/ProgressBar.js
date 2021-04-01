@@ -2,7 +2,7 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import { JsvSpriteTranslate, TranslateControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
 import ScrollPage from "./ScrollPage";
 
 class ProgressBar extends ScrollPage {
@@ -17,10 +17,8 @@ class ProgressBar extends ScrollPage {
   constructor(props) {
     super(props);
     console.log("ProgressBar constructor");
-    this._ClipControl = new TranslateControl();
-    this._ClipControl.speed(this.props.speed);
-    this._ProgressControl = new TranslateControl();
-    this._ProgressControl.speed(this.props.speed);
+    this._ClipControl = new JsvActorMoveControl();
+    this._ProgressControl = new JsvActorMoveControl();
     this._IsPause = false;
   }
 
@@ -58,15 +56,15 @@ class ProgressBar extends ScrollPage {
   play(percent_distance) {
     if (this._IsPause) {
       this._IsPause = false;
-      this._ClipControl.targetX(percent_distance * this.props.style.width).jump();
-      this._ProgressControl.targetX(-percent_distance * this.props.style.width).jump();
+      this._ClipControl.jumpTo(percent_distance * this.props.style.width, 0);
+      this._ProgressControl.jumpTo(-percent_distance * this.props.style.width, 0);
     }
 
-    this._ClipControl.targetX(this.props.style.width).start(() => {
+    this._ClipControl.moveToX(this.props.style.width, this.props.speed * 1.5, () => {
       console.log("_ClipControl end");
       this._onAnimationEnd();
     });
-    this._ProgressControl.targetX(-this.props.style.width).start(() => {
+    this._ProgressControl.moveToX(-this.props.style.width, this.props.speed * 1.5, () => {
       console.log("_ProgressControl end");
     });
   }
@@ -79,7 +77,7 @@ class ProgressBar extends ScrollPage {
                 <div style={{
                   width: this.props.style.width, height: this.props.style.height, backgroundImage: this.props.totalBG
                 }}></div>
-                <JsvSpriteTranslate key="ProgressTranslate1"
+                <JsvActorMove key="ProgressTranslate1"
                                     style={{ left: -this.props.style.width,
                                       top: 0,
                                       width: this.props.style.width,
@@ -91,7 +89,7 @@ class ProgressBar extends ScrollPage {
                       height: this.props.style.height,
                       overflow: "hidden"
                     }}>
-                        <JsvSpriteTranslate key="ProgressTranslate2"
+                        <JsvActorMove key="ProgressTranslate2"
                                             style={{ left: this.props.style.width,
                                               top: 0,
                                               width: this.props.style.width,
@@ -103,9 +101,9 @@ class ProgressBar extends ScrollPage {
                               height: this.props.style.height,
                               backgroundImage: this.props.progressBG
                             }}/>
-                        </JsvSpriteTranslate>
+                        </JsvActorMove>
                     </div>
-                </JsvSpriteTranslate>
+                </JsvActorMove>
 
             </div>
     );

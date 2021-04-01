@@ -4,7 +4,7 @@
 import React from 'react';
 import "./Target.css";
 import { createImpactTracer, createImpactCallback } from '../../../../../jsview-utils/JsViewReactTools/JsvImpactTracer';
-import { JsvSpriteTranslate, TranslateControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
 import { JsvSpriteAnim } from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
 import Game from "../../common/Game";
 
@@ -33,8 +33,7 @@ class Targets extends ScrollPage {
     this.height = this.props.worldHeight;
     this._TotalDistance = 0;
     this.state = { itemList: [], successEffectVisible: "hidden", impactObj: null };
-    this._Control = new TranslateControl();
-    this._Control.speed(this.props.scrollSpeed);
+    this._Control = new JsvActorMoveControl();
     this.targetTime = this.props.targetTime;
     this._CurTarget = null;
     this._scaleAnimationEnd = this._scaleAnimationEnd.bind(this);
@@ -46,9 +45,13 @@ class Targets extends ScrollPage {
       this._IsPause = false;
     }
     const spriteInfo = window.GameSource[this.targetConfig.json];
-    this._Control.targetX(-(this._TotalDistance + spriteInfo.frames[0].target.w)).start(() => {
-      console.log("Targets scroll end");
-    });// 滚动屏幕
+    this._Control.moveToX(
+        -(this._TotalDistance + spriteInfo.frames[0].target.w),
+        this.props.scrollSpeed,
+        () => {
+          console.log("Targets scroll end");
+        }
+    );// 滚动屏幕
   }
 
   pause() {
@@ -111,7 +114,7 @@ class Targets extends ScrollPage {
 
     return (
             <div>
-                <JsvSpriteTranslate key="TargetsTranslate"
+                <JsvActorMove key="TargetsTranslate"
                                     style={{ left: 0, top: 0, width: this.width, height: this.height }}
                                     control={this._Control}>
                     {
@@ -160,7 +163,7 @@ class Targets extends ScrollPage {
                         })
                     }
                     { this.renderSuccessEffect()}
-                </JsvSpriteTranslate>
+                </JsvActorMove>
 
             </div>
     );
