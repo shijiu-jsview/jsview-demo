@@ -30,7 +30,7 @@ import React from 'react';
 import './App.css';
 import Score from "./score";
 import RedPacket from "./red_packet";
-import { JsvSpriteTranslate, TranslateControl } from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
 import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
@@ -89,8 +89,7 @@ class MainScene extends FocusBlock {
     this._ScoreAddAnimationEnd = this._ScoreAddAnimationEnd.bind(this);
     this._ScoreMinAnimationEnd = this._ScoreMinAnimationEnd.bind(this);
 
-    this._TranslateControl = new TranslateControl();
-    this._TranslateControl.speed(400);
+    this._TranslateControl = new JsvActorMoveControl();
 
     _EnableCss();
   }
@@ -176,13 +175,13 @@ class MainScene extends FocusBlock {
     } else if (ev.keyCode === 37) {
       console.log(" ev.keyCode === 37 !this.state.moveAnim ");
       if (!this._IsRunning) {
-        this._TranslateControl.targetX(0).start();
+        this._TranslateControl.moveToX(0, 400, null);
         this._IsRunning = true;
       }
     } else if (ev.keyCode === 39) {
       console.log(" ev.keyCode === 39 !this.state.moveAnim ");
       if (!this._IsRunning) {
-        this._TranslateControl.targetX(1280 - 220 - 194).start();
+        this._TranslateControl.moveToX(1280 - 220 - 194, 400, null);
         this._IsRunning = true;
       }
     }
@@ -237,7 +236,7 @@ class MainScene extends FocusBlock {
 
                 <div style={{ backgroundImage: `url(${this._bgImage})`, width: "1280px", height: "720px" }}>
                     <Score branchName={ `${this.props.branchName ? this.props.branchName : ""}/score` } score={this.state.score}/>
-                    <JsvSpriteTranslate key="JsvSpriteTranslate" style={{
+                    <JsvActorMove key="JsvSpriteTranslate" style={{
                       top: 476,
                       left: 220,
                       width: 194,
@@ -282,7 +281,7 @@ class MainScene extends FocusBlock {
                                     }} onAnimationEnd={this._ScoreAddAnimationEnd}/> : null
                             }
                         </div>
-                    </JsvSpriteTranslate>
+                    </JsvActorMove>
 
                     {
                         <RedPacket MoneyBag={this.state.moneyBag} onImpactTracer={(rain) => {

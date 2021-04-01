@@ -3,14 +3,12 @@
  */
 import React, { Component } from 'react';
 import { createImpactTracer, createImpactCallback } from '../jsview-utils/JsViewReactTools/JsvImpactTracer';
-import { JsvSpriteTranslate, TranslateControl } from "../jsview-utils/JsViewReactWidget/JsvSpriteTranslate";
+import { JsvActorMove, JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
 
 class SpriteTranslate extends Component {
   constructor(props) {
     super(props);
-    const control = new TranslateControl();
-    control.speed(720 / this.props.item.duration);
-    control.allowFrameStepMode(true);
+    const control = new JsvActorMoveControl();
     this._Control = control;
   }
 
@@ -42,20 +40,20 @@ class SpriteTranslate extends Component {
     const item = this.props.item;
     return (
             <div>
-                <JsvSpriteTranslate key={`translate${item.key}`}
+                <JsvActorMove key={`translate${item.key}`}
                                                         style={{ left: item.left, top: item.top, width: item.width, height: item.height }}
                                                         control={this._Control}>
                     <div key={`bg${item.key}`} ref={ele => this._InitItemEle(item, ele)}
                              style={{
                                backgroundImage: `url(${item.src})`, left: 0, top: 0, width: item.width, height: item.height,
                              }}/>
-                </JsvSpriteTranslate>
+                </JsvActorMove>
             </div>
     );
   }
 
   componentDidMount() {
-    this._Control.targetY(720).start(() => {
+    this._Control.moveToY(720, 720 / this.props.item.duration, ()=>{
       this._onDestroy();
     });
   }
