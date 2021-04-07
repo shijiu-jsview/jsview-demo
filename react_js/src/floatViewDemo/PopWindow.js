@@ -11,7 +11,8 @@ class MainScene extends FocusBlock {
     constructor(props) {
         super(props);
 
-        window.MyPopWindow = this;
+        window.MyPopWindow = this; // for debug
+        this._VisibleCallback = null;
     }
 
     onKeyDown(ev) {
@@ -27,12 +28,37 @@ class MainScene extends FocusBlock {
         console.log("floatViewDemo PopWindow focused");
 
         // 演示调整尺寸，以便于识别owner界面的setPopupInitSize是否生效
-        setTimeout(()=>{
-            jJsvRuntimeBridge.popupResizePosition("center center", 0.6, 1, 16/9);
-        }, 1000);
+        if (window.JsView) {
+            this._VisibleCallback = (status)=>{
+                if (status.status === "show") {
+                    setTimeout(()=>{
+                        console.log("DebugTest become show");
+                        jJsvRuntimeBridge.popupResizePosition("center center", 0.6, 1, 16/9);
+                    }, 1000);
+                }
+            };
+
+            if (window.JsView.getVisibility() === "show") {
+                console.log("DebugTest now is show");
+                this._VisibleCallback({status:"show"}); // 模拟窗口可视事件
+                this._VisibleCallback = null; // 清理callback，不触发unmount释放
+            } else {
+                // 当前不可见，可见后再进行延迟显示
+                console.log("DebugTest now is hide");
+                window.JsView.onVisibilityChange(this._VisibleCallback);
+            }
+        }
 
         // 浮窗系统整体为一个焦点系统，不需要再次调用 jJsvRuntimeBridge.popupGainFocus
         // 角标界面消失后，焦点自动会落到此window中
+    }
+
+    componentWillUnmount() {
+        if (this._VisibleCallback !== null) {
+            // 释放引用，以免离开界面后，界面的事件处理仍然被回调
+            window.JsView.removeEventCallback(this._VisibleCallback);
+            this._VisibleCallback = null;
+        }
     }
 
     renderContent() {
