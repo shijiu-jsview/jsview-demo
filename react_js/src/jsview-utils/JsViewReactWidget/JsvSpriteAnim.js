@@ -95,11 +95,12 @@ class SpriteController {
    * start()  启动精灵图
    * 参数说明:
    *      end_frame {String} 输入'start'时，停止在第一帧，输入'end'时，停止在最后一帧
+   *      duration  {int}  指定精灵图运行时间
    */
-  start(end_frame) {
+  start(end_frame, duration) {
     if (!this.Used) { this.Used = true; }
     if (this._SpriteImage) {
-      this._SpriteImage.start(end_frame);
+      this._SpriteImage.start(end_frame, duration);
     }
   }
 
@@ -172,6 +173,7 @@ class JsvSpriteAnim extends React.Component {
     this.state = {
       innerId: 0,
       stopped: false,
+      duration:this.props.duration,
       stopFrame,
       blinkAnim: null,
     };
@@ -188,13 +190,14 @@ class JsvSpriteAnim extends React.Component {
     });
   }
 
-  start(end_frame) {
+  start(end_frame, duration) {
     if (this.props.spriteInfo.frames && this.props.spriteInfo.frames.length === 1) {
       return;
     }
     this.setState({
       innerId: this.state.innerId + 1,
       stopped: false,
+      duration:duration || this.props.duration,
       stopFrame: end_frame || this.state.stopFrame,
     });
   }
@@ -441,9 +444,9 @@ class JsvSpriteAnim extends React.Component {
 
     // 使用duration和loop信息更新动画设定
     this._AnimateFrameCache.clipStyle.animation =
-      `${this._AnimateFrameCache.clipAnimName} ${this.props.duration}s steps(1,end) ${this.props.loop}`;
+      `${this._AnimateFrameCache.clipAnimName} ${this.state.duration}s steps(1,end) ${this.props.loop}`;
     this._AnimateFrameCache.transStyle.animation =
-      `${this._AnimateFrameCache.imageAnimName} ${this.props.duration}s steps(1,end) ${this.props.loop}`;
+      `${this._AnimateFrameCache.imageAnimName} ${this.state.duration}s steps(1,end) ${this.props.loop}`;
 
     return {
       clipStyle: this._AnimateFrameCache.clipStyle,
@@ -456,8 +459,8 @@ class JsvSpriteAnim extends React.Component {
     return (
       (this.props.imageUrl !== next_props.imageUrl)
       || (this.props.onAnimEnd !== next_props.onAnimEnd)
-      || (this.props.duration !== next_props.duration)
       || (this.props.loop !== next_props.loop)
+      || (this.state.duration !== next_state.duration)
       || (this.props.autostart !== next_props.autostart)
       || this.state.innerId !== next_state.innerId
       || this.state.stopped !== next_state.stopped
