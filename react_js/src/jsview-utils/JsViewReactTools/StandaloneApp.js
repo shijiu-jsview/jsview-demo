@@ -10,6 +10,7 @@
 import React from 'react';
 import { FdivRouter } from "../jsview-react/index_widget";
 import { jJsvRuntimeBridge } from "./JsvRuntimeBridge";
+import { DebugObjectRefer } from "./DebugTool";
 
 /*
  * createStandaloneApp 参数说明:
@@ -31,12 +32,13 @@ function createStandaloneApp(main_scene_component) {
           });
       return (<FdivRouter controlRef={(ref) => {
         this._FocusControl = ref;
-      }}>
+      }} debugRefContainer={DebugObjectRefer}>
             {scene}
         </FdivRouter>);
     }
 
     componentDidMount() {
+      // Should overwrite if calling notifyPageLoaded in other scenario
       this._FocusControl.changeFocus("/MySelf", true);
       jJsvRuntimeBridge.notifyPageLoaded();
     }

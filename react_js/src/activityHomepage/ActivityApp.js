@@ -17,6 +17,7 @@ import ninesquared_icon from "./images/ninesquared_icon.jpg";
 import dog_bg from "./images/dog_bg.jpg";
 import dog_icon from "./images/dog_icon.jpg";
 import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBridge';
+import { DebugObjectRefer } from "../jsview-utils/JsViewReactTools/DebugTool";
 
 import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
 
@@ -91,7 +92,7 @@ class ActivityApp extends React.Component {
 
   render() {
     return (
-            <FdivRouter controlRef={(ref) => { this._FocusControl = ref; }}>
+            <FdivRouter controlRef={(ref) => { this._FocusControl = ref; }} debugRefContainer={DebugObjectRefer}>
                 <Router history={globalHistory} >
                     <React.Suspense fallback={<div></div>}>
                         <Switch>

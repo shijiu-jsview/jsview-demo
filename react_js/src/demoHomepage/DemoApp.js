@@ -10,6 +10,7 @@ import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBri
 
 import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
 import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
+import { DebugObjectRefer } from "../jsview-utils/JsViewReactTools/DebugTool";
 
 const globalHistory = getGlobalHistory();
 
@@ -312,7 +313,7 @@ class DemoApp extends React.Component {
             <div style={{ width: 1920, height: 1080, backgroundColor: "#000000" }}>
                 <FdivRouter controlRef={(ref) => {
                     this._FocusControl = ref;
-                }}>
+                }} debugRefContainer={DebugObjectRefer}>
                     <Router history={globalHistory.getReference()}>
                         <React.Suspense fallback={<div></div>}>
                             <Switch>
