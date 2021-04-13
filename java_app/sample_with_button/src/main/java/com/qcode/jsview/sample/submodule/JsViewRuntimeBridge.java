@@ -109,8 +109,8 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	public String getStartParams() {
 		try {
 			JSONObject start_params_json = new JSONObject();
-			start_params_json.put("COREVERSIONRANGE", mHostJsViewState.startIntent.coreVersionRange);
-			start_params_json.put("ENGINE", mHostJsViewState.startIntent.engineUrl);
+			start_params_json.put("engineJsUrl", mHostJsViewState.startIntent.coreVersionRange);
+			start_params_json.put("coreVersionRange", mHostJsViewState.startIntent.coreVersionRange);
 			return start_params_json.toString();
 		} catch (JSONException e) {
 			Log.e(TAG, "JSON error:", e);
