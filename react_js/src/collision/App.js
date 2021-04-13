@@ -56,8 +56,17 @@ class MainScene extends FocusBlock {
       sLeftColor: "#FF0000",
       sRightColor: "#00FF00",
       skLeftColor: "#FF0000",
-      skRightColor: "#00FF00"
+      skRightColor: "#00FF00",
+      lastItemVisibility: "hidden",  // 验证View先声明碰撞检测再显示的场景，是否碰撞能正常生效
+      lastItemGone: false // 验证碰撞对象关联的View从ViewTree拿掉后是否触发Native端的自清理处理
     };
+
+    setTimeout(()=>{
+       this.setState({lastItemVisibility : "visible"});
+    }, 1000);
+    setTimeout(()=>{
+      this.setState({lastItemGone : true});
+    }, 5000);
   }
 
   onKeyDown(ev) {
@@ -127,14 +136,17 @@ class MainScene extends FocusBlock {
                     </div>
                 </div>
 
-                <div style={{ top: 500, left: 800 }}>
-                    <div ref={ele => this._SkewEle1 = ele} style={{ left: 100, width: 100, height: 100, backgroundColor: this.state.skLeftColor, animation: "skew1 5s" }}>
-                        view1
+                {(!this.state.lastItemGone) ? (
+                    <div style={{ top: 500, left: 800 , visibility:this.state.lastItemVisibility }}>
+                        <div ref={ele => this._SkewEle1 = ele} style={{ left: 100, width: 100, height: 100, backgroundColor: this.state.skLeftColor, animation: "skew1 5s" }}>
+                            viewA
+                        </div>
+                        <div ref={ele => this._SkewEle2 = ele} style={{ left: 300, width: 100, height: 100, backgroundColor: this.state.skRightColor, animation: "skew2 5s" }}>
+                            viewB
+                        </div>
                     </div>
-                    <div ref={ele => this._SkewEle2 = ele} style={{ left: 300, width: 100, height: 100, backgroundColor: this.state.skRightColor, animation: "skew2 5s" }}>
-                        view2
-                    </div>
-                </div>
+                ):(null)
+                }
             </div>
     );
   }
@@ -149,7 +161,6 @@ class MainScene extends FocusBlock {
           });
         },
         () => {
-          translate_sensor.Recycle();
           this.setState({
             tLeftColor: "#FF0000",
             tRightColor: "#00FF00"
@@ -172,7 +183,7 @@ class MainScene extends FocusBlock {
           rotate_count.count++;
           if (rotate_count.count >= 2) {
             // 旋转有头尾连续两次碰撞
-            rotate_sensor.Recycle();
+            console.log("Finish collision of rotate element");
           }
           this.setState({
             rLeftColor: "#FF0000",
@@ -211,7 +222,6 @@ class MainScene extends FocusBlock {
         });
       },
       () => {
-        scale_sensor.Recycle();
         this.setState({
           sLeftColor: "#FF0000",
           sRightColor: "#00FF00"
@@ -228,7 +238,6 @@ class MainScene extends FocusBlock {
         });
       },
       () => {
-        skew_sensor.Recycle();
         this.setState({
           skLeftColor: "#FF0000",
           skRightColor: "#00FF00"
