@@ -26,9 +26,9 @@
  */
 
 import React from 'react';
-import { JsvSpriteAnim, SpriteController } from '../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { JsvSpriteAnim, SpriteController } from '../../utils/JsViewReactWidget/JsvSpriteAnim';
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 // 从JSON中加载精灵图的配置，该配置文件由工具 https://www.codeandweb.com/texturepacker 生成
 import spriteImage from './images/egg_break.png';

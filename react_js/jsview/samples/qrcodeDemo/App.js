@@ -21,9 +21,9 @@
  */
 
 import React from 'react';
-import QRCode from "../jsview-utils/JsViewReactWidget/JsvQrcode";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import QRCode from "../../utils/JsViewReactWidget/JsvQrcode";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

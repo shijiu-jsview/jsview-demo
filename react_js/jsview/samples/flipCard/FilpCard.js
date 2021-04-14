@@ -1,6 +1,6 @@
 import React from 'react';
 import './FlipCard.css';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 class FlipCard extends FocusBlock {
   constructor(props) {

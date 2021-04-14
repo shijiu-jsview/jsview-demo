@@ -5,13 +5,13 @@ import {
   SimpleWidget,
   SWidgetDispatcher,
   SlideStyle
-} from "../../../jsview-utils/jsview-react/index_widget";
+} from "../../../../utils/JsViewEngineWidget/index_widget";
 import PageTheme from "../../common/PageTheme";
 import CommonApi from "../../common/CommonApi";
 import ConstantVar from "../../common/ConstantVar";
-import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
-import JsvSpray from '../../../jsview-utils/JsViewReactWidget/JsvSpray';
-import { JsvSpriteAnim } from '../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
+import { FocusBlock } from "../../../../utils/JsViewReactTools/BlockDefine";
+import JsvSpray from '../../../../utils/JsViewReactWidget/JsvSpray';
+import { JsvSpriteAnim } from '../../../../utils/JsViewReactWidget/JsvSpriteAnim';
 
 import "../../App.css";
 import GoldenCoin1 from "../../images/goldencoin1.png";

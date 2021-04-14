@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import ScrollPage from "./ScrollPage";
-import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../../utils/JsViewReactWidget/JsvActorMove";
 
 class BackGround extends ScrollPage {
   /**

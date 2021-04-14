@@ -1,7 +1,7 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { SimpleWidget, HORIZONTAL } from "../jsview-utils/jsview-react/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { SimpleWidget, HORIZONTAL } from "../../utils/JsViewEngineWidget/index_widget";
 
 import jpgDemo from "./jpgDemo.jpg";
 import jpegDemo from "./jpegDemo.jpeg";

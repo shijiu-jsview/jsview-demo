@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { SimpleWidget, VERTICAL } from "../../utils/JsViewEngineWidget/index_widget";
 
 const CONST_ITEM_WIDTH = 300;
 const CONST_ITEM_HEIGHT = 100;

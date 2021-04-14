@@ -40,17 +40,17 @@
  */
 
 import React from "react";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { JsvActorMoveControl, JsvActorMove } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { JsvActorMoveControl, JsvActorMove } from "../../utils/JsViewReactWidget/JsvActorMove";
 import CssStyles from "./Styles";
 import './Animation.css';
-import KeyMap from "../jsview-utils/JsViewReactTools/DefaultKeyMap";
+import KeyMap from "../../utils/JsViewReactTools/DefaultKeyMap";
 import {
   createImpactTracer,
   createImpactCallback,
   createImpactAutoFroze
-} from "../jsview-utils/JsViewReactTools/JsvImpactTracer";
+} from "../../utils/JsViewReactTools/JsvImpactTracer";
 
 const CONST_BOARD_LEFT = 0;
 const CONST_BOARD_RIGHT = 1;

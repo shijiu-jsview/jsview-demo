@@ -3,9 +3,9 @@ import {
   VERTICAL,
   SimpleWidget,
   SlideStyle
-} from "../../../jsview-utils/jsview-react/index_widget";
+} from "../../../../utils/JsViewEngineWidget/index_widget";
 import PageTheme from "../../common/PageTheme";
-import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
+import { FocusBlock } from "../../../../utils/JsViewReactTools/BlockDefine";
 
 class PrizeList extends FocusBlock {
   constructor(props) {

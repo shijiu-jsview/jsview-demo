@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../../utils/JsViewEngineWidget/index_widget";
 import eventProxy from './eventProxy';
 import LiveStyle from './LiveStyle';
 import homePageData from './common';

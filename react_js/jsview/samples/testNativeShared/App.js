@@ -1,7 +1,7 @@
 import React from "react";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import NativeSharedDiv from "../jsview-utils/JsViewReactWidget/JsvNativeSharedDiv";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import NativeSharedDiv from "../../utils/JsViewReactWidget/JsvNativeSharedDiv";
 
 class MainScene extends FocusBlock {
   constructor(props) {

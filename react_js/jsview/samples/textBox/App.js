@@ -23,13 +23,13 @@
  */
 
 import React from "react";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import JsvTextBox from "../jsview-utils/JsViewReactWidget/JsvTextBox";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import JsvTextBox from "../../utils/JsViewReactWidget/JsvTextBox";
 import {
   JsvTextStyleClass,
   JsvStyleClass,
-} from "../jsview-utils/JsViewReactTools/JsvStyleClass";
+} from "../../utils/JsViewReactTools/JsvStyleClass";
 
 const sLayoutSet = new JsvStyleClass({
   width: 400,

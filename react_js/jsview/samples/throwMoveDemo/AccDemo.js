@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { JsvActorMoveControl, JsvActorMove } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { JsvActorMoveControl, JsvActorMove } from "../../utils/JsViewReactWidget/JsvActorMove";
 import CssStyles from "./Styles";
 
 class AccDemo extends FocusBlock {

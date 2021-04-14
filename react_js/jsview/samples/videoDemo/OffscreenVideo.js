@@ -17,8 +17,8 @@
  */
 
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import JsvVideo from "../jsview-utils/JsViewReactWidget/JsvVideo";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import JsvVideo from "../../utils/JsViewReactWidget/JsvVideo";
 import "./App.css";
 
 function throttle(callback, limit) {

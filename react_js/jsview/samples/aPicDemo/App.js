@@ -6,10 +6,10 @@
  * @Description: file content
  */
 import React from "react";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { JsvApic } from "../jsview-utils/JsViewReactWidget/JsvApic";
-import { JsvStyleClass } from "../jsview-utils/JsViewReactTools/JsvStyleClass";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { JsvApic } from "../../utils/JsViewReactWidget/JsvApic";
+import { JsvStyleClass } from "../../utils/JsViewReactTools/JsvStyleClass";
 import catRun from "./animated_webp.webp";
 import girlRun from "./girl_run.gif";
 import quan from "./quan.webp";

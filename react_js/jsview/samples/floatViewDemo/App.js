@@ -29,8 +29,8 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import { HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
 import { getMainPath } from "./Tools"
 

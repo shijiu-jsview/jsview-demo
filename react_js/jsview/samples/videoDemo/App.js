@@ -16,8 +16,8 @@
  *    改变播放进度：video标签.currentTime = 新的播放时间(毫秒)
  */
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import NormalVideo from "./NormalVideo";
 import OffscreenVideo from "./OffscreenVideo";
 

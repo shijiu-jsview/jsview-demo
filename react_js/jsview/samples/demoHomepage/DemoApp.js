@@ -5,12 +5,12 @@ import {
     Route,
 } from "react-router-dom";
 import Home from './Homepage';
-import { FdivRouter } from "../jsview-utils/jsview-react/index_widget";
-import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBridge';
+import { FdivRouter } from "../../utils/JsViewEngineWidget/index_widget";
+import { JSBridge } from '../../utils/JsViewReactTools/DebugContentShellJBridge';
 
-import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
-import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
-import { DebugObjectRefer } from "../jsview-utils/JsViewReactTools/DebugTool";
+import { jJsvRuntimeBridge } from "../../utils/JsViewReactTools/JsvRuntimeBridge";
+import { getGlobalHistory } from '../../utils/JsViewReactTools/RouterHistoryProxy';
+import { DebugObjectRefer } from "../../utils/JsViewReactTools/DebugTool";
 
 const globalHistory = getGlobalHistory();
 

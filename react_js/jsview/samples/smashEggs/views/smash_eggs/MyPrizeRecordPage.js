@@ -5,12 +5,12 @@ import {
   SimpleWidget,
   SlideStyle,
   EdgeDirection
-} from '../../../jsview-utils/jsview-react/index_widget';
+} from '../../../../utils/JsViewEngineWidget/index_widget';
 import { formatDate } from '../../common/commonData';
 
 import ConstantVar from '../../common/ConstantVar';
 import { Button } from '../../common/CommonWidget';
-import { FocusBlock } from '../../../jsview-utils/JsViewReactTools/BlockDefine';
+import { FocusBlock } from '../../../../utils/JsViewReactTools/BlockDefine';
 import CommonApi from '../../common/CommonApi';
 import Reward from './Reward';
 

@@ -6,13 +6,13 @@
  * @Description: file content
  */
 import React from 'react';
-import { FdivWrapper, SimpleWidget, HORIZONTAL, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
+import { FdivWrapper, SimpleWidget, HORIZONTAL, VERTICAL } from "../../utils/JsViewEngineWidget/index_widget";
 import "./homepage.css";
 import shadow_big_img from "./images/shadow_big.png";
 import shadow_small_img from "./images/shadow_small.png";
-import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
-import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { getGlobalHistory } from '../../utils/JsViewReactTools/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../../utils/JsViewReactTools/JsvRuntimeBridge";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 const globalHistory = getGlobalHistory();
 

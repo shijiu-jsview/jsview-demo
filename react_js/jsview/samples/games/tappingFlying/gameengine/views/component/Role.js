@@ -2,9 +2,9 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import { JsvSpriteAnim } from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
-import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
-import { FocusBlock } from "../../../../../jsview-utils/JsViewReactTools/BlockDefine";
+import { JsvSpriteAnim } from '../../../../../../utils/JsViewReactWidget/JsvSpriteAnim';
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../../utils/JsViewReactWidget/JsvActorMove";
+import { FocusBlock } from "../../../../../../utils/JsViewReactTools/BlockDefine";
 import Game from "../../common/Game";
 
 class Role extends FocusBlock {

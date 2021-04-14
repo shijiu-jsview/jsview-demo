@@ -30,13 +30,13 @@ import React from 'react';
 import './App.css';
 import Score from "./score";
 import RedPacket from "./red_packet";
-import { JsvActorMove, JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { JsvActorMove, JsvActorMoveControl } from "../../utils/JsViewReactWidget/JsvActorMove";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import AudioGetUrl from "./audio/get.mp3";
 import AudioBoomUrl from "./audio/boom.mp3";
 import AudioBgUrl from "./audio/bgMusic-1.mp3";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { getKeyFramesGroup } from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { getKeyFramesGroup } from "../../utils/JsViewReactWidget/JsvDynamicKeyFrames";
 
 function _EnableCss() {
   const group = getKeyFramesGroup("giftRainCss");

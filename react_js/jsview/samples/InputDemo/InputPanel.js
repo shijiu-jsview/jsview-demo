@@ -41,9 +41,9 @@
  * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
  */
 import React from 'react';
-import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { JsvInput, JsvInputDispatcher } from '../jsview-utils/JsViewReactWidget/JsvInput';
+import { EdgeDirection } from "../../utils/JsViewEngineWidget/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { JsvInput, JsvInputDispatcher } from '../../utils/JsViewReactWidget/JsvInput';
 import FullKeyboard from "./FullKeyboard";
 
 class InputPanel extends FocusBlock {

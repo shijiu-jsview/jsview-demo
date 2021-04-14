@@ -9,10 +9,10 @@
  */
 
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 
-import { JsvSoundPool } from '../jsview-utils/JsViewReactWidget/JsvSoundPool';
+import { JsvSoundPool } from '../../utils/JsViewReactWidget/JsvSoundPool';
 
 import coin from "./coin.mp3";
 import lose from "./lose.mp3";

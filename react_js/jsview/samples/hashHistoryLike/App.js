@@ -4,9 +4,9 @@ import {
   Router,
   Route,
 } from "react-router-dom";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { getGlobalHistory } from "../jsview-utils/JsViewReactTools/RouterHistoryProxy";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { getGlobalHistory } from "../../utils/JsViewReactTools/RouterHistoryProxy";
 import {
   MainPage,
   SubPageFirst,

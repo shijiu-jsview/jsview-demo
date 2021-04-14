@@ -1,4 +1,4 @@
-import { JsvStyleClass, JsvTextStyleClass } from "../jsview-utils/JsViewReactTools/JsvStyleClass";
+import { JsvStyleClass, JsvTextStyleClass } from "../../utils/JsViewReactTools/JsvStyleClass";
 import posterHolder from './images/holder_logo.png';
 import couponLeft from "./images/coupon_left.png";
 import couponRight from "./images/coupon_right.png";

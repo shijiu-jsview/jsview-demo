@@ -1,7 +1,7 @@
 import React from 'react';
-import createStandaloneApp from '../jsview-utils/JsViewReactTools/StandaloneApp';
-import { FocusBlock } from '../jsview-utils/JsViewReactTools/BlockDefine';
-import JsvScrollNum from '../jsview-utils/JsViewReactWidget/JsvScrollNum';
+import createStandaloneApp from '../../utils/JsViewReactTools/StandaloneApp';
+import { FocusBlock } from '../../utils/JsViewReactTools/BlockDefine';
+import JsvScrollNum from '../../utils/JsViewReactWidget/JsvScrollNum';
 
 class MainScene extends FocusBlock {
   constructor (props) {

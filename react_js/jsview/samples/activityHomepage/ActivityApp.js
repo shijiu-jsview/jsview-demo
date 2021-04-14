@@ -5,7 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import Home from './Homepage';
-import { FdivRouter } from "../jsview-utils/jsview-react/index_widget";
+import { FdivRouter } from "../../utils/JsViewEngineWidget/index_widget";
 import giftrainBg1 from "./images/giftrain_bg.jpg";
 import giftrain_icon from "./images/giftrain_icon.jpg";
 import smash_eggs_bg from "./images/smash_eggs_bg.jpg";
@@ -16,10 +16,10 @@ import ninesquared_bg from "./images/ninesquared_bg.jpg";
 import ninesquared_icon from "./images/ninesquared_icon.jpg";
 import dog_bg from "./images/dog_bg.jpg";
 import dog_icon from "./images/dog_icon.jpg";
-import { JSBridge } from '../jsview-utils/JsViewReactTools/DebugContentShellJBridge';
-import { DebugObjectRefer } from "../jsview-utils/JsViewReactTools/DebugTool";
+import { JSBridge } from '../../utils/JsViewReactTools/DebugContentShellJBridge';
+import { DebugObjectRefer } from "../../utils/JsViewReactTools/DebugTool";
 
-import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
+import { getGlobalHistory } from '../../utils/JsViewReactTools/RouterHistoryProxy';
 
 const globalHistory = getGlobalHistory();
 

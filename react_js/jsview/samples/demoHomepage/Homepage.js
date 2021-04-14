@@ -8,12 +8,12 @@
 
 import React from 'react';
 
-import { FdivWrapper, SimpleWidget, VERTICAL, EdgeDirection, SWidgetDispatcher } from "../jsview-utils/jsview-react/index_widget";
-import { getGlobalHistory } from '../jsview-utils/JsViewReactTools/RouterHistoryProxy';
-import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
+import { FdivWrapper, SimpleWidget, VERTICAL, EdgeDirection, SWidgetDispatcher } from "../../utils/JsViewEngineWidget/index_widget";
+import { getGlobalHistory } from '../../utils/JsViewReactTools/RouterHistoryProxy';
+import { jJsvRuntimeBridge } from "../../utils/JsViewReactTools/JsvRuntimeBridge";
 
-import { JsvTextStyleClass } from "../jsview-utils/JsViewReactTools/JsvStyleClass";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { JsvTextStyleClass } from "../../utils/JsViewReactTools/JsvStyleClass";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 const globalHistory = getGlobalHistory();
 

@@ -20,10 +20,10 @@
 
 
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 
-import JsvMaskClipDiv from "../jsview-utils/JsViewReactWidget/JsvMaskClipDiv";
+import JsvMaskClipDiv from "../../utils/JsViewReactWidget/JsvMaskClipDiv";
 import mask1_pic from "./images/mask-025/res/1.png";
 import mask2_pic from "./images/mask-025/res/2.png";
 import mask3_pic from "./images/mask-025/res/3.png";

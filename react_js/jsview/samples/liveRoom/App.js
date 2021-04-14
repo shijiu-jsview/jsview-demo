@@ -1,6 +1,6 @@
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import BasicLayer from './BasicLayer';
 import MessageLayer from './MessageLayer';
 import InputLayer from './InputLayer';

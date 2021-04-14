@@ -21,8 +21,8 @@
 import React from 'react';
 import './App.css';
 import Turntable from "./turntable";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 
 class MainScene extends FocusBlock {
   constructor(props) {

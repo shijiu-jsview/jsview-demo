@@ -29,10 +29,10 @@
  * A: 通过onTextChange回调，输入框中的文字变化时都会调用该回调
  */
 import React from 'react';
-import { EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { JsvInput } from '../jsview-utils/JsViewReactWidget/JsvInput';
+import { EdgeDirection } from "../../utils/JsViewEngineWidget/index_widget";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { JsvInput } from '../../utils/JsViewReactWidget/JsvInput';
 import InputPanel from "./InputPanel";
 
 

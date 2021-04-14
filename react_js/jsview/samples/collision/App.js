@@ -21,10 +21,10 @@
  */
 
 import React from 'react';
-import { createImpactTracer, createImpactCallback } from "../jsview-utils/JsViewReactTools/JsvImpactTracer";
+import { createImpactTracer, createImpactCallback } from "../../utils/JsViewReactTools/JsvImpactTracer";
 import './App.css';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   constructor(props) {

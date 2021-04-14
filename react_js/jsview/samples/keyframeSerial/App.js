@@ -21,9 +21,9 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { getKeyFramesGroup } from "../jsview-utils/JsViewReactWidget/JsvDynamicKeyFrames";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { getKeyFramesGroup } from "../../utils/JsViewReactWidget/JsvDynamicKeyFrames";
 
 let sAnimIndexToken = 0;
 class MainScene extends FocusBlock {

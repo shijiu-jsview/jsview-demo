@@ -1,6 +1,6 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import JsvTouchContainer from "../jsview-utils/JsViewReactWidget/JsvTouchContainer";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import JsvTouchContainer from "../../utils/JsViewReactWidget/JsvTouchContainer";
 
 class TouchContainerVertical extends FocusBlock {
   constructor(props) {

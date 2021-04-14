@@ -1,6 +1,6 @@
 import React from 'react';
 import { SideBarBlock } from './SideBarBlock';
-import { FocusBlock } from '../jsview-utils/JsViewReactTools/BlockDefine';
+import { FocusBlock } from '../../utils/JsViewReactTools/BlockDefine';
 import { EventCenter } from "./EventCenter";
 
 class SideBarArea extends FocusBlock {

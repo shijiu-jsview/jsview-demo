@@ -1,7 +1,7 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import JsvTouchContainer from "../jsview-utils/JsViewReactWidget/JsvTouchContainer";
-import { SimpleWidget, HORIZONTAL } from "../jsview-utils/jsview-react/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import JsvTouchContainer from "../../utils/JsViewReactWidget/JsvTouchContainer";
+import { SimpleWidget, HORIZONTAL } from "../../utils/JsViewEngineWidget/index_widget";
 
 const CONST_ITEM_WIDTH = 100;
 const CONST_ITEM_HEIGHT = 300;

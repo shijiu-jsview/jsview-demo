@@ -2,9 +2,9 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import { JsvSpriteAnim } from "../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim";
+import { JsvSpriteAnim } from "../../../../../../utils/JsViewReactWidget/JsvSpriteAnim";
 import Game from "../../common/Game";
-import { FocusBlock } from "../../../../../jsview-utils/JsViewReactTools/BlockDefine";
+import { FocusBlock } from "../../../../../../utils/JsViewReactTools/BlockDefine";
 
 class GameOver extends FocusBlock {
   /**

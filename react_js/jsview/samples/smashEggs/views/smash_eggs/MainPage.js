@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fdiv, EdgeDirection } from "../../../jsview-utils/jsview-react/index_widget";
+import { Fdiv, EdgeDirection } from "../../../../utils/JsViewEngineWidget/index_widget";
 import SmashEggsPage from "./SmashEggsPage";
 import MyPrizeRecordPage from "./MyPrizeRecordPage";
 import GetPrizePage from "./GetPrizePage";
@@ -7,7 +7,7 @@ import NoPrizePage from "./NoPrizePage";
 import PageTheme from "../../common/PageTheme";
 import CommonApi from "../../common/CommonApi";
 import ConstantVar from "../../common/ConstantVar";
-import { FocusBlock } from "../../../jsview-utils/JsViewReactTools/BlockDefine";
+import { FocusBlock } from "../../../../utils/JsViewReactTools/BlockDefine";
 import Rules from "./Rules";
 import PrizeList from "./PrizeList";
 

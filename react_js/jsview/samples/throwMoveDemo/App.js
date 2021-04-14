@@ -1,7 +1,7 @@
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import { JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import { JsvActorMoveControl } from "../../utils/JsViewReactWidget/JsvActorMove";
 import CssStyles from "./Styles";
 import TargetDemo from "./TargetDemo";
 import LRParabolicDemo from "./LRParabolicDemo";

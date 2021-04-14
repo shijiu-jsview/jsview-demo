@@ -18,8 +18,8 @@ import {
   Route,
 } from "react-router-dom";
 import { createMemoryHistory } from 'history';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 const LazyGreen = lazy(() => import('./green'));
 const LazyRed = lazy(() => import('./red'));

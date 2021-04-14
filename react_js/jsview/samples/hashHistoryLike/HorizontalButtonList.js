@@ -1,5 +1,5 @@
 import React from 'react';
-import { SimpleWidget, VERTICAL } from "../jsview-utils/jsview-react/index_widget.js";
+import { SimpleWidget, VERTICAL } from "../../utils/JsViewEngineWidget/index_widget";
 import ButtonView from "./ButtonView";
 
 const CONST_FOCUS_FRAME_PADDING = 10; // 留给显示焦点框的余白控件(防止被overflow:hidden的裁剪

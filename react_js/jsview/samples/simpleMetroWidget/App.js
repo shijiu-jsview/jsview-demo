@@ -72,11 +72,11 @@
  */
 import React from 'react';
 import './App.css';
-import { SimpleWidget, HORIZONTAL } from "../jsview-utils/jsview-react/index_widget";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { SimpleWidget, HORIZONTAL } from "../../utils/JsViewEngineWidget/index_widget";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 import borderImgPath from "./border.png";
-import { JsvSquareNinePatch } from "../jsview-utils/JsViewReactWidget/JsvNinePatch";
+import { JsvSquareNinePatch } from "../../utils/JsViewReactWidget/JsvNinePatch";
 
 const homePageData = [
     {

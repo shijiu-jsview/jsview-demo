@@ -2,8 +2,8 @@
  * Created by luocf on 2019/12/3.
  */
 import React, { Component } from 'react';
-import { createImpactTracer, createImpactCallback } from '../jsview-utils/JsViewReactTools/JsvImpactTracer';
-import { JsvActorMove, JsvActorMoveControl } from "../jsview-utils/JsViewReactWidget/JsvActorMove";
+import { createImpactTracer, createImpactCallback } from '../../utils/JsViewReactTools/JsvImpactTracer';
+import { JsvActorMove, JsvActorMoveControl } from "../../utils/JsViewReactWidget/JsvActorMove";
 
 class SpriteTranslate extends Component {
   constructor(props) {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 
 class Score extends FocusBlock {
   constructor(props) {

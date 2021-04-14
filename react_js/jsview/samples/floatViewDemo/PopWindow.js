@@ -1,8 +1,8 @@
 import React, { lazy } from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 import { Switch, Route } from "react-router-dom";
-import {jJsvRuntimeBridge} from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"
+import {jJsvRuntimeBridge} from "../../utils/JsViewReactTools/JsvRuntimeBridge"
 
 const SubScene0 = lazy(() => import('../videoDemo/App').then(m => ({ default: m.SubApp })));
 const SubScene1 = lazy(() => import('../longImage/App').then(m => ({ default: m.SubApp })));

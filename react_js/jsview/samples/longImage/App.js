@@ -15,10 +15,10 @@
  */
 
 import React from 'react';
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import LongImageScroll from './LongImageScroll';
-import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../jsview-utils/jsview-react/index_widget";
+import { SimpleWidget, HORIZONTAL, EdgeDirection } from "../../utils/JsViewEngineWidget/index_widget";
 import LongImageSource from './1280x7200.jpg';
 
 const CONST_ITEM_WIDTH = 120;

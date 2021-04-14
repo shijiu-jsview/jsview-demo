@@ -3,9 +3,9 @@
  */
 import React from 'react';
 import "./Target.css";
-import { createImpactTracer, createImpactCallback } from '../../../../../jsview-utils/JsViewReactTools/JsvImpactTracer';
-import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
-import { JsvSpriteAnim } from '../../../../../jsview-utils/JsViewReactWidget/JsvSpriteAnim';
+import { createImpactTracer, createImpactCallback } from '../../../../../../utils/JsViewReactTools/JsvImpactTracer';
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../../utils/JsViewReactWidget/JsvActorMove";
+import { JsvSpriteAnim } from '../../../../../../utils/JsViewReactWidget/JsvSpriteAnim';
 import Game from "../../common/Game";
 
 import ScrollPage from "./ScrollPage";

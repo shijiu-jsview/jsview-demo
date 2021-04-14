@@ -53,8 +53,8 @@ import DivGroup2 from './div/DivGroup2';
 import TextGroup from './text/TextGroup';
 import AnimGroup from './anim/AnimGroup';
 import { TitleFont } from './CommonFontStyle';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 
 class MainScene extends FocusBlock {
   constructor(props) {

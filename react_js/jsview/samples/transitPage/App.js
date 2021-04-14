@@ -1,7 +1,7 @@
 import React from 'react';
 import CommonApi from "../api/CommonApi";
 import DemoApp from "../demoHomepage/DemoApp";
-import { jJsvRuntimeBridge } from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge";
+import { jJsvRuntimeBridge } from "../../utils/JsViewReactTools/JsvRuntimeBridge";
 import ActivityApp from "../activityHomepage/ActivityApp";
 
 const TransitPage = ({ showMode }) => {

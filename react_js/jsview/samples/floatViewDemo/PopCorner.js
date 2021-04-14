@@ -7,13 +7,13 @@
  */
 
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 import { HORIZONTAL, ButtonsList } from "../demoCommon/ButtonsList"
-import {jJsvRuntimeBridge} from "../jsview-utils/JsViewReactTools/JsvRuntimeBridge"
+import {jJsvRuntimeBridge} from "../../utils/JsViewReactTools/JsvRuntimeBridge"
 import { getMainPath } from "./Tools"
 
-import JsvTransparentDiv from "../jsview-utils/JsViewReactWidget/JsvNativeSharedDiv"
+import JsvTransparentDiv from "../../utils/JsViewReactWidget/JsvNativeSharedDiv"
 
 
 class MainScene extends FocusBlock {

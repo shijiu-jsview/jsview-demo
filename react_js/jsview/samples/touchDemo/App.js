@@ -1,7 +1,7 @@
 import React from 'react';
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import JsvTouchContainer from "../jsview-utils/JsViewReactWidget/JsvTouchContainer";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
+import JsvTouchContainer from "../../utils/JsViewReactWidget/JsvTouchContainer";
 import TouchContainerVertical from "./TouchContainerVertical";
 import TouchContainerHorizontal from "./TouchContainerHorizontal";
 import SimpleWidgetHorizontal from "./SimpleWidgetHorizontal";

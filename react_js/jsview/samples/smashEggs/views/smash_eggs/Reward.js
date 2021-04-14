@@ -7,7 +7,7 @@ import rewardBg from '../../images/reward.jpeg';
 import tips_bg from '../../images/tips_bg.png';
 import { uuid } from '../../common/commonData';
 import ConstantVar from '../../common/ConstantVar';
-import { FocusBlock } from '../../../jsview-utils/JsViewReactTools/BlockDefine';
+import { FocusBlock } from '../../../../utils/JsViewReactTools/BlockDefine';
 
 class Reward extends FocusBlock {
   constructor (props) {

@@ -1,8 +1,8 @@
 import React from 'react';
-import { MetroPage, VERTICAL } from "../jsview-utils/jsview-react/index_widget";
+import { MetroPage, VERTICAL } from "../../utils/JsViewEngineWidget/index_widget";
 import Commodity from "./Commodity";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 import "./App.css"
 
 class MainScene extends FocusBlock {

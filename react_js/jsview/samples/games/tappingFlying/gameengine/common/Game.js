@@ -3,7 +3,7 @@
  */
 import State from "./State";
 import math from "./math";
-import { JsvSoundPool } from '../../../../jsview-utils/JsViewReactWidget/JsvSoundPool';
+import { JsvSoundPool } from '../../../../../utils/JsViewReactWidget/JsvSoundPool';
 
 class AudioProxy {
   constructor(name) {

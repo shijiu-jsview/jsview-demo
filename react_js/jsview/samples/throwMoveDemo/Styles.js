@@ -2,7 +2,7 @@
  * Created by ludl on 10/15/20.
  */
 
-import { JsvTextStyleClass } from "../jsview-utils/JsViewReactTools/JsvStyleClass";
+import { JsvTextStyleClass } from "../../utils/JsViewReactTools/JsvStyleClass";
 
 const CssStyle = {};
 

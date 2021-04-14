@@ -2,7 +2,7 @@
  * Created by luocf on 2020/5/12.
  */
 import React from 'react';
-import { JsvActorMove, JsvActorMoveControl } from "../../../../../jsview-utils/JsViewReactWidget/JsvActorMove";
+import { JsvActorMove, JsvActorMoveControl } from "../../../../../../utils/JsViewReactWidget/JsvActorMove";
 import ScrollPage from "./ScrollPage";
 
 class ProgressBar extends ScrollPage {

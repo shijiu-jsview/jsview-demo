@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertToFocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import { convertToFocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import { EventCenter } from "./EventCenter";
 
 class MainAreaRightBlockBasic extends React.Component {

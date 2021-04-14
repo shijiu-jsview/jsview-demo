@@ -1,5 +1,5 @@
 import React from 'react';
-import JsvMarquee2 from "../jsview-utils/JsViewReactWidget/JsvMarquee2";
+import JsvMarquee2 from "../../utils/JsViewReactWidget/JsvMarquee2";
 import CssStyle from './Commodify_CssStyle';
 
 class Commodity extends React.Component {
