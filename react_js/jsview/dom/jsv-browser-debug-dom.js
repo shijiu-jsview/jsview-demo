@@ -1,5 +1,5 @@
 // Release entry
-export * from "jsview-react/jsviewhtml.min"
+export * from "jsview-dom/jsview-browser-debug-dom.min"
 
 // Debug entry
 // TODO: 进行编译(yarn build)时，需要关闭掉此require

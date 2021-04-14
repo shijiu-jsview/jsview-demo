@@ -10,7 +10,7 @@
  * updateImpactAutoFroze: 函数，更新 createImpactAutoFroze 创建的碰撞即停管理对象中管理的运动元素列表
  */
 
-import { Forge } from "../jsview-react/index_widget";
+import { Forge } from "../JsViewEngineWidget/index_widget";
 
 /*
  * createImpactCallback 参数说明:

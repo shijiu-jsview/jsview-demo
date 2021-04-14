@@ -14,7 +14,7 @@
  */
 
 import React from "react";
-import { ForgeExtension } from "../jsview-react/index_widget";
+import { ForgeExtension } from "../JsViewEngineWidget/index_widget";
 
 class ApicData {
   constructor(array_buffer) {

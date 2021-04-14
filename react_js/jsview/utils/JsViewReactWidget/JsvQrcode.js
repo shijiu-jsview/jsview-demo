@@ -21,7 +21,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import QRCodeImpl from 'qr.js/lib/QRCode';
-import { Forge, ForgeExtension } from "../jsview-react/index_widget";
+import { Forge, ForgeExtension } from "../JsViewEngineWidget/index_widget";
 
 const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
 

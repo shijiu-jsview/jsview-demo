@@ -1,5 +1,5 @@
 import React from 'react';
-import { Forge, ForgeExtension } from "../jsview-react/index_widget";
+import { Forge, ForgeExtension } from "../JsViewEngineWidget/index_widget";
 
 // JsvSpriteBase comes from JsView React Project
 

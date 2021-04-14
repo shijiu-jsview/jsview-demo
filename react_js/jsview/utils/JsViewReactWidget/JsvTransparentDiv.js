@@ -11,7 +11,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { Forge, ForgeExtension } from "../jsview-react/index_widget";
+import { Forge, ForgeExtension } from "../JsViewEngineWidget/index_widget";
 
 class JsvTransparentDiv extends React.Component {
     constructor(props) {

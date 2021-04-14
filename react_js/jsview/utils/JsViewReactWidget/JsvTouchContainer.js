@@ -1,5 +1,5 @@
 import React from 'react';
-import { Forge } from "../jsview-react/index_widget";
+import { Forge } from "../JsViewEngineWidget/index_widget";
 
 class JsvTouchContainer extends React.Component {
   constructor(props) {

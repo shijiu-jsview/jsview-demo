@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { FdivRouter } from "../jsview-react/index_widget";
+import { FdivRouter } from "../JsViewEngineWidget/index_widget";
 import { jJsvRuntimeBridge } from "./JsvRuntimeBridge";
 import { DebugObjectRefer } from "./DebugTool";
 

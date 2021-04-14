@@ -46,21 +46,18 @@ function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name
       window.JsView.notifyAppName(app_name);
     }
     initHeaderScriptLoader(js_sub_path);
-    import("./jsv_hook_wrapper.js").then((app_define) => {
+    import("../dom/jsv-dom.js").then((app_define) => {
       sForgeReactAppDefine = app_define.ForgeReactApp;
       window.JsView.ForgeExt = app_define.ForgeExtension;
       window.JsView.React.JsSubPath = js_sub_path;
       callback();
-
-      // 确定并进行Forge模块的启动
-      confirmEntry();
     });
   } else {
-    import("./forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
-      import("./forge_html/apic_decoder/demux.js").then(() => {
-        import("./forge_html/apic_decoder/gifDecoder.js").then(() => {
-          import("./forge_html/index.js").then(() => {
-            import("./browser_hook_wrapper.js").then(() => {
+    import("../dom/forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
+      import("../dom/forge_html/apic_decoder/demux.js").then(() => {
+        import("../dom/forge_html/apic_decoder/gifDecoder.js").then(() => {
+          import("../dom/forge_html/index.js").then(() => {
+            import("../dom/jsv-browser-debug-dom.js").then(() => {
               callback();
             });
           });
@@ -102,7 +99,12 @@ function initEntry() {
 
 function runMain(entry) {
   console.log("main.js loaded...");
+
   entry.default();
+
+  // 确定并进行Forge模块的启动
+  confirmEntry();
+
   console.log("main.js done...");
 }
 

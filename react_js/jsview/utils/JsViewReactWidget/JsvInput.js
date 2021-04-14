@@ -32,7 +32,7 @@
  */
 
 import React, { Component } from 'react';
-import { BaseDispatcher, Forge, ForgeExtension, EdgeDirection } from "../jsview-react/index_widget";
+import { BaseDispatcher, Forge, ForgeExtension, EdgeDirection } from "../JsViewEngineWidget/index_widget";
 import { FocusBlock } from "../JsViewReactTools/BlockDefine";
 
 class Cursor extends Component {

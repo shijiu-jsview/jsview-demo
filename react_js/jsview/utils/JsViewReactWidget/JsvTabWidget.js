@@ -44,7 +44,7 @@
 
 import React from "react";
 import ReactDOM from 'react-dom';
-import { SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, SlideStyle, FdivWrapper } from "../jsview-react/index_widget";
+import { SWidgetDispatcher, BaseDispatcher, SimpleWidget, HORIZONTAL, EdgeDirection, SlideStyle, FdivWrapper } from "../JsViewEngineWidget/index_widget";
 
 const directionPair = {};
 directionPair[EdgeDirection.left] = EdgeDirection.right;

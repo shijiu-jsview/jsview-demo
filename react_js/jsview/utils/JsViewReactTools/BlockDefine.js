@@ -39,7 +39,7 @@
  * convertToFocusBlock: 函数，将一个React组件包装成FocusBlock，注意:描画函数不用改成renderContent
  */
 
-import { FdivWrapper, enableFocusable } from "../jsview-react/index_widget";
+import { FdivWrapper, enableFocusable } from "../JsViewEngineWidget/index_widget";
 
 class FocusBlock extends FdivWrapper {
   constructor(props) {

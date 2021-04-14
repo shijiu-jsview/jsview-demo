@@ -4,7 +4,7 @@
  * @param {TranslateControl} Sprite动作控制器 必需
  */
 
-import { Forge } from "../jsview-react/index_widget";
+import { Forge } from "../JsViewEngineWidget/index_widget";
 import { JsvSpriteBase, SpriteControlBase } from "./JsvSpriteBase";
 
 class __SharedControl extends SpriteControlBase {

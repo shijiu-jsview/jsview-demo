@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Forge } from "../jsview-react/index_widget";
+import { Forge } from "../JsViewEngineWidget/index_widget";
 
 // JsvSpriteBase comes from JsView React Project
 

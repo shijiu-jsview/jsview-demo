@@ -1,6 +1,6 @@
 import React from "react";
-import createStandaloneApp from "../jsview-utils/JsViewReactTools/StandaloneApp";
-import { FocusBlock } from "../jsview-utils/JsViewReactTools/BlockDefine";
+import createStandaloneApp from "../jsview/utils/JsViewReactTools/StandaloneApp";
+import { FocusBlock } from "../jsview/utils/JsViewReactTools/BlockDefine";
 
 class MainScene extends FocusBlock {
   onKeyDown(ev) {
@@ -17,7 +17,7 @@ class MainScene extends FocusBlock {
         style={{
           left: 0,
           top: 110,
-          width: 200,
+          width: 500,
           height: 30,
           color: "#00AA00",
           fontSize: "20px",

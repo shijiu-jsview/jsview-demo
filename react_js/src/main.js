@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FdivRoot } from "./jsview-utils/jsview-react/index_widget";
-import "./index.css";
+import { FdivRoot } from "../jsview/utils/JsViewEngineWidget/index_widget";
+import "../jsview/dom/jsview_basic.css"; // css基础设置，保证PC-debug看到内容和设备运行内容一致
 
-import App from "./transitPage/App";
+// import App from "./transitPage/App"; // 测试主页面
+import { App } from "./App"; // 可获得焦点的空白页面
 
 function getHostName() {
   const full_url = window.location.href;
@@ -17,7 +18,8 @@ function getHostName() {
   return host;
 }
 
-function startApp(confirm_entry) {
+function startApp() {
+  console.log("StartApp...");
   if (window.JsView) {
     // 运行在JsView引擎中
 
@@ -38,6 +40,7 @@ function startApp(confirm_entry) {
       );
     };
   } else {
+    // 在浏览器调试环境运行
     ReactDOM.render(
       <FdivRoot>
         <App />
