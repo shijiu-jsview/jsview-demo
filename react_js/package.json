@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-html": "REACT_APP_INDEX_JS='./src/index_html.js' react-scripts build",
+    "build-webkit": "REACT_APP_INDEX_JS='./src/index_webkit.js' react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
