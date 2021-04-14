@@ -1,4 +1,5 @@
 import initHeaderScriptLoader from "./header_script_loader";
+import TargetRevision from "../dom/target_core_revision"
 
 // Forge define
 if (typeof window.Forge === 'undefined') { window.Forge = {}; }
@@ -87,6 +88,7 @@ function startApp() {
 
 function confirmEntry() {
   sEntryConfirmed = true;
+  checkEngineVersion();
   startApp();
 }
 
@@ -102,6 +104,18 @@ function runMain(entry) {
   console.log("main.js loaded...");
   entry.default();
   console.log("main.js done...");
+}
+
+function checkEngineVersion() {
+  // 检查配套引擎的版本
+  if (
+    window.JsView.CodeRevision !== TargetRevision.CoreRevision /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
+    window.Forge.Version !== TargetRevision.JseRevision /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
+  ) {
+    console.warn(
+      `Warning: JsView Engine version miss matched, some effect will be lost. url should be ${TargetRevision.JseUrl}`
+    );
+  }
 }
 
 export {

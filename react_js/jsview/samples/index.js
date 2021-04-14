@@ -1,15 +1,10 @@
-import { loadJsViewProxy, initEntry, confirmEntry } from './jsview-utils/jsview-react/index_hook';
+import { selectJsViewRuntime, runMain } from './jsview-utils/jsview-react/index_hook';
 import AppData from './appConfig/app_config.json'
 
-initEntry();
-
-// 异步根据端的信息，加载JsView或者Html wrapper框架
-loadJsViewProxy(() => {
-  import("./main.js").then((entry) => {
-    console.log("main.js loaded...");
-    entry.default(confirmEntry);
-    console.log("main.js done...");
-  });
+// 根据当前运行环境，分别启动PC或者设备对应的引擎(不需要的引擎处理将不加载)
+selectJsViewRuntime(() => {
+  // 环境启动后，动态加载React框架和main
+  import("./main.js").then(runMain);
 }, "/static/js/", { screenWidth: 1280, displayScale: 1.0 }, AppData.AppName);
 // 补充说明：
 // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
