@@ -24,7 +24,7 @@
  */
 
 import React from 'react';
-import { Forge, ForgeExtension } from "../JsViewEngineWidget/index_widget";
+import { Forge, ForgeExtension } from "../../dom/jsv-forge-define";
 
 const CONST_FORMAT_TOKEN = "_JsvP_";
 

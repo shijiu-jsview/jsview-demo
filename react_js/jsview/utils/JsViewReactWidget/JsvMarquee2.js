@@ -19,7 +19,7 @@
 import React from 'react';
 import './JsvMarquee.css';
 import PropTypes from "prop-types";
-import { Forge } from "../JsViewEngineWidget/index_widget";
+import { Forge } from "../../dom/jsv-forge-define";
 import { JsvStyleClass, JsvTextStyleClass, combinedStyles } from "../JsViewReactTools/JsvStyleClass";
 
 const CONST_SLIDE_SPEED = 60; // 60px per second

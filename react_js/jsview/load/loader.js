@@ -85,7 +85,9 @@ function startApp() {
 
 function confirmEntry() {
   sEntryConfirmed = true;
-  checkEngineVersion();
+  if (window.JsView) {
+    checkEngineVersion();
+  }
   startApp();
 }
 

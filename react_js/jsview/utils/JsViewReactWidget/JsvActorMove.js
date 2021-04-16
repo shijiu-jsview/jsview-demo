@@ -29,7 +29,7 @@
  *              功能：暂停动画，并将JsvActorMove保持在暂停的位置上
  */
 
-import { Forge } from "../JsViewEngineWidget/index_widget";
+import { Forge } from "../../dom/jsv-forge-define";
 import { JsvActorBase, ActorControlBase } from "./JsvActorBase";
 
 const CONST_MOVE_TYPE_ACC = 1; // 抛物变速运动

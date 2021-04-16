@@ -33,7 +33,7 @@
  */
 
 import { getCssStyleGroup } from "./JsvDynamicCssStyle";
-import { Forge } from "../JsViewEngineWidget/index_widget";
+import { Forge } from "../../dom/jsv-forge-define";
 
 let sIdGenerator = 100;
 
