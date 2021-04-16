@@ -60,11 +60,11 @@ class ProgressBar extends ScrollPage {
       this._ProgressControl.jumpTo(-percent_distance * this.props.style.width, 0);
     }
 
-    this._ClipControl.moveToX(this.props.style.width, this.props.speed * 1.5, () => {
+    this._ClipControl.moveToX(this.props.style.width, this.props.speed, () => {
       console.log("_ClipControl end");
       this._onAnimationEnd();
     });
-    this._ProgressControl.moveToX(-this.props.style.width, this.props.speed * 1.5, () => {
+    this._ProgressControl.moveToX(-this.props.style.width, this.props.speed, () => {
       console.log("_ProgressControl end");
     });
   }
