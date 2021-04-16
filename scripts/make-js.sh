@@ -132,12 +132,9 @@ main_run()
 	
 	# 更新环境状态
 	npm install
-	cd patch_package
+	cd jsview/patch
 	./update.sh
 	cd ..
-
-	# 同步jsview-react
-	npm install src/jsview-utils/jsview-react/bin/jsview-react-package.tgz
 		
 	loginfo "CERT_PATH=${CERT_PATH}"	
 		
