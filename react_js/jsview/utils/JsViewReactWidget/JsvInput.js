@@ -32,8 +32,9 @@
  */
 
 import React, { Component } from 'react';
-import { BaseDispatcher, Forge, ForgeExtension, EdgeDirection } from "../JsViewEngineWidget/index_widget";
+import { BaseDispatcher, EdgeDirection } from "../JsViewEngineWidget/index_widget";
 import { FocusBlock } from "../JsViewReactTools/BlockDefine";
+import { Forge, ForgeExtension } from "../../dom/jsv-forge-define";
 
 class Cursor extends Component {
   constructor(props) {
