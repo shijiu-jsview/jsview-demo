@@ -277,6 +277,9 @@ class LayoutViewBase {
     this.InnerChildElement = null; // 例如video element
     if (element_name === "root") {
       this.Element = window.originDocument.getElementById(element_name);
+      if(!this.Element) { // 适配Vue
+        this.Element = window.originDocument.getElementById("app");
+      }
     } else if (element_name === "svg" || element_name === "path") {
       this.Element = document.createElementNS(
         "http://www.w3.org/2000/svg",

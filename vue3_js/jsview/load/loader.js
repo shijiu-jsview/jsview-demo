@@ -36,7 +36,7 @@ function initDesignedMap(input_designed_map) {
 
 // eslint-disable-next-line no-unused-vars
 let sForgeReactAppDefine = null;
-function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name) {
+async function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name) {
   // 初始Forge的启动入口
   initEntry();
 
@@ -53,17 +53,13 @@ function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name
       callback();
     });
   } else {
-    import("../dom/forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
-      import("../dom/forge_html/apic_decoder/demux.js").then(() => {
-        import("../dom/forge_html/apic_decoder/gifDecoder.js").then(() => {
-          import("../dom/forge_html/index.js").then(() => {
-            import("../dom/jsv-browser-debug-dom.js").then(() => {
-              callback();
-            });
-          });
-        })
-      })
-    })
+    await import("../dom/forge_html/apic_decoder/libwebp-0.6.0.min.js");
+    await import("../dom/forge_html/apic_decoder/demux.js");
+    await import("../dom/forge_html/apic_decoder/gifDecoder.js");
+    await import("../dom/forge_html/index.js");
+    await import("../dom/jsv-browser-debug-dom.js");
+    await import("./root-style-html.css");
+    callback();
   }
 }
 
@@ -99,10 +95,10 @@ function initEntry() {
   };
 }
 
-function runMain(entry) {
+async function runMain(entry, app) {
   console.log("main.js loaded...");
 
-  entry.default();
+  await entry.default(app);
 
   // 确定并进行Forge模块的启动
   confirmEntry();
@@ -122,7 +118,21 @@ function checkEngineVersion() {
   }
 }
 
+function loadJsviewEnv(app) {
+  selectJsViewRuntime(() => {
+    // 环境启动后，动态加载React框架和main
+    import("./entry.js").then(module => {
+      runMain(module, app)
+    });
+  }, "/static/js/", { screenWidth: 1280, displayScale: 1.0 }, "AppData.AppName");
+  // 参数说明：
+  // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
+  // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
+  //                                     默认值是画布宽度1280px, 清晰度为1.0
+
+  console.log("index.js loaded AppName=" + "AppData.AppName");
+}
+
 export {
-  selectJsViewRuntime,
-  runMain
+  loadJsviewEnv,
 };
