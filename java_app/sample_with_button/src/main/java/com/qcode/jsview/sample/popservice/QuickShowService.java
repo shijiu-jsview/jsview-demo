@@ -87,6 +87,7 @@ public class QuickShowService extends Service {
 		if (mQuickShowViewManager == null) {
 			mQuickShowViewManager = new QuickShowViewManager(
 					this,
+					start_intent.coreUpdateUrl,
 					start_intent.coreVersionRange,
 					mServiceLifeControl);
 		} else {

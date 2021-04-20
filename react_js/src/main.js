@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FdivRoot } from "./jsview-utils/jsview-react/index_widget";
-import "./index.css";
-import TargetRevision from "./jsview-utils/JsViewReactTools/TargetCoreRevision"
+import { FdivRoot } from "../jsview/utils/JsViewEngineWidget/index_widget";
+import "../jsview/dom/jsview_basic.css"; // css基础设置，保证PC-debug看到内容和设备运行内容一致
 
-import App from "./transitPage/App";
+import App from "../jsview/samples/transitPage/App"; // 测试主页面
+// import { App } from "./App"; // 可获得焦点的空白页面
 
 function getHostName() {
   const full_url = window.location.href;
@@ -18,19 +18,10 @@ function getHostName() {
   return host;
 }
 
-function startApp(confirm_entry) {
+function startApp() {
+  console.log("StartApp...");
   if (window.JsView) {
     // 运行在JsView引擎中
-
-    // 检查配套引擎的版本
-    if (
-      window.JsView.CodeRevision !== TargetRevision.CoreRevision /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
-      window.Forge.Version !== TargetRevision.JseRevision /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
-    ) {
-      console.warn(
-          `Warning: JsView Engine version miss matched, some effect will be lost. url should be ${TargetRevision.JseUrl}`
-      );
-    }
 
     // (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，PS:注意"164"的引号
     window.JsView.addKeysMap({ keys: { 164: 20001 }, syncKeys: {} });
@@ -48,8 +39,8 @@ function startApp(confirm_entry) {
         document.getElementById("root")
       );
     };
-    confirm_entry();
   } else {
+    // 在浏览器调试环境运行
     ReactDOM.render(
       <FdivRoot>
         <App />

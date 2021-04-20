@@ -27,7 +27,7 @@ public class JsViewVersionUtils {
 	// XXXX
 	public static String parseVersion(Context ctx, String version_range) {
 		int version_min = 0;
-		int version_max = 999999;
+		int version_max = 9999;
 		int target_version = JsView.INVALID_CORE_REVISION;
 
 		try {
@@ -35,6 +35,7 @@ public class JsViewVersionUtils {
 				if (version_range.endsWith("+")) {
 					// 发现格式 XXXX+
 					version_min = Integer.parseInt(version_range.substring(0, version_range.length() - 1).trim());
+					version_max = version_min / 10000 * 10000 /* 求出JSC版本 */ + 9999;
 				} else if (version_range.indexOf("-") > 0) {
 					// 发现格式 XXXX-XXXX
 					String[] values = version_range.split("-");
@@ -61,11 +62,30 @@ public class JsViewVersionUtils {
 
 			// 获取当前本地资源寻找合适的版本
 			List<String> versions_list = JsView.listValidRevisions(ctx);
+
+			// 版本号规则为 AABBBB 模式
+			// AA为JSC版本号，BBBB为同JSC下子版本号
+			// 版本比较时，是同JSC下进行版本匹配
+			// 版本查找时以version_min的JSC的版本号为准
+			// PS: BBBB的版本范围基本够10年左右的子版本提交量使用
+			int jsc_version = version_min / 10000;
+			int sub_version_min = version_min % 10000;
+			int sub_version_max = version_max % 10000;
+
 			if (versions_list != null) {
 				for (String version : versions_list) {
 					int version_value = Integer.parseInt(version);
-					if (version_value >= version_min && version_value <= version_max) {
-						// 符合条件后，选取刚好等于最低版本或者最高版本来保证最好的兼容性
+					int item_jsc_ver = version_value / 10000;
+					int item_ver = version_value % 10000;
+
+					if (item_jsc_ver != jsc_version) {
+						// 版本比较时，是同JSC下进行版本匹配
+						continue;
+					}
+
+					if (item_ver >= sub_version_min && item_ver <= sub_version_max) {
+						// 符合条件后，选取刚好等于最低版本
+						// 若无和最低版本匹配版本，则选本地的最高版本来保证最好的兼容性
 						if (version_value == version_min) {
 							// 最小版本为最合适版本
 							target_version = version_value;

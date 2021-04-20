@@ -8,7 +8,8 @@
     "crypto": "1.0.1",
     "crypto-js": "4.0.0",
     "gifuct-js": "^2.0.0",
-    "jsview-react": "file:src/jsview-utils/jsview-react/bin/jsview-react-package.tgz",
+    "jsview-dom": "file:jsview/dom/bin/jsview-dom-package.tgz",
+    "jsview-react-widget": "file:jsview/utils/JsViewEngineWidget/bin/jsview-react-widget-package.tgz",
     "md5": "2.2.1",
     "qr.js": "0.0.0",
     "react": "16.12.0",
@@ -19,7 +20,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-html": "REACT_APP_INDEX_JS='./src/index_html.js' react-scripts build",
+    "build-webkit": "REACT_APP_INDEX_JS='./src/index_webkit.js' react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

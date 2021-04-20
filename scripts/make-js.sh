@@ -132,12 +132,9 @@ main_run()
 	
 	# 更新环境状态
 	npm install
-	cd patch_package
+	cd jsview/patch
 	./update.sh
-	cd ..
-
-	# 同步jsview-react
-	npm install src/jsview-utils/jsview-react/bin/jsview-react-package.tgz
+	cd ../..
 		
 	loginfo "CERT_PATH=${CERT_PATH}"	
 		
@@ -151,6 +148,18 @@ main_run()
 	# 输出主文件路径
 	local main_path=`find build | grep "main\..*\.js$"`
 	echo "MAIN JS SUB_PATH: ${main_path}"
+
+	# 输出 Core 版本信息
+	local core_revision=`cat jsview/dom/target_core_revision.js | grep "JsViewES6"`
+	core_revision=${core_revision#*\"}; # 去掉开头的引号
+	core_revision=${core_revision%\",*}; # 去掉末尾的引号
+	echo "CORE REVISION: ${core_revision}"
+	
+	# 输出 engineJs 信息
+	local engine_js=`cat jsview/dom/target_core_revision.js | grep "CoreRevision"`
+	engine_js=${engine_js#*CoreRevision:}; # 去掉开头
+	engine_js=${engine_js%,*}; # 去掉末尾的引号
+	echo "ENGINE JS: ${engine_js}"
 	
 	loginfo "DONE !!!";
 	loginfo "BUILD SUCCESSED";
