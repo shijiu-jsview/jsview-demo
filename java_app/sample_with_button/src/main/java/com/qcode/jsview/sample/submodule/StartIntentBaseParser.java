@@ -22,9 +22,9 @@ public class StartIntentBaseParser {
 		}
 
 		// 可选：主JS的URL地址，若不指定，则使用gradle.properties中填写的 CustomConfig_AppUrl 的值
-		if (intent.hasExtra("JSURL")) {
-			String js_url = intent.getStringExtra("JSURL");
-			Log.d(TAG, "JSURL:" + js_url);
+		if (intent.hasExtra("URL")) {
+			String js_url = intent.getStringExtra("URL");
+			Log.d(TAG, "URL:" + js_url);
 			if (js_url != null) {
 				jsUrl = js_url;
 			}
