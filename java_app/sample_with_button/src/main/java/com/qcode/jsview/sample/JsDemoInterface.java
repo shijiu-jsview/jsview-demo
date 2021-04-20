@@ -80,7 +80,7 @@ public class JsDemoInterface {
 		service_intent.setPackage(mContext.getPackageName());
 
 		service_intent.putExtra("ENGINE", engine_js_url);
-		service_intent.putExtra("JSURL", app_url);
+		service_intent.putExtra("URL", app_url);
 		service_intent.putExtra("COREVERSIONRANGE", core_version_range);
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

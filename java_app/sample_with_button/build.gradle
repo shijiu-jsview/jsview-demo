@@ -82,7 +82,7 @@ dependencies {
     implementation('com.github.bumptech.glide:glide:4.5.0')
 
     // JsView接口
-    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.697")
+    implementation("com.qcode.jsview.view-qcast:jsview.view:1.2.699")
     implementation fileTree(include: '*.aar', dir: 'src/aar-libs')
 
     // 调试JsView引擎内核时使用(OnDebugJsViewEngine)

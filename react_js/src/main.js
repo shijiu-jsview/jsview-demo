@@ -3,8 +3,12 @@ import ReactDOM from "react-dom";
 import { FdivRoot } from "../jsview/utils/JsViewEngineWidget/index_widget";
 import "../jsview/dom/jsview_basic.css"; // css基础设置，保证PC-debug看到内容和设备运行内容一致
 
+// 调试页面
 import App from "../jsview/samples/transitPage/App"; // 测试主页面
-// import { App } from "./App"; // 可获得焦点的空白页面
+// import { App } from "../basic/App"; // 参看单个APP, 其他APP路径参照 jsview/samples/demoHomepage/DemoApp.js 变量demoFuncInfos
+
+// 可获得焦点的空白页面
+// import { App } from "./App";
 
 function getHostName() {
   const full_url = window.location.href;

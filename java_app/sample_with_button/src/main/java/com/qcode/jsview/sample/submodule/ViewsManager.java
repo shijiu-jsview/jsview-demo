@@ -208,7 +208,7 @@ public class ViewsManager extends ViewsManagerDefine {
 				jsview_version = JsViewVersionUtils.getCoreVersion();
 			}
 			intent.putExtra("COREVERSIONRANGE", jsview_version);
-			intent.putExtra("JSURL", app_url);
+			intent.putExtra("URL", app_url);
 			intent.putExtra("ENGINE", engine_url);
 			intent.putExtra("STARTIMG", start_img_url);
 			intent.putExtra("ISSUB", true);
