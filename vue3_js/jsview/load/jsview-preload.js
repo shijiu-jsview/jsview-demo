@@ -1,5 +1,5 @@
-import { loadJsviewEnv } from 'jsview/load/loader'
+import { loadJsViewEnv } from 'jsview/load/loader'
 
-loadJsviewEnv(() => {
+loadJsViewEnv(() => {
     import('/src/main.js');
 })

@@ -3,4 +3,4 @@
 
 // Debug entry
 // TODO: 进行编译(yarn build)时，需要关闭掉此require
-export * from "./code/index_browser_hook"
+export * from "./code/index_browser_debug_dom"

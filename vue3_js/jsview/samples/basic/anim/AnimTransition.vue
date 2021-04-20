@@ -60,22 +60,20 @@ var state = {
 var timerId = -1;
 
 onMounted(() => {
-    console.log('onMounted()');
-    _changeState();
+    changeState();
     timerId = setInterval(() => {
-      _changeState();
+      changeState();
     }, 6000);
 });
 
 onBeforeUnmount(() => {
-    console.log('onBeforeUnmount()');
     if (timerId >= 0) {
       window.clearInterval(timerId);
     }
     timerId = -1;
 });
 
-function _changeState() {
+function changeState() {
     setTimeout(() => {
         // 状态变更
         state.transform = 'translate3d(80px,0px,0) scale3d(2,2,1.0) rotate3d(0, 0, 1, 360deg)';

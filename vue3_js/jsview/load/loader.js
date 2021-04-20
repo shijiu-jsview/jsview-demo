@@ -35,8 +35,8 @@ function initDesignedMap(input_designed_map) {
 }
 
 // eslint-disable-next-line no-unused-vars
-let sForgeReactAppDefine = null;
-async function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name) {
+let sJsViewForgeAppDefine = null;
+async function selectJsViewRuntime(js_sub_path, input_designed_map, app_name) {
   // 初始Forge的启动入口
   initEntry();
 
@@ -46,36 +46,29 @@ async function selectJsViewRuntime(callback, js_sub_path, input_designed_map, ap
       window.JsView.notifyAppName(app_name);
     }
     initHeaderScriptLoader(js_sub_path);
-    import("../dom/jsv-dom.js").then((app_define) => {
-      sForgeReactAppDefine = app_define.ForgeReactApp;
-      window.JsView.ForgeExt = app_define.ForgeExtension;
-      window.JsView.React.JsSubPath = js_sub_path;
-      callback();
-    });
+    const app_define = await import("../dom/jsv-dom.js");
+    sJsViewForgeAppDefine = app_define.JsViewForgeApp;
+    window.JsView.ForgeExt = app_define.ForgeExtension;
+    window.JsView.Dom.JsSubPath = js_sub_path;
   } else {
-    await import("../dom/forge_html/apic_decoder/libwebp-0.6.0.min.js");
-    await import("../dom/forge_html/apic_decoder/demux.js");
-    await import("../dom/forge_html/apic_decoder/gifDecoder.js");
-    await import("../dom/forge_html/index.js");
     await import("../dom/jsv-browser-debug-dom.js");
-    await import("./root-style-html.css");
-    callback();
+    await import("./browser-root-style.css");
   }
 }
 
-// 当confirmEntry和Forge.RunApp都被调用完成后，才会进行ForgeReactApp运行
+// 当confirmEntry和Forge.RunApp都被调用完成后，才会进行JsViewForgeApp运行
 // eslint-disable-next-line no-var
 var sActivityManager = null;
 // eslint-disable-next-line no-var
 var sEntryConfirmed = false;
-let sReactApp = null;
+let sJsViewApp = null;
 
 function startApp() {
   if (sActivityManager !== null && sEntryConfirmed) {
     console.log("Forge.RunApp().");
     // eslint-disable-next-line new-cap
-    sReactApp = new sForgeReactAppDefine(sActivityManager);
-    console.log(sReactApp);
+    sJsViewApp = new sJsViewForgeAppDefine(sActivityManager);
+    console.log(sJsViewApp);
   }
 }
 
@@ -118,13 +111,13 @@ function checkEngineVersion() {
   }
 }
 
-function loadJsviewEnv(app) {
-  selectJsViewRuntime(() => {
-    // 环境启动后，动态加载React框架和main
-    import("./entry.js").then(module => {
-      runMain(module, app)
-    });
-  }, "/static/js/", { screenWidth: 1280, displayScale: 1.0 }, "AppData.AppName");
+async function loadJsViewEnv(app) {
+  await selectJsViewRuntime("/static/js/", { screenWidth: 1280, displayScale: 1.0 }, "AppData.AppName");
+
+  // 环境启动后，动态加载React框架和main
+  const module = await import("./entry.js");
+
+  await runMain(module, app);
   // 参数说明：
   // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
   // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
@@ -134,5 +127,5 @@ function loadJsviewEnv(app) {
 }
 
 export {
-  loadJsviewEnv,
+  loadJsViewEnv,
 };

@@ -22,8 +22,8 @@ async function startApp(callback) {
     window.JsView.setStorageDomain(getHostName()); // Domain可以为任意字符串，各Domain的localStorage互相隔离
     window.JsView.enableStorageNames("value1", "value2");
 
-    // React相关配置
-    window.JsView.React.Render = function () {
+    // JsView Dom相关配置
+    window.JsView.Dom.Render = function () {
       callback()
     };
   } else {

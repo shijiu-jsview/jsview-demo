@@ -32,7 +32,6 @@ const state = reactive({
 var timerId = -1;
 
 onMounted(() => {
-    console.log('onMounted()');
     timerId = setInterval(() => {
         // console.log('change timeCount: ' + timeCount);
         state.timeCount = (state.timeCount + 5);
@@ -40,7 +39,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    console.log('onBeforeUnmount()');
     if (timerId >= 0) {
       window.clearInterval(timerId);
     }

@@ -4,7 +4,7 @@ window.JsvDisableReactWrapper = true; // 设置标识位，有部分高阶组件
 if (typeof window.Forge === 'undefined') { window.Forge = {}; }
 const Forge = window.Forge;
 
-const sForgeReactAppDefine = null;
+// const sForgeReactAppDefine = null;
 function loadJsViewProxy(callback, js_sub_path) {
   callback();
 }
