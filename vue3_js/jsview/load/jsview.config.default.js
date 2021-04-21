@@ -13,7 +13,7 @@ module.exports = {
             domain: "default",
             presetKeys: [
                 "value1",
-                "value3"
+                "value2"
             ],
         },
 
@@ -34,7 +34,7 @@ module.exports = {
         // PS:注意"164"的引号
         bindKeys: {
             keys: {
-                165: 20001
+                164: 20001
             },
             syncKeys: {
             }

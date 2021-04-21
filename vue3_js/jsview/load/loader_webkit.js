@@ -14,7 +14,7 @@ let sActivityManager = null;
 let sEntryConfirmed = false;
 // let sReactApp = null;
 
-function startApp() {
+function startForgeApp() {
   if (sActivityManager !== null && sEntryConfirmed) {
     console.log("Forge.RunApp().");
     // sReactApp = new sForgeReactAppDefine(sActivityManager);
@@ -23,13 +23,13 @@ function startApp() {
 
 function confirmEntry() {
   sEntryConfirmed = true;
-  startApp();
+  startForgeApp();
 }
 
 function initEntry() {
   Forge.RunApp = function (activity_manager) {
     sActivityManager = activity_manager;
-    startApp();
+    startForgeApp();
   };
 }
 

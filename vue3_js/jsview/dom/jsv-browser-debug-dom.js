@@ -1,3 +1,5 @@
+import("./browser-root-style.css");
+
 // Release entry
 export * from "jsview-dom/jsview-browser-debug-dom.min"
 
