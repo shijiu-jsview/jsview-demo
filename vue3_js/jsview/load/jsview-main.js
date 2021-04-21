@@ -1,5 +1,5 @@
 import JsViewDefConfig from "./jsview.config.default"
-import JsViewVendorConfig from "../../jsview.config"
+import JsViewVendorConfig from "../../src/appConfig/jsview.config"
 import { loadJsViewEnv } from 'jsview/load/loader'
 
 function deepMerge(target, source) {

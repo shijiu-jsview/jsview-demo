@@ -1,5 +1,6 @@
 import initHeaderScriptLoader from "./header_script_loader";
 import TargetRevision from "../dom/target_core_revision"
+import AppData from '/src/appConfig/app_config.json'
 
 // Forge define
 if (typeof window.Forge === 'undefined') { window.Forge = {}; }
@@ -152,13 +153,13 @@ async function loadJsViewEnv(config, onLoaded) {
   //                                     默认值是画布宽度1280px, 清晰度为1.0
   await selectJsViewRuntime(config.jsviewConfig.jsSubPath,
                             config.vendorConfig.designedMap,
-                            config.appConfig.name);
+                            AppData.AppName);
   await startApp(config, onLoaded);
 
   // 环境启动后，动态加载React框架和main
   runMain();
 
-  console.log("index.js loaded AppName=" + "AppData.AppName");
+  console.log("index.js loaded AppName=" + AppData.AppName);
 }
 
 export {

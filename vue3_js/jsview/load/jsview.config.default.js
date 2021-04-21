@@ -1,10 +1,4 @@
-module.exports = {
-    appConfig: {
-        name: "www.domain.com/Demo",
-        title: "Demo中文名(UTF8)",
-        version: "1.00"
-    },
-
+export default {
     jsviewConfig: {
         // (可选配置)localStorage支持
         // domain可以为任意字符串，各Domain的localStorage互相隔离, 默认值是hostname
