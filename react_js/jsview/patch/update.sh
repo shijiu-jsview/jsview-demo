@@ -4,7 +4,7 @@ echo change path back to react_js
 cd ../..
 
 echo install/update jsview-dom jsview-react-widget package
-#npm install ./jsview/dom/bin/jsview-dom-package.tgz ./jsview/utils/JsViewEngineWidget/bin/jsview-react-widget-package.tgz
+npm install ./jsview/dom/bin/jsview-dom-package.tgz ./jsview/utils/JsViewEngineWidget/bin/jsview-react-widget-package.tgz
 
 echo change path to jsview/patch
 cd -
