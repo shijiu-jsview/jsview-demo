@@ -2,9 +2,6 @@ package com.qcode.jsview.sample.submodule;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 
 import com.qcode.jsview.JsView;
 
@@ -63,14 +60,14 @@ abstract public class JsViewRequestSdkProxy {
 		sCoreUpdateUrl = new_update_url;
 	}
 
-	public static boolean needReboot(Context ctx, StartIntentBaseParser intent) {
+	public static boolean needReboot(Context ctx, String version_range) {
 		if (sEnableEngineCodeDebug) {
 			// 调试版内核，不需要重启
 			return false;
 		}
 
 		// 当已加载的内核版本和新要求的内核版本一致时，不需要重启进程
-		return JsViewVersionUtils.needReboot(ctx, intent.coreVersionRange);
+		return JsViewVersionUtils.needReboot(ctx, version_range);
 	}
 
 	private static JsView.JsViewReadyCallback wrapperCallback(JsView.JsViewReadyCallback origin_callback) {

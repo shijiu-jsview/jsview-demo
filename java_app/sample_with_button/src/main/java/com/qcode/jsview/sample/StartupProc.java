@@ -36,7 +36,7 @@ public class StartupProc {
 		StartIntentParser parsed_intent = new StartIntentParser(starter_intent);
 		// 当OnNewIntent时，若发现已加载的JsView版本与要求的Sdk版本不一致时，重启进程
 		if (from_on_new_intent) {
-			if (JsViewRequestSdkProxy.needReboot(host_activity, parsed_intent)) {
+			if (JsViewRequestSdkProxy.needReboot(host_activity, parsed_intent.coreVersionRange)) {
 				Log.d(TAG, "Do reload...");
 				host_activity.finish();
 				host_activity.startActivity(starter_intent);
