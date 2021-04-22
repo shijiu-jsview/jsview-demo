@@ -12,8 +12,8 @@ export default {
         },
 
         // (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，
-        // 用于image/import.then的相对寻址, 默认值是/static/js/: 
-        jsSubPath: "/static/js/",
+        // 用于image/import.then的相对寻址, vue3默认值是/js/
+        jsSubPath: "/js/",
     },
 
     vendorConfig: {

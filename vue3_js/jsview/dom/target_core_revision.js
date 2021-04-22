@@ -9,4 +9,6 @@ const TargetRevision = {
     "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r749.jsv.d058fc22.js",
 };
 
-export default TargetRevision;
+// 不要用export default，update-env脚本不能解析
+// export default TargetRevision;
+module.exports = TargetRevision;

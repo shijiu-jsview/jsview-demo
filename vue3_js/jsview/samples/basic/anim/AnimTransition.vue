@@ -26,11 +26,11 @@
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformTranslate }">移动</div>
-        <!-- <div :style="{ ...itemStyle,
+        <div :style="{ ...itemStyle,
             left: '140px', top: '20px',
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
-            transform: state.transformScale }">缩放</div> -->
+            transform: state.transformScale }">缩放</div>
         <div :style="{ ...itemStyle,
             top: '75px',
             left: '140px',
@@ -55,6 +55,7 @@ var state = {
     transformOrigin: null,
     transformTranslate: null,
     transformRotate: null,
+    transformScale: null,
 };
 
 var timerId = -1;
