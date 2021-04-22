@@ -3,7 +3,7 @@
   <div :style=titleStyle>
     {{title}}
   </div>
-  <div key="blockColor" :style="{ top: titleStyle.lineHeight, width: itemSides.width+'px', height: (itemSides.height - 18)+'px', backgroundColor: 'rgba(0,0,255,'+blockOpacity+')' }">
+  <div key="blockColor" :style="{ top: titleStyle.lineHeight, width: itemSides.width, height: itemSides.height - 18, backgroundColor: 'rgba(0,0,255,'+blockOpacity+')' }">
   </div>
   <div key="container" :style="{ top: titleStyle.lineHeight }">
     <slot/>
@@ -28,8 +28,8 @@ const blockOpacity = (((props.index) % 2 === 0) ? 0.2 : 0.5);
 
 <script jsv-style>
 const titleStyle = { 
-  ...TitleFont, lineHeight: '18px',
-  width: props.itemSides.width+'px', height: '18px',
+  ...TitleFont, lineHeight: 18,
+  width: props.itemSides.width, height: 18,
   backgroundColor: 'rgba(0,0,255,0.7)',
 };
 </script>

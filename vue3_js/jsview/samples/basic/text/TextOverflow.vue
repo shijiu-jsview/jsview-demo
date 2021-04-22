@@ -8,7 +8,7 @@
     </div>
 
     <div :style="{ ...baseStyle,
-        top: (blockSize.height+gap)+'px',
+        top: blockSize.height+gap,
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
         overflow: 'hidden'}">
@@ -16,7 +16,7 @@
     </div>
 
     <div :style="{ ...baseStyle,
-        top: ((blockSize.height+gap)*2)+'px',
+        top: (blockSize.height+gap)*2,
         whiteSpace: 'pre-wrap',
         textOverflow: 'clip',
         overflow: 'hidden'}">
@@ -24,7 +24,7 @@
     </div>
 
     <div :style="{ ...baseStyle,
-        top: ((blockSize.height+gap)*3)+'px',
+        top: (blockSize.height+gap)*3,
         whiteSpace: 'pre-wrap',
         textOverflow: 'ellipsis',
         overflow: 'hidden'}">
@@ -32,19 +32,19 @@
     </div>
 
     <div :style="{ ...baseStyle,
-        top: ((blockSize.height+gap)*4)+'px', height: '65px',
+        top: (blockSize.height+gap)*4, height: 65,
         whiteSpace: 'pre-wrap',
         textOverflow: 'ellipsis',
         overflow: 'hidden'}">
-        {{multiLine1}}
+        5.{{multiLine}}
     </div>
 
     <div :style="{ ...baseStyle,
-        top: ((blockSize.height+gap)*4+67)+'px', height: '65px',
+        top: (blockSize.height+gap)*4+67, height: 65,
         whiteSpace: 'pre-wrap',
         textOverflow: 'clip',
         overflow: 'hidden'}">
-        {{multiLine2}}
+        6.{{multiLine}}
     </div>
 
 </div>
@@ -67,19 +67,14 @@ const blockSize = {
 
 const baseStyle = {
     ...ContentFont,
-    width: blockSize.width+"px",
-    height: blockSize.height+"px",
+    width: blockSize.width,
+    height: blockSize.height,
     backgroundColor: 'rgba(255, 255, 0, 0.5)',
     color: 'rgba(255, 0, 0, 1)',
 };
 
 // 多行的处理，在PC端依靠CSS属性 white-space: pre-line，在JsView平台不需要特别属性
-const multiLine1 = "5.多行文字（末尾省略)："
-        + "\n第一行：我末尾有个\"\\n\""
-        + "\n第二行：一二三四五六七八九十,一二三四五六七八九十,一二三四五六七八九十"
-        + "\n第三行：一二三四五六七八九十,一二三四五六七八九十,一二三四五六七八九十";
-
-const multiLine2 = "6.多行文字（末尾截断)："
+const multiLine = "多行文字（末尾省略)："
         + "\n第一行：我末尾有个\"\\n\""
         + "\n第二行：一二三四五六七八九十,一二三四五六七八九十,一二三四五六七八九十"
         + "\n第三行：一二三四五六七八九十,一二三四五六七八九十,一二三四五六七八九十";

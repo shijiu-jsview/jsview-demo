@@ -1,27 +1,27 @@
 <template>
 <div id='layout-root'>
     <div :style="{ ...blockStyle,
-        width: (blockSize.width*1.5)+'px' }">
+        width: blockSize.width*1.5}">
         左上(默认)
     </div>
     <div :style="{ ...blockStyle,
-        top: (blockSize.height+5)+'px',
+        top: blockSize.height+5,
         textAlign: 'center' }">
         中上
     </div>
     <div :style="{ ...blockStyle,
-        left: (blockSize.width+5)+'px', top: (blockSize.height+5)+'px',
+        left: blockSize.width+5, top: blockSize.height+5,
         textAlign: 'right' }">
         右上
     </div>
     <div :style="{ ...blockStyle,
-        top: ((blockSize.height+5)*2)+'px',
-        lineHeight: blockSize.height+'px' }">
+        top: (blockSize.height+5)*2,
+        lineHeight: blockSize.height}">
         垂直中
     </div>
     <div :style="{ ...blockStyle,
-        left: (blockSize.width+5)+'px', top: ((blockSize.height + 5)*2)+'px',
-        lineHeight: blockSize.height+'px',
+        left: blockSize.width+5, top: (blockSize.height+5)*2,
+        lineHeight: blockSize.height,
         textAlign: 'center' }">
         正中
     </div>
@@ -41,8 +41,8 @@ const blockSize = {
 
 const blockStyle = {
     ...ContentFont,
-    width: blockSize.width+"px",
-    height: blockSize.height+"px",
+    width: blockSize.width,
+    height: blockSize.height,
     backgroundColor: 'rgba(255, 255, 0, 0.5)',
     color: 'rgba(255, 0, 0, 1)',
 };

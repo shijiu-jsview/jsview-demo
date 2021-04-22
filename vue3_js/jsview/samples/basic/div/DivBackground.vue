@@ -1,7 +1,7 @@
 <template>
 <div id='layout-root'>
-    <div :style="{ ...ContentFont, width: '180px', height: '50px', backgroundColor: 'rgba(255, 255, 0, 1)' }">style.backgroundColor</div>
-    <div :style="{ ...ContentFont, top: '60px', width: '180px', height: '50px', backgroundImage: `url(${iconImgPath})` }">style.backgroundImage</div>
+    <div :style="{ ...ContentFont, width: 180, height: 50, backgroundColor: 'rgba(255, 255, 0, 1)' }">style.backgroundColor</div>
+    <div :style="{ ...ContentFont, top: 60, width: 180, height: 50, backgroundImage: `url(${iconImgPath})` }">style.backgroundImage</div>
 </div>;
 </template>
 

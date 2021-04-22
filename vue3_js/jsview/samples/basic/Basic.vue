@@ -4,14 +4,14 @@
 
       <TitleBar :style=contentSize
         :contentSize=contentSize :itemSides=itemSides />
-      <div :style="{ ...contentSize, top:'20px' }">
+      <div :style="{ ...contentSize, top:20 }">
         <DivGroup1 :style=contentSize
           :contentSize=contentSize :itemSides=itemSides />
-        <DivGroup2 :style="{...contentSize, left: itemSides.width+'px'}"
+        <DivGroup2 :style="{...contentSize, left: itemSides.width}"
           :contentSize=contentSize :itemSides=itemSides />
-        <TextGroup :style="{...contentSize, left: (itemSides.width*2)+'px'}"
+        <TextGroup :style="{...contentSize, left: itemSides.width*2}"
           :contentSize=contentSize :itemSides=itemSides />
-        <AnimGroup :style="{...contentSize, left: (itemSides.width*3)+'px'}"
+        <AnimGroup :style="{...contentSize, left: itemSides.width*3}"
           :contentSize=contentSize :itemSides=itemSides />
       </div>
     </div>

@@ -4,22 +4,22 @@
         <div :style="{ ...titleStyle }">Translate3d</div>
         <div :style="{ ...itemStyle, animation: 'AnimTranslate 3s infinite' }"/>
     </div>
-    <div :style="{ left: blockSize.width+'px' }">
+    <div :style="{ left: blockSize.width }">
         <div :style="{ ...titleStyle }">Scale3d</div>
         <div :style="{ ...itemStyle, animation: 'AnimScale 3s infinite linear' }"/>
     </div>
-    <div :style="{ left: (blockSize.width*2)+'px' }">
+    <div :style="{ left: blockSize.width*2 }">
         <div :style="{ ...titleStyle }">Rotate3d</div>
         <div :style="{ ...itemStyle, animation: 'AnimRotate 3s infinite linear' }"/>
     </div>
-    <div :style="{ left: blockSize.width+'px', top: blockSize.height+'px' }">
+    <div :style="{ left: blockSize.width, top: blockSize.height }">
         <div :style="{ ...titleStyle }">Skew</div>
         <div :style="{ ...itemStyle, animation: 'AnimSkew 3s infinite ease-in' }"/>
     </div>
-    <div :style="{ left: (blockSize.width*2)+'px', top: blockSize.height+'px' }">
+    <div :style="{ left: blockSize.width*2, top: blockSize.height }">
         <div :style="{ ...titleStyle }">Opacity</div>
-        <div :style="{ ...itemStyle, width: '20px', animation: 'AnimOpacityOut 3s infinite ease-out' }"/>
-        <div :style="{ ...itemStyle, left: '25px', width: '20px', animation: 'AnimOpacityIn 3s infinite ease-in-out' }"/>
+        <div :style="{ ...itemStyle, width: 20, animation: 'AnimOpacityOut 3s infinite ease-out' }"/>
+        <div :style="{ ...itemStyle, left: 25, width: 20, animation: 'AnimOpacityIn 3s infinite ease-in-out' }"/>
     </div>
 </div>
 </template>
@@ -37,16 +37,14 @@ const blockSize = {
 
 const titleStyle = {
     ...ContentFont,
-    width: '60px',
-    height: '20px',
+    width: 60, height: 20,
     textAlign: 'center',
-    lineHeight: '20px'
+    lineHeight: 20
 };
 
 const itemStyle = {
-    top: '20px',
-    width: '50px',
-    height: '50px',
+    top: 20,
+    width: 50, height: 50,
     backgroundColor: 'rgba(255, 0, 0, 1)'
 };
 

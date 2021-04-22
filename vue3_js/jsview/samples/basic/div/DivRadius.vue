@@ -1,28 +1,28 @@
 <template>
 <div id='layout-root'>
     <div :style="{ ...ContentFont,
-        width: blockSize.width+'px', height: blockSize.height+'px',
+        width: blockSize.width, height: blockSize.height,
         backgroundColor: 'rgba(255, 255, 0, 1)',
         borderRadius: '10px' }">
         各角相同
     </div>
     <div :style="{ ...ContentFont,
-        left: (blockSize.width+gap)+'px',
-        width: blockSize.width+'px', height: blockSize.height+'px',
+        left: blockSize.width+gap,
+        width: blockSize.width, height: blockSize.height,
         backgroundColor: 'rgba(255, 255, 0, 1)',
         borderRadius: '0 10px 20px 30px'}">
         各角不同
     </div>
     <div :style="{ ...ContentFont,
-        top: (blockSize.height+gap)+'px',
-        width: blockSize.width+'px', height: blockSize.height+'px',
+        top: blockSize.height+gap,
+        width: blockSize.width, height: blockSize.height,
         backgroundImage: `url(${iconImgPath})`,
         borderRadius: '10px'}">
         各角相同
     </div>
     <div :style="{ ...ContentFont,
-        left: (blockSize.width+gap)+'px', top: (blockSize.height+gap)+'px',
-        width: blockSize.width+'px', height: blockSize.height+'px',
+        left: blockSize.width+gap, top: blockSize.height+gap,
+        width: blockSize.width, height: blockSize.height,
         backgroundImage: `url(${iconImgPath})`,
         borderRadius: '0 10px 20px 30px'}">
         各角不同

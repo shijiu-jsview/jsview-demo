@@ -1,6 +1,6 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=1 title="Radius(实现圆角)" :style="{ top: (itemSides.height * 0)+'px' }">
+        <ContentBlock :=contentBlockProps :index=1 title="Radius(实现圆角)" :style="{ top: itemSides.height*0}">
             <DivRadius/>
         </ContentBlock>
     </div>

@@ -2,39 +2,39 @@
 <div id='layout-root'>
     <div>
         <div :style="{ ...blockStyle }">[字体]</div>
-        <div :style="{ ...blockStyle, top: '25px',
+        <div :style="{ ...blockStyle, top: 25,
             fontFamily: '宋体' }">
             abc宋体
         </div>
-        <div :style="{ ...blockStyle, top: '25px', left: (blockStyle.width+gap)+'px',
+        <div :style="{ ...blockStyle, top: 25, left: blockStyle.width+gap,
             fontFamily: '黑体' }">
             abc黑体
         </div>
-        <div :style="{ top: '25px', left: ((blockStyle.width+gap)*2-10)+'px',
-            width: (blockStyle.width+20)+'px', height: '28px',
+        <div :style="{ top: 25, left: (blockStyle.width+gap)*2-10,
+            width: blockStyle.width+20, height: 28,
             fontFamily: '黑体', fontSize: '24px',
             WebkitTextStroke: '1px rgba(255,255,0,1.0)'}">
             abc描边
         </div>
 
-        <div :style="{ ...blockStyle, top: '50px',
+        <div :style="{ ...blockStyle, top: 50,
             fontWeight: 'bold' }">
             abc粗体
         </div>
-        <div :style="{ ...blockStyle, top: '50px', left: (blockStyle.width+gap)+'px',
+        <div :style="{ ...blockStyle, top: 50, left: blockStyle.width+gap,
             fontStyle: 'italic' }">
             abc斜体
         </div>
     </div>
 
-    <div :style="{ top: '75px' }">
+    <div :style="{ top: 75 }">
         <div :style="{ ...blockStyle }">[其他]</div>
-        <div :style="{ top: '25px',  width: '130px', height: '35px',
+        <div :style="{ top: 25,  width: 130, height: 35,
             fontSize: '30px' }">
             abc字号
         </div>
-        <div :style="{ top: '25px', left: '120px',
-            width: '130px', height: '35px',
+        <div :style="{ top: 25, left: 120,
+            width: 130, height: 35,
             color: 'rgba(255, 0, 0, 1)', fontFamily: 'sans-serif',
             fontSize: '30px', fontStyle: 'italic', fontWeight: 'bold' }">
             abc综合

@@ -1,12 +1,12 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=1 title="Keyframe基础动画集合" :style="{ top: (itemSides.height * 0)+'px' }">
+        <ContentBlock :=contentBlockProps :index=1 title="Keyframe基础动画集合" :style="{ top: itemSides.height * 0 }">
             <AnimKeyframeBasic/>
         </ContentBlock>
-        <ContentBlock :=contentBlockProps :index=2 title="Keyframe组合示例" :style="{ top: (itemSides.height * 1)+'px' }">
+        <ContentBlock :=contentBlockProps :index=2 title="Keyframe组合示例" :style="{ top: itemSides.height * 1 }">
             <AnimKeyframeComposite/>
         </ContentBlock>
-        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=3 title="Transition动画示例" :style="{ top: (itemSides.height * 2)+'px'}">
+        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=3 title="Transition动画示例" :style="{ top: itemSides.height * 2}">
             <AnimTransition :timeCount=state.timeCount />
         </ContentBlock>
     </div>

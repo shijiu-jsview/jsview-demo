@@ -3,37 +3,37 @@
     <div>
         <div :style="{ ...titleStyle }">坐标变化</div>
         <div :style="{ ...itemStyle,
-          left: (timeCount*10%200)+'px',
+          left: timeCount*10%200,
           transition: 'left 1s linear' }"/>
     </div>
-    <div :style="{ top: '70px' }">
+    <div :style="{ top: 70 }">
         <div :style="{ ...titleStyle }">坐标和尺寸变化</div>
         <div :style="{ ...itemStyle,
-          left: (timeCount*10%200)+'px',
-          width: (timeCount*10%100+10)+'px',
+          left: timeCount*10%200,
+          width: timeCount*10%100+10,
           transition: 'left 0.5s linear, width 1s linear 1s' }"/>
     </div>
 
-    <div :style="{ top: '140px', width: '240px', height: '160px', backgroundColor: 'rgba(0, 0, 255, 0.5)' }">
+    <div :style="{ top: 140, width: 240, height: 160, backgroundColor: 'rgba(0, 0, 255, 0.5)' }">
         <div :style="{ ...titleStyle }">transform</div>
         <div :style="{ ...itemStyle,
-            top: '20px',
+            top: 20,
             transition: 'transform 2.5s linear 0.5s',
             transform: state.transform,
             transformOrigin: state.transformOrigin }">移动缩放旋转</div>
         <div :style="{ ...itemStyle,
-            top: '100px',
+            top: 100,
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformTranslate }">移动</div>
         <div :style="{ ...itemStyle,
-            left: '140px', top: '20px',
+            left: 140, top: 20,
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformScale }">缩放</div>
         <div :style="{ ...itemStyle,
-            top: '75px',
-            left: '140px',
+            top: 75,
+            left: 140,
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformRotate }">旋转</div>
@@ -98,16 +98,16 @@ function changeState() {
 <script jsv-style>
 const titleStyle = {
     ...ContentFont,
-    width: '100px',
-    height: '20px',
+    width: 100,
+    height: 20,
     textAlign: 'left',
-    lineHeight: '20px'
+    lineHeight: 20
 };
 
 const itemStyle = {
     ...ContentFont,
-    top: '20px',
-    width: '50px', height: '50px',
+    top: 20,
+    width: 50, height: 50,
     whiteSpace: 'pre-wrap',
     backgroundColor: 'rgba(255, 0, 0, 1)'
 };

@@ -4,7 +4,7 @@
         <div :style="{ ...titleStyle }">四种变形动画</div>
         <div :style="{ ...itemStyle, animation: 'AnimComposite1 3s infinite' }"/>
     </div>
-    <div :style="{ left: '100px' }">
+    <div :style="{ left: 100 }">
         <div :style="{ ...titleStyle }">变形+透明动画</div>
         <div :style="{ ...itemStyle, animation: 'AnimComposite2 3s infinite' }"/>
     </div>
@@ -19,16 +19,16 @@ import { ContentFont } from '../FontStyle';
 <script jsv-style>
 const titleStyle = {
     ...ContentFont,
-    width: '100px',
-    height: '20px',
+    width: 100,
+    height: 20,
     textAlign: 'center',
-    lineHeight: '20px'
+    lineHeight: 20
 };
 
 const itemStyle = {
-    top: '20px',
-    width: '50px',
-    height: '50px',
+    top: 20,
+    width: 50,
+    height: 50,
     backgroundColor: 'rgba(255, 0, 0, 1)'
 };
 

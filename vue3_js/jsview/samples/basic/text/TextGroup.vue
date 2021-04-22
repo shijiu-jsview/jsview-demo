@@ -1,12 +1,12 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=0 title="文字对齐" :style="{ top: (itemSides.height * 0)+'px' }">
+        <ContentBlock :=contentBlockProps :index=0 title="文字对齐" :style="{ top: itemSides.height*0}">
              <TextAlign/>
         </ContentBlock>
-        <ContentBlock :=contentBlockProps :index=1 title="字体和字号" :style="{ top: (itemSides.height * 1)+'px' }">
+        <ContentBlock :=contentBlockProps :index=1 title="字体和字号" :style="{ top: itemSides.height*1}">
             <TextFontStyle/>
         </ContentBlock>
-        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=2 title="文字折行" :style="{ top: (itemSides.height * 2)+'px'}">
+        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=2 title="文字折行" :style="{ top: itemSides.height*2}">
             <TextOverflow/>
         </ContentBlock>
     </div>
