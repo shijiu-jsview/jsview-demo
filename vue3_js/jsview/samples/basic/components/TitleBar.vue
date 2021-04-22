@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { TitleFont } from './FontStyle';
+import { TitleFont } from '../FontStyle';
 import { defineProps, ref } from "vue";
 
 const name = 'Title';

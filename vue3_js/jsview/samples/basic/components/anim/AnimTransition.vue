@@ -43,7 +43,7 @@
 
 <script setup>
 import { defineProps, reactive, onMounted, onBeforeUnmount } from "vue";
-import { ContentFont } from '../FontStyle';
+import { ContentFont } from '../../FontStyle';
 
 
 const props = defineProps({

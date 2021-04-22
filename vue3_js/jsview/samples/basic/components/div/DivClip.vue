@@ -61,8 +61,8 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../FontStyle';
-import testImgPath from '../resources/test.jpg';
+import { ContentFont } from '../../FontStyle';
+import testImgPath from '../../assets/test.jpg';
 
 </script>
 

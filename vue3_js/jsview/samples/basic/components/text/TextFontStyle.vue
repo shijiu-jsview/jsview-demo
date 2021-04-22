@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../FontStyle';
+import { ContentFont } from '../../FontStyle';
 
 </script>
 

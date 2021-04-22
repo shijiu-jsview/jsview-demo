@@ -6,6 +6,6 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../FontStyle';
-import iconImgPath from '../resources/icon.png';
+import { ContentFont } from '../../FontStyle';
+import iconImgPath from '../../assets/icon.png';
 </script>

@@ -20,11 +20,11 @@
 </template>
 
 <script setup>
-import TitleBar from './TitleBar';
-import DivGroup1 from './div/DivGroup1';
-import DivGroup2 from './div/DivGroup2';
-import TextGroup from './text/TextGroup';
-import AnimGroup from './anim/AnimGroup';
+import TitleBar from './components/TitleBar';
+import DivGroup1 from './components/div/DivGroup1';
+import DivGroup2 from './components/div/DivGroup2';
+import TextGroup from './components/text/TextGroup';
+import AnimGroup from './components/anim/AnimGroup';
 
 const name = 'Basic';
 </script>
