@@ -1,7 +1,6 @@
-<!--
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" :style="{width:'400px'}">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <img alt="Vue logo" src="./assets/logo.png" :style="{width:'400px'}"/>
+  <HelloWorld msg="Welcome to Your Vue.js App" :style="{top: '50px', width:'400px'}"/>
 </template>
 
 <script>
@@ -17,12 +16,3 @@ export default {
 
 <style>
 </style>
--->
-
-<template>
-    <Basic/>
-</template>
-
-<script setup>
-import Basic from 'jsview/samples/basic/Basic';
-</script>
