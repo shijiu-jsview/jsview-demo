@@ -32,4 +32,4 @@ class MainScene extends FocusBlock {
 // 创建APP，带有视图焦点控制，启动后，焦点交由本界面
 const App = createStandaloneApp(MainScene);
 
-export { App };
+export default { App };
