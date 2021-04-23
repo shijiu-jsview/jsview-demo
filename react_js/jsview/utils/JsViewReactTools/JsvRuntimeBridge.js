@@ -327,15 +327,28 @@ function popupGainFocus() {
  * 但这个应用在warmLoadView之前，不会创建texture/surface的实际描画资源，也不会加载图片
  * 仅加载所有JS代码，并正常走完所有启动逻辑(包括描画逻辑)，但不会走setTimeout对应的延时逻辑，也不会显示
  * 预热的界面可以极大加速界面切换的时间，例如应用跳转到购物类界面
- * app_url可以传null，若为null仅预热engine js部分
+ * mode为1表示全预热，app_url不能为空，mode为2表示只预热engine url，如果app_url不为空，engine url来自于app_ur
+ * 否则来自于当前使用的engine url，app_url表示小程序的链接。
  * 【特别注意】warmUp起来的view，在warmLoadView调用之前，若启动者JsView关闭的话，此View应该在
- * View管理模块被清理掉，以防泄露，但在warmLoadView完成后，就不需要进行关联清理，请管理模块务必保证此机制。
- *
- * @param {string} engine_js_url 加载界面的ENGINE JS地址
- * @param {string} app_url      界面的应用地址，支持?(search)和#(hash)字段
+ *  View管理模块被清理掉，以防泄露，但在warmLoadView完成后，就不需要进行关联清理，请管理模块务必保证此机制。
+ * [参数]
+ *      int mode  预热模式，1:全预热，2:半预热
+ *      String app_url  要预热的app_url，当半预热时，可以为null
+ * [返回值]
+ *      int: 为view_refer_id值，预热后的View的ID，用于后续的warmLoadView和closeWarmView使用
  */
-function warmUpView(engine_js_url, app_url) {
-    return direct_call("warmUpView", engine_js_url, app_url);
+function warmUpView(mode, app_url) {
+    if(mode !== 1 && mode !== 2) {
+        console.error(`not support mode(${mode})`);
+        return -1;
+    }
+
+    if(mode === 1 && (app_url === null || app_url.length === 0)) {
+        console.error(`not support params(${mode} ${app_url})`);
+        return -1;
+    }
+
+    return direct_call("warmUpView", mode, app_url);
 }
 
 /**

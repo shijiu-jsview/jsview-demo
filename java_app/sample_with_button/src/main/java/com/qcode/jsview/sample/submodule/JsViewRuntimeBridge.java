@@ -354,9 +354,16 @@ public class JsViewRuntimeBridge extends JsViewRuntimeBridgeDefine {
 	// 预热的界面可以极大加速界面切换的时间，例如应用跳转到购物类界面
 	// app_url可以传null，若为null仅预热engine js部分
 	@JavascriptInterface
-	public int warmUpView(String engine_js_url, String app_url) {
+	public int warmUpView(int mode, String app_url) {
 		if (mViewsManager != null) {
-			return mViewsManager.warmUpView(mHostJsViewState.view, engine_js_url, app_url);
+			String engine_js_url = mHostJsViewState.view.getEngineUrl(); // warmUp使用的engineUrl同当前view的版本
+			if (mode == 1) {
+				// 全预热模式
+				return mViewsManager.warmUpView(mHostJsViewState.view, engine_js_url, app_url);
+			} else {
+				// 半预热模式
+				return mViewsManager.warmUpView(mHostJsViewState.view, engine_js_url, null);
+			}
 		} else {
 			Log.e(TAG, "Not support warm up JsView");
 			return -1;
