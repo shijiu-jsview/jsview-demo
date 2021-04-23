@@ -9,4 +9,5 @@ const TargetRevision = {
     "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r749.jsv.d058fc22.js",
 };
 
-export default TargetRevision;
+// 兼容require语法
+module.exports = TargetRevision;
