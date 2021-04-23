@@ -148,6 +148,10 @@ function installDepends(options) {
     const jsviewPatchDir = options.env.jsviewDir + '/patch';
     console.info("\nPatching react js from " + jsviewPatchDir);
     copyDirSync(options.env.devJsDir, jsviewPatchDir, options.env.devJsDir + '/node_modules');
+
+    console.info("\nCleanup node_modules cache... ");
+    const nodeModuleCacheDir = options.env.devJsDir + "/node_modules/.cache";
+    fs.rmSync(nodeModuleCacheDir, { recursive: true, force: true });
 }
 
 
