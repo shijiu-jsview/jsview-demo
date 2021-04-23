@@ -151,7 +151,11 @@ function installDepends(options) {
 
     console.info("\nCleanup node_modules cache... ");
     const nodeModuleCacheDir = options.env.devJsDir + "/node_modules/.cache";
-    fs.rmSync(nodeModuleCacheDir, { recursive: true, force: true });
+    if(!!fs.rmSync) {
+        fs.rmSync(nodeModuleCacheDir, { recursive: true, force: true });
+    } else {
+        fs.rmdirSync(nodeModuleCacheDir, { recursive: true });
+    }
 }
 
 
