@@ -138,28 +138,52 @@ class MainScene extends FocusBlock {
       enableShrink: false
     };
     return (
-            <div style={{ left: 0, top: 0, width: 1920, height: 1080, backgroundColor: "#334C4C" }}>
-                <div style={{ left: 200, top: 400, width: 100, height: 100, backgroundColor: "#00FF00" }}>
-                    {
-                        this.state.count > 0 ? <JsvSpray key={this.state.count} pointRes={`url(${pointImg})`} sprayStyle={spray_style1}/> : null
-                    }
-                    <div style={{ left: 0, top: 110, width: 200, height: 30, color: "#00AA00", fontSize: "20px" }}>
-                        按ok键显示爆炸效果
-                    </div>
-                </div>
-                <div style={{ left: 600, top: 400, width: 10, height: 100, animation: "SprayAnimRotate 3s linear infinite", backgroundColor: "#00FF00" }}>
-                    <JsvSpray pointRes="rgba(0, 255, 0, 1)" sprayStyle={spray_style2}/>
-                </div>
-                <div style={{ left: 1000, top: 400, width: 100, height: 100, animation: "SprayAnimTranslate 10s linear infinite", backgroundColor: "#00FF00" }}>
-                    <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style3}/>
-                </div>
-                <div style={{ left: 400, top: 20, width: 40, height: 40, animation: "SprayCycle 3s linear infinite" }}>
-                    <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style4}/>
-                </div>
-                <div style={{ left: 400, top: 40, width: 500, height: 100, lineHeight: "100px", textAlign: "center", fontSize: "50px", color: "#FFFFFF" }}>
-                    粒子效果
-                </div>
+      <div style={{ left: 0, top: 0, width: 1920, height: 1080, backgroundColor: "#334C4C" }}>
+        <div style={{ left: 200, top: 400 }}>
+          <div style={{ width: 100, height: 100, backgroundColor: "#00FF00" }}>
+            {
+              this.state.count > 0 ? <JsvSpray key={this.state.count} pointRes={`url(${pointImg})`} sprayStyle={spray_style1} /> : null
+            }
+            <div style={{ left: 0, top: 110, width: 200, height: 30, color: "#00AA00", fontSize: "20px" }}>
+              按ok键显示爆炸效果
             </div>
+          </div>
+          <div style={{ left: 0, top: 140, width: 250, height: 200, color: "#FFFFFF", fontSize: "20px" }}>
+            {`#粒子在方形内生成\n#初速度方向360度随机\n#无外力作用`}
+          </div>
+        </div>
+
+        <div style={{ left: 600, top: 400 }}>
+          <div style={{ width: 10, height: 100, animation: "SprayAnimRotate 3s linear infinite", backgroundColor: "#00FF00" }}>
+            <JsvSpray pointRes="rgba(0, 255, 0, 1)" sprayStyle={spray_style2} />
+          </div>
+          <div style={{ left: 0, top: 140, width: 250, height: 200, color: "#FFFFFF", fontSize: "20px" }}>
+            {`#粒子沿长边随机生成\n#初速度沿长边方向\n#受竖直方向的力作用`}
+          </div>
+        </div>
+
+        <div style={{ left: 1000, top: 400 }}>
+          <div style={{ width: 100, height: 100, animation: "SprayAnimTranslate 10s linear infinite", backgroundColor: "#00FF00" }}>
+            <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style3} />
+          </div>
+          <div style={{ left: 0, top: 140, width: 250, height: 200, color: "#FFFFFF", fontSize: "20px" }}>
+            {`#粒子在方形随机生成\n#初速度方向为竖直向上方向正负20度内随机\n#受水平方向和竖直方向的力作用`}
+          </div>
+        </div>
+
+        <div style={{ left: 400, top: 20 }}>
+          <div style={{ width: 40, height: 40, animation: "SprayCycle 3s linear infinite" }}>
+            <JsvSpray pointRes={`url(${pointImg})`} sprayStyle={spray_style4} />
+          </div>
+          <div style={{ top: 20, width: 500, height: 100, lineHeight: "100px", textAlign: "center", fontSize: "50px", color: "#FFFFFF" }}>
+            粒子效果
+          </div>
+          <div style={{ left: 0, top: 140, width: 200, height: 200, color: "#FFFFFF", fontSize: "20px" }}>
+            {`#粒子在方形随机生成\n#初速度为0\n#不受外力`}
+          </div>
+        </div>
+
+      </div>
     );
   }
 }

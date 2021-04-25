@@ -47,7 +47,10 @@ class MainScene extends FocusBlock {
 
   renderContent() {
     return (
-        <div style={{ width: 1280, height: 720, backgroundColor: "#FFFF00" }}>
+      <div style={{ width: 1280, height: 720, backgroundColor: "#334C4C" }}>
+        <div style={{ left: 20, top: 20, width: 1200, height: 100, color: "#FFFFFF", fontSize: "30px" }}>
+          原始图片通过四个拼图形状的遮罩切成四种形状以形成拼图效果
+        </div>
         <div style={{
           textAlign: "center",
           fontSize: "30px",
@@ -59,46 +62,46 @@ class MainScene extends FocusBlock {
           height: 50,
           backgroundColor: "rgba(27,38,151,0.8)"
         }}>{`原始图片`}</div>
-          <div style={{ left: 10, top: (720 - 654 / 2) / 2, width: 654 / 2, height: 654 / 2, backgroundImage: `url(${bg_pic})` }}></div>
-          <div style={{ left: 654 / 2 + 150 }}>
+        <div style={{ left: 10, top: (720 - 654 / 2) / 2, width: 654 / 2, height: 654 / 2, backgroundImage: `url(${bg_pic})` }}></div>
+        <div style={{ left: 654 / 2 + 150 }}>
           <JsvMaskClipDiv
-              stylesList={[{ top: 120, left: 10, width: 196, height: 256 }]}
-              viewSrc={bg_pic}
-              maskSrc={mask1_pic}
-              maskLeft={0 / 654}
-              maskTop={0 / 654}
-              maskWidth={327 / 654}
-              maskHeight={427 / 654}
-          />
-           <JsvMaskClipDiv
-              stylesList={[{ top: 120, left: 10 + 196, width: 256, height: 196 }]}
-              viewSrc={bg_pic}
-              maskSrc={mask2_pic}
-              maskLeft={227 / 654}
-              maskTop={0 / 654}
-              maskWidth={427 / 654}
-              maskHeight={327 / 654}
-          />
-           <JsvMaskClipDiv
-              stylesList={[{ top: 120 + 256 + 10, left: 10, width: 256, height: 196 }]}
-              viewSrc={bg_pic}
-              maskSrc={mask3_pic}
-              maskLeft={0 / 654}
-              maskTop={327 / 654}
-              maskWidth={427 / 654}
-              maskHeight={327 / 654}
+            stylesList={[{ top: 120, left: 10, width: 196, height: 256 }]}
+            viewSrc={bg_pic}
+            maskSrc={mask1_pic}
+            maskLeft={0 / 654}
+            maskTop={0 / 654}
+            maskWidth={327 / 654}
+            maskHeight={427 / 654}
           />
           <JsvMaskClipDiv
-              stylesList={[{ top: 120 + 196 + 10, left: 10 + 256, width: 196, height: 256 }]}
-              viewSrc={bg_pic}
-              maskSrc={mask4_pic}
-              maskLeft={327 / 654}
-              maskTop={227 / 654}
-              maskWidth={327 / 654}
-              maskHeight={427 / 654}
+            stylesList={[{ top: 120, left: 10 + 196, width: 256, height: 196 }]}
+            viewSrc={bg_pic}
+            maskSrc={mask2_pic}
+            maskLeft={227 / 654}
+            maskTop={0 / 654}
+            maskWidth={427 / 654}
+            maskHeight={327 / 654}
+          />
+          <JsvMaskClipDiv
+            stylesList={[{ top: 120 + 256 + 10, left: 10, width: 256, height: 196 }]}
+            viewSrc={bg_pic}
+            maskSrc={mask3_pic}
+            maskLeft={0 / 654}
+            maskTop={327 / 654}
+            maskWidth={427 / 654}
+            maskHeight={327 / 654}
+          />
+          <JsvMaskClipDiv
+            stylesList={[{ top: 120 + 196 + 10, left: 10 + 256, width: 196, height: 256 }]}
+            viewSrc={bg_pic}
+            maskSrc={mask4_pic}
+            maskLeft={327 / 654}
+            maskTop={227 / 654}
+            maskWidth={327 / 654}
+            maskHeight={427 / 654}
           />
         </div>
-          </div>
+      </div>
 
     );
   }
