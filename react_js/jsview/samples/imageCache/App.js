@@ -4,8 +4,8 @@ import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
 
 const urlList = [
-  "http://oss.image.51vtv.cn/homepage/20210209/0365e073eaed9304e449022df630058c.jpg",
-  "http://oss.image.51vtv.cn/homepage/20210209/03d8ab4a3e25093427cf2496a6428d8e.jpg",
+  "http://oss.image.51vtv.cn/homepage/20210209-2/少林寺之得宝传奇.jpg",
+  "http://oss.image.51vtv.cn/homepage/20210209-2/包贝尔假戏真做骗红包.jpg",
   "http://oss.image.51vtv.cn/homepage/20210209/0afb44177a89e8881f4ff95ac0fb14df.jpg",
   "http://oss.image.51vtv.cn/homepage/20210209/1466120d4016ec41b46f987321092c11.png",
   "http://oss.image.51vtv.cn/homepage/20210209/1b3023addca51c2f5ca2fe46757df8ca.jpg",
