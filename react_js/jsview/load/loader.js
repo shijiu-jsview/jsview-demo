@@ -1,5 +1,6 @@
 import initHeaderScriptLoader from "./header_script_loader";
 import TargetRevision from "../dom/target_core_revision"
+import AppData from '../../src/appConfig/app_config.json'
 
 // Forge define
 if (typeof window.Forge === 'undefined') { window.Forge = {}; }
@@ -35,8 +36,8 @@ function initDesignedMap(input_designed_map) {
 }
 
 // eslint-disable-next-line no-unused-vars
-let sForgeReactAppDefine = null;
-function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name) {
+let sJsViewForgeAppDefine = null;
+async function selectJsViewRuntime(js_sub_path, input_designed_map, app_name) {
   // 初始Forge的启动入口
   initEntry();
 
@@ -46,40 +47,28 @@ function selectJsViewRuntime(callback, js_sub_path, input_designed_map, app_name
       window.JsView.notifyAppName(app_name);
     }
     initHeaderScriptLoader(js_sub_path);
-    import("../dom/jsv-dom.js").then((app_define) => {
-      sForgeReactAppDefine = app_define.ForgeReactApp;
-      window.JsView.ForgeExt = app_define.ForgeExtension;
-      window.JsView.React.JsSubPath = js_sub_path;
-      callback();
-    });
+    const app_define = await import("../dom/jsv-dom.js");
+    sJsViewForgeAppDefine = app_define.JsViewForgeApp;
+    window.JsView.ForgeExt = app_define.ForgeExtension;
+    window.JsView.Dom.JsSubPath = js_sub_path;
   } else {
-    import("../dom/forge_html/apic_decoder/libwebp-0.6.0.min.js").then(() => {
-      import("../dom/forge_html/apic_decoder/demux.js").then(() => {
-        import("../dom/forge_html/apic_decoder/gifDecoder.js").then(() => {
-          import("../dom/forge_html/index.js").then(() => {
-            import("../dom/jsv-browser-debug-dom.js").then(() => {
-              callback();
-            });
-          });
-        })
-      })
-    })
+    await import("../dom/jsv-browser-debug-dom.js");
   }
 }
 
-// 当confirmEntry和Forge.RunApp都被调用完成后，才会进行ForgeReactApp运行
+// 当confirmEntry和Forge.RunApp都被调用完成后，才会进行JsViewForgeApp运行
 // eslint-disable-next-line no-var
-var sActivityManager = null;
+let sActivityManager = null;
 // eslint-disable-next-line no-var
-var sEntryConfirmed = false;
-let sReactApp = null;
+let sEntryConfirmed = false;
+let sJsViewApp = null;
 
-function startApp() {
+function startForgeApp() {
   if (sActivityManager !== null && sEntryConfirmed) {
     console.log("Forge.RunApp().");
     // eslint-disable-next-line new-cap
-    sReactApp = new sForgeReactAppDefine(sActivityManager);
-    console.log(sReactApp);
+    sJsViewApp = new sJsViewForgeAppDefine(sActivityManager);
+    console.log(sJsViewApp);
   }
 }
 
@@ -88,21 +77,19 @@ function confirmEntry() {
   if (window.JsView) {
     checkEngineVersion();
   }
-  startApp();
+  startForgeApp();
 }
 
 function initEntry() {
   Forge.RunApp = function (activity_manager) {
     console.log("Call from Forge.Run");
     sActivityManager = activity_manager;
-    startApp();
+    startForgeApp();
   };
 }
 
-function runMain(entry) {
+async function runMain() {
   console.log("main.js loaded...");
-
-  entry.default();
 
   // 确定并进行Forge模块的启动
   confirmEntry();
@@ -122,7 +109,59 @@ function checkEngineVersion() {
   }
 }
 
+function getHostName() {
+  const full_url = window.location.href;
+  let idx = full_url.indexOf("://");
+  // const protocol = (idx > 0 ? full_url.substring(0, idx + 1) : "");
+  const host_path = idx > 1 ? full_url.substring(idx + 3) : "";
+
+  idx = host_path.indexOf("/");
+  const host = idx > 0 ? host_path.substring(0, idx) : "";
+
+  return host;
+}
+
+async function startApp(config, onLoaded) {
+  console.log("StartApp...");
+  if (window.JsView) {
+    // 运行在JsView引擎中
+
+    // (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，PS:注意"164"的引号
+    window.JsView.addKeysMap(config.vendorConfig.bindKeys);
+
+    // (可选配置)localStorage支持
+    let storageDomain = config.jsviewConfig.localStorage.domain;
+    if(storageDomain == "default") {
+      storageDomain = getHostName();
+    }
+    window.JsView.setStorageDomain(storageDomain); // Domain可以为任意字符串，各Domain的localStorage互相隔离
+    window.JsView.enableStorageNames(...config.jsviewConfig.localStorage.presetKeys);
+
+    // JsView Dom相关配置
+    window.JsView.Dom.Render = function () {
+      onLoaded()
+    };
+  } else {
+      await onLoaded()
+  }
+}
+
+async function loadJsViewEnv(config, onLoaded) {
+  // 参数说明：
+  // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
+  // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
+  //                                     默认值是画布宽度1280px, 清晰度为1.0
+  await selectJsViewRuntime(config.jsviewConfig.jsSubPath,
+                            config.vendorConfig.designedMap,
+                            AppData.AppName);
+  await startApp(config, onLoaded);
+
+  // 环境启动后，动态加载React框架和main
+  runMain();
+
+  console.log("index.js loaded AppName=" + AppData.AppName);
+}
+
 export {
-  selectJsViewRuntime,
-  runMain
+  loadJsViewEnv,
 };

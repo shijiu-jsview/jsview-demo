@@ -132,9 +132,9 @@ main_run()
 	
 	# 更新环境状态
 	npm install
-	cd jsview/patch
-	./update.sh
-	cd ../..
+	cd jsview/
+	node do_patch.js
+	cd ../
 		
 	loginfo "CERT_PATH=${CERT_PATH}"	
 		

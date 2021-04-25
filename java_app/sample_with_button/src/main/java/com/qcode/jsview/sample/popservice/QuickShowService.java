@@ -92,7 +92,7 @@ public class QuickShowService extends Service {
 					mServiceLifeControl);
 		} else {
 			// 当Core版本不一致时需要重启，因为Core是一个JNI内核，无法重复加载
-			if (JsViewRequestSdkProxy.needReboot(this, start_intent)) {
+			if (JsViewRequestSdkProxy.needReboot(this, start_intent.coreVersionRange)) {
 				// 需要重启
 				mServiceLifeControl.rebootService(intent);
 				return START_NOT_STICKY;

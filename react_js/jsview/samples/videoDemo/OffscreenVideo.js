@@ -498,6 +498,7 @@ class OffscreenVideo extends FocusBlock {
                 }} />
                 <JsvVideo
                     usetexture={true}
+                    autoplay={(this._autoPlay ? "autoplay" : undefined)}
                     style={{
                       top: 50,
                       left: (1280 - object_fit_set.width) / 2,

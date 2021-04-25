@@ -42,18 +42,44 @@ class MainScene extends FocusBlock {
 
   renderContent() {
     return (
-            <div style={{ width: 1280, height: 720, backgroundColor: "#FFFFFF" }}>
-                <div style={{ left: 50, top: 50, width: 550, height: 280, fontSize: "40px", lineHeight: "60px", backgroundColor: "#DDDDDD", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
-                    {"常规\\textcolor{#FF0000}{红色文字}常规\\textb{加粗\\\\n\n文字}常规\\texti{Italic}常规\\textdecoration{underline}{下划线}常规\\textdecoration{line-through}{删除线}常规\\textsub{下标Sub}常规\\textsup{上标\\\\n\nSup}\\\\\\{\\}"}
-                </div>
+      <div style={{ width: 1280, height: 720, backgroundColor: "#FFFFFF" }}>
+        <div style={{ left: 50, top: 50, width: 550, height: 550, backgroundColor: "#DDDDDD" }}>
+          <div style={{ left: 0, top: 0, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"颜色: \\textcolor{#FF0000}{红色文字}"}
+          </div>
+          <div style={{ left: 0, top: 50, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"加粗: \\textb{加粗文字}"}
+          </div>
+          <div style={{ left: 0, top: 100, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"斜体: \\texti{ITALIC italic}"}
+          </div>
+          <div style={{ left: 0, top: 150, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"下划线: \\textdecoration{underline}{下划线}"}
+          </div>
+          <div style={{ left: 0, top: 200, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"删除线: \\textdecoration{line-through}{删除线}"}
+          </div>
+          <div style={{ left: 0, top: 250, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"上标: 普通\\textsup{中文abcdefghijklmnopqrstuvwxyz}"}
+          </div>
+          <div style={{ left: 0, top: 300, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"下标: 普通\\textsub{中文abcdefghijklmnopqrstuvwxyz}"}
+          </div>
+          <div style={{ left: 0, top: 350, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"上标大写: 普通\\textsup{ABCEDEFGHIJKLMNOPQRSTUVWXYZ}"}
+          </div>
+          <div style={{ left: 0, top: 400, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"下标大写: 普通\\textsub{ABCDEFGHIJKLMNOPQRSTUVWXYZ}"}
+          </div>
+          <div style={{ left: 0, top: 450, width: 550, height: 50, fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+            {"特殊字符: \\\\ \\{ \\}"}
+          </div>
+        </div>
 
-                <div style={{ left: 50, top: 350, width: 550, height: 280, fontSize: "40px", lineHeight: "80px", backgroundColor: "#DDDDDD" }} jsv_text_latex_enable="true">
-                    {"这是\\textcolor{#FF0000}{一个\\textb{\\textdecoration{underline}{嵌套}}\\texti{Case}Case}常规\\textsup{上\\textb{\\textcolor{#7700FF}{标\\texti{Italic}}}}English\\textsup{Super}English\\textsub{sub}"}
-                </div>
-                <div style={{ left: 650, top: 50, width: 500, height: 280, fontSize: "35px", lineHeight: "40px", backgroundColor: "#DDDDDD" }} jsv_text_latex_enable="true">
-                    {"上标\\textsup{a quick brown fox jumps over the lazy dog}\n上标\\textsup{A QUICK BROWN FOX JUMPS OVER THE LAZY DOG}\n下标\\textsub{a quick brown fox jumps over the lazy dog}\n下标\\textsub{A QUICK BROWN FOX JUMPS OVER THE LAZY DOG}\n"}
-                </div>
-            </div>
+        <div style={{ left: 650, top: 50, width: 550, height: 550, backgroundColor: "#DDDDDD", fontSize: "30px", lineHeight: "50px", textOverflow: 'ellipsis', overflow: 'hidden' }} jsv_text_latex_enable="true">
+          {"综合示例: \n这是\\textcolor{#FF0000}{一个\\textb{\\textdecoration{underline}{嵌套}}\\texti{Case}Case}常规\\textsup{上\\textb{\\textcolor{#7700FF}{标\\texti{Italic}}}}English\\textsup{Super}English\\textsub{sub\\textb{下标加粗}下标换行\\\\n\n换行}\\textb{加粗文字换行\n换行}"}
+        </div>
+      </div>
     );
   }
 }

@@ -30,3 +30,8 @@ folder_mark.txt
 # vscode
 .vscode
 *.code-workspace
+
+app_sign_private_key.crt
+app_sign_public_key.pem
+
+package-lock.json

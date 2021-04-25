@@ -93,8 +93,8 @@ class MainScene extends FocusBlock {
             let load_url = `${getMainPath()}#/users/IsolateScene/floatViewDemo_PopWindow/SubScene0?plugin=A1`;
             console.log("init warmUpView load_url=" + load_url);
             this._WarmViewId = jJsvRuntimeBridge.warmUpView(
-                window.JsView.EngineJs,
-                load_url
+              1, // 全预热模式
+              load_url
             );
         }
 
