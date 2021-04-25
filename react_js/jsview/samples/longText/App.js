@@ -139,7 +139,7 @@ class MainScene extends FocusBlock {
   renderContent() {
     return (
             <div>
-                {/* <div style={{
+                <div style={{
                   textAlign: "center",
                   fontSize: "30px",
                   lineHeight: "50px",
@@ -149,7 +149,7 @@ class MainScene extends FocusBlock {
                   width: 1000,
                   height: 50,
                   backgroundColor: "rgba(27,38,151,0.8)"
-                }}>{`可展示篇幅超过一屏的文字`}</div> */}
+                }}>{`可展示篇幅超过一屏的文字`}</div>
                 <div style={{ left: 140, top: 100 }}>
                     <LongTextScroll branchName={`${this.props.branchName}/textView`} style={{ width: 1000, height: 500, backgroundColor: '#EEEEEE' }} textStyle={{ color: "#000000", fontSize: 20 }} scrollBlockStyle={{ width: 10, height: 30, backgroundColor: "#555555" }} scrollStyle={{ left: 1005, width: 10, height: 500, backgroundColor: "#DDDDDD" }} step={20}>
                         {"艾因小萌班用户服务协议及隐私权保护政策\n\
@@ -250,9 +250,9 @@ class MainScene extends FocusBlock {
 本协议以及艾因小萌班制度将统一构成您与运营方之间的完整协议，两者约定不一致的，以文本制定时间较晚者为准。\n\
 本协议签订地为中华人民共和国上海市，若您在使用艾因小萌班过程中产生任何纠纷或争议，您同意将该纠纷或者争议提交本协议签订地人民法院管辖。本协议条款无论何种原因部分无效或不可执行，其他条款仍应继续有效，对双方具有约束力。"}
                 </LongTextScroll>
-                    {/* <div style={{ left: 400, top: 550 }}>
+                    <div style={{ left: 400, top: 550 }}>
                         <Button branchName={`${this.props.branchName}/button`} onEdge={this._ButtonOnEdge}/>
-                    </div> */}
+                    </div>
                 </div>
             </div>
     );
