@@ -127,7 +127,7 @@ async function startApp(config, onLoaded) {
     // 运行在JsView引擎中
 
     // (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，PS:注意"164"的引号
-    window.JsView.addKeysMap(config.vendorConfig.bindKeys);
+    window.JsView.addKeysMap(config.jsviewConfig.bindKeys);
 
     // (可选配置)localStorage支持
     let storageDomain = config.jsviewConfig.localStorage.domain;
@@ -152,7 +152,7 @@ async function loadJsViewEnv(config, onLoaded) {
   // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
   //                                     默认值是画布宽度1280px, 清晰度为1.0
   await selectJsViewRuntime(config.jsviewConfig.jsSubPath,
-                            config.vendorConfig.designedMap,
+                            config.jsviewConfig.designedMap,
                             AppData.AppName);
   await startApp(config, onLoaded);
 
