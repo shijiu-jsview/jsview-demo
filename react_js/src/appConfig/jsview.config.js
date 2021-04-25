@@ -18,10 +18,10 @@ export default {
 
     vendorConfig: {
         // (必须配置)设置屏幕坐标映射值，screenWidth为屏幕画布定义的宽度，displayScale为清晰度，
-        // 默认值是画布宽度1280px, 清晰度为1.0
+        // 默认值是画布宽度1280px, 清晰度为1.5，在1920x1080分辨率下让文字不会模糊
         designedMap: {
             screenWidth: 1280,
-            displayScale: 1.0
+            displayScale: 1.5
         },
 
         // (可选配置)按键接受的扩展，例如将静音按键(JAVA键值为164)映射为JS键值20001，
