@@ -156,7 +156,12 @@ class JsvPreload extends React.Component {
       if (item.width !== 0 && item.height !== 0) {
         target_size = { width: item.width, height: item.height };
       }
-      const texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
+      let texture = null;
+      if (image_url.toLowerCase().indexOf(".webp") >= 0 || image_url.toLowerCase().indexOf(".gif") >= 0) {
+        texture = ForgeExtension.TextureManager.GetGifImage(image_url, false);
+      } else {
+        texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
+      }
       texture.RegisterLoadImageCallback(null, (params) => {
         console.log(`preload succeed ${image_url}`, params);
         this._PreloadStateList[index] = true;
@@ -202,7 +207,7 @@ class JsvPreload extends React.Component {
         this._DownloadStateList[index] = true;
         this._checkDownload();
       });
-      const texture_setting = new Forge.ExternalTextureSetting(texture);
+      const texture_setting = new Forge.TextureSetting(texture); // Download类型的释放跟随view一同释放
       const preload_view = new Forge.PreloadView(texture_setting);
       return ForgeExtension.RootActivity.ViewStore.add(
         new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
