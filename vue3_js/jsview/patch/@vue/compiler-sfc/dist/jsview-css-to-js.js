@@ -51,19 +51,28 @@ function compileCssToJs(sfc, options) {
     }
 
     let compileStyleOptions = {
-        // source: null,
         // filename: sfc.filename,
         id: `data-v-${options.id}`,
         // map: null,
-        scoped: false,
         trim: true,
         isProd: options.isProd,
+
+        source: null,
+        scoped: false,
+        modules: false,
     };
     let jsvCssStyles = "if(!window.jsvCssStyle) { window.jsvCssStyle = {} };";
     jsvCssStyles += "Object.assign(window.jsvCssStyle, {";
     sfc.styles.forEach(style => {
+        if(!!style.module
+        || !!style.scoped) {
+            const errMsg = "JsView: style module/scoped is not released by Vue3!";
+            console.error(errMsg + " errors =", errors);
+            throw new Error(errMsg)
+        }
         compileStyleOptions.source = style.content
         compileStyleOptions.scoped = style.scoped
+        compileStyleOptions.modules = style.module
         const { rawResult, errors } = compilerSfc.compileStyle(compileStyleOptions)
         if(errors.length) {
             const errMsg = "JsView: Failed to compile style when convert css to js!";
@@ -74,6 +83,7 @@ function compileCssToJs(sfc, options) {
         const styleNodes = rawResult.result.root.nodes;
         styleNodes.forEach(node => {
             const selector = node.selector;
+            // console.log('node=', node)
             if(!selector) {
                 const errMsg = "JsView Error: Undefined selector is found!";
                 console.error(errMsg);
