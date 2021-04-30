@@ -2025,6 +2025,10 @@ function compileScript(sfc, options) {
             .join(', ')} } from 'vue'\n`);
     }
     s.trim();
+<<<<<<< HEAD
+=======
+    s.append(jsvCssToJs.compileCssToJs(sfc, options));
+>>>>>>> 7289304 (vue3_js: 支持css 数字形式的 left/top/width/height.)
     return {
         ...scriptSetup,
         bindings: bindingMetadata,
