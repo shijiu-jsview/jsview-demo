@@ -3,10 +3,10 @@
  */
 
 const TargetRevision = {
-  CoreRevision: 810754,
-  JseRevision: "1.0.749",
+  CoreRevision: 810765,
+  JseRevision: "1.0.750",
   JseUrl:
-    "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r749.jsv.d058fc22.js",
+    "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r750.jsv.2444765a.js",
 };
 
 // 兼容require语法
