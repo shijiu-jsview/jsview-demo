@@ -35,6 +35,10 @@ public class ViewLoader {
 		if (parsed_intent.engineUrl.isEmpty()) {
 			parsed_intent.engineUrl = BuildConfig.JSVIEW_JS_ENGINE_URL;
 		}
+		// 若CoreVersionRange未设置，使用BuildConfig中配置的默认值
+		if (parsed_intent.coreVersionRange.isEmpty()) {
+			parsed_intent.coreVersionRange = BuildConfig.CORE_VERSION_RANGE;
+		}
 
 		/* 展示启动图 */
 		int default_res = parsed_intent.isSub ? 0 : R.drawable.startup_icon;

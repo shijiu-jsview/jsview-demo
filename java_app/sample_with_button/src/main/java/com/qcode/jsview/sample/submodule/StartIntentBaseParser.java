@@ -13,6 +13,7 @@ public class StartIntentBaseParser {
 
 	public StartIntentBaseParser(Intent intent) {
 		// 可选：JsView 内核版本指定范围，若不指定，则会使用当前AAR携带的版本
+		// 没有则使用gradle.properties中填写的 CustomConfig_CoreVersionRange 的值
 		if (intent.hasExtra("COREVERSIONRANGE")) {
 			String core_version_range = intent.getStringExtra("COREVERSIONRANGE");
 			Log.d(TAG, "COREVERSIONRANGE:" + core_version_range);
