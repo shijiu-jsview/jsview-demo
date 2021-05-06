@@ -1,18 +1,19 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=0 title="Layout(布局定位)" :style="{top:itemSides.height*0}">
+        <ContentBlock :class=contentClass :style="{top:itemSides.height*0}" :=contentBlockProps :index=0 title="Layout(布局定位)">
              <DivLayout/>
         </ContentBlock>
-        <ContentBlock :=contentBlockProps :index=1 title="Background(加载图片)" :style="{top:itemSides.height*1}">
+        <ContentBlock :class=contentClass :style="{top:itemSides.height*1}" :=contentBlockProps :index=1 title="Background(加载图片)">
             <DivBackground/>
         </ContentBlock>
-        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=2 title="Clip(裁剪)" :style="{ top:itemSides.height*2}">
+        <ContentBlock :class=contentClass :style="{top:itemSides.height*2}" :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=2 title="Clip(裁剪)">
             <DivClip/>
         </ContentBlock>
     </div>
 </template>
 
 <script setup>
+/* eslint-disable no-unused-vars */
 import { defineProps } from "vue";
 import ContentBlock from '../ContentBlock';
 import DivBackground from './DivBackground';
@@ -21,16 +22,12 @@ import DivLayout from './DivLayout';
 
 const name = 'DivGroup1';
 const props = defineProps({
-  contentSize: Object,
+  contentClass: String,
   itemSides: Object 
 })
-</script>
 
-
-<script jsv-style>
 const contentBlockProps = {
     colIndex: 0,
-    contentSize: props.contentSize,
     itemSides: props.itemSides
 };
 </script>

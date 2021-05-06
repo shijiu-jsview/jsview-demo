@@ -1,13 +1,13 @@
 <template>
 <div id='layout-root'>
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         whiteSpace: 'nowrap',
         textOverflow: 'clip',
         overflow: 'hidden'}">
         1.长文字截断，后面的文字你可能看不到
     </div>
 
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         top: blockSize.height+gap,
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
@@ -15,7 +15,7 @@
         2.长文字省略，后面的文字你可能看不到
     </div>
 
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         top: (blockSize.height+gap)*2,
         whiteSpace: 'pre-wrap',
         textOverflow: 'clip',
@@ -23,7 +23,7 @@
         3.长文字折行+截断，后面的文字你可能看不到，与PC效果有区别，一二三四五六七八九十
     </div>
 
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         top: (blockSize.height+gap)*3,
         whiteSpace: 'pre-wrap',
         textOverflow: 'ellipsis',
@@ -31,7 +31,7 @@
         4.长文字折行+省略，后面的文字你可能看不到，与PC效果有区别，一二三四五六七八九十
     </div>
 
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         top: (blockSize.height+gap)*4, height: 65,
         whiteSpace: 'pre-wrap',
         textOverflow: 'ellipsis',
@@ -39,7 +39,7 @@
         5.{{multiLine}}
     </div>
 
-    <div :style="{ ...baseStyle,
+    <div class="content-font" :style="{ ...baseStyle,
         top: (blockSize.height+gap)*4+67, height: 65,
         whiteSpace: 'pre-wrap',
         textOverflow: 'clip',
@@ -51,13 +51,7 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../../FontStyle';
-
-console.log("ContentFont=" + JSON.stringify({...ContentFont}), ContentFont);
-
-</script>
-
-<script jsv-style>
+/* eslint-disable no-unused-vars */
 const gap = 2;
 
 const blockSize = {
@@ -66,9 +60,7 @@ const blockSize = {
 };
 
 const baseStyle = {
-    ...ContentFont,
-    width: blockSize.width,
-    height: blockSize.height,
+    width: blockSize.width, height: blockSize.height,
     backgroundColor: 'rgba(255, 255, 0, 0.5)',
     color: 'rgba(255, 0, 0, 1)',
 };
@@ -80,3 +72,7 @@ const multiLine = "多行文字（末尾省略)："
         + "\n第三行：一二三四五六七八九十,一二三四五六七八九十,一二三四五六七八九十";
 
 </script>
+
+<style>
+@import "../FontStyle.css";
+</style>

@@ -1,11 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" :style="{width:100}"/>
-  <HelloWorld msg="Welcome to Your Vue.js App" :style="{top: 50, width:200}"/>
+  <img alt="Vue logo" src="./assets/logo.png" class="size"/>
+  <!-- <HelloWorld msg="Welcome to Your Vue.js App" :style="{top: 50, width:200}"/> -->
 </template>
 
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+// import HelloWorld from './components/HelloWorld.vue'
+
+export default {
+  name: 'App',
+  // components: {
+  //   HelloWorld
+  // }
+}
 </script>
 
-<style>
+<style scoped>
+.size {
+  width: 50;
+}
+
 </style>

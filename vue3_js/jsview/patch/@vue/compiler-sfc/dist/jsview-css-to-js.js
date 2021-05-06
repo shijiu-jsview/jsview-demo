@@ -94,9 +94,6 @@ function compileCssToJs(sfc, options) {
             } else if(!!node.selector) {
                 jsvCssStyles += compileSelectorNode(node);
             } else {
-                console.log('===================================')
-                console.log('node=', node)
-                console.log('===================================')
                 check(false, node.source.input.css, "JsView Error: Unsupported css node.");
             }
         })

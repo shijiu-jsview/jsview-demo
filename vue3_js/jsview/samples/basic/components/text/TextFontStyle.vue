@@ -1,12 +1,12 @@
 <template>
 <div id='layout-root'>
     <div>
-        <div :style="{ ...blockStyle }">[字体]</div>
-        <div :style="{ ...blockStyle, top: 25,
+        <div class="content-font" :style="{ ...blockStyle }">[字体]</div>
+        <div class="content-font" :style="{ ...blockStyle, top: 25,
             fontFamily: '宋体' }">
             abc宋体
         </div>
-        <div :style="{ ...blockStyle, top: 25, left: blockStyle.width+gap,
+        <div class="content-font" :style="{ ...blockStyle, top: 25, left: blockStyle.width+gap,
             fontFamily: '黑体' }">
             abc黑体
         </div>
@@ -17,18 +17,18 @@
             abc描边
         </div>
 
-        <div :style="{ ...blockStyle, top: 50,
+        <div class="content-font" :style="{ ...blockStyle, top: 50,
             fontWeight: 'bold' }">
             abc粗体
         </div>
-        <div :style="{ ...blockStyle, top: 50, left: blockStyle.width+gap,
+        <div class="content-font" :style="{ ...blockStyle, top: 50, left: blockStyle.width+gap,
             fontStyle: 'italic' }">
             abc斜体
         </div>
     </div>
 
     <div :style="{ top: 75 }">
-        <div :style="{ ...blockStyle }">[其他]</div>
+        <div class="content-font" :style="{ ...blockStyle }">[其他]</div>
         <div :style="{ top: 25,  width: 130, height: 35,
             fontSize: '30px' }">
             abc字号
@@ -44,16 +44,15 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../../FontStyle';
-
-</script>
-
-<script jsv-style>
-    const gap = 5;
+/* eslint-disable no-unused-vars */
+const gap = 5;
 
 const blockStyle = {
-    ...ContentFont,
     width: 70,
     height: 20
 };
 </script>
+
+<style>
+@import "../FontStyle.css";
+</style>

@@ -1,14 +1,14 @@
 <template>
 <div id='layout-root'>
     <div>
-        <div :style="{ ...titleStyle }">坐标变化</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...titleStyle }">坐标变化</div>
+        <div class="content-font" :style="{ ...itemStyle,
           left: timeCount*10%200,
           transition: 'left 1s linear' }"/>
     </div>
     <div :style="{ top: 70 }">
-        <div :style="{ ...titleStyle }">坐标和尺寸变化</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...titleStyle }">坐标和尺寸变化</div>
+        <div class="content-font" :style="{ ...itemStyle,
           left: timeCount*10%200,
           width: timeCount*10%100+10,
           transition: 'left 0.5s linear, width 1s linear 1s' }"/>
@@ -16,22 +16,22 @@
 
     <div :style="{ top: 140, width: 240, height: 160, backgroundColor: 'rgba(0, 0, 255, 0.5)' }">
         <div :style="{ ...titleStyle }">transform</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...itemStyle,
             top: 20,
             transition: 'transform 2.5s linear 0.5s',
             transform: state.transform,
             transformOrigin: state.transformOrigin }">移动缩放旋转</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...itemStyle,
             top: 100,
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformTranslate }">移动</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...itemStyle,
             left: 140, top: 20,
             transition: 'transform 2.5s linear 0.5s',
             transformOrigin: 'center center',
             transform: state.transformScale }">缩放</div>
-        <div :style="{ ...itemStyle,
+        <div class="content-font" :style="{ ...itemStyle,
             top: 75,
             left: 140,
             transition: 'transform 2.5s linear 0.5s',
@@ -42,8 +42,8 @@
 </template>
 
 <script setup>
-import { defineProps, reactive, onMounted, onBeforeUnmount } from "vue";
-import { ContentFont } from '../../FontStyle';
+/* eslint-disable no-unused-vars */
+import { defineProps, onMounted, onBeforeUnmount } from "vue";
 
 
 const props = defineProps({
@@ -93,11 +93,7 @@ function changeState() {
     }, 3000);
 }
 
-</script>
-
-<script jsv-style>
 const titleStyle = {
-    ...ContentFont,
     width: 100,
     height: 20,
     textAlign: 'left',
@@ -105,14 +101,16 @@ const titleStyle = {
 };
 
 const itemStyle = {
-    ...ContentFont,
     top: 20,
     width: 50, height: 50,
     whiteSpace: 'pre-wrap',
     backgroundColor: 'rgba(255, 0, 0, 1)'
 };
-
 </script>
+
+<style>
+@import "../FontStyle.css";
+</style>
 
 <style>
 @keyframes AnimComposite1 {

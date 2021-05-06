@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div :style=titleStyle>
+  <div class="title-font" :style=titleStyle>
     {{title}}
   </div>
   <div key="blockColor" :style="{ top: titleStyle.lineHeight, width: itemSides.width, height: itemSides.height - 18, backgroundColor: 'rgba(0,0,255,'+blockOpacity+')' }">
@@ -12,24 +12,25 @@
 </template>
 
 <script setup>
-import { TitleFont } from '../FontStyle';
-import { defineProps, ref } from "vue";
+/* eslint-disable no-unused-vars */
+import { defineProps } from "vue";
 
 const name = 'TitleBlock';
 const props = defineProps({
   title: String,
   index: Number,
-  contentSize: Object,
   itemSides: Object 
 })
 
 const blockOpacity = (((props.index) % 2 === 0) ? 0.2 : 0.5);
-</script>
 
-<script jsv-style>
 const titleStyle = { 
-  ...TitleFont, lineHeight: 18,
+  lineHeight: 18,
   width: props.itemSides.width, height: 18,
   backgroundColor: 'rgba(0,0,255,0.7)',
 };
 </script>
+
+<style>
+@import "./FontStyle.css";
+</style>

@@ -1,28 +1,25 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=1 title="Radius(实现圆角)" :style="{ top: itemSides.height*0}">
+        <ContentBlock :class=contentClass :style="{ top: itemSides.height*0}" :=contentBlockProps :index=1 title="Radius(实现圆角)">
             <DivRadius/>
         </ContentBlock>
     </div>
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+/* eslint-disable no-unused-vars */
+import { defineProps } from "vue";
 import ContentBlock from '../ContentBlock';
 import DivRadius from './DivRadius';
 
 const name = 'DivGroup2';
 const props = defineProps({
-  contentSize: Object,
+  contentClass: String,
   itemSides: Object 
 })
-</script>
 
-
-<script jsv-style>
 const contentBlockProps = {
     colIndex: 0,
-    contentSize: props.contentSize,
     itemSides: props.itemSides
 };
 </script>

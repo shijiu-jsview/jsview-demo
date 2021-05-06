@@ -1,7 +1,7 @@
 <template>
 <div id='layout-root'>
     <div style="{top: 0}">
-        <div :style="{...ContentFont, width: 50, height: titleHeight}">原图</div>
+        <div class="content-font" :style="{width: 50, height: titleHeight}">原图</div>
         <div :style="{top: titleHeight,
             width: imageSize.width+4, height: imageSize.height+4,
             backgroundColor: 'rgba(0, 255, 0, 1)' }">
@@ -12,7 +12,7 @@
     </div>
 
     <div :style="{top: imageSize.height+titleHeight+4}">
-        <div :style="{ ...ContentFont, width: 120, height: titleHeight }">左上Overflow</div>
+        <div class="content-font" :style="{ width: 120, height: titleHeight }">左上Overflow</div>
         <div :style="{ top: titleHeight,
             width: imageSize.width+4, height: imageSize.height+4,
             backgroundColor: 'rgba(0, 255, 0, 1)' }">
@@ -27,7 +27,7 @@
     </div>
 
     <div :style="{ top: (imageSize.height+titleHeight+4)*2 }">
-        <div :style="{ ...ContentFont, width: 120, height: titleHeight }">右下Overflow</div>
+        <div class="content-font" :style="{ width: 120, height: titleHeight }">右下Overflow</div>
         <div :style="{ top: titleHeight,
             width: imageSize.width+4, height: imageSize.height+4,
             backgroundColor: 'rgba(0, 255, 0, 1)' }">
@@ -44,7 +44,7 @@
     </div>
 
     <div :style="{ top: imageSize.height+titleHeight+4, left: imageSize.width+16 }">
-        <div :style="{ ...ContentFont, width: 100, height: titleHeight }">ClipPath</div>
+        <div class="content-font" :style="{ width: 100, height: titleHeight }">ClipPath</div>
         <div :style="{ top: titleHeight,
             width: imageSize.width+4, height: imageSize.height+4,
             backgroundColor: 'rgba(0, 255, 0, 1)' }">
@@ -61,12 +61,9 @@
 </template>
 
 <script setup>
-import { ContentFont } from '../../FontStyle';
+/* eslint-disable no-unused-vars */
 import testImgPath from '../../assets/test.jpg';
 
-</script>
-
-<script jsv-style>
 const titleHeight = 16;
 const imageSize = {
     width: 80,
@@ -77,3 +74,8 @@ const clipSize = {
     height: 40,
 };
 </script>
+
+
+<style>
+@import "../FontStyle.css";
+</style>

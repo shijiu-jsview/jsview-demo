@@ -1,12 +1,27 @@
 <template>
     <div id='item-root'>
-        <ContentBlock :=contentBlockProps :index=1 title="Keyframe基础动画集合" :style="{ top: itemSides.height * 0 }">
+        <ContentBlock
+            :class=contentClass
+            :style="{ top: itemSides.height * 0 }"
+            :=contentBlockProps
+            :index=1
+            title="Keyframe基础动画集合">
             <AnimKeyframeBasic/>
         </ContentBlock>
-        <ContentBlock :=contentBlockProps :index=2 title="Keyframe组合示例" :style="{ top: itemSides.height * 1 }">
+        <ContentBlock
+            :class=contentClass
+            :style="{ top: itemSides.height * 1 }"
+            :=contentBlockProps
+            :index=2
+            title="Keyframe组合示例">
             <AnimKeyframeComposite/>
         </ContentBlock>
-        <ContentBlock :="{...contentBlockProps, itemSides: {...itemSides, height:290}}" :index=3 title="Transition动画示例" :style="{ top: itemSides.height * 2}">
+        <ContentBlock
+            :class=contentClass
+            :style="{ top: itemSides.height * 2}"
+            :="{...contentBlockProps, itemSides: {...itemSides, height:290}}"
+            :index=3
+            title="Transition动画示例">
             <AnimTransition :timeCount=state.timeCount />
         </ContentBlock>
     </div>
@@ -14,6 +29,7 @@
 </template>
 
 <script setup>
+/* eslint-disable no-unused-vars */
 import { defineProps, reactive, onMounted, onBeforeUnmount } from "vue";
 import ContentBlock from '../ContentBlock';
 import AnimKeyframeBasic from './AnimKeyframeBasic';
@@ -22,7 +38,7 @@ import AnimTransition from './AnimTransition';
 
 const name = 'DivGroup2';
 const props = defineProps({
-  contentSize: Object,
+  contentClass: String,
   itemSides: Object 
 })
 
@@ -45,12 +61,8 @@ onBeforeUnmount(() => {
     timerId = -1;
 });
 
-</script>
-
-<script jsv-style>
 const contentBlockProps = {
     colIndex: 0,
-    contentSize: props.contentSize,
     itemSides: props.itemSides
 };
 </script>
