@@ -3,11 +3,15 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 const compilerSfc = require("./compiler-sfc.cjs");
-var jsvPostCssToJs = require('postcss-js');
+var postCss = require('postcss');
+var postCssJs = require('postcss-js');
+var postCssImport = require('postcss-import-sync');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e['default'] : e; }
 
-var jsvPostCssToJs__default = /*#__PURE__*/_interopDefaultLegacy(jsvPostCssToJs);
+var postCss__default = /*#__PURE__*/_interopDefaultLegacy(postCss);
+var postCssJs__default = /*#__PURE__*/_interopDefaultLegacy(postCssJs);
+var postCssImport__default = /*#__PURE__*/_interopDefaultLegacy(postCssImport);
 
 function ensureSfcDescriptor(descriptor) {
     // 如果css-style不存在，不做任何事
@@ -51,7 +55,7 @@ function compileCssToJs(sfc, options) {
     }
 
     let compileStyleOptions = {
-        // filename: sfc.filename,
+        filename: sfc.filename,
         id: `data-v-${options.id}`,
         // map: null,
         trim: true,
@@ -64,9 +68,9 @@ function compileCssToJs(sfc, options) {
     let jsvCssStyles = "if(!window.jsvCssStyle) { window.jsvCssStyle = {} };";
     jsvCssStyles += "Object.assign(window.jsvCssStyle, {";
     sfc.styles.forEach(style => {
-        if(!!style.module
-        || !!style.scoped) {
-            const errMsg = "JsView: style module/scoped is not released by Vue3!";
+        if(!!style.module) {
+            let errMsg = "JsView: style module is not released by Vue3!\n";
+            errMsg += style;
             console.error(errMsg + " errors =", errors);
             throw new Error(errMsg)
         }
@@ -82,43 +86,106 @@ function compileCssToJs(sfc, options) {
         
         const styleNodes = rawResult.result.root.nodes;
         styleNodes.forEach(node => {
-            const selector = node.selector;
-            // console.log('node=', node)
-            if(!selector) {
-                const errMsg = "JsView Error: Undefined selector is found!";
-                console.error(errMsg);
-                throw new Error(errMsg);
+            // console.log('node=', node.name)
+            if(node.name === "import") {
+                jsvCssStyles += compileImportNode(node);
+            } else if(node.name === "keyframes") {
+                jsvCssStyles += compileKeyframesNode(node);
+            } else if(!!node.selector) {
+                jsvCssStyles += compileSelectorNode(node);
+            } else {
+                console.log('===================================')
+                console.log('node=', node)
+                console.log('===================================')
+                check(false, node.source.input.css, "JsView Error: Unsupported css node.");
             }
-            if(!selector.startsWith('.')) {
-                let errMsg = "JsView Error: Only class selector is supported!\n";
-                errMsg += "JsView Error: Please use css like `.classname { property: value; }`";
-                console.error(errMsg);
-                throw new Error(errMsg);
-            }
-            const declarations = jsvPostCssToJs__default.objectify(node);
-            jsvCssStyles += "'" + selector.substr(1) + "':";
-            jsvCssStyles += JSON.stringify(declarations);
-            jsvCssStyles += ",";
         })
     })
     jsvCssStyles += "});";
+    // console.log('jsview-css-to-js.compileCssToJs() jsvCssStyles=' + jsvCssStyles)
 
     return "\n" + jsvCssStyles;
 }
 
-// function concatCssToJs(sfc, options) {
-//     const cssToJs = compileCssToJs(sfc, options);
-//     if(!!sfc.script) {
-//         console.log("JsView: concat css-style to <script>.");
-//         sfc.script.content += cssToJs;
-//     } else if(!!sfc.scriptSetup) {
-//         console.log("JsView: concat css-style to <script setup>.");
-//         sfc.scriptSetup.content += cssToJs;
-//     } else {
-//         console.error("JsView Error: Neither <script> or <script setup> is exists.");
-//         throw new Error()
-//     }
-// }
+function check(expr, source, errMsg) {
+    if(!expr) {
+        errMsg += (" source is: \n" + source);
+        console.error(errMsg);
+        throw new Error(errMsg);
+    }
+}
+
+function compileImportNode(node) {
+    const name = node.name;
+    check(name, node.source.input.css, "JsView Error: name is not found!");
+
+    check(name === "import", node.source.input.css, "JsView Error: @import name is not found!");
+
+    let result = null;
+    try {
+        const plugins = [].slice();
+        plugins.push(postCssImport__default)
+
+        const content = node.source.input.css.slice(node.source.start.offset, node.source.end.offset + 1);
+        check(content.endsWith(";"), "JsView Error: Failed to parse @import, please end with ';'")
+
+        const options = {
+            from: node.source.input.file
+        };
+
+        result = postCss__default(plugins).process(content, options);
+    } catch (e) {
+        console.log('JsView Error: Failed to compile css import node.', e);
+        throw e;
+    }
+
+    let styles = "";
+    const styleNodes = result.root.nodes;
+    styleNodes.forEach(node => {
+    // console.log('jsview-css-to-js.compileImportNode() ====== ' + node.selector);
+        if(!!node.selector) {
+            styles += compileSelectorNode(node);
+        } else {
+            check(false, node.source.input.css, "JsView Error: Unsupported css node from import css file.");
+        }
+    })
+
+    // console.log('jsview-css-to-js.compileImportNode() return ' + styles);
+    return styles
+}
+
+function compileKeyframesNode(node) {
+    const name = node.name;
+    check(name, node.source.input.css, "JsView Error: name is not found!");
+
+    check(name === "keyframes", node.source.input.css, "JsView Error: @keyframes name is not found!");
+
+    const content = node.source.input.css.slice(node.source.start.offset, node.source.end.offset + 1);
+
+    let styles = "'" + node.params + "':'";
+    styles += content.replace(/\n/g, " ");
+    styles += "',";
+
+    // console.log('jsview-css-to-js.compileKeyframesNode() return ' + styles);
+    return styles
+}
+
+function compileSelectorNode(node) {
+    const selector = node.selector;
+    check(selector, node.source.input.css, "JsView Error: Selector is not found!");
+
+    let errMsg = "JsView Error: Only class selector is supported!\n";
+    errMsg += "JsView Error: Please use css like `.classname { property: value; }`";
+    check(selector.startsWith('.'), node.source.input.css, errMsg);
+
+    const declarations = postCssJs__default.objectify(node);
+    let styles = "'" + selector.substr(1) + "':";
+    styles += JSON.stringify(declarations);
+    styles += ",";
+
+    // console.log('jsview-css-to-js.compileSelectorNode() return ', styles);
+    return styles;
+}
 
 exports.ensureSfcDescriptor = ensureSfcDescriptor;
 exports.compileCssToJs = compileCssToJs;
