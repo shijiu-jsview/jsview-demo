@@ -52,7 +52,7 @@ android {
         buildTypes.each {
             it.buildConfigField("String", "APP_URL", "\"${CustomConfig_AppUrl}\"")
             it.buildConfigField("String", "JSVIEW_JS_ENGINE_URL", "\"${CustomConfig_EngineUrl}\"")
-            it.buildConfigFiled("String", "CORE_VERSION_RANGE", "\"${CustomConfig_CoreVersionRange}\"")
+            it.buildConfigField("String", "CORE_VERSION_RANGE", "\"${CustomConfig_CoreVersionRange}\"")
         }
 
         release {
