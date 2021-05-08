@@ -149,10 +149,11 @@ export const HomePageStyle = {
     },
     image: {
       normalStyle: {
+        borderImage: `url(null) 0 fill`,
         borderRadius: '8px 8px 8px 8px',
       },
       focusStyle: {
-        animation: "focusScale 0.25s",
+        transform: "scale3d(1.03,1.03,1)",
         borderRadius: '8px 8px 8px 8px',
         borderImage: `url(${borderImgPath}) 40 fill`,
         borderImageWidth: '40px',
