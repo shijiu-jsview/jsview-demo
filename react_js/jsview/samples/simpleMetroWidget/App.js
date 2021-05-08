@@ -293,8 +293,8 @@ class MainScene extends FocusBlock {
                             style={{ top: this.state.focusStyle.y, left: this.state.focusStyle.x, width: this.state.focusStyle.w, height: this.state.focusStyle.h }}
                             imageUrl={borderImgPath}
                             imageWidth={81}
-                            contentWidth={21}
-                            borderOutset={10}
+                            contentWidth={25}
+                            borderOutset={14}
                             animTime={0.2}
                         />
                     </div>
