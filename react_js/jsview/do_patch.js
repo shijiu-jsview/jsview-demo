@@ -154,11 +154,25 @@ function installDepends(options) {
     if(!!fs.rmSync) {
         fs.rmSync(nodeModuleCacheDir, { recursive: true, force: true });
     } else {
-        fs.rmdirSync(nodeModuleCacheDir, { recursive: true });
+		deleteFolderRecursive(nodeModuleCacheDir)
     }
 }
 
-
+function deleteFolderRecursive(path) {
+    var files = [];
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
 async function printRevision(options) {
     const jsveiwVersionFile = options.env.jsviewDir + "/dom/target_core_revision.js";
 
