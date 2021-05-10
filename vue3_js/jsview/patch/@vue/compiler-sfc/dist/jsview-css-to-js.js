@@ -3,19 +3,18 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 const compilerSfc = require("./compiler-sfc.cjs");
-var hash = require('hash-sum');
-var postCss = require('postcss');
-var postCssJs = require('postcss-js');
-var postCssImport = require('postcss-import-sync');
+
+var findCacheDir = _interopDefaultLegacy(require("find-cache-dir"));
+var fs = _interopDefaultLegacy(require('fs'));
+var hash = _interopDefaultLegacy(require('hash-sum'));
+var path = _interopDefaultLegacy(require('path'));
+var postCss = _interopDefaultLegacy(require('postcss'));
+var postCssJs = _interopDefaultLegacy(require('postcss-js'));
+var postCssImport = _interopDefaultLegacy(require('postcss-import-sync'));
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e['default'] : e; }
 
-var hash__default = /*#__PURE__*/_interopDefaultLegacy(hash);
-var postCss__default = /*#__PURE__*/_interopDefaultLegacy(postCss);
-var postCssJs__default = /*#__PURE__*/_interopDefaultLegacy(postCssJs);
-var postCssImport__default = /*#__PURE__*/_interopDefaultLegacy(postCssImport);
-
-var importedCssHashSet = new Set()
+var cachedCssStyles = {}
 
 function ensureSfcDescriptor(descriptor) {
     // 如果css-style不存在，不做任何事
@@ -71,6 +70,7 @@ function compileCssToJs(sfc, options) {
     };
     // let styleCodeContainer = new Set();
     let styleContentContainer = "";
+    let styleImportContainer = "";
     sfc.styles.forEach(style => {
         if(!!style.module) {
             let errMsg = "JsView: style module is not released by Vue3!\n";
@@ -88,33 +88,59 @@ function compileCssToJs(sfc, options) {
             throw new Error(errMsg)
         }
         
+        const cacheDir = findCacheDir({
+            name: 'jsview-dom', create: true
+        });
+        const adaptPath = (path.posix || path);
+
         const styleNodes = rawResult.result.root.nodes;
         styleNodes.forEach(node => {
             // console.log('node=', node.name)
+
             if(node.name === "import") {
-                const styleContent = compileImportNode(node);
+                const styleInfo = compileImportNode(node);
                 // styleCodeContainer.add(styleCode);
-                
-                // 检测文件是否被重复import
-                const styleHash = hash__default(styleContent);
-                if(importedCssHashSet.has(styleHash)) {
-                    // console.log("style has been imported" + styleContent);
-                    return;
-                }
+
+                // 检测selector是否已经处理过
+                checkSelectors(node, styleInfo.styleFilePath, styleInfo.styleSelectors);
+
+                // 保存到js文件并import到script中
+                const styleFileName = adaptPath.basename(styleInfo.styleFilePath)
+                                    + `.${hash(styleInfo.styleFilePath)}.js`;
+                const styleJsFilePath = adaptPath.join(cacheDir, styleFileName);
+
+                let styleContent = "\nObject.assign(window.JsvCode.Dom.StyleSheets, {";
+                styleContent += styleInfo.styleContent;
+                styleContent += "});\n";
+                fs.writeFileSync(styleJsFilePath, styleContent, "utf8");
+
+                styleImportContainer += `\nimport "${styleJsFilePath}";`
+            } else if(node.name === "keyframes") {
+                const styleFilePath = node.source.input.file;
+                const styleSelectors = new Set([node.params]);
+                const styleContent = compileKeyframesNode(node);
+
+                // 检测selector是否已经处理过
+                checkSelectors(node, styleFilePath, styleSelectors);
 
                 styleContentContainer += styleContent;
-                importedCssHashSet.add(styleHash);
-            } else if(node.name === "keyframes") {
-                styleContentContainer += compileKeyframesNode(node);
             } else if(!!node.selector) {
-                styleContentContainer += compileSelectorNode(node);
+                const styleFilePath = node.source.input.file;
+                const styleSelectors = new Set([node.selector]);
+                const styleContent = compileSelectorNode(node);
+
+                // 检测selector是否已经处理过
+                checkSelectors(node, styleFilePath, styleSelectors);
+
+                styleContentContainer += styleContent;
             } else {
                 check(false, node.source.input.css, "JsView Error: Unsupported css node.");
             }
         })
     })
 
-    let jsvStyleSheets = "\nObject.assign(window.JsvCode.Dom.StyleSheets, {";
+    let jsvStyleSheets = styleImportContainer;
+    jsvStyleSheets += "\nObject.assign(window.JsvCode.Dom.StyleSheets, {";
     jsvStyleSheets += styleContentContainer;
     jsvStyleSheets += "});\n";
 
@@ -125,6 +151,31 @@ function compileCssToJs(sfc, options) {
 
     // console.log('jsview-css-to-js.compileCssToJs() jsvStyleSheets=' + jsvStyleSheets)
     return jsvStyleSheets;
+}
+
+function checkSelectors(node, styleFilePath, styleSelectors) {
+    for(let cachedFilePath in cachedCssStyles) {
+        if(cachedFilePath == styleFilePath) {
+            continue;
+        }
+
+        const cachedSelectors = cachedCssStyles[cachedFilePath];
+        for(let selector of cachedSelectors) {
+            if(styleSelectors.has(selector)) { // 发现重复的selector
+                let errMsg = "JsView Error: Multi defined CSS selector '" + selector + "' from " + node.source.input.file + ".\n";
+                errMsg += "It has been defined in " + cachedFilePath + ".\n";
+                check(false, node.source.input.css, errMsg);
+            }
+        }
+    }
+
+    // 添加到缓存
+    let cachedSelectors = cachedCssStyles[styleFilePath];
+    if(!cachedSelectors) {
+        cachedSelectors = new Set()
+    }
+    cachedSelectors = new Set([...cachedSelectors, ...styleSelectors]);
+    cachedCssStyles[styleFilePath] = cachedSelectors;
 }
 
 function check(expr, source, errMsg) {
@@ -144,7 +195,7 @@ function compileImportNode(node) {
     let result = null;
     try {
         const plugins = [].slice();
-        plugins.push(postCssImport__default)
+        plugins.push(postCssImport)
 
         const content = node.source.input.css.slice(node.source.start.offset, node.source.end.offset + 1);
         check(content.endsWith(";"), "JsView Error: Failed to parse @import, please end with ';'")
@@ -153,13 +204,17 @@ function compileImportNode(node) {
             from: node.source.input.file
         };
 
-        result = postCss__default(plugins).process(content, options);
+        result = postCss(plugins).process(content, options);
     } catch (e) {
         console.log('JsView Error: Failed to compile css import node.', e);
         throw e;
     }
 
-    const styleFile = node.params;
+    const sourceDir = path.dirname(node.source.input.file);
+    let styleFileName = node.params.replace(/^["'](.+(?=["']$))["']$/, '$1')
+    const styleFilePath = path.resolve(sourceDir, styleFileName);
+    // console.log('jsview-css-to-js.compileImportNode() ====== ' + aaa);
+    let styleSelectors = new Set();
     let styleContent = "";
 
     const styleNodes = result.root.nodes;
@@ -167,14 +222,18 @@ function compileImportNode(node) {
     // console.log('jsview-css-to-js.compileImportNode() ====== ' + node.selector);
         if(!!node.selector) {
             styleContent += compileSelectorNode(node);
+            styleSelectors.add(node.selector);
         } else {
             check(false, node.source.input.css, "JsView Error: Unsupported css node from import css file.");
         }
     })
 
-
     // console.log('jsview-css-to-js.compileImportNode() return ' + styleContent);
-    return styleContent;
+    return {
+        styleFilePath,
+        styleSelectors,
+        styleContent
+    };
 }
 
 function compileKeyframesNode(node) {
@@ -201,7 +260,7 @@ function compileSelectorNode(node) {
     errMsg += "JsView Error: Please use css like `.classname { property: value; }`";
     check(selector.startsWith('.'), node.source.input.css, errMsg);
 
-    const declarations = postCssJs__default.objectify(node);
+    const declarations = postCssJs.objectify(node);
     let styleContent = "'" + selector.substr(1) + "':";
     styleContent += JSON.stringify(declarations);
     styleContent += ",";
