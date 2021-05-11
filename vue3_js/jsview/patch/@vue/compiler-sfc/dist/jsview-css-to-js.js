@@ -14,6 +14,8 @@ var postCssImport = _interopDefaultLegacy(require('postcss-import-sync'));
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e['default'] : e; }
 
+const adaptPath = (path.posix || path);
+
 var cachedCssStyles = {}
 
 function ensureSfcDescriptor(descriptor) {
@@ -88,11 +90,6 @@ function compileCssToJs(sfc, options) {
             throw new Error(errMsg)
         }
         
-        const cacheDir = findCacheDir({
-            name: 'jsview-dom', create: true
-        });
-        const adaptPath = (path.posix || path);
-
         const styleNodes = rawResult.result.root.nodes;
         styleNodes.forEach(node => {
             // console.log('node=', node.name)
@@ -101,37 +98,21 @@ function compileCssToJs(sfc, options) {
                 const styleInfo = compileImportNode(node);
                 // styleCodeContainer.add(styleCode);
 
-                // 检测selector是否已经处理过
-                checkSelectors(node, styleInfo.styleFilePath, styleInfo.styleSelectors);
-
-                // 保存到js文件并import到script中
-                const styleFileName = adaptPath.basename(styleInfo.styleFilePath)
-                                    + `.${hash(styleInfo.styleFilePath)}.js`;
-                const styleJsFilePath = adaptPath.join(cacheDir, styleFileName);
-
-                let styleContent = "\nObject.assign(window.JsvCode.Dom.StyleSheets, {";
-                styleContent += styleInfo.styleContent;
-                styleContent += "});\n";
-                fs.writeFileSync(styleJsFilePath, styleContent, "utf8");
-
-                styleImportContainer += `\nimport "${styleJsFilePath}";`
+                checkSelectors(node, styleInfo.styleFilePath, styleInfo.styleSelectors); // 检测selector是否已经处理过
+                styleImportContainer += `\nimport "${styleInfo.styleJsFilePath}";`
             } else if(node.name === "keyframes") {
                 const styleFilePath = node.source.input.file;
                 const styleSelectors = new Set([node.params]);
                 const styleContent = compileKeyframesNode(node);
 
-                // 检测selector是否已经处理过
-                checkSelectors(node, styleFilePath, styleSelectors);
-
+                checkSelectors(node, styleFilePath, styleSelectors); // 检测selector是否已经处理过
                 styleContentContainer += styleContent;
             } else if(!!node.selector) {
                 const styleFilePath = node.source.input.file;
                 const styleSelectors = new Set([node.selector]);
                 const styleContent = compileSelectorNode(node);
 
-                // 检测selector是否已经处理过
-                checkSelectors(node, styleFilePath, styleSelectors);
-
+                checkSelectors(node, styleFilePath, styleSelectors); // 检测selector是否已经处理过
                 styleContentContainer += styleContent;
             } else {
                 check(false, node.source.input.css, "JsView Error: Unsupported css node.");
@@ -210,16 +191,17 @@ function compileImportNode(node) {
         throw e;
     }
 
-    const sourceDir = path.dirname(node.source.input.file);
+    const sourceDir = adaptPath.dirname(node.source.input.file);
     let styleFileName = node.params.replace(/^["'](.+(?=["']$))["']$/, '$1')
-    const styleFilePath = path.resolve(sourceDir, styleFileName);
-    // console.log('jsview-css-to-js.compileImportNode() ====== ' + aaa);
+    const styleFilePath = adaptPath.resolve(sourceDir, styleFileName);
+    return compileAndSaveImportedNode(styleFilePath, result.root.nodes);
+}
+
+function compileAndSaveImportedNode(styleFilePath, styleNodes) {
     let styleSelectors = new Set();
     let styleContent = "";
 
-    const styleNodes = result.root.nodes;
     styleNodes.forEach(node => {
-    // console.log('jsview-css-to-js.compileImportNode() ====== ' + node.selector);
         if(!!node.selector) {
             styleContent += compileSelectorNode(node);
             styleSelectors.add(node.selector);
@@ -228,11 +210,21 @@ function compileImportNode(node) {
         }
     })
 
-    // console.log('jsview-css-to-js.compileImportNode() return ' + styleContent);
+    // 保存到js文件并import到script中
+    const cacheDir = findCacheDir({
+        name: 'jsview-dom', create: true
+    });
+    const styleJsFileName = adaptPath.basename(styleFilePath) + `.${hash(styleFilePath)}.js`;
+    const styleJsFilePath = adaptPath.join(cacheDir, styleJsFileName);
+
+    styleContent = "\nObject.assign(window.JsvCode.Dom.StyleSheets, {" + styleContent;
+    styleContent += "});\n";
+    fs.writeFileSync(styleJsFilePath, styleContent, "utf8");
+
     return {
         styleFilePath,
         styleSelectors,
-        styleContent
+        styleJsFilePath
     };
 }
 
@@ -271,3 +263,4 @@ function compileSelectorNode(node) {
 
 exports.ensureSfcDescriptor = ensureSfcDescriptor;
 exports.compileCssToJs = compileCssToJs;
+exports.compileAndSaveImportedNode = compileAndSaveImportedNode;

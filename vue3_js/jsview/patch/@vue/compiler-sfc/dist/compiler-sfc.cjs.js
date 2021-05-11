@@ -1179,6 +1179,13 @@ function doCompileStyle(options) {
         // force synchronous transform (we know we only have sync plugins)
         code = result.css;
         outMap = result.map;
+
+        // 当@import的css文件内容发生变化后，更新css到js文件。
+        const node = result.root;
+        if(!!node && !!node.source && !!node.source.input && !!node.source.input.file
+        && node.source.input.file.endsWith('css')) {
+            jsvCssToJs.compileAndSaveImportedNode(node.source.input.file, node.nodes);
+        }
     }
     catch (e) {
         errors.push(e);
