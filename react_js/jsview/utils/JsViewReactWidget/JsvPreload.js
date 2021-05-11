@@ -82,15 +82,27 @@ class JsvPreload extends React.Component {
   _releaseForgeView() {
     if (window.JsView) {
       if (this._PreloadViewList.length > 0) {
-        for (const i of this._PreloadViewList) {
-          ForgeExtension.RootActivity.ViewStore.remove(i);
+        for (const view_info of this._PreloadViewList) {
+          let id = view_info.viewId;
+          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+          if (view_info.textureRef && view_info.textureRef.DisableBackgroundLoad) {
+            view_info.textureRef.DisableBackgroundLoad(this);
+            view_info.textureRef.UnregisterLoadImageCallback(view_info.callToken);
+          }
+          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._PreloadViewList = [];
       }
 
       if (this._DownloadViewList.length > 0) {
-        for (const i of this._DownloadViewList) {
-          ForgeExtension.RootActivity.ViewStore.remove(i);
+        for (const view_info of this._DownloadViewList) {
+          let id = view_info.viewId;
+          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+          if (view_info.textureRef && view_info.textureRef.DisableBackgroundLoad) {
+            view_info.textureRef.DisableBackgroundLoad(this);
+            view_info.textureRef.UnregisterLoadImageCallback(view_info.callToken);
+          }
+          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._DownloadViewList = [];
       }
@@ -156,19 +168,32 @@ class JsvPreload extends React.Component {
       if (item.width !== 0 && item.height !== 0) {
         target_size = { width: item.width, height: item.height };
       }
-      const texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
-      texture.RegisterLoadImageCallback(null, (params) => {
+      let texture = null;
+      if (image_url.toLowerCase().indexOf(".webp") >= 0 || image_url.toLowerCase().indexOf(".gif") >= 0) {
+        texture = ForgeExtension.TextureManager.GetGifImage(image_url, false);
+      } else {
+        texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
+      }
+      let callback_token = texture.RegisterLoadImageCallback(null, (params) => {
         console.log(`preload succeed ${image_url}`, params);
         this._PreloadStateList[index] = true;
         this._PreloadResultMap[item.url] = { width: params.width, height: params.height };
         console.log(`preload succeed ${item.url}, params:${params}`);
         this._checkPreload();
       });
+      if (texture.EnableBackgroundLoad) {
+        texture.EnableBackgroundLoad(this);
+      }
       const texture_setting = new Forge.ExternalTextureSetting(texture);
       const preload_view = new Forge.PreloadView(texture_setting);
-      return ForgeExtension.RootActivity.ViewStore.add(
-        new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
-      );
+      return {
+        viewId: ForgeExtension.RootActivity.ViewStore.add(
+          new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
+        ),
+        textureRef: texture,
+        callToken: callback_token
+      };
+      return ;
     });
   }
 
@@ -198,15 +223,23 @@ class JsvPreload extends React.Component {
         }
       }
       const texture = ForgeExtension.TextureManager.GetDownloadTexture(image_url);
-      texture.RegisterLoadImageCallback(null, () => {
+      let callback_token = texture.RegisterLoadImageCallback(null, () => {
         this._DownloadStateList[index] = true;
         this._checkDownload();
       });
-      const texture_setting = new Forge.ExternalTextureSetting(texture);
+      if (texture.EnableBackgroundLoad) {
+        texture.EnableBackgroundLoad(this);
+      }
+      const texture_setting = new Forge.TextureSetting(texture); // Download类型的释放跟随view一同释放
       const preload_view = new Forge.PreloadView(texture_setting);
-      return ForgeExtension.RootActivity.ViewStore.add(
-        new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
-      );
+
+      return {
+        viewId: ForgeExtension.RootActivity.ViewStore.add(
+          new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
+        ),
+        textureRef: texture,
+        callToken: callback_token
+      };
     });
   }
 
@@ -246,12 +279,14 @@ class JsvPreload extends React.Component {
       return (
         <React.Fragment>
           {
-            this._PreloadViewList.map(id => {
+            this._PreloadViewList.map(obj => {
+              let id = obj.viewId;
               return <div key={id} id={id} jsv_innerview={id}/>;
             })
           }
           {
-            this._DownloadViewList.map(id => {
+            this._DownloadViewList.map(obj => {
+              let id = obj.viewId;
               return <div key={id} id={id} jsv_innerview={id}/>;
             })
           }

@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.qcode.jsview.sample.submodule.JsViewState;
 import com.qcode.jsview.sample.submodule.JsViewVersionUtils;
 import com.qcode.jsview.sample.submodule.StartIntentBaseParser;
 import com.qcode.jsview.sample.submodule.ViewsManagerDefine;
+import com.qcode.jsview.shared_defined.AckEventDefine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,7 +89,7 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 		view_wrapper.activeLoadTimer(()->{
 			Log.e(TAG, "FATAL: Corner page loading timeout");
 			mServiceLifeControl.stopService();
-		}, 8000); // 启动前都不可见，所以可以设置长一点的计时器
+		}, 30000); // 启动前都不可见，所以可以设置长一点的计时器
 
 		jsview.loadUrl2(
 			start_intent_parser.engineUrl,
@@ -482,6 +484,24 @@ public class QuickShowViewManager extends ViewsManagerDefine {
 			mActiveViewsMap.put(view_wrapper.id, view_wrapper);
 		} else {
 			view_wrapper = null;
+		}
+
+
+		if (view_wrapper != null) {
+			// 处理界面出错后导致返回键处理不了问题(例如界面未显示但焦点已抢)
+			JsView final_jsview = view_wrapper.view;
+			view_wrapper.view.listenerToAckEvent(
+					AckEventDefine.CATEGORY_EXCEPTION,
+					AckEventDefine.TYPE_EXCEPTION_UNHANDLED_EXIT_ACTION,
+					"*",
+					(Bundle event_data)->{
+						Log.d(TAG, "Found unhandled exit action "
+								+ "reason=" + event_data.getString("reason")
+								+ "comment=" + event_data.getString("comment")
+						);
+						closePage(final_jsview);
+					}
+			);
 		}
 
 		return view_wrapper;

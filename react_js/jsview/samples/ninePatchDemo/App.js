@@ -18,7 +18,6 @@
  */
 
 import React from 'react';
-import "./App.css";
 import { HORIZONTAL, SimpleWidget, SlideStyle } from "../../utils/JsViewEngineWidget/index_widget";
 import { JsvSquareNinePatch } from '../../utils/JsViewReactWidget/JsvNinePatch';
 import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
@@ -68,26 +67,31 @@ class Item extends React.Component {
     focus() {
         this.setState({
             focus: true,
-            anim: "NinePatchDemo_FocusScale 0.2s"
         })
     }
 
     blur() {
         this.setState({
             focus: false,
-            anim: "NinePatchDemo_BlurScale 0.2s"
         })
     }
 
     render() {
         let item = this.props.data;
-        const width = this.state.focus ? (item.blocks.w - 10) * (1 / 0.9) : item.blocks.w - 10;
-        const height = this.state.focus ? (item.blocks.h - 10) * (1 / 0.9) : item.blocks.h - 10;
-        const x = this.state.focus ? ((item.blocks.w - 10) - width) / 2 : 0;
-        const y = this.state.focus ? ((item.blocks.h - 10) - height) / 2 : 0;
+        const width = item.blocks.w - 10;
+        const height = item.blocks.h - 10;
+
+        const scale_set = this.state.focus ? "scale3d(1.05,1.05,1)" : null;
 
         return (
-            <div style={{ animation: this.state.anim, left: x, top: y, backgroundColor: item.color, width: width, height: height, color: "#FFFFFF", animation: this.state.anim }}>
+            <div style={{
+                transition: "transform 0.2s linear",
+                transform: scale_set,
+                left: 0, top: 0,
+                backgroundColor: item.color,
+                width: width, height: height,
+                color: "#FFFFFF",
+                }}>
                 {item.content}
             </div>
         )
@@ -145,7 +149,20 @@ class MainScene extends FocusBlock {
         return (
             <div>
                 <div style={{ width: 1280, height: 720, backgroundColor: '#FFFFFF' }}>
+                    <div style={{
+                        textAlign: "center",
+                        fontSize: "30px",
+                        lineHeight: "50px",
+                        color: "#ffffff",
+                        left: 140,
+                        top: 20,
+                        width: 1000,
+                        height: 50,
+                        backgroundColor: "rgba(27,38,151,0.8)"
+                    }}>{`NinePatch展示,框的四个角的方形中心和项目的四个顶点严格对齐`}</div>
                     <SimpleWidget
+                        top={100}
+                        left={250}
                         width={1000}
                         height={400}
                         direction={HORIZONTAL}
@@ -159,13 +176,13 @@ class MainScene extends FocusBlock {
                         padding={{ left: 50, right: 50, top: 50, height: 50 }}
                         branchName={`${this.props.branchName}/swidget`} />
                 </div>
-                <div style={{ top: 50, left: 50 }}>
+                <div style={{ top: 150, left: 300 }}>
                     <JsvSquareNinePatch
                         style={{ top: this.state.focusFrameY, left: this.state.focusFrameX, width: this.state.focusFrameW, height: this.state.focusFrameH }}
                         imageUrl={borderImgPath}
-                        imageWidth={81}
-                        contentWidth={21}
-                        borderOutset={10}
+                        imageWidth={81}  // 框图原图为 81 x 81
+                        contentWidth={25} // 框图中心空白区域为 25 x 25
+                        borderOutset={14} // 框图四个角的方块的中心点距离边缘为14(为了达到框图四角方形中心和所框区域四角对齐)
                         animTime={0.2}
                     />
                 </div>

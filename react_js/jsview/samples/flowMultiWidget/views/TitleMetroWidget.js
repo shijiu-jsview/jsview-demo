@@ -47,29 +47,22 @@ class Item extends React.Component {
         let item = this.props.data;
         let image_style;
         if (this.state.focus) {
-            const image_width = item.blocks.w - this.props.pageTheme.content.gap.width;
-            const scale_width = parseInt(image_width * this.props.pageTheme.content.scale);
-            const left = -parseInt((scale_width - image_width) / 2);
-            const image_height = item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.focusStyle.height;
-            const scale_height = parseInt(image_height * this.props.pageTheme.content.scale);
-            const top = -parseInt((scale_height - image_height) / 2);
-            console.log(`_RenderFocus left:${left}, top:${top},width:${scale_width}, height:${scale_height}`);
             image_style = Object.assign({}, this.props.pageTheme.content.image.focusStyle, {
                 backgroundImage: `url(${item.content.url})`,
-                left,
-                top,
-                width: scale_width,
-                height: scale_height,
+                transition: "transform 0.25s linear",
+                width: item.blocks.w - this.props.pageTheme.content.gap.width,
+                height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
             });
         } else {
             image_style = Object.assign({}, this.props.pageTheme.content.image.normalStyle, {
                 backgroundImage: `url(${item.content.url})`,
+                transition: "transform 0.25s linear",
                 width: item.blocks.w - this.props.pageTheme.content.gap.width,
                 height: item.blocks.h - this.props.pageTheme.content.gap.height - this.props.pageTheme.content.title.normalStyle.height,
             });
         }
         return (
-            <div key={this.state.focus ? "focus" : "normal"}>
+            <div key={"myItem"}>
                 <ItemImage style={image_style} />
                 <ItemTitle focus={this.state.focus} text={item.content.title} style={this.state.focus ? this.props.pageTheme.content.title.focusStyle : this.props.pageTheme.content.title.normalStyle} />
             </div>

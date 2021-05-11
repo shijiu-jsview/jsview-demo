@@ -131,12 +131,16 @@ main_run()
 	cd react_js;
 	
 	# 更新环境状态
+	if [ -f "package-lock.json-perfect" ]; then
+		loginfo "USE package-lock.json-perfect"
+		cp package-lock.json-perfect package-lock.json
+	fi
 	npm install
 	cd jsview/
 	node do_patch.js
 	cd ../
 		
-	loginfo "CERT_PATH=${CERT_PATH}"	
+	loginfo "CERT_PATH=${CERT_PATH}"
 		
 	# 生成crt和pem签名文件
 	cp ${CERT_PATH}/app_sign_private_key_sample.crt src/appConfig/app_sign_private_key.crt
@@ -150,15 +154,15 @@ main_run()
 	echo "MAIN JS SUB_PATH: ${main_path}"
 
 	# 输出 Core 版本信息
-	local core_revision=`cat jsview/dom/target_core_revision.js | grep "JsViewES6"`
-	core_revision=${core_revision#*\"}; # 去掉开头的引号
-	core_revision=${core_revision%\",*}; # 去掉末尾的引号
+	local core_revision=`cat jsview/dom/target_core_revision.js | grep "CoreRevision"`
+	core_revision=${core_revision#*CoreRevision:}; # 去掉开头
+	core_revision=${core_revision%,*}; # 去掉末尾的引号
 	echo "CORE REVISION: ${core_revision}"
 	
 	# 输出 engineJs 信息
-	local engine_js=`cat jsview/dom/target_core_revision.js | grep "CoreRevision"`
-	engine_js=${engine_js#*CoreRevision:}; # 去掉开头
-	engine_js=${engine_js%,*}; # 去掉末尾的引号
+	local engine_js=`cat jsview/dom/target_core_revision.js | grep "JsViewES6"`
+	engine_js=${engine_js#*\"}; # 去掉开头的引号
+	engine_js=${engine_js%\",*}; # 去掉末尾的引号
 	echo "ENGINE JS: ${engine_js}"
 	
 	loginfo "DONE !!!";

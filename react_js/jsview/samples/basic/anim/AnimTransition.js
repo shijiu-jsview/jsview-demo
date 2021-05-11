@@ -12,6 +12,8 @@ class AnimTransition extends React.Component {
       transformTranslate: null,
       transformRotate: null,
     };
+    this._Timer1 = -1;
+    this._Timer2 = -1;
     this._changeState();
     this._Timer = setInterval(() => {
       this._changeState();
@@ -19,7 +21,7 @@ class AnimTransition extends React.Component {
   }
 
   _changeState=() => {
-    setTimeout(() => {
+    this._Timer1 = setTimeout(() => {
       // 状态变更
       this.setState({
         transformScale: 'scale3d(0.2,0.2,1.0)',
@@ -29,7 +31,7 @@ class AnimTransition extends React.Component {
         transformOrigin: 'center center'
       });
       // 状态变更
-      setTimeout(() => {
+      this._Timer2 = setTimeout(() => {
         this.setState({
           transformScale: 'scale3d(1.2,1.2,1.0)',
           transformRotate: 'rotate3d(0, 0, 1.0, -360deg)',
@@ -103,6 +105,14 @@ class AnimTransition extends React.Component {
     if (this._Timer >= 0) {
       window.clearInterval(this._Timer);
       this._Timer = -1;
+    }
+    if (this._Timer1 >= 0) {
+      window.clearTimeout(this._Timer1);
+      this._Timer1 = -1;
+    }
+    if (this._Timer2 >= 0) {
+      window.clearTimeout(this._Timer2);
+      this._Timer2 = -1;
     }
   }
 }

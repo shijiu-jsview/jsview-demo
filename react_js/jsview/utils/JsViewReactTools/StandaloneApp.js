@@ -15,8 +15,9 @@ import { DebugObjectRefer } from "./DebugTool";
 /*
  * createStandaloneApp 参数说明:
  *      main_scene_component   (React.Component)    应用主场景Component
+ *      override_load_notify (function)          重载componentDidMount自动调用的notifyPageLoaded处理
  */
-function createStandaloneApp(main_scene_component) {
+function createStandaloneApp(main_scene_component, override_load_notify) {
   return class extends React.Component {
     constructor(props) {
       super(props);
@@ -26,7 +27,7 @@ function createStandaloneApp(main_scene_component) {
     render() {
       const scene = React.createElement(main_scene_component,
           {
-            branchName: "/MySelf",
+            branchName: "/__MainJsvApp",
             standAlone: true,
             navigateHome: ()=>{jJsvRuntimeBridge.closePage();}
           });
@@ -39,8 +40,14 @@ function createStandaloneApp(main_scene_component) {
 
     componentDidMount() {
       // Should overwrite if calling notifyPageLoaded in other scenario
-      this._FocusControl.changeFocus("/MySelf", true);
-      jJsvRuntimeBridge.notifyPageLoaded();
+      this._FocusControl.changeFocus("/__MainJsvApp", true);
+      if (!override_load_notify) {
+        jJsvRuntimeBridge.notifyPageLoaded();
+      } else if (override_load_notify instanceof Function) {
+        override_load_notify();
+      } else {
+        console.log("INFO: load notify NOT a function");
+      }
     }
   };
 }

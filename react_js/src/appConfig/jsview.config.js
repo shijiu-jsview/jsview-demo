@@ -26,7 +26,7 @@ export default {
         // PS:注意"164"的引号
         bindKeys: {
             keys: {
-                165: 20001
+                "164": 20001
             },
             syncKeys: {
             }
