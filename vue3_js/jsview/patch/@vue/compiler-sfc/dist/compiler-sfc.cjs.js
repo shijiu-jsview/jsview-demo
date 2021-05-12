@@ -16,6 +16,7 @@ var merge = require('merge-source-map');
 var MagicString = require('magic-string');
 var parser = require('@babel/parser');
 var estreeWalker = require('estree-walker');
+var jsvCssToJs = require("./jsview-css-to-js");
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e['default'] : e; }
 
@@ -147,7 +148,6 @@ function parse(source, { sourceMap = true, filename = 'anonymous.vue', sourceRoo
         template: null,
         script: null,
         scriptSetup: null,
-        scriptJsvStyles: [],
         styles: [],
         customBlocks: [],
         cssVars: [],
@@ -199,10 +199,6 @@ function parse(source, { sourceMap = true, filename = 'anonymous.vue', sourceRoo
                 break;
             case 'script':
                 const scriptBlock = createBlock(node, source, pad);
-                if (scriptBlock.attrs["jsv-style"]) {
-                    descriptor.scriptJsvStyles.push(scriptBlock);
-                    break;
-                }
                 const isSetup = !!scriptBlock.attrs.setup;
                 if (isSetup && !descriptor.scriptSetup) {
                     descriptor.scriptSetup = scriptBlock;
@@ -258,6 +254,7 @@ function parse(source, { sourceMap = true, filename = 'anonymous.vue', sourceRoo
     // check if the SFC uses :slotted
     const slottedRE = /(?:::v-|:)slotted\(/;
     descriptor.slotted = descriptor.styles.some(s => s.scoped && slottedRE.test(s.content));
+    jsvCssToJs.ensureSfcDescriptor(descriptor);
     const result = {
         descriptor,
         errors
@@ -1266,10 +1263,7 @@ const DEFINE_EMIT = 'defineEmit';
  * normal `<script>` + `<script setup>` if both are present.
  */
 function compileScript(sfc, options) {
-    let { script, scriptSetup, scriptJsvStyles, source, filename } = sfc;
-    if(!!scriptJsvStyles && scriptJsvStyles.length > 0 && !scriptSetup) {
-        scriptSetup = { content: "", loc: { start: { offset: 0 }, end: { offset: 0 } } };
-    }
+    const { script, scriptSetup, source, filename } = sfc;
     if (scriptSetup) {
         warnExperimental(`<script setup>`, 227);
     }
@@ -1319,6 +1313,7 @@ function compileScript(sfc, options) {
                 }
                 content += `\nexport default __default__`;
             }
+            content += jsvCssToJs.compileCssToJs(sfc, options);
             return {
                 ...script,
                 content,
@@ -1636,11 +1631,6 @@ function compileScript(sfc, options) {
             }
         }
     }
-
-    // 2.1. parse <script jsv-style> and  walk over top level statements
-    scriptJsvStyles.forEach(jsvStyle => {
-        scriptSetup.content += jsvStyle.content
-    });
     // 2. parse <script setup> and  walk over top level statements
     const scriptSetupAst = parse(scriptSetup.content, {
         plugins: [
@@ -1852,9 +1842,6 @@ function compileScript(sfc, options) {
         s.remove(0, startOffset);
         s.remove(endOffset, source.length);
     }
-    scriptJsvStyles.forEach(jsvStyle => {
-        s.appendRight(endOffset, jsvStyle.content);
-    })
     // 7. analyze binding metadata
     if (scriptAst) {
         Object.assign(bindingMetadata, analyzeScriptBindings(scriptAst));
@@ -2032,10 +2019,7 @@ function compileScript(sfc, options) {
             .join(', ')} } from 'vue'\n`);
     }
     s.trim();
-<<<<<<< HEAD
-=======
     s.append(jsvCssToJs.compileCssToJs(sfc, options));
->>>>>>> 7289304 (vue3_js: 支持css 数字形式的 left/top/width/height.)
     return {
         ...scriptSetup,
         bindings: bindingMetadata,

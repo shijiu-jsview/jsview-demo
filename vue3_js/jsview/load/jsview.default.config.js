@@ -7,7 +7,7 @@ export default {
             domain: "default",
             presetKeys: [
                 "value1",
-                "value3"
+                "value2"
             ],
         },
 

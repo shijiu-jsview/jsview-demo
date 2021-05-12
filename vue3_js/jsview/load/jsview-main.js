@@ -1,6 +1,6 @@
-import JsViewDefConfig from "./jsview.config.default"
-import JsViewVendorConfig from "../../src/appConfig/jsview.config"
-import { loadJsViewEnv } from 'jsview/load/loader'
+import JsViewDefConfig from "./jsview.default.config"
+import JsViewVendorConfig from "/src/appConfig/jsview.config"
+import { loadJsViewEnv } from './loader'
 
 function deepMerge(target, source) {
   const isObject = (obj) => obj && typeof obj === 'object';
