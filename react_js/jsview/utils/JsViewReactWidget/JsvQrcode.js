@@ -20,13 +20,13 @@
  */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import QRCodeImpl from 'qr.js/lib/QRCode';
+import QRCodeImpl from "qr.js/lib/QRCode";
 import { Forge, ForgeExtension } from "../../dom/jsv-forge-define";
 
-const ErrorCorrectLevel = require('qr.js/lib/ErrorCorrectLevel');
+const ErrorCorrectLevel = require("qr.js/lib/ErrorCorrectLevel");
 
 function convertStr(str) {
-  let out = '';
+  let out = "";
   for (let i = 0; i < str.length; i++) {
     let charcode = str.charCodeAt(i);
     if (charcode < 0x0080) {
@@ -43,7 +43,7 @@ function convertStr(str) {
       // from that
       i++;
       charcode =
-                0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
+        0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(i) & 0x3ff));
       out += String.fromCharCode(0xf0 | (charcode >> 18));
       out += String.fromCharCode(0x80 | ((charcode >> 12) & 0x3f));
       out += String.fromCharCode(0x80 | ((charcode >> 6) & 0x3f));
@@ -55,19 +55,19 @@ function convertStr(str) {
 
 const DEFAULT_PROPS = {
   size: 128,
-  level: 'L',
-  bgColor: '#FFFFFF',
-  fgColor: '#000000',
+  level: "L",
+  bgColor: "#FFFFFF",
+  fgColor: "#000000",
   includeMargin: false,
-  imageSettings:null,
+  imageSettings: null,
 };
 
 const PROP_TYPES =
-    process.env.NODE_ENV !== 'production'
-      ? {
+  process.env.NODE_ENV !== "production"
+    ? {
         value: PropTypes.string.isRequired,
         size: PropTypes.number,
-        level: PropTypes.oneOf(['L', 'M', 'Q', 'H']),
+        level: PropTypes.oneOf(["L", "M", "Q", "H"]),
         bgColor: PropTypes.string,
         fgColor: PropTypes.string,
         includeMargin: PropTypes.bool,
@@ -79,7 +79,7 @@ const PROP_TYPES =
           y: PropTypes.number,
         }),
       }
-      : {};
+    : {};
 
 const MARGIN_SIZE = 4;
 
@@ -115,8 +115,9 @@ function generatePath(modules, margin = 0) {
         } else {
           // Otherwise finish the current line.
           ops.push(
-            `M${start + margin},${y + margin} h${x + 1 - start}v1H${start +
-                        margin}z`
+            `M${start + margin},${y + margin} h${x + 1 - start}v1H${
+              start + margin
+            }z`
           );
         }
         return;
@@ -127,9 +128,8 @@ function generatePath(modules, margin = 0) {
       }
     });
   });
-  return ops.join('');
+  return ops.join("");
 }
-
 
 class QRCodeSVG extends Component {
   constructor() {
@@ -142,7 +142,7 @@ class QRCodeSVG extends Component {
     this._QRCodeView = null;
   }
 
-  getImageSettings(props,) {
+  getImageSettings(props) {
     const { imageSettings, size } = props;
     if (!imageSettings) {
       return null;
@@ -158,15 +158,24 @@ class QRCodeSVG extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const pre_image = this.props.imageSettings;
     const new_image = nextProps.imageSettings;
-    const image_changed = !((!pre_image && !new_image) || (pre_image && new_image && pre_image.src === new_image.src && pre_image.height === new_image.height && pre_image.width === new_image.width));
+    const image_changed = !(
+      (!pre_image && !new_image) ||
+      (pre_image &&
+        new_image &&
+        pre_image.src === new_image.src &&
+        pre_image.height === new_image.height &&
+        pre_image.width === new_image.width)
+    );
 
-    return nextProps.value !== this.props.value
-            || nextProps.size !== this.props.size
-            || nextProps.level !== this.props.level
-            || nextProps.bgColor !== this.props.bgColor
-            || nextProps.fgColor !== this.props.fgColor
-            || nextProps.includeMargin !== this.props.includeMargin
-            || image_changed;
+    return (
+      nextProps.value !== this.props.value ||
+      nextProps.size !== this.props.size ||
+      nextProps.level !== this.props.level ||
+      nextProps.bgColor !== this.props.bgColor ||
+      nextProps.fgColor !== this.props.fgColor ||
+      nextProps.includeMargin !== this.props.includeMargin ||
+      image_changed
+    );
   }
 
   render() {
@@ -183,36 +192,46 @@ class QRCodeSVG extends Component {
     }
 
     // Configure new QRCode
-    const {
-      value,
-      size,
-      level,
-      bgColor,
-      fgColor,
-      imageSettings,
-    } = this.props;
+    const { value, size, level, bgColor, fgColor, imageSettings } = this.props;
     let view = null;
     let lp_params = null;
 
     const texture_manager = ForgeExtension.TextureManager;
-    const qrcode_texture = texture_manager.GetQRCodeTexture(value, size, size, Forge.QRCodeLevel[level], bgColor, fgColor);
+    const qrcode_texture = texture_manager.GetQRCodeTexture(
+      value,
+      size,
+      size,
+      Forge.QRCodeLevel[level],
+      bgColor,
+      fgColor
+    );
     view = new Forge.LayoutView(new Forge.TextureSetting(qrcode_texture));
     const calculatedImageSettings = this.getImageSettings(this.props);
     if (imageSettings && calculatedImageSettings) {
       let url = imageSettings.src;
-      if (typeof (url) === "string") {
+      if (typeof url === "string") {
         url = new window.JsView.React.UrlRef(imageSettings.src).href;
       }
       const img_texture = texture_manager.GetImage(url);
-      const img_view = new Forge.LayoutView(new Forge.TextureSetting(img_texture));
-      view.AddView(img_view, new Forge.LayoutParams({
-        x: calculatedImageSettings.x,
-        y: calculatedImageSettings.y,
-        width: calculatedImageSettings.w,
-        height: calculatedImageSettings.h
-      }));
+      const img_view = new Forge.LayoutView(
+        new Forge.TextureSetting(img_texture)
+      );
+      view.AddView(
+        img_view,
+        new Forge.LayoutParams({
+          x: calculatedImageSettings.x,
+          y: calculatedImageSettings.y,
+          width: calculatedImageSettings.w,
+          height: calculatedImageSettings.h,
+        })
+      );
     }
-    lp_params = new Forge.LayoutParams({ x: 0, y: 0, width: size, height: size });
+    lp_params = new Forge.LayoutParams({
+      x: 0,
+      y: 0,
+      width: size,
+      height: size,
+    });
 
     // Add new QRCode
     this._QRCodeView = view;
@@ -233,7 +252,7 @@ class QRCodeSVG extends Component {
       this._renderJsvQRCode();
     }
 
-    return (<div jsv_innerview={this._InnerViewId}></div>);
+    return <div jsv_innerview={this._InnerViewId}></div>;
   }
 
   htmlQRCode() {
@@ -262,51 +281,53 @@ class QRCodeSVG extends Component {
     let image = null;
     if (imageSettings) {
       image = (
-                <div
-                    style={{
-                      backgroundImage: `url(${imageSettings.src})`,
-                      height: calculatedImageSettings.h,
-                      width: calculatedImageSettings.w,
-                      left: calculatedImageSettings.x + margin,
-                      top: calculatedImageSettings.y + margin,
-                    }}
-                />
+        <div
+          style={{
+            backgroundImage: `url(${imageSettings.src})`,
+            height: calculatedImageSettings.h,
+            width: calculatedImageSettings.w,
+            left: calculatedImageSettings.x + margin,
+            top: calculatedImageSettings.y + margin,
+          }}
+        />
       );
     }
     const fgPath = generatePath(cells, margin);
 
     if (window.JsvDisableReactWrapper) {
       return (
-                <div>
-                    <svg
-                        type="qrcode"
-                        shapeRendering="crispEdges"
-                        height={size}
-                        width={size}
-                        viewBox={`0 0 ${numCells} ${numCells}`}
-                        {...otherProps}>
-                        <path fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`}/>
-                        <path fill={fgColor} d={fgPath}/>
-                    </svg>
-                    {image}
-                </div>
+        <div>
+          <svg
+            type="qrcode"
+            shapeRendering="crispEdges"
+            height={size}
+            width={size}
+            viewBox={`0 0 ${numCells} ${numCells}`}
+            {...otherProps}
+          >
+            <path fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`} />
+            <path fill={fgColor} d={fgPath} />
+          </svg>
+          {image}
+        </div>
       );
     }
     // 含有react wrapper的场合，需要为dom标签加上jsv前缀以绕开Wrapper
     return (
-                <div>
-                    <jsvsvg
-                        type="qrcode"
-                        shapeRendering="crispEdges"
-                        height={size}
-                        width={size}
-                        viewBox={`0 0 ${numCells} ${numCells}`}
-                        {...otherProps}>
-                        <jsvpath fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`}/>
-                        <jsvpath fill={fgColor} d={fgPath}/>
-                    </jsvsvg>
-                    {image}
-                </div>
+      <div>
+        <jsvsvg
+          type="qrcode"
+          shapeRendering="crispEdges"
+          height={size}
+          width={size}
+          viewBox={`0 0 ${numCells} ${numCells}`}
+          {...otherProps}
+        >
+          <jsvpath fill={bgColor} d={`M0,0 h${numCells}v${numCells}H0z`} />
+          <jsvpath fill={fgColor} d={fgPath} />
+        </jsvsvg>
+        {image}
+      </div>
     );
   }
 
@@ -319,7 +340,7 @@ class QRCodeSVG extends Component {
   }
 }
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   QRCodeSVG.propTypes = PROP_TYPES;
 }
 
