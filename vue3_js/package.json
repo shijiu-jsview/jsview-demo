@@ -8,23 +8,21 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "gifuct-js": "^2.0.0",
+    "core-js": "3.12.1",
+    "gifuct-js": "2.1.1",
     "jsview-dom": "file:jsview/dom/bin/jsview-dom-package.tgz",
-    "vue": "^3.0.0",
-    "vue-loader-v16": "npm:vue-loader@^16.2.0",
-    "vue-style-loader": "^4.1.3"
+    "vue": "3.0.11"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.11",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
-    "postcss-import-sync": "^7.1.4",
-    "postcss-js": "^3.0.3"
+    "@vue/cli-plugin-babel": "5.0.0-beta.0",
+    "@vue/cli-plugin-eslint": "5.0.0-beta.0",
+    "@vue/cli-service": "5.0.0-beta.0",
+    "@vue/compiler-sfc": "3.0.11",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.26.0",
+    "eslint-plugin-vue": "7.9.0",
+    "postcss-import-sync": "7.1.4",
+    "postcss-js": "3.0.3"
   },
   "eslintConfig": {
     "root": true,
