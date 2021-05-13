@@ -3,3 +3,4 @@
  */
 
 import "./BrowserTransparentDiv";
+import "./BrowserQrcode";
