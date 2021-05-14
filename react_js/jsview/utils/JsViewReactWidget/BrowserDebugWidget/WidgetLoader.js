@@ -5,3 +5,4 @@
 import "./BrowserTransparentDiv";
 import "./BrowserQrcode";
 import "./BrowserApic"
+import "./BrowserPreload"

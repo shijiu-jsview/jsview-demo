@@ -68,7 +68,7 @@ const buildDownloadInfo = (url, net_setting = null) => {
   };
 };
 
-class JsvPreload extends React.Component {
+class _JsvPreload extends React.Component {
   constructor(props) {
     super(props);
     this._PreloadViewList = [];
@@ -285,63 +285,23 @@ class JsvPreload extends React.Component {
     });
   }
 
-  _htmlPreload() {
-    this._PreloadStateList = new Array(this.props.preloadList.length).fill(
-      false
-    );
-    this._PreloadViewList = this.props.preloadList.map((item, index) => {
-      const image = new Image();
-      image.onload = () => {
-        this._PreloadStateList[index] = true;
-        this._PreloadResultMap[item.url] = {
-          width: image.width,
-          height: image.height,
-        };
-        console.log(
-          `preload succeed ${item.url}, width:${image.width}, height:${image.height}`
-        );
-        this._checkPreload();
-      };
-      image.src = item.url;
-      return image;
-    });
-
-    this._DownloadStateList = new Array(this.props.downloadList.length).fill(
-      false
-    );
-    this._DownloadViewList = this.props.downloadList.map((item, index) => {
-      const image = new Image();
-      image.onload = () => {
-        this._DownloadStateList[index] = true;
-        console.log(`pre download succeed ${item.url}`);
-        this._checkDownload();
-      };
-      image.src = item.url;
-      return image;
-    });
-  }
-
   render() {
-    if (window.JsView) {
-      this._releaseForgeView();
-      this._getPreloadViewIdList();
-      this._getDownloadViewIdList();
+    this._releaseForgeView();
+    this._getPreloadViewIdList();
+    this._getDownloadViewIdList();
 
-      return (
-        <React.Fragment>
-          {this._PreloadViewList.map((obj) => {
-            const id = obj.viewId;
-            return <div key={id} id={id} jsv_innerview={id} />;
-          })}
-          {this._DownloadViewList.map((obj) => {
-            const id = obj.viewId;
-            return <div key={id} id={id} jsv_innerview={id} />;
-          })}
-        </React.Fragment>
-      );
-    }
-    this._htmlPreload();
-    return null;
+    return (
+      <React.Fragment>
+        {this._PreloadViewList.map((obj) => {
+          const id = obj.viewId;
+          return <div key={id} id={id} jsv_innerview={id} />;
+        })}
+        {this._DownloadViewList.map((obj) => {
+          const id = obj.viewId;
+          return <div key={id} id={id} jsv_innerview={id} />;
+        })}
+      </React.Fragment>
+    );
   }
 
   componentWillUnmount() {
@@ -350,11 +310,16 @@ class JsvPreload extends React.Component {
 }
 
 const emptyFunc = () => {};
-JsvPreload.defaultProps = {
+_JsvPreload.defaultProps = {
   preloadList: [],
   downloadList: [],
   onPreloadDone: emptyFunc,
   onDownloadDone: emptyFunc,
 };
+
+let JsvPreload = _JsvPreload;
+if (!window.JsView) {
+  JsvPreload = JsvWidgetWrapperGroup.getPreload(_JsvPreload);
+}
 
 export { buildPreloadInfo, buildDownloadInfo, JsvPreload };
