@@ -104,6 +104,19 @@ class LoadingDocument {
         return null;
     }
   }
+
+    getElementsByTagName(name) {
+        if(name.toLowerCase() === "head") {
+          return [this.head];
+        }
+        if(name.toLowerCase() === "link"
+        || name.toLowerCase() === "script"
+        || name.toLowerCase() === "style") {
+            return [];
+        }
+
+        throw Error("LoadingDocument.getElementsByTagName() name=" + name + " is UNIMPLEMENTED.");
+    }
 }
 
 function initHeaderScriptLoader(js_sub_path) {

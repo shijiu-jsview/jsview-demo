@@ -37,7 +37,7 @@ const itemSides = {
 .root {
   top: 10; left: 10;
   width: 1250; height: 670;
-  background-color: rgba(0, 0, 255, 0.1)
+  background-color: rgba(200, 200, 200, 1)
 }
 
 .content-size {
