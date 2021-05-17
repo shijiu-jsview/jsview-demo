@@ -10,7 +10,8 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <style scoped>
 .size {
-  width: 500;
+  width: 200;
+  height: 200;
 }
 
 </style>
