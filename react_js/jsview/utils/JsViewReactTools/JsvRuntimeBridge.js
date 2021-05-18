@@ -23,6 +23,14 @@ function direct_call(name, ...args) {
     return null;
 }
 
+/**
+ * 获取当前集成JsView的APP目前支持的扩展功能列表
+ *
+ * @returns {string} 功能列表，以逗号隔开，包含:
+ *      favourite : 支持加入收藏夹功能
+ *      history : 支持浏览后自动进入历史记录功能
+ *      textureVideo : 支持将video渲染到texture的方式(JsvVideo高阶控件的usetexture属性控制)
+ */
 function getExtFeatureSupports() {
     if (!feature_supports) {
         feature_supports = direct_call("getExtFeaturesSupport");
