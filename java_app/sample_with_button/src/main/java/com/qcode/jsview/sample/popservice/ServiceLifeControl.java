@@ -28,7 +28,7 @@ public class ServiceLifeControl {
 		mHandler.stopSelf();
 
 		// Send new intent to trigger next service start
-		new_intent.setAction("qcode.service.quick_show");
+		new_intent.setAction("qcode.app.action.start_popservice");
 		new_intent.setPackage(mHandler.getPackageName());
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 			mHandler.startService(new_intent);

@@ -71,7 +71,7 @@
             android:exported="true"
             android:process=":QuickShow">
             <intent-filter>
-                <action android:name="qcode.service.quick_show" />
+                <action android:name="qcode.app.action.start_popservice" />
             </intent-filter>
         </service>
     </application>
