@@ -16,7 +16,7 @@ var merge = require('merge-source-map');
 var MagicString = require('magic-string');
 var parser = require('@babel/parser');
 var estreeWalker = require('estree-walker');
-var jsvCssToJs = require("./jsview-css-to-js");
+var jsvCssToJs = require("./jsview-css-to-js"); // QCode Added
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e['default'] : e; }
 
@@ -254,7 +254,7 @@ function parse(source, { sourceMap = true, filename = 'anonymous.vue', sourceRoo
     // check if the SFC uses :slotted
     const slottedRE = /(?:::v-|:)slotted\(/;
     descriptor.slotted = descriptor.styles.some(s => s.scoped && slottedRE.test(s.content));
-    jsvCssToJs.ensureSfcDescriptor(descriptor);
+    jsvCssToJs.ensureSfcDescriptor(descriptor); // QCode Added
     const result = {
         descriptor,
         errors
@@ -1176,13 +1176,6 @@ function doCompileStyle(options) {
         // force synchronous transform (we know we only have sync plugins)
         code = result.css;
         outMap = result.map;
-
-        // 当@import的css文件内容发生变化后，更新css到js文件。
-        const node = result.root;
-        if(!!node && !!node.source && !!node.source.input && !!node.source.input.file
-        && node.source.input.file.endsWith('css')) {
-            jsvCssToJs.compileAndSaveImportedNode(node.source.input.file, node.nodes);
-        }
     }
     catch (e) {
         errors.push(e);
@@ -1313,7 +1306,7 @@ function compileScript(sfc, options) {
                 }
                 content += `\nexport default __default__`;
             }
-            content += jsvCssToJs.compileCssToJs(sfc, options);
+            content += jsvCssToJs.compileCssToJs(sfc, options); // QCode Added
             return {
                 ...script,
                 content,
@@ -2019,7 +2012,7 @@ function compileScript(sfc, options) {
             .join(', ')} } from 'vue'\n`);
     }
     s.trim();
-    s.append(jsvCssToJs.compileCssToJs(sfc, options));
+    s.append(jsvCssToJs.compileCssToJs(sfc, options)); // QCode Added
     return {
         ...scriptSetup,
         bindings: bindingMetadata,

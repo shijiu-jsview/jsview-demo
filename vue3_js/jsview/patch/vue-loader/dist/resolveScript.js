@@ -13,8 +13,7 @@ const serverCache = new WeakMap();
 function canInlineTemplate(descriptor, isProd) {
     const templateLang = descriptor.template && descriptor.template.lang;
     const templateSrc = descriptor.template && descriptor.template.src;
-    return false;
-    //return isProd && !!descriptor.scriptSetup && !templateLang && !templateSrc;
+    return false; // QCode Modified
 }
 exports.canInlineTemplate = canInlineTemplate;
 function resolveScript(descriptor, scopeId, options, loaderContext) {

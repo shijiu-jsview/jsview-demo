@@ -9,8 +9,3 @@ cp package-lock.json-perfect package-lock.json
 echo npm install to recovery node_modules
 npm install
 
-echo apply patch
-git checkout -- node_modules
-#cd jsview
-#node do_patch.js
-#cd -
