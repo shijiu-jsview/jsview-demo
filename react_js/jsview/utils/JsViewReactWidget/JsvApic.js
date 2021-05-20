@@ -8,6 +8,9 @@
  *      prop说明:
  *          src {string} 对应img标签的src
  *          style {object} 对应img标签的style
+ *          loopType {enum} 循环播放类型 LOOP_DEFAULT(默认)/LOOP_INFINITE(无限)/LOOP_FINITE(有限)/LOOP_PART(部分帧循环)
+ *          loopInfo {int[][3]} loopType为LOOP_PART时的循环设置, 
+ *                              格式[[循环次数1,循环开始帧1,循环结束帧1], [循环次数2,循环开始帧2,循环结束帧2], ...]
  *      方法说明
  *          stop: 停止播放
  *          play: 开始播放
@@ -54,10 +57,14 @@ class _JsvApic extends React.Component {
           target_view.TextureSetting.Texture &&
           target_view.TextureSetting.Texture.RenderTexture
         ) {
+          let params = {
+            "LT": this.props.loopType,
+            "LI": this.props.loopInfo,
+          }
           ForgeExtension.TextureManager.DispatchCommand(
             target_view.TextureSetting.Texture.RenderTexture.IdToken,
             0,
-            ""
+            JSON.stringify(params)
           );
           if (this.props.onStart) {
             target_view.TextureSetting.Texture.registerOnStart(
@@ -79,7 +86,6 @@ class _JsvApic extends React.Component {
         ref={(ele) => {
           this._Element = ele;
         }}
-        jsv_auto_play="false"
         src={this.props.src}
         style={this.props.style}
       />
@@ -110,8 +116,21 @@ class _JsvApic extends React.Component {
   }
 }
 
+let LOOP_DEFAULT = 0;
+let LOOP_INFINITE = 1;
+let LOOP_FINITE = 2;
+let LOOP_PART = 3;
+let LoopType = {
+  "LOOP_DEFAULT": LOOP_DEFAULT,
+  "LOOP_INFINITE": LOOP_INFINITE,
+  "LOOP_FINITE": LOOP_FINITE,
+  "LOOP_PART": LOOP_PART
+}
+
 _JsvApic.defaultProps = {
   autoPlay: true,
+  loopType: LOOP_DEFAULT,
+  loopInfo: [[-1, -1, -1]]
 };
 
 let JsvApic = _JsvApic;
@@ -119,4 +138,7 @@ if (!window.JsView) {
   JsvApic = JsvWidgetWrapperGroup.getApic(_JsvApic);
 }
 
-export { JsvApic };
+export { 
+  JsvApic,
+  LoopType
+};

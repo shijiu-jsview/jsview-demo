@@ -64,7 +64,9 @@ JsvWidgetWrapperGroup.getApic = (base_class) => {
             apic_data,
             canvas,
             listener,
-            this.props.autoPlay
+            this.props.autoPlay,
+            this.props.loopType,
+            this.props.loopInfo
           );
         }
       };
@@ -88,7 +90,9 @@ JsvWidgetWrapperGroup.getApic = (base_class) => {
               apic_data,
               canvas,
               listener,
-              this.props.autoPlay
+              this.props.autoPlay,
+              this.props.loopType,
+              this.props.loopInfo
             );
           }
         }
@@ -110,9 +114,9 @@ class ApicData {
     this.decode(array_buffer);
   }
 
-  decode(array_buffer) {}
+  decode(array_buffer) { }
 
-  toImage(frame_index, canvas, canvas_ctx) {}
+  toImage(frame_index, canvas, canvas_ctx) { }
 }
 
 class WebpData extends ApicData {
@@ -207,11 +211,11 @@ class WebpData extends ApicData {
       frame["frameData"] = frame["rgba"]
         ? header
           ? this._Context.getImageData(
-              0,
-              0,
-              header["canvas_width"],
-              header["canvas_height"]
-            ).data
+            0,
+            0,
+            header["canvas_width"],
+            header["canvas_height"]
+          ).data
           : rgba
         : null;
       if (frame["dispose"] === 1) {
@@ -319,16 +323,166 @@ class GifData extends ApicData {
   }
 }
 
+let LOOP_DEFAULT = 0;
+let LOOP_INFINITE = 1;
+let LOOP_FINITE = 2;
+let LOOP_PART = 3;
+
+class LoopTool {
+  getNextIndex() { return -1; }
+  reset() { }
+}
+
+class NormalLoopTool extends LoopTool {
+  constructor(loop_type, loop_num, frame_num) {
+    super();
+    this.mLoopType = loop_type;
+    this.mLoopNum = loop_num;
+    this.mFrameNum = frame_num;
+    this.mLoopCount = 0;
+    this.mFrameIndex = 0;
+  }
+
+  getNextIndex() {
+    let next_index = -1;
+    switch (this.mLoopType) {
+      case LOOP_DEFAULT:
+        if (this.mLoopNum <= 0) {
+          //默认无限循环
+          next_index = (this.mFrameIndex + 1) % this.mFrameNum;
+        } else {
+          if (this.mFrameIndex == this.mFrameNum - 1) {
+            this.mLoopCount++;
+          }
+          next_index = this.mLoopCount >= this.mLoopNum ? -1 : (this.mFrameIndex + 1) % this.mFrameNum;
+        }
+        break;
+      case LOOP_INFINITE:
+        next_index = (this.mFrameIndex + 1) % this.mFrameNum;
+        break;
+      case LOOP_FINITE:
+        if (this.mFrameIndex == this.mFrameNum - 1) {
+          this.mLoopCount++;
+        }
+        next_index = this.mLoopCount >= this.mLoopNum ? -1 : (this.mFrameIndex + 1) % this.mFrameNum;
+        break;
+      default:
+    }
+    this.mFrameIndex = next_index;
+    return next_index;
+  }
+
+  reset() {
+    this.mFrameIndex = 0;
+    this.mLoopCount = 0;
+  }
+}
+
+class PartLoopTool extends LoopTool {
+  constructor(info_list, frame_num) {
+    super();
+    if (info_list == null) {
+      console.error("PartLoopTool info is null.");
+      this.mDataError = true;
+      return;
+    }
+    this.mLoopPeriod = 0;
+    this.mFrameIndex = 0;
+
+    this.mCurLoopStartFrame = 0;
+    this.mCurLoopEndFrame = 0;
+    this.mCurLoopNum = 0;
+    this.mCurLoopCount = 0;
+
+    this.mDataError = false;
+    this.mFrameNum = frame_num;
+    this.mLoopInfo = info_list;
+    if (this.mLoopInfo.length > 0) {
+      this.updateLoop();
+    } else {
+      console.error("PartLoopTool init loop info error.", info_list);
+      this.mDataError = true;
+    }
+  }
+
+  getNextIndex() {
+    if (this.mDataError) { return -1; }
+    let next_index = -1;
+    let loop_period_num = this.mLoopInfo.length;
+    if (this.mLoopPeriod < loop_period_num) {
+      if (this.mFrameIndex < this.mCurLoopEndFrame) {
+        next_index = this.mFrameIndex + 1;
+      } else {
+        if (this.mCurLoopNum <= 0) {
+          //无限循环
+          next_index = this.mCurLoopStartFrame;
+        } else {
+          this.mCurLoopCount++;
+          if (this.mCurLoopCount >= this.mCurLoopNum) {
+            //出当前循环更新循环信息
+            this.mLoopPeriod++;
+            if (this.mLoopPeriod < loop_period_num) {
+              this.updateLoop();
+              this.mCurLoopCount = 0;
+              next_index = this.mFrameIndex + 1;
+            } else {
+              //所有循环已完成
+              if (this.mFrameIndex < this.mFrameNum - 1) {
+                next_index = this.mFrameIndex + 1;
+              }
+            }
+          } else {
+            next_index = this.mCurLoopStartFrame;
+          }
+        }
+      }
+    } else {
+      //所有循环已完成
+      if (this.mFrameIndex < this.mFrameNum - 1) {
+        next_index = this.mFrameIndex + 1;
+      }
+    }
+
+    if (next_index >= 0) {
+      this.mFrameIndex = next_index;
+    }
+    return next_index;
+  }
+
+  updateLoop() {
+    let loop = this.mLoopInfo[this.mLoopPeriod];
+    this.mCurLoopNum = loop[0];
+    this.mCurLoopStartFrame = loop[1];
+    this.mCurLoopEndFrame = loop[2];
+    if (this.mCurLoopStartFrame >= this.mFrameNum || this.mCurLoopEndFrame >= this.mFrameNum) {
+      this.mDataError = true;
+      console.error("data error, frame number out of size.", this.mLoopInfo);
+      this.reset();
+    }
+  }
+
+  reset() {
+    this.mLoopPeriod = 0;
+    this.mFrameIndex = 0;
+
+    this.mCurLoopStartFrame = 0;
+    this.mCurLoopEndFrame = 0;
+    this.mCurLoopNum = 0;
+    this.mCurLoopCount = 0;
+  }
+}
+
 class Viewer {
-  constructor(apic_data, canvas, listener, auto_play) {
+  constructor(apic_data, canvas, listener, auto_play, loop_type, loop_info_list) {
     this._ApicData = apic_data;
     this._Canvas = canvas;
     this._Context = this._Canvas.getContext("2d");
     this._Listener = listener;
     this._TimeoutId = -1;
 
-    this._FrameIndex = 0;
-    this._LoopCount = 0;
+    this._LoopType = loop_type;
+    this._LoopInfo = loop_info_list;
+    this._createLoopTool();
     let duration = this.renderFrame(0);
     if (auto_play) {
       this._TimeoutId = setTimeout(() => {
@@ -337,6 +491,20 @@ class Viewer {
       if (this._Listener?.onstart) {
         this._Listener.onstart();
       }
+    }
+  }
+
+  _createLoopTool() {
+    switch (this._LoopType) {
+      case LOOP_DEFAULT:
+      case LOOP_INFINITE:
+      case LOOP_FINITE:
+        let loop_num = this._LoopType == LOOP_DEFAULT ? this._ApicData.LoopCount : this._LoopInfo[0][0]
+        this._LoopTool = new NormalLoopTool(this._LoopType, loop_num, this._ApicData.FrameCount);
+        break;
+      case LOOP_PART:
+        this._LoopTool = new PartLoopTool(this._LoopInfo, this._ApicData.FrameCount);
+        break;
     }
   }
 
@@ -349,9 +517,8 @@ class Viewer {
 
   play() {
     clearTimeout(this._TimeoutId);
-    this._FrameIndex = 0;
-    this._LoopCount = 0;
     let duration = this.renderFrame(0);
+    this._LoopTool.reset();
     this._TimeoutId = setTimeout(() => {
       this.renderLoop();
     }, duration);
@@ -361,31 +528,14 @@ class Viewer {
   }
 
   renderLoop() {
-    let next_index = this._FrameIndex + 1;
-    let draw_next = false;
-    if (next_index >= this._ApicData.FrameCount) {
-      if (this._ApicData.LoopCount <= 0) {
-        //无限循环
-        draw_next = true;
-        next_index = 0;
-      } else {
-        //有限循环
-        this._LoopCount++;
-        if (this._LoopCount < this._ApicData.LoopCount) {
-          draw_next = true;
-          next_index = 0;
-        } else {
-          if (this._Listener?.onend) {
-            this._Listener.onend();
-          }
-        }
+    let next_index = this._LoopTool.getNextIndex();
+    if (next_index < 0) {
+      console.log("loop finished")
+      if (this._Listener?.onend) {
+        this._Listener.onend();
       }
     } else {
-      draw_next = true;
-    }
-    if (draw_next) {
-      this._FrameIndex = next_index;
-      let duration = this.renderFrame(this._FrameIndex);
+      let duration = this.renderFrame(next_index);
       this._TimeoutId = setTimeout(() => {
         this.renderLoop();
       }, duration);
