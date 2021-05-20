@@ -25,6 +25,9 @@ class _JsvApic extends React.Component {
     super(props);
     this._Element = null;
     this._CanvasId = "JsvApic" + Token++;
+    this._OnStartId = -1;
+    this._OnEndId = -1;
+    this._Texture = null;
   }
 
   stop() {
@@ -66,13 +69,12 @@ class _JsvApic extends React.Component {
             0,
             JSON.stringify(params)
           );
+          this._Texture = target_view.TextureSetting.Texture;
           if (this.props.onStart) {
-            target_view.TextureSetting.Texture.registerOnStart(
-              this.props.onStart
-            );
+            this._OnStartId = target_view.TextureSetting.Texture.registerOnStart(this.props.onStart);
           }
           if (this.props.onEnd) {
-            target_view.TextureSetting.Texture.registerOnEnd(this.props.onEnd);
+            this._OnEndId = target_view.TextureSetting.Texture.registerOnEnd(this.props.onEnd);
           }
         }
       }
@@ -100,6 +102,24 @@ class _JsvApic extends React.Component {
 
   componentWillUnmount() {
     this.stop();
+    if (this._Element) {
+      let main_view = this._Element.jsvMainView;
+      if (main_view && main_view.ChildViews.length > 0) {
+        let target_view = main_view.ChildViews[0];
+        if (
+          target_view.TextureSetting &&
+          target_view.TextureSetting.Texture &&
+          target_view.TextureSetting.Texture.RenderTexture
+        ) {
+          if (this.props.onStart) {
+            target_view.TextureSetting.Texture.unregisterOnStart(this._OnStartId);
+          }
+          if (this.props.onEnd) {
+            target_view.TextureSetting.Texture.unregisterOnEnd(this._OnEndId);
+          }
+        }
+      }
+    }
   }
 
   getUrl(base_url) {

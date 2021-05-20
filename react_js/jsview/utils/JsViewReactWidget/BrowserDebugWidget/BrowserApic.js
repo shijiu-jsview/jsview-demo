@@ -464,11 +464,8 @@ class PartLoopTool extends LoopTool {
   reset() {
     this.mLoopPeriod = 0;
     this.mFrameIndex = 0;
-
-    this.mCurLoopStartFrame = 0;
-    this.mCurLoopEndFrame = 0;
-    this.mCurLoopNum = 0;
     this.mCurLoopCount = 0;
+    this.updateLoop();
   }
 }
 
