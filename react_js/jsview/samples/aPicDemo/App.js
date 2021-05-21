@@ -91,7 +91,7 @@ class MainScene extends FocusBlock {
 
   renderContent() {
     return (
-      <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
+      <div style={{ width: 1920, height: 1080, backgroundColor: "#334C4C" }}>
         <div style={{ left: 20, top: 20 }}>
           <JsvApic
             ref={(ele) => {
