@@ -213,7 +213,7 @@ class Input extends FocusBlock {
           }
           if (this.state.fullString.length < this.props.maxlength) {
             const new_str = pre_full_str.slice(0, pre_index) + event.data + pre_full_str.slice(pre_index);
-            const new_index = pre_index + 1;
+            const new_index = pre_index + event.data.length;
             this._onTextChanged(new_str, new_index);
           } else {
             if (this.props.onTextOverflow) {
