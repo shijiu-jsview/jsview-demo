@@ -25,9 +25,9 @@ class _JsvApic extends React.Component {
     super(props);
     this._Element = null;
     this._CanvasId = "JsvApic" + Token++;
+
     this._OnStartId = -1;
     this._OnEndId = -1;
-    this._Texture = null;
   }
 
   stop() {
@@ -69,10 +69,11 @@ class _JsvApic extends React.Component {
             0,
             JSON.stringify(params)
           );
-          this._Texture = target_view.TextureSetting.Texture;
+          target_view.TextureSetting.Texture.unregisterOnStart(this._OnStartId);
           if (this.props.onStart) {
             this._OnStartId = target_view.TextureSetting.Texture.registerOnStart(this.props.onStart);
           }
+          target_view.TextureSetting.Texture.unregisterOnEnd(this._OnEndId);
           if (this.props.onEnd) {
             this._OnEndId = target_view.TextureSetting.Texture.registerOnEnd(this.props.onEnd);
           }
