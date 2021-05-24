@@ -89,6 +89,7 @@ InputDispatcher.Type = {
   add: Symbol('add'),
   delete: Symbol('delete'),
   clear: Symbol('clear'),
+  replace: Symbol('replace')
 };
 const ifDigital = char => '0'.charCodeAt() <= char.charCodeAt() && char.charCodeAt() <= '9'.charCodeAt();
 const ifDirectionKeyCode = code => code >= 37 && code <= 40;
@@ -230,6 +231,9 @@ class Input extends FocusBlock {
           break;
         case InputDispatcher.Type.clear:
           this._onTextChanged("", 0);
+          break;
+        case InputDispatcher.Type.replace:
+          this._onTextChanged(event.data,event.data.length);
           break;
         default:
           break;
