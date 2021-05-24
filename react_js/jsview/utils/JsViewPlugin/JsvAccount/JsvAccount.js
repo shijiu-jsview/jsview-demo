@@ -59,7 +59,7 @@ class account {
 					name:"账号系统",
 					version:"1.1.1",  //插件需要的最低版本号
 					versionCodeMin:111,
-					versionCodeMax:1111,
+					versionCodeMax:111,
 					bridgeName:"jsvAccountBridge", //插件bridge注册到jsview的名称
 					className:"com.qcode.account.JsvAccount",  //插件初始化类名称
 					initMethod:"createInstance",   //插件初始化方法
