@@ -148,6 +148,78 @@ function getTvMiniAppVersion() {
     return direct_call("getTvMiniAppVersion");
 }
 
+/**
+ * 注册启动图或者启动视频拿掉后的通知接口
+ * @param {function} 回调函数
+ *
+ */
+function registerStartupImageRemoved(callback){
+    if(!!window.JsView)
+        window.JsView.addEventListener("MiniAppPageLoad", callback);
+}
+
+/**
+ * 注销启动图或者启动视频拿掉后的通知接口
+ * @param {function} 回调函数
+ *
+ */
+ function unregisterStartupImageRemoved(callback){
+    if(!!window.JsView)
+        window.JsView.removeEventListener("MiniAppPageLoad", callback);
+}
+
+
+/**
+ * 注册消息通知接口
+ * @param {function} 回调函数
+ *
+ */
+ function registerMessage(callback){
+    if(!!window.JsView)
+        window.JsView.addEventListener("MiniAppMessage", callback);
+}
+
+/**
+ * 注销消息通知接口
+ * @param {function} 回调函数
+ *
+ */
+ function unregisterMessage(callback){
+    if(!!window.JsView)
+        window.JsView.removeEventListener("MiniAppMessage", callback);
+}
+
+/**
+ * 获取缓存索引，用于同一个Activity下多个小程序之间的通信，当前小程序启动另外一个小程序时，
+ * 可以把这个缓存索引通过url参数带个被启动的小程序，被启动小程序运行时，可以往这个buffer里
+ * 写入内容，待当前小程序回到前台后，读取buffer里的内容，来确定被启动小程序的行为。
+ * @returns {int} 缓存索引
+ * 
+ */
+ function getBufferIndex(){
+    return direct_call("getBufferIndex");
+}
+
+/**
+ * 读取缓存内容
+ * @param {int} index 缓存索引
+ * @returns {string} 缓存内容
+ * 
+ */
+function getBuffer(index){
+    return direct_call("getBuffer", index);
+}
+
+/**
+ * 写入缓存内容
+ * @param {int} index 缓存索引
+ * @param {string} buffer 缓存内容
+ * 
+ */
+function setBuffer(index, buffer){
+    direct_call("setBuffer", index, buffer);
+}
+
 // 显示声明，可以提高执行速度和利用上编辑器的成员名提示功能
 const bridge = {
     startUrlInNewTab,
@@ -161,6 +233,13 @@ const bridge = {
     getTvMiniAppName,
     getTvMiniAppTitle,
     getTvMiniAppVersion,
+    registerStartupImageRemoved,
+    unregisterStartupImageRemoved,
+    registerMessage,
+    unregisterMessage,
+    getBufferIndex,
+    getBuffer,
+    setBuffer,
 };
 
 export {
