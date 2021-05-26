@@ -2,7 +2,7 @@
  * Created by ludl on 5/13/21.
  */
 
-if (!window.JsvWidgetWrapper) {
+if (!window.JsvWidgetWrapperGroup) {
   window.JsvWidgetWrapperGroup = {};
 }
 
