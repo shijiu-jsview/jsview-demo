@@ -162,11 +162,12 @@ async function loadJsViewEnv(config, onLoaded) {
     config.jsviewConfig.designedMap,
     AppData.AppName
   );
-  await startApp(config, onLoaded);
 
   if (!window.JsView) {
     await import("../utils/JsViewReactWidget/BrowserDebugWidget/WidgetLoader");
   }
+
+  await startApp(config, onLoaded);
 
   // 环境启动后，动态加载React框架和main
   runMain();
