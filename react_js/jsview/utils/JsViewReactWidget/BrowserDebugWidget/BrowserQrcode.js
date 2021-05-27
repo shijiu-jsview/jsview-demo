@@ -8,7 +8,7 @@ import { JsvWidgetWrapperGroup } from "./WidgetWrapper";
 
 const ErrorCorrectLevel = require("qr.js/lib/ErrorCorrectLevel");
 
-const MARGIN_SIZE = 4;
+const MARGIN_SIZE = 2;
 
 console.log("Loading BrowserDebug JsvQrcode");
 
@@ -103,7 +103,6 @@ JsvWidgetWrapperGroup.getQRCode = (base_class) => {
         level,
         bgColor,
         fgColor,
-        includeMargin,
         imageSettings,
         ...otherProps
       } = this.props;
@@ -116,7 +115,7 @@ JsvWidgetWrapperGroup.getQRCode = (base_class) => {
         return null;
       }
 
-      const margin = includeMargin ? MARGIN_SIZE : 0;
+      const margin = MARGIN_SIZE;
       const numCells = cells.length + margin * 2;
       const calculatedImageSettings = this.getImageSettings(this.props);
       let image = null;

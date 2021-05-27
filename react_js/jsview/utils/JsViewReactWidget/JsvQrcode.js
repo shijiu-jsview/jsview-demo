@@ -29,7 +29,6 @@ const DEFAULT_PROPS = {
   level: "L",
   bgColor: "#FFFFFF",
   fgColor: "#000000",
-  includeMargin: false,
   imageSettings: null,
 };
 
@@ -41,7 +40,6 @@ const PROP_TYPES =
         level: PropTypes.oneOf(["L", "M", "Q", "H"]),
         bgColor: PropTypes.string,
         fgColor: PropTypes.string,
-        includeMargin: PropTypes.bool,
         imageSettings: PropTypes.shape({
           src: PropTypes.string.isRequired,
           height: PropTypes.number.isRequired,
@@ -94,7 +92,6 @@ class _QRCodeSVG extends Component {
       nextProps.level !== this.props.level ||
       nextProps.bgColor !== this.props.bgColor ||
       nextProps.fgColor !== this.props.fgColor ||
-      nextProps.includeMargin !== this.props.includeMargin ||
       image_changed
     );
   }
