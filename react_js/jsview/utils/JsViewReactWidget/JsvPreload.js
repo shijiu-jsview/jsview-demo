@@ -23,7 +23,7 @@
  * buildDownloadInfo: 函数，创建预下载信息项，用于制作JsvPreload的downloadList属性列表信息
  */
 
-import React from 'react';
+import React from "react";
 import { Forge, ForgeExtension } from "../../dom/jsv-forge-define";
 
 const CONST_FORMAT_TOKEN = "_JsvP_";
@@ -37,11 +37,13 @@ const CONST_FORMAT_TOKEN = "_JsvP_";
  *      color_type {String}     指定加载色空间，与div标签中的 jsv_img_color_space 一起使用，支持 RGBA_8888 和 RGB_565
  *      net_setting {Object}    预留，未使用，图片的网络加载header设置
  */
-const buildPreloadInfo = (url,
+const buildPreloadInfo = (
+  url,
   width = 0,
   height = 0,
   color_type = "RGBA_8888",
-  net_setting = null) => {
+  net_setting = null
+) => {
   return {
     url,
     width,
@@ -58,8 +60,7 @@ const buildPreloadInfo = (url,
  *      url     {String}        图片下载地址
  *      net_setting {Object}    预留，未使用，图片的网络加载header设置
  */
-const buildDownloadInfo = (url,
-  net_setting = null) => {
+const buildDownloadInfo = (url, net_setting = null) => {
   return {
     url,
     netSetting: net_setting,
@@ -67,7 +68,7 @@ const buildDownloadInfo = (url,
   };
 };
 
-class JsvPreload extends React.Component {
+class _JsvPreload extends React.Component {
   constructor(props) {
     super(props);
     this._PreloadViewList = [];
@@ -83,11 +84,16 @@ class JsvPreload extends React.Component {
     if (window.JsView) {
       if (this._PreloadViewList.length > 0) {
         for (const view_info of this._PreloadViewList) {
-          let id = view_info.viewId;
+          const id = view_info.viewId;
           // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (view_info.textureRef && view_info.textureRef.DisableBackgroundLoad) {
+          if (
+            view_info.textureRef &&
+            view_info.textureRef.DisableBackgroundLoad
+          ) {
             view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(view_info.callToken);
+            view_info.textureRef.UnregisterLoadImageCallback(
+              view_info.callToken
+            );
           }
           ForgeExtension.RootActivity.ViewStore.remove(id);
         }
@@ -96,11 +102,16 @@ class JsvPreload extends React.Component {
 
       if (this._DownloadViewList.length > 0) {
         for (const view_info of this._DownloadViewList) {
-          let id = view_info.viewId;
+          const id = view_info.viewId;
           // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (view_info.textureRef && view_info.textureRef.DisableBackgroundLoad) {
+          if (
+            view_info.textureRef &&
+            view_info.textureRef.DisableBackgroundLoad
+          ) {
             view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(view_info.callToken);
+            view_info.textureRef.UnregisterLoadImageCallback(
+              view_info.callToken
+            );
           }
           ForgeExtension.RootActivity.ViewStore.remove(id);
         }
@@ -116,7 +127,10 @@ class JsvPreload extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.preloadList.length === this.props.preloadList.length && nextProps.downloadList.length === this.props.downloadList.length) {
+    if (
+      nextProps.preloadList.length === this.props.preloadList.length &&
+      nextProps.downloadList.length === this.props.downloadList.length
+    ) {
       let same = true;
       for (let i = 0; i < nextProps.preloadList.length; i++) {
         if (nextProps.preloadList[i].url !== this.props.preloadList[i].url) {
@@ -137,13 +151,16 @@ class JsvPreload extends React.Component {
 
   _checkPreload() {
     let loadedNum = 0;
-    this._PreloadStateList.forEach(state => {
+    this._PreloadStateList.forEach((state) => {
       loadedNum = state ? ++loadedNum : loadedNum;
     });
     if (this.props.onPreloading) {
       this.props.onPreloading(loadedNum / this._PreloadStateList.length);
     }
-    if (this.props.onPreloadDone && loadedNum === this._PreloadStateList.length) {
+    if (
+      this.props.onPreloadDone &&
+      loadedNum === this._PreloadStateList.length
+    ) {
       this.props.onPreloadDone(this._PreloadResultMap);
     }
   }
@@ -152,14 +169,19 @@ class JsvPreload extends React.Component {
     if (!this.props.preloadList) {
       return;
     }
-    this._PreloadStateList = new Array(this.props.preloadList.length).fill(false);
+    this._PreloadStateList = new Array(this.props.preloadList.length).fill(
+      false
+    );
     this._PreloadViewList = this.props.preloadList.map((item, index) => {
       if (item.magicToken !== CONST_FORMAT_TOKEN) {
-        console.error("Error:format mismatch, data should comes from function buildPreloadInfo()");
+        console.error(
+          "Error:format mismatch, data should comes from function buildPreloadInfo()"
+        );
       }
       const base_url = item.url;
       let image_url = base_url;
-      if (base_url && base_url.indexOf("http") < 0) { // 包含http和https两种请求
+      if (base_url && base_url.indexOf("http") < 0) {
+        // 包含http和https两种请求
         if (window.JsView.React.UrlRef) {
           image_url = new window.JsView.React.UrlRef(base_url).href;
         }
@@ -169,18 +191,32 @@ class JsvPreload extends React.Component {
         target_size = { width: item.width, height: item.height };
       }
       let texture = null;
-      if (image_url.toLowerCase().indexOf(".webp") >= 0 || image_url.toLowerCase().indexOf(".gif") >= 0) {
+      if (
+        image_url.toLowerCase().indexOf(".webp") >= 0 ||
+        image_url.toLowerCase().indexOf(".gif") >= 0
+      ) {
         texture = ForgeExtension.TextureManager.GetGifImage(image_url, false);
       } else {
-        texture = ForgeExtension.TextureManager.GetImage2(image_url, false, target_size, item.colorType);
+        texture = ForgeExtension.TextureManager.GetImage2(
+          image_url,
+          false,
+          target_size,
+          item.colorType
+        );
       }
-      let callback_token = texture.RegisterLoadImageCallback(null, (params) => {
-        console.log(`preload succeed ${image_url}`, params);
-        this._PreloadStateList[index] = true;
-        this._PreloadResultMap[item.url] = { width: params.width, height: params.height };
-        console.log(`preload succeed ${item.url}, params:${params}`);
-        this._checkPreload();
-      });
+      const callback_token = texture.RegisterLoadImageCallback(
+        null,
+        (params) => {
+          console.log(`preload succeed ${image_url}`, params);
+          this._PreloadStateList[index] = true;
+          this._PreloadResultMap[item.url] = {
+            width: params.width,
+            height: params.height,
+          };
+          console.log(`preload succeed ${item.url}, params:${params}`);
+          this._checkPreload();
+        }
+      );
       if (texture.EnableBackgroundLoad) {
         texture.EnableBackgroundLoad(this);
       }
@@ -191,9 +227,8 @@ class JsvPreload extends React.Component {
           new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
         ),
         textureRef: texture,
-        callToken: callback_token
+        callToken: callback_token,
       };
-      return ;
     });
   }
 
@@ -210,20 +245,27 @@ class JsvPreload extends React.Component {
     if (!this.props.downloadList) {
       return;
     }
-    this._DownloadStateList = new Array(this.props.downloadList.length).fill(false);
+    this._DownloadStateList = new Array(this.props.downloadList.length).fill(
+      false
+    );
     this._DownloadViewList = this.props.downloadList.map((item, index) => {
       if (item.magicToken !== CONST_FORMAT_TOKEN) {
-        console.error("Error:format mismatch, data should comes from function buildDownloadInfo()");
+        console.error(
+          "Error:format mismatch, data should comes from function buildDownloadInfo()"
+        );
       }
       const base_url = item.url;
       let image_url = base_url;
-      if (base_url && base_url.indexOf("http") < 0) { // 包含http和https两种请求
+      if (base_url && base_url.indexOf("http") < 0) {
+        // 包含http和https两种请求
         if (window.JsView.React.UrlRef) {
           image_url = new window.JsView.React.UrlRef(base_url).href;
         }
       }
-      const texture = ForgeExtension.TextureManager.GetDownloadTexture(image_url);
-      let callback_token = texture.RegisterLoadImageCallback(null, () => {
+      const texture = ForgeExtension.TextureManager.GetDownloadTexture(
+        image_url
+      );
+      const callback_token = texture.RegisterLoadImageCallback(null, () => {
         this._DownloadStateList[index] = true;
         this._checkDownload();
       });
@@ -238,63 +280,28 @@ class JsvPreload extends React.Component {
           new Forge.ViewInfo(preload_view, { x: 0, y: 0, width: 0, height: 0 })
         ),
         textureRef: texture,
-        callToken: callback_token
+        callToken: callback_token,
       };
-    });
-  }
-
-  _htmlPreload() {
-    this._PreloadStateList = new Array(this.props.preloadList.length).fill(false);
-    this._PreloadViewList = this.props.preloadList.map((item, index) => {
-      const image = new Image();
-      image.onload = () => {
-        this._PreloadStateList[index] = true;
-        this._PreloadResultMap[item.url] = { width: image.width, height: image.height };
-        console.log(`preload succeed ${item.url}, width:${image.width}, height:${image.height}`);
-        this._checkPreload();
-      };
-      image.src = item.url;
-      return image;
-    });
-
-    this._DownloadStateList = new Array(this.props.downloadList.length).fill(false);
-    this._DownloadViewList = this.props.downloadList.map((item, index) => {
-      const image = new Image();
-      image.onload = () => {
-        this._DownloadStateList[index] = true;
-        console.log(`pre download succeed ${item.url}`);
-        this._checkDownload();
-      };
-      image.src = item.url;
-      return image;
     });
   }
 
   render() {
-    if (window.JsView) {
-      this._releaseForgeView();
-      this._getPreloadViewIdList();
-      this._getDownloadViewIdList();
+    this._releaseForgeView();
+    this._getPreloadViewIdList();
+    this._getDownloadViewIdList();
 
-      return (
-        <React.Fragment>
-          {
-            this._PreloadViewList.map(obj => {
-              let id = obj.viewId;
-              return <div key={id} id={id} jsv_innerview={id}/>;
-            })
-          }
-          {
-            this._DownloadViewList.map(obj => {
-              let id = obj.viewId;
-              return <div key={id} id={id} jsv_innerview={id}/>;
-            })
-          }
-        </React.Fragment>
-      );
-    }
-    this._htmlPreload();
-    return null;
+    return (
+      <React.Fragment>
+        {this._PreloadViewList.map((obj) => {
+          const id = obj.viewId;
+          return <div key={id} id={id} jsv_innerview={id} />;
+        })}
+        {this._DownloadViewList.map((obj) => {
+          const id = obj.viewId;
+          return <div key={id} id={id} jsv_innerview={id} />;
+        })}
+      </React.Fragment>
+    );
   }
 
   componentWillUnmount() {
@@ -302,17 +309,17 @@ class JsvPreload extends React.Component {
   }
 }
 
-const emptyFunc = () => {
-};
-JsvPreload.defaultProps = {
+const emptyFunc = () => {};
+_JsvPreload.defaultProps = {
   preloadList: [],
   downloadList: [],
   onPreloadDone: emptyFunc,
-  onDownloadDone: emptyFunc
+  onDownloadDone: emptyFunc,
 };
 
-export {
-  buildPreloadInfo,
-  buildDownloadInfo,
-  JsvPreload
-};
+let JsvPreload = _JsvPreload;
+if (!window.JsView) {
+  JsvPreload = JsvWidgetWrapperGroup.getPreload(_JsvPreload);
+}
+
+export { buildPreloadInfo, buildDownloadInfo, JsvPreload };

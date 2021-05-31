@@ -76,7 +76,7 @@ public class JsDemoInterface {
 	// 一般浮窗程序都被系统端严格控制，此用例仅为了展示功能，真正使用场景需要和系统端(系统运营方)协商
 	@JavascriptInterface
 	public void startPopWindowPage(String engine_js_url, String app_url, String core_version_range) {
-		Intent service_intent = new Intent("qcode.service.quick_show");
+		Intent service_intent = new Intent("qcode.app.action.start_popservice");
 		service_intent.setPackage(mContext.getPackageName());
 
 		service_intent.putExtra("ENGINE", engine_js_url);

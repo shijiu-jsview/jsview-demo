@@ -1,0 +1,52 @@
+{
+  "name": "vue3_js",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "shx cp -rf jsview/patch/* node_modules/",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "3.12.1",
+    "gifuct-js": "2.1.1",
+    "jsview-dom": "file:jsview/dom/bin/jsview-dom-package.tgz",
+    "vue": "3.0.11"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "5.0.0-beta.1",
+    "@vue/cli-plugin-eslint": "5.0.0-beta.1",
+    "@vue/cli-service": "5.0.0-beta.1",
+    "@vue/compiler-sfc": "3.0.11",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.26.0",
+    "eslint-plugin-import": "2.23.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "4.3.1",
+    "eslint-plugin-standard": "4.1.0",
+    "eslint-plugin-vue": "7.9.0",
+    "postcss-import-sync": "7.1.4",
+    "postcss-js": "3.0.3",
+    "shx": "^0.3.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

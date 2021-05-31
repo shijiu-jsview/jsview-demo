@@ -89,6 +89,7 @@ InputDispatcher.Type = {
   add: Symbol('add'),
   delete: Symbol('delete'),
   clear: Symbol('clear'),
+  replace: Symbol('replace')
 };
 const ifDigital = char => '0'.charCodeAt() <= char.charCodeAt() && char.charCodeAt() <= '9'.charCodeAt();
 const ifDirectionKeyCode = code => code >= 37 && code <= 40;
@@ -213,7 +214,7 @@ class Input extends FocusBlock {
           }
           if (this.state.fullString.length < this.props.maxlength) {
             const new_str = pre_full_str.slice(0, pre_index) + event.data + pre_full_str.slice(pre_index);
-            const new_index = pre_index + 1;
+            const new_index = pre_index + event.data.length;
             this._onTextChanged(new_str, new_index);
           } else {
             if (this.props.onTextOverflow) {
@@ -230,6 +231,9 @@ class Input extends FocusBlock {
           break;
         case InputDispatcher.Type.clear:
           this._onTextChanged("", 0);
+          break;
+        case InputDispatcher.Type.replace:
+          this._onTextChanged(event.data,event.data.length);
           break;
         default:
           break;

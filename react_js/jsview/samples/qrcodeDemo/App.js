@@ -58,7 +58,7 @@ class MainScene extends FocusBlock {
 3.指定小图标
 4.容错级别：'L', 'M', 'Q', 'H'`;
     return (
-            <div>
+            <div style={{width:1280, height:720, backgroundColor:"#D8D8D8"}}>
                 <div style={{
                   textAlign: "left",
                   fontSize: "30px",

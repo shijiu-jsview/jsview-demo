@@ -1,0 +1,197 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+const { execSync } = require('child_process');
+
+function getOptInfos() {
+    const optInfos = {
+        'dev-dir': {
+            alias: 'd',
+            required: true,
+            desc: '(jsview dev dir)',
+            usage: 'JsView develop directory, it must be [react_js] or [vue3_js].',
+        },
+        'help': {
+            alias: 'h',
+            required: false,
+            usage: 'Print help infomation and exit successfully.',
+        },
+        //'dump': {
+            //default: 3
+        //}
+    };
+
+    return optInfos;
+}
+
+function printUsage () {
+    var scriptName = path.basename(__filename);
+
+    console.log(
+        `
+NAME
+       ${scriptName}
+
+SYNOPSIS
+       ${scriptName} [options]
+
+DESCRIPTION
+       initialize or update JsView develop environment.
+       Example: ${scriptName} -d react_js
+
+OPTIONS`
+    );
+
+    const optInfos = getOptInfos();
+    Object.keys(optInfos).forEach(key => {
+        info = optInfos[key];
+        let usage = '       ';
+        usage += (!!info.alias ? '-' + info.alias + ',' : '   ');
+        usage += (' --' + key);
+        usage += (!!info.desc ? '=' + info.desc : '');
+        console.log(usage);
+
+        usage = '               ';
+        usage += (!!info.required ? 'Required. ' : 'Optional. ');
+        usage += (!!info.usage ? info.usage : '');
+        console.log(usage);
+    });
+
+}
+
+function parseOptions(argv) {
+    const scriptDir = __dirname;
+    const minimist = require(scriptDir + "/minimist-1.2.5.js");
+
+    const minimistOpts = {
+        alias: { },
+        default: { },
+    }
+    const optInfos = getOptInfos();
+    Object.keys(optInfos).forEach(key => {
+        info = optInfos[key];
+        if(!!info.alias) {
+            minimistOpts.alias[key] = info.alias;
+        }
+        if(!!info.default) {
+            minimistOpts.default[key] = info.default;
+        }
+    });
+    const options = minimist(argv.slice(2), minimistOpts);
+
+    if(!!options.help) {
+        printUsage();
+        process.exit(0);
+    }
+
+    Object.keys(optInfos).forEach(key => {
+        info = optInfos[key];
+        if(!!info.required
+        && typeof options[key] === 'undefined') {
+            let opt = (!!info.alias ? '-' + info.alias + '/' : '');
+            opt += ('--' + key);
+            console.error(opt + ' option is required, please input -h to print usage.');
+            process.exit(1);
+        }
+    })
+
+    //console.log(options);
+    return options;
+}
+
+function configEnv(options) {
+    options.env = { };
+    options.env.projectDir = path.resolve(__dirname + '/..');
+    options.env.devJsDir = options.env.projectDir + '/' + options['dev-dir'];
+    options.env.jsviewDir = options.env.devJsDir + '/jsview';
+    const devJsName = path.basename(options.env.devJsDir);
+    if(devJsName.indexOf('react') >= 0) {
+        options.env.devFramework = 'react';
+    } else if(devJsName.indexOf('vue3') >= 0) {
+        options.env.devFramework = 'vue3';
+    }
+}
+
+function checkOptionValue(options) {
+    const exists = fs.existsSync(options.env.devJsDir);
+    if(!exists) {
+        console.error("-d/--dev-dir option is only support [react_js/vue3_js].");
+        process.exit(1);
+    }
+}
+
+function copyDirSync(workDir, src, dest) {
+    const exists = fs.existsSync(src);
+    const stats = exists && fs.statSync(src);
+    const isDirectory = exists && stats.isDirectory();
+    if (isDirectory) {
+        if(fs.existsSync(dest) == false) {
+            fs.mkdirSync(dest);
+        }
+        fs.readdirSync(src).forEach(function(childItemName) {
+            copyDirSync(workDir,
+                        path.join(src, childItemName),
+                        path.join(dest, childItemName));
+        });
+    } else {
+        console.info("  " + path.relative(workDir, src) + " -> " + path.relative(workDir, dest));
+        fs.copyFileSync(src, dest);
+    }
+}
+
+function installDepends(options) {
+    process.chdir(options.env.devJsDir);
+    console.info("\nUpdating react js at " + __dirname);
+
+    let cmdLine = "npm install --force";
+    console.info("\nRunning [" + cmdLine + "]... ");
+    execSync(cmdLine, {stdio: 'inherit', stderr: 'inherit'});
+
+    const jsviewDomPath = options.env.jsviewDir + "/dom/bin/jsview-dom-package.tgz";
+    cmdLine = "npm install file:" + jsviewDomPath;
+    console.info("\nRunning [" + cmdLine + "]... ");
+    execSync(cmdLine, {stdio: 'inherit', stderr: 'inherit'});
+
+    if(options.env.devFramework == 'react') {
+        const jsviewReactWidgetPath = options.env.jsviewDir + "/utils/JsViewEngineWidget/bin/jsview-react-widget-package.tgz";
+        cmdLine = "npm install file:" + jsviewReactWidgetPath;
+        console.info("\nRunning [" + cmdLine + "]... ");
+        execSync(cmdLine, {stdio: 'inherit', stderr: 'inherit'});
+    } else if(options.env.devFramework == 'vue') {
+        // TODO
+    }
+
+    const jsviewPatchDir = options.env.jsviewDir + '/patch';
+    console.info("\nPatching react js from " + jsviewPatchDir);
+    copyDirSync(options.env.projectDir, jsviewPatchDir, options.env.devJsDir + '/node_modules');
+}
+
+
+async function printRevision(options) {
+    const jsveiwVersionFile = options.env.jsviewDir + "/dom/target_core_revision.js";
+
+    const jsviewTargetVersion = require(jsveiwVersionFile);
+
+    console.log("**************************************************");
+    console.log("* Update revision to:");
+    console.log("* CORE: " + jsviewTargetVersion.CoreRevision);
+    console.log("* ENGINE JS URL: " + jsviewTargetVersion.JseUrl);
+    console.log("**************************************************");
+}
+
+function main() {
+    const options = parseOptions(process.argv);
+
+    configEnv(options);
+
+    checkOptionValue(options);
+
+    installDepends(options);
+
+    printRevision(options);
+
+    console.log("Done!!!");
+}
+
+main()

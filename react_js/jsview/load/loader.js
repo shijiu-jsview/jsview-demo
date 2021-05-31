@@ -1,9 +1,11 @@
 import initHeaderScriptLoader from "./header_script_loader";
-import TargetRevision from "../dom/target_core_revision"
-import AppData from '../../src/appConfig/app_config.json'
+import TargetRevision from "../dom/target_core_revision";
+import AppData from "../../src/appConfig/app_config.json";
 
 // Forge define
-if (typeof window.Forge === 'undefined') { window.Forge = {}; }
+if (typeof window.Forge === "undefined") {
+  window.Forge = {};
+}
 const Forge = window.Forge;
 
 function initDesignedMap(input_designed_map) {
@@ -13,7 +15,7 @@ function initDesignedMap(input_designed_map) {
       if (input_designed_map) {
         const new_designed_map = {
           width: input_designed_map.screenWidth,
-          displayScale: input_designed_map.displayScale
+          displayScale: input_designed_map.displayScale,
         };
         designMap = new_designed_map;
       }
@@ -100,8 +102,10 @@ async function runMain() {
 function checkEngineVersion() {
   // 检查配套引擎的版本
   if (
-    window.JsView.CodeRevision !== TargetRevision.CoreRevision /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
-    window.Forge.Version !== TargetRevision.JseRevision /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
+    window.JsView.CodeRevision !==
+      TargetRevision.CoreRevision /* Native引擎版本(由APK启动参数 CORE 决定) */ ||
+    window.Forge.Version !==
+      TargetRevision.JseRevision /* JS引擎版本(由APK启动参数 ENGINEJS 决定) */
   ) {
     console.warn(
       `Warning: JsView Engine version miss matched, some effect will be lost. url should be ${TargetRevision.JseUrl}`
@@ -131,18 +135,20 @@ async function startApp(config, onLoaded) {
 
     // (可选配置)localStorage支持
     let storageDomain = config.jsviewConfig.localStorage.domain;
-    if(storageDomain == "default") {
+    if (storageDomain == "default") {
       storageDomain = getHostName();
     }
     window.JsView.setStorageDomain(storageDomain); // Domain可以为任意字符串，各Domain的localStorage互相隔离
-    window.JsView.enableStorageNames(...config.jsviewConfig.localStorage.presetKeys);
+    window.JsView.enableStorageNames(
+      ...config.jsviewConfig.localStorage.presetKeys
+    );
 
     // JsView Dom相关配置
     window.JsView.Dom.Render = function () {
-      onLoaded()
+      onLoaded();
     };
   } else {
-      await onLoaded()
+    await onLoaded();
   }
 }
 
@@ -151,10 +157,17 @@ async function loadJsViewEnv(config, onLoaded) {
   // /static/js/: (可选配置)填写main.js或者bundle.js相对于index.html的相对位置，用于image/import.then的相对寻址
   // {screenWidth:1280, displayScale:1.0}: (可选配置)设置屏幕坐标映射值，前者为屏幕画布定义的宽度，后者为清晰度，
   //                                     默认值是画布宽度1280px, 清晰度为1.0
-  await selectJsViewRuntime(config.jsviewConfig.jsSubPath,
-                            config.jsviewConfig.designedMap,
-                            AppData.AppName);
+  await selectJsViewRuntime(
+    config.jsviewConfig.jsSubPath,
+    config.jsviewConfig.designedMap,
+    AppData.AppName
+  );
+
   await startApp(config, onLoaded);
+
+  if (!window.JsView) {
+    await import("../utils/JsViewReactWidget/BrowserDebugWidget/WidgetLoader");
+  }
 
   // 环境启动后，动态加载React框架和main
   runMain();
@@ -162,6 +175,4 @@ async function loadJsViewEnv(config, onLoaded) {
   console.log("index.js loaded AppName=" + AppData.AppName);
 }
 
-export {
-  loadJsViewEnv,
-};
+export { loadJsViewEnv };

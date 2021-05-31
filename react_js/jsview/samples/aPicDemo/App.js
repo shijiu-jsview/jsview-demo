@@ -2,21 +2,22 @@
  * @Author: ChenChanghua
  * @Date: 2020-12-10 19:20:08
  * @LastEditors: ChenChanghua
- * @LastEditTime: 2021-01-29 14:51:25
+ * @LastEditTime: 2021-05-20 11:18:59
  * @Description: file content
  */
 import React from "react";
 import { FocusBlock } from "../../utils/JsViewReactTools/BlockDefine";
 import createStandaloneApp from "../../utils/JsViewReactTools/StandaloneApp";
-import { JsvApic } from "../../utils/JsViewReactWidget/JsvApic";
+import { JsvApic, LoopType } from "../../utils/JsViewReactWidget/JsvApic";
 import { JsvStyleClass } from "../../utils/JsViewReactTools/JsvStyleClass";
 import catRun from "./animated_webp.webp";
 import girlRun from "./girl_run.gif";
 import quan from "./quan.webp";
+import ball from "./ball_3.webp"
 import "./App.css";
 
 const sPicTitleTextClass = new JsvStyleClass({
-  fontSize: 32,
+  fontSize: 25,
   height: 68,
   lineHeight: 34,
   color: "#000000",
@@ -29,11 +30,13 @@ class MainScene extends FocusBlock {
     this._WebpPlay = true;
     this._GifPlay = true;
     this._WebpOncePlay = false;
+    this._WebpPartPlay = true
 
     this.state = {
       No1Stop: false,
       No2Stop: false,
       No3Stop: false,
+      No4Stop: false
     };
   }
 
@@ -43,12 +46,12 @@ class MainScene extends FocusBlock {
         this._NavigateHome();
       }
     } else if (ev.keyCode === 37) {
-      if (this._WebPRef) {
+      if (this._WebpRef) {
         if (this._WebpPlay) {
-          this._WebPRef.stop();
+          this._WebpRef.stop();
           this.setState({ No1Stop: true });
         } else {
-          this._WebPRef.play();
+          this._WebpRef.play();
           this.setState({ No1Stop: false });
         }
       }
@@ -72,21 +75,32 @@ class MainScene extends FocusBlock {
           this.setState({ No3Stop: false });
         }
       }
+    } else if (ev.keyCode === 38) {
+      if (this._WebpPartRef) {
+        if (this._WebpPartPlay) {
+          this._WebpPartRef.stop();
+          this.setState({ No4Stop: true });
+        } else {
+          this._WebpPartRef.play();
+          this.setState({ No4Stop: false });
+        }
+      }
     }
     return true;
   }
 
   renderContent() {
     return (
-      <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
-        <div style={{ left: 50, top: 50 }}>
+      <div style={{ width: 1920, height: 1080, backgroundColor: "#334C4C" }}>
+        <div style={{ left: 20, top: 20 }}>
           <JsvApic
             ref={(ele) => {
-              this._WebPRef = ele;
+              this._WebpRef = ele;
             }}
             src={`url(${catRun})`}
-            style={{ width: 400, height: 400 }}
+            style={{ width: 250, height: 250 }}
             autoPlay={true}
+            loopType={LoopType.LOOP_DEFAULT}
             onStart={() => {
               this._WebpPlay = true;
               console.log(`webp onstart ${this._WebpPlay}`);
@@ -98,17 +112,19 @@ class MainScene extends FocusBlock {
           />
           <div
             className={sPicTitleTextClass.getName()}
-            style={{ top: 440, width: 400 }}
-          >{`WEBP\n(${this.state.No1Stop ? "停止" : "运行"})`}</div>
+            style={{ top: 270, width: 250 }}
+          >{`WEBP(${this.state.No1Stop ? "停止" : "运行"})\n左键控制`}</div>
         </div>
-        <div style={{ left: 500, top: 50 }}>
+
+        <div style={{ left: 280, top: 20 }}>
           <JsvApic
             ref={(ele) => {
               this._GifRef = ele;
             }}
             src={`url(${girlRun})`}
-            style={{ width: 350, height: 300 }}
+            style={{ width: 250, height: 214 }}
             autoPlay={true}
+            loopType={LoopType.LOOP_DEFAULT}
             onStart={() => {
               this._GifPlay = true;
               console.log(`gif onstart ${this._GifPlay}`);
@@ -120,17 +136,19 @@ class MainScene extends FocusBlock {
           />
           <div
             className={sPicTitleTextClass.getName()}
-            style={{ top: 440, width: 350 }}
-          >{`GIF\n(${this.state.No2Stop ? "停止" : "运行"})`}</div>
+            style={{ top: 219, width: 250 }}
+          >{`GIF(${this.state.No2Stop ? "停止" : "运行"})\nOK键控制`}</div>
         </div>
-        <div style={{ left: 900, top: 50 }}>
+
+        <div style={{ left: 540, top: 20 }}>
           <JsvApic
             ref={(ele) => {
               this._WebpOnceRef = ele;
             }}
             src={`url(${quan})`}
-            style={{ width: 380, height: 450 }}
+            style={{ width: 250, height: 296 }}
             autoPlay={true}
+            loopType={LoopType.LOOP_DEFAULT}
             onStart={() => {
               this._WebpOncePlay = true;
               console.log(`webp2 onstart ${this._WebpOncePlay}`);
@@ -143,9 +161,36 @@ class MainScene extends FocusBlock {
           />
           <div
             className={sPicTitleTextClass.getName()}
-            style={{ top: 440, width: 380 }}
-          >{`单次播放WEBP\n(${this.state.No3Stop ? "停止" : "运行"})`}</div>
+            style={{ top: 301, width: 250 }}
+          >{`单次播放WEBP(${this.state.No3Stop ? "停止" : "运行"})\n右键控制`}</div>
         </div>
+
+        <div style={{ left: 800, top: 20 }}>
+          <JsvApic
+            ref={(ele) => {
+              this._WebpPartRef = ele;
+            }}
+            src={`url(${ball})`}
+            style={{ width: 300, height: 200 }}
+            autoPlay={true}
+            loopType={LoopType.LOOP_PART}
+            loopInfo={[[3, 2, 4], [5, 7, 10]]}
+            onStart={() => {
+              this._WebpPartPlay = true;
+              console.log(`webp part onstart ${this._WebpPartPlay}`);
+            }}
+            onEnd={() => {
+              this._WebpPartPlay = false;
+              console.log(`wepb part onend ${this._WebpPartPlay}`);
+              this.setState({ No4Stop: true });
+            }}
+          />
+          <div
+            className={sPicTitleTextClass.getName()}
+            style={{ top: 205, width: 300, height: 200 }}
+          >{`局部循环WEBP(${this.state.No4Stop ? "停止" : "运行"})\n先循环2次后循环4次\n上键控制`}</div>
+        </div>
+
         <div
           style={{
             left: 50,
@@ -153,17 +198,16 @@ class MainScene extends FocusBlock {
             width: 1180,
             textAlign: "center",
             color: "#000000",
-            fontSize: "40px",
+            fontSize: "30px",
           }}
         >
-          {`左键控制左图, OK键控制中图, 右键控制右图\n\
-(按键可进行停止/重播操作)`}
+          {`(按键可进行停止/重播操作)`}
         </div>
       </div>
     );
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 }
 
 const App = createStandaloneApp(MainScene);
