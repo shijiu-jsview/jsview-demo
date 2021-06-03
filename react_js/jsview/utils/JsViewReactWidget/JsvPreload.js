@@ -204,6 +204,11 @@ class _JsvPreload extends React.Component {
           item.colorType
         );
       }
+      if (!texture) {
+        console.error("Error: Preload view build texture failed for " + image_url);
+        this._PreloadStateList[index] = true; // 无法创建texture的图片先认为加载完成
+        return;
+      }
       const callback_token = texture.RegisterLoadImageCallback(
         null,
         (params) => {
@@ -265,6 +270,12 @@ class _JsvPreload extends React.Component {
       const texture = ForgeExtension.TextureManager.GetDownloadTexture(
         image_url
       );
+      if (!texture) {
+        console.error("Error: Down view build texture failed for " + image_url);
+        // 无法创建texture的图片先认为加载完成
+        this._DownloadStateList[index] = true;
+        return;
+      }
       const callback_token = texture.RegisterLoadImageCallback(null, () => {
         this._DownloadStateList[index] = true;
         this._checkDownload();
@@ -293,10 +304,18 @@ class _JsvPreload extends React.Component {
     return (
       <React.Fragment>
         {this._PreloadViewList.map((obj) => {
+          if (!obj) {
+            // 图片未加载
+            return null;
+          }
           const id = obj.viewId;
           return <div key={id} id={id} jsv_innerview={id} />;
         })}
         {this._DownloadViewList.map((obj) => {
+          if (!obj) {
+            // 图片未加载
+            return null;
+          }
           const id = obj.viewId;
           return <div key={id} id={id} jsv_innerview={id} />;
         })}
