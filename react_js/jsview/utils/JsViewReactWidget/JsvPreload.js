@@ -191,9 +191,9 @@ class _JsvPreload extends React.Component {
         target_size = { width: item.width, height: item.height };
       }
       let texture = null;
-      if (
-        image_url.toLowerCase().indexOf(".webp") >= 0 ||
-        image_url.toLowerCase().indexOf(".gif") >= 0
+	    if (image_url &&
+		    (image_url.toLowerCase().indexOf(".webp") >= 0 ||
+        image_url.toLowerCase().indexOf(".gif") >= 0)
       ) {
         texture = ForgeExtension.TextureManager.GetGifImage(image_url, false);
       } else {
