@@ -27,21 +27,21 @@ class MainScene extends FocusBlock {
         return MetroPage.getMeasureObj(227, 351, true, false);
     };
 
-    _OnItemFocus = (data_item) => {
-        if (data_item._Commodity) {
-            data_item._Commodity.becomeFocus();
+    _OnItemFocus = (data_item, on_edge, query, view_obj) => {
+        if (view_obj.view) {
+          view_obj.view.becomeFocus();
         }
     };
 
-    _OnItemBlur = (data_item) => {
-        if (data_item._Commodity) {
-            data_item._Commodity.becomeBlur();
+    _OnItemBlur = (data_item, query, view_obj) => {
+        if (view_obj.view) {
+          view_obj.view.becomeBlur();
         }
     };
 
-    _RenderItem = (data_item, onedge, query) => {
+    _RenderItem = (data_item, onedge, query, view_obj) => {
         return (
-            <Commodity scale={1.0} isFocus={false} index={query.id} data={data_item} ref={(ref) => { data_item._Commodity = ref; }} />
+            <Commodity scale={1.0} isFocus={false} index={query.id} data={data_item} ref={ref => view_obj.view = ref} />
         );
     };
 
@@ -59,7 +59,7 @@ class MainScene extends FocusBlock {
         this.changeFocus(`${this.props.branchName}/widget1`);
     }
 
-    _onFocusPosChange = () => {
+    _onFocusPosChange = (item, pos_obj) => {
 
     }
 
