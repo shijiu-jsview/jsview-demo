@@ -6,7 +6,9 @@
     "postinstall": "shx cp -rf jsview/patch/* node_modules/",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "vue-cli-service serve",
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "core-js": "3.12.1",
