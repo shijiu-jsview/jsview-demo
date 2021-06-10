@@ -11,6 +11,7 @@
  *                                  布局样式为数组中所有样式的合并。
  *          styleToken {string}     类似于react html元素的key，当style变化时，由使用者改变此Token通知hoc进行style重新识别。
  *                                  Token不变的场景，props变化不会引起render，以提高渲染性能
+ *          enableLatex {bool}     是否启用Latex文字描画模式
  */
 
 import React from "react";
@@ -66,6 +67,7 @@ class JsvTextBox extends React.Component {
         style={{
           ...this._StyleCombined,
         }}
+        jsv_text_latex_enable={this.props.enableLatex ? "true" : ""}
       >
         {this.props.children}
       </div>
@@ -106,6 +108,7 @@ JsvTextBox.propTypes = {
   verticalAlign: PropTypes.string, // "top", "middle", "bottom"
   stylesList: PropTypes.array, // JsvStyleClass/JsvTextStyleClass样式列表(包含x,y,width,height,backgroundColor)
   styleToken: PropTypes.string, // 样式是否变更的标识位
+  enableLatex: PropTypes.bool,
 };
 
 JsvTextBox.defaultProps = {
@@ -125,6 +128,7 @@ JsvTextBox.defaultProps = {
       lineHeight: "20px",
     },
   ],
+  enableLatex: false,
 };
 
 export default JsvTextBox;
