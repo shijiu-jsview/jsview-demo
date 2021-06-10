@@ -13,8 +13,12 @@ class MainScene extends FocusBlock {
 
         // 添加300个模拟数据
         for (let i = 0; i < 183; i++) {
+            let name_text = `商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:${i}`;
+            if (i < 5) {
+                name_text = `短文字(序号${i})`; // 短文字跑马灯测试
+            }
             this._data.push({
-                name: `商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:${i}`,
+                name: name_text,
                 prize: `${Math.floor(Math.random() * 200) + 200}`, /* 测试数据要保证比最高优惠券(300左右)要高 */
                 savePrize: `${i}`,
                 soldTotal: `${Math.floor(Math.random() * 50000)}`,

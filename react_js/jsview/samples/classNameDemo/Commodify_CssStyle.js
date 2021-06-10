@@ -48,6 +48,7 @@ CssStyle.TitleFont = new JsvTextStyleClass({
   overflow: "hidden",
   whiteSpace: 'nowrap',
   textOverflow: "ellipsis",
+  textAlign: "center",
 });
 
 CssStyle.TitleLayout = new JsvTextStyleClass({
