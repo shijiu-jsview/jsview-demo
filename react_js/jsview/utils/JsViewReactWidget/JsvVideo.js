@@ -26,6 +26,6 @@ class JsvVideo extends React.Component {
 
 JsvVideo.propTypes = {
   usetexture: PropTypes.bool,
-  videoref: PropTypes.func,
+  videoref: PropTypes.any,
 };
 export default JsvVideo;
