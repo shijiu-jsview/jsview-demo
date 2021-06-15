@@ -40,7 +40,7 @@ class Commodity extends React.Component {
         }
 
         // 处理优惠券展示长度
-        const save_prize_width = 10 * this._CommodityInfo.savePrize.length + 26; /* "元券"长度 */
+        const save_prize_width = 8 * this._CommodityInfo.savePrize.length + 26; /* "元"长度 */
 
         // 处理销售量长度
         let sold_total_width = 44 + 22;
@@ -89,7 +89,7 @@ class Commodity extends React.Component {
                         style={{
                             width: save_prize_width,
                         }}>
-                        {`${this._CommodityInfo.savePrize}元券`}
+                        {`${this._CommodityInfo.savePrize}元`}
                     </div>
                 </div>
 
