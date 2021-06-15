@@ -233,7 +233,10 @@ class MainScene extends FocusBlock {
     const text = `静夜思 --唐李白
 床前明月光，疑是地上霜；
 举头望明月，低头思故乡。`;
-    return (
+	  const text_latex = `静夜思 --唐李白
+床前\\textcolor{#FF0000}{明月光}，疑是地上霜；
+举头\\textcolor{#0000FF}{望明月}，低头思故乡。`;
+	  return (
       <div style={{ top: 400 }}>
         <div
           style={{
@@ -274,8 +277,9 @@ class MainScene extends FocusBlock {
           verticalAlign="middle"
           styleToken={sStyleToken}
           stylesList={[sLayoutSet, sFontSetCenter40, { left: 410, top: 0 }]}
+          enableLatex={true}
         >
-          {`[MC]${text}`}
+          {`[MC]${text_latex}`}
         </JsvTextBox>
         <div
           style={{
