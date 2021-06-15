@@ -278,6 +278,13 @@ const demoFuncInfos = [
       import("../opacityDemo/App").then((m) => ({ default: m.SubApp }))
     ),
   },
+  {
+    name: "文字阴影效果展示",
+    path: "/users/textShadowDemo",
+    class: lazy(() =>
+      import("../textShadowDemo/App").then((m) => ({ default: m.SubApp }))
+    ),
+  },
 ];
 
 const demoSceneInfos = [
