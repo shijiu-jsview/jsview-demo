@@ -3,7 +3,7 @@
  */
 
 const TargetRevision = {
-  CoreRevision: 810792,
+  CoreRevision: 810794,
   JseRevision: "1.0.758",
   JseUrl:
     "http://cdn.release.qcast.cn/forge_js/master/JsViewES6_react_r758.jsv.def728ef.js",
