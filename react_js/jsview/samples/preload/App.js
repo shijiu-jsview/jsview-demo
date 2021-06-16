@@ -134,7 +134,12 @@ class MainScene extends FocusBlock {
             preload_info.push(buildPreloadInfo(item.url));
             preload_info.push(buildPreloadInfo(item.focusUrl));
         }
-        const download_info = [buildDownloadInfo(awesome), buildDownloadInfo(cat)];
+        preload_info.push(buildPreloadInfo(null)); // 测试url为null的场景
+        const download_info = [
+          buildDownloadInfo(awesome),
+          buildDownloadInfo(cat),
+          buildDownloadInfo(null) // 测试URL为null的加载
+        ];
         return (
             <div style={{ width: 1920, height: 1080, backgroundColor: "#FFFFFF" }}>
                 <div style={{

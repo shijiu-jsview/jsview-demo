@@ -163,6 +163,7 @@ class JsvMarquee2 extends React.Component {
                          className={this._FontStyleClass}
                          style={{ ...this._FontStyle,
                            height: this._LayoutStyle.height}}
+                         jsv_text_align_minwidth = {this._LayoutStyle.width}
                     >
                         {this.props.text}
                     </div>

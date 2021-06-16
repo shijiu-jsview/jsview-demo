@@ -398,7 +398,11 @@ class PartLoopTool extends LoopTool {
     this.mFrameNum = frame_num;
     this.mLoopInfo = info_list;
     if (this.mLoopInfo.length > 0) {
-      this.updateLoop();
+      let has_next = this.updateLoop();
+      if (!has_next) {
+        console.error("PartLoopTool init loop info error.", info_list);
+        this.mDataError = true;
+      }
     } else {
       console.error("PartLoopTool init loop info error.", info_list);
       this.mDataError = true;
@@ -422,9 +426,11 @@ class PartLoopTool extends LoopTool {
             //出当前循环更新循环信息
             this.mLoopPeriod++;
             if (this.mLoopPeriod < loop_period_num) {
-              this.updateLoop();
-              this.mCurLoopCount = 0;
-              next_index = this.mFrameIndex + 1;
+              let has_next = this.updateLoop();
+              if (has_next) {
+                this.mCurLoopCount = 0;
+                next_index = this.mFrameIndex + 1;
+              }
             } else {
               //所有循环已完成
               if (this.mFrameIndex < this.mFrameNum - 1) {
@@ -458,6 +464,9 @@ class PartLoopTool extends LoopTool {
       this.mDataError = true;
       console.error("data error, frame number out of size.", this.mLoopInfo);
       this.reset();
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -465,7 +474,10 @@ class PartLoopTool extends LoopTool {
     this.mLoopPeriod = 0;
     this.mFrameIndex = 0;
     this.mCurLoopCount = 0;
-    this.updateLoop();
+
+    this.mCurLoopStartFrame = 0;
+    this.mCurLoopEndFrame = 0;
+    this.mCurLoopNum = 0;
   }
 }
 

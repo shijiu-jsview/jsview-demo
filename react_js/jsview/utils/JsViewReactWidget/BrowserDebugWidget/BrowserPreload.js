@@ -19,6 +19,10 @@ JsvWidgetWrapperGroup.getPreload = (base_class) => {
         false
       );
       this._PreloadViewList = this.props.preloadList.map((item, index) => {
+        if (!item.url) {
+          this._PreloadStateList[index] = true;
+          return null;
+        }
         const image = new Image();
         image.onload = () => {
           this._PreloadStateList[index] = true;
@@ -39,6 +43,10 @@ JsvWidgetWrapperGroup.getPreload = (base_class) => {
         false
       );
       this._DownloadViewList = this.props.downloadList.map((item, index) => {
+        if (!item.url) {
+          this._DownloadStateList[index] = true;
+          return null;
+        }
         const image = new Image();
         image.onload = () => {
           this._DownloadStateList[index] = true;

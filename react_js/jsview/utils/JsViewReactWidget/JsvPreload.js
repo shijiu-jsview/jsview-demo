@@ -84,36 +84,40 @@ class _JsvPreload extends React.Component {
     if (window.JsView) {
       if (this._PreloadViewList.length > 0) {
         for (const view_info of this._PreloadViewList) {
-          const id = view_info.viewId;
-          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (
-            view_info.textureRef &&
-            view_info.textureRef.DisableBackgroundLoad
-          ) {
-            view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(
-              view_info.callToken
-            );
+          if (view_info) { // 当预加载url为null时view_info为null
+            const id = view_info.viewId;
+            // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+            if (
+              view_info.textureRef &&
+              view_info.textureRef.DisableBackgroundLoad
+            ) {
+              view_info.textureRef.DisableBackgroundLoad(this);
+              view_info.textureRef.UnregisterLoadImageCallback(
+                view_info.callToken
+              );
+            }
+            ForgeExtension.RootActivity.ViewStore.remove(id);
           }
-          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._PreloadViewList = [];
       }
 
       if (this._DownloadViewList.length > 0) {
         for (const view_info of this._DownloadViewList) {
-          const id = view_info.viewId;
-          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (
-            view_info.textureRef &&
-            view_info.textureRef.DisableBackgroundLoad
-          ) {
-            view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(
-              view_info.callToken
-            );
+          if (view_info) { // 当预加载url为null时view_info为null
+            const id = view_info.viewId;
+            // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+            if (
+              view_info.textureRef &&
+              view_info.textureRef.DisableBackgroundLoad
+            ) {
+              view_info.textureRef.DisableBackgroundLoad(this);
+              view_info.textureRef.UnregisterLoadImageCallback(
+                view_info.callToken
+              );
+            }
+            ForgeExtension.RootActivity.ViewStore.remove(id);
           }
-          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._DownloadViewList = [];
       }
@@ -191,9 +195,9 @@ class _JsvPreload extends React.Component {
         target_size = { width: item.width, height: item.height };
       }
       let texture = null;
-      if (
-        image_url.toLowerCase().indexOf(".webp") >= 0 ||
-        image_url.toLowerCase().indexOf(".gif") >= 0
+	    if (image_url &&
+		    (image_url.toLowerCase().indexOf(".webp") >= 0 ||
+        image_url.toLowerCase().indexOf(".gif") >= 0)
       ) {
         texture = ForgeExtension.TextureManager.GetGifImage(image_url, false);
       } else {
@@ -203,6 +207,11 @@ class _JsvPreload extends React.Component {
           target_size,
           item.colorType
         );
+      }
+      if (!texture) {
+        console.error("Error: Preload view build texture failed for " + image_url);
+        this._PreloadStateList[index] = true; // 无法创建texture的图片先认为加载完成
+        return;
       }
       const callback_token = texture.RegisterLoadImageCallback(
         null,
@@ -265,6 +274,12 @@ class _JsvPreload extends React.Component {
       const texture = ForgeExtension.TextureManager.GetDownloadTexture(
         image_url
       );
+      if (!texture) {
+        console.error("Error: Down view build texture failed for " + image_url);
+        // 无法创建texture的图片先认为加载完成
+        this._DownloadStateList[index] = true;
+        return;
+      }
       const callback_token = texture.RegisterLoadImageCallback(null, () => {
         this._DownloadStateList[index] = true;
         this._checkDownload();
@@ -293,10 +308,18 @@ class _JsvPreload extends React.Component {
     return (
       <React.Fragment>
         {this._PreloadViewList.map((obj) => {
+          if (!obj) {
+            // 图片未加载
+            return null;
+          }
           const id = obj.viewId;
           return <div key={id} id={id} jsv_innerview={id} />;
         })}
         {this._DownloadViewList.map((obj) => {
+          if (!obj) {
+            // 图片未加载
+            return null;
+          }
           const id = obj.viewId;
           return <div key={id} id={id} jsv_innerview={id} />;
         })}

@@ -13,8 +13,12 @@ class MainScene extends FocusBlock {
 
         // 添加300个模拟数据
         for (let i = 0; i < 183; i++) {
+            let name_text = `商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:${i}`;
+            if (i < 5) {
+                name_text = `短文字(序号${i})`; // 短文字跑马灯测试
+            }
             this._data.push({
-                name: `商品：骆驼奶粉蛋白质粉，限时抢购，立刻发货，序号:${i}`,
+                name: name_text,
                 prize: `${Math.floor(Math.random() * 200) + 200}`, /* 测试数据要保证比最高优惠券(300左右)要高 */
                 savePrize: `${i}`,
                 soldTotal: `${Math.floor(Math.random() * 50000)}`,
@@ -27,21 +31,21 @@ class MainScene extends FocusBlock {
         return MetroPage.getMeasureObj(227, 351, true, false);
     };
 
-    _OnItemFocus = (data_item) => {
-        if (data_item._Commodity) {
-            data_item._Commodity.becomeFocus();
+    _OnItemFocus = (data_item, on_edge, query, view_obj) => {
+        if (view_obj.view) {
+          view_obj.view.becomeFocus();
         }
     };
 
-    _OnItemBlur = (data_item) => {
-        if (data_item._Commodity) {
-            data_item._Commodity.becomeBlur();
+    _OnItemBlur = (data_item, query, view_obj) => {
+        if (view_obj.view) {
+          view_obj.view.becomeBlur();
         }
     };
 
-    _RenderItem = (data_item, onedge, query) => {
+    _RenderItem = (data_item, onedge, query, view_obj) => {
         return (
-            <Commodity scale={1.0} isFocus={false} index={query.id} data={data_item} ref={(ref) => { data_item._Commodity = ref; }} />
+            <Commodity scale={1.0} isFocus={false} index={query.id} data={data_item} ref={ref => view_obj.view = ref} />
         );
     };
 
@@ -59,7 +63,7 @@ class MainScene extends FocusBlock {
         this.changeFocus(`${this.props.branchName}/widget1`);
     }
 
-    _onFocusPosChange = () => {
+    _onFocusPosChange = (item, pos_obj) => {
 
     }
 
