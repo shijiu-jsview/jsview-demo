@@ -52,7 +52,7 @@ class LiveRoom extends FocusBlock {
                 <video
                     style={_style}
                     // src="http://oss.image.51vtv.cn/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
-                    src="http://download.ott.siqiangame.com/dianbo/xunma/20200902/827151-827411-827628-827592-代0820泰国Singgora乳胶枕床垫坐垫胶颈枕.mp4"
+                    src="http://qcast-image.oss-cn-qingdao.aliyuncs.com/homepage/20190726/4cc4e6a8fd7d9d9c707ed4c4da27ca9d.mp4"
                     ref={this._RefVideo}
                     autoPlay={true}
                     muted={true}
