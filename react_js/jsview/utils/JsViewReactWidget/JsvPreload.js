@@ -84,36 +84,40 @@ class _JsvPreload extends React.Component {
     if (window.JsView) {
       if (this._PreloadViewList.length > 0) {
         for (const view_info of this._PreloadViewList) {
-          const id = view_info.viewId;
-          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (
-            view_info.textureRef &&
-            view_info.textureRef.DisableBackgroundLoad
-          ) {
-            view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(
-              view_info.callToken
-            );
+          if (view_info) { // 当预加载url为null时view_info为null
+            const id = view_info.viewId;
+            // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+            if (
+              view_info.textureRef &&
+              view_info.textureRef.DisableBackgroundLoad
+            ) {
+              view_info.textureRef.DisableBackgroundLoad(this);
+              view_info.textureRef.UnregisterLoadImageCallback(
+                view_info.callToken
+              );
+            }
+            ForgeExtension.RootActivity.ViewStore.remove(id);
           }
-          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._PreloadViewList = [];
       }
 
       if (this._DownloadViewList.length > 0) {
         for (const view_info of this._DownloadViewList) {
-          const id = view_info.viewId;
-          // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
-          if (
-            view_info.textureRef &&
-            view_info.textureRef.DisableBackgroundLoad
-          ) {
-            view_info.textureRef.DisableBackgroundLoad(this);
-            view_info.textureRef.UnregisterLoadImageCallback(
-              view_info.callToken
-            );
+          if (view_info) { // 当预加载url为null时view_info为null
+            const id = view_info.viewId;
+            // UnMarkImportant & UnregisterLoadImageCallback(这两个API同版本加入)
+            if (
+              view_info.textureRef &&
+              view_info.textureRef.DisableBackgroundLoad
+            ) {
+              view_info.textureRef.DisableBackgroundLoad(this);
+              view_info.textureRef.UnregisterLoadImageCallback(
+                view_info.callToken
+              );
+            }
+            ForgeExtension.RootActivity.ViewStore.remove(id);
           }
-          ForgeExtension.RootActivity.ViewStore.remove(id);
         }
         this._DownloadViewList = [];
       }
